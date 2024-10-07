@@ -1,16 +1,11 @@
-// import React, { useState } from 'react';
 import { Helmet } from "react-helmet";
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
-
-
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
 import FilterButton from '../../../components/DashboardSeller/DropdownFilter';
 import Datepicker from '../../../components/DashboardSeller/Datepicker';
-
 import Banner from '../../../partials/Banner';
-
 import {
   ButtonDH,
   Img,
@@ -21,13 +16,79 @@ import {
   TextArea,
 } from "../../../components";
 import React, { useState } from "react";
+import { Select, Option } from "@material-tailwind/react";
+import { UploadOutlined, PlusOutlined  } from '@ant-design/icons';
+import { Button, message, Upload, InputNumber, Image } from 'antd';
+import { Input, IconButton, Typography } from "@material-tailwind/react";
 
+const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+const props = {
+  name: 'file',
+  action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+  headers: {
+    authorization: 'authorization-text',
+  },
+  onChange(info) {
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      message.success(`${info.file.name} file uploaded successfully`);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  },
+};
 
 function RegisterProductPage() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [manufactureDate, setManufactureDate] = useState(null);
+  const [value, setValue] = React.useState(0);
+  const [valueInput, setValueInput] = useState('');
 
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [fileList, setFileList] = useState([
+    {
+      uid: '-1',
+      name: 'image.png',
+      status: 'done',
+      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+    }
+  ]);
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+  };
+  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+  const uploadButton = (
+      <button
+          style={{
+            border: 0,
+            background: 'none',
+          }}
+          type="button"
+      >
+        <PlusOutlined />
+        <div
+            style={{
+              marginTop: 8,
+            }}
+        >
+          Upload
+        </div>
+      </button>
+  );
   return (
     <div className="flex h-screen overflow-hidden">
 
@@ -126,7 +187,7 @@ function RegisterProductPage() {
                           </div>
                         </div>
 
-                        <div className="flex w-[44%] flex-col items-start md:w-full">
+                        <div className="flex w-[47.1%] flex-col items-start md:w-full">
                           <Heading
                             as="p"
                             className="ml-3 font-jost text-[16px] font-medium text-black-900 md:ml-0"
@@ -134,28 +195,35 @@ function RegisterProductPage() {
                             Hình ảnh sản phẩm
                           </Heading>
                           <div className="mr-1.5 mt-2 flex flex-col items-start gap-5 self-stretch rounded-[20px] bg-blue-200 px-[52px] py-[30px] md:mr-0 md:px-5 sm:p-5">
-                            <div className="flex justify-center gap-4">
-                              <div className="flex justify-center gap-4">
-                                <Img
-                                  src="images/img_giuong.png"
-                                  alt="Product Image 1"
-                                  className="h-[100px] w-[100px] rounded-[5px] object-cover"
-                                />
-                                <Img
-                                  src="images/img_tv.png"
-                                  alt="Product Image 2"
-                                  className="h-[100px] w-[100px] rounded-[5px] object-cover"
-                                />
-                              </div>
-
-                            </div>
-                            <Heading
-                              size="headingxs"
-                              as="h6"
-                              className="mb-3.5 text-[16px] font-semibold text-gray-900_01"
-                            >
-                              Thả tệp vào đây hoặc nhấp để tải lên
-                            </Heading>
+                            <>
+                              <Upload
+                                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                                  listType="picture-card"
+                                  fileList={fileList}
+                                  onPreview={handlePreview}
+                                  onChange={handleChange}
+                              >
+                                {fileList.length >= 8 ? null : uploadButton}
+                              </Upload>
+                              {previewImage && (
+                                  <Image
+                                      wrapperStyle={{
+                                        display: 'none',
+                                      }}
+                                      preview={{
+                                        visible: previewOpen,
+                                        onVisibleChange: (visible) => setPreviewOpen(visible),
+                                        afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                                      }}
+                                      src={previewImage}
+                                  />
+                              )}
+                            </>
+                            {/*<div className="flex justify-center gap-4">*/}
+                            {/*  <div className="flex justify-center gap-4">*/}
+                            {/*    */}
+                            {/*  </div>*/}
+                            {/*</div>*/}
                           </div>
                           <div className="mt-11 flex flex-col items-start gap-1.5 self-stretch">
                             <Heading
@@ -165,11 +233,9 @@ function RegisterProductPage() {
                               Import file
                             </Heading>
                             <div className="flex items-center gap-[21px] self-stretch rounded-[20px] bg-blue-200_01 px-7 py-1.5 sm:px-5">
-                              <Img
-                                src="images/img_upload.png"
-                                alt="Import Image"
-                                className="h-[38px] object-cover"
-                              />
+                              <Upload {...props}>
+                                <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                              </Upload>
                               <Heading
                                 as="p"
                                 className="font-jost text-[16px] font-medium text-black-900"
@@ -178,46 +244,57 @@ function RegisterProductPage() {
                               </Heading>
                             </div>
                           </div>
-                          <div className="mt-[42px] flex flex-col gap-3 self-stretch ">
+                          <div className="mt-[2px] flex flex-col gap-3 self-stretch ">
                             <div className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">
                               <Heading
-                                as="p"
-                                className="font-jost text-[16px] font-medium "
+                                  as="p"
+                                  className="font-jost text-[16px] font-medium "
                               >
                                 Danh mục
                               </Heading>
-                              <SelectBox
-                                shape="round"
-                                indicator={
-                                  <svg className={`w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500`} viewBox="0 0 12 12">
-                                    <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
-                                  </svg>
-                                }
-                                name="Category Dropdown"
-                                placeholder={`Danh mục sản phẩm`}
-                                color="white"
-                                className="gap-4 self-stretch rounded-md border border-solid border-gray-200 px-3 font-jost "
-                              />
+                              <div className="w-72 mt-4">
+                                <Select label="Danh mục">
+                                  <Option>Material Tailwind HTML</Option>
+                                  <Option>Material Tailwind React</Option>
+                                  <Option>Material Tailwind Vue</Option>
+                                  <Option>Material Tailwind Angular</Option>
+                                  <Option>Material Tailwind Svelte</Option>
+                                </Select>
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">
+                              <Heading
+                                  as="p"
+                                  className="font-jost text-[16px] font-medium "
+                              >
+                                Danh mục phụ
+                              </Heading>
+                              <div className="w-72 mt-4">
+                                <Select label="Danh mục phụ">
+                                  <Option>Material Tailwind HTML</Option>
+                                  <Option>Material Tailwind React</Option>
+                                  <Option>Material Tailwind Vue</Option>
+                                  <Option>Material Tailwind Angular</Option>
+                                  <Option>Material Tailwind Svelte</Option>
+                                </Select>
+                              </div>
                             </div>
                             <div className="flex flex-col items-start justify-center gap-1 w-[50%]">
                               <Heading
-                                as="p"
-                                className="font-jost text-[16px] font-medium text-blue_gray-900"
+                                  as="p"
+                                  className="font-jost text-[16px] font-medium text-blue_gray-900"
                               >
                                 Trình trạng
                               </Heading>
-                              <SelectBox
-                                shape="round"
-                                indicator={
-                                  <svg className={`w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500`} viewBox="0 0 12 12">
-                                    <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
-                                  </svg>
-                                }
-                                name="Condition Dropdown"
-                                placeholder={`Tình trạng sản phẩm`}
-                                color="white"
-                                className="gap-4 self-stretch rounded-md border border-solid border-gray-200 px-3 font-jost"
-                              />
+                              <div className="w-72 mt-4">
+                                <Select label="Trình trạng">
+                                  <Option>Material Tailwind HTML</Option>
+                                  <Option>Material Tailwind React</Option>
+                                  <Option>Material Tailwind Vue</Option>
+                                  <Option>Material Tailwind Angular</Option>
+                                  <Option>Material Tailwind Svelte</Option>
+                                </Select>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -229,9 +306,9 @@ function RegisterProductPage() {
                   <div className=" md:ml-0">
                     <div className="flex flex-col  gap-12">
                       <Heading
-                        size="textxl"
-                        as="p"
-                        className="bg-green-a700_01 px-[34px] pb-1.5 pt-0.5 text-[25px] font-medium text-bg-white md:text-[23px] sm:px-5 sm:text-[21px]"
+                          size="textxl"
+                          as="p"
+                          className="bg-green-a700_01 px-[34px] pb-1.5 pt-0.5 text-[25px] font-medium text-bg-white md:text-[23px] sm:px-5 sm:text-[21px]"
                       >
                         Thông tin chi tiết của sản phẩm
                       </Heading>
@@ -239,8 +316,8 @@ function RegisterProductPage() {
                         <div className="flex w-full flex-col gap-[26px]">
                           <div className="flex flex-col items-start justify-center gap-1.5">
                             <Heading
-                              as="p"
-                              className="font-jost text-[16px] font-medium text-blue_gray-900"
+                                as="p"
+                                className="font-jost text-[16px] font-medium text-blue_gray-900"
                             >
                               Màu sắc
                             </Heading>
@@ -288,12 +365,21 @@ function RegisterProductPage() {
                             >
                               Nguồn gốc/Xuất xứ
                             </Heading>
-                            <InputDH
-                              shape="round"
-                              name="Origin Field"
-                              placeholder={`Ghi rõ thông tin xuất xứ`}
-                              className="self-stretch rounded-md border px-3.5 font-jost"
+                            {/*<InputDH*/}
+                            {/*  shape="round"*/}
+                            {/*  name="Origin Field"*/}
+                            {/*  placeholder={`Ghi rõ thông tin xuất xứ`}*/}
+                            {/*  className="self-stretch rounded-md border px-3.5 font-jost"*/}
+                            {/*/>*/}
+                            <TextArea
+                                placeholder="Nguồn gốc/Xuất xứ"
+                                autoSize={{
+                                  minRows: 2,
+                                  maxRows: 4,
+                                }}
+                                className="w-full h-1/4 p-3 rounded-md border border-gray-300"
                             />
+
                           </div>
                           <div className="flex w-[86%] flex-col items-start justify-center gap-1 md:w-full">
                             <Heading
@@ -302,17 +388,18 @@ function RegisterProductPage() {
                             >
                               Giá trị định giá
                             </Heading>
-                            <InputDH
-                              shape="round"
-                              name="Pricing Field"
-                              placeholder={`Nhập giá trị sản phẩm`}
-                              suffix={
-                                <Text className="w-[32px] font-jost text-[15px] font-normal text-colors">
-                                  VND
-                                </Text>
-                              }
-                              className="gap-4 self-stretch rounded-md border px-3 font-jost"
-                            />
+                            {/*<InputDH*/}
+                            {/*  shape="round"*/}
+                            {/*  name="Pricing Field"*/}
+                            {/*  placeholder={`Nhập giá trị sản phẩm`}*/}
+                            {/*  suffix={*/}
+                            {/*    <Text className="w-[32px] font-jost text-[15px] font-normal text-colors">*/}
+                            {/*      VND*/}
+                            {/*    </Text>*/}
+                            {/*  }*/}
+                            {/*  className="gap-4 self-stretch rounded-md border px-3 font-jost"*/}
+                            {/*/>*/}
+                            <InputNumber  min={1}  addonBefore="+" addonAfter="VND" defaultValue={100} />
                           </div>
                           <div className="flex flex-col w-[88%] items-start justify-center gap-1 md:w-full mt-5">
                             <Heading
