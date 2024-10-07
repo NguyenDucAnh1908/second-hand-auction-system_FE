@@ -74,14 +74,14 @@ const NavBar = () => {
         </Dropdown>
         <ul className="!mt-3.5 flex flex-wrap gap-[66px] md:gap-5">
           <li>
-            <a href="#">
+            <a href="/">
               <Text className="text-[16px] font-medium text-blue_gray-900_01 hover:text-green-a700 transition duration-200">
                 Trang chủ
               </Text>
             </a>
           </li>
           <li>
-            <a href="#">
+            <a href="/Product">
               <Text className="text-[16px] font-medium text-blue_gray-900_01 hover:text-green-a700 transition duration-200">
                 Sản phẩm
               </Text>

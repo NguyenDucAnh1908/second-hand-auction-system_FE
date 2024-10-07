@@ -211,7 +211,7 @@ export default function AuctionSection() {
             >
               Đặt giá thầu
             </ButtonDH>
-            <Link to="/ListOfBuyerBids">
+            <a href="/ListOfBuyerBids">
 
               <ButtonDH
                 color="green_50"
@@ -229,7 +229,7 @@ export default function AuctionSection() {
               >
                 Danh sách đấu giá{" "}
               </ButtonDH>
-            </Link>
+            </a>
 
           </div>
 

@@ -93,11 +93,13 @@ export default function Header2({ ...props }) {
           </div>
           <div className="container-md mt-5 flex flex-col gap-9 self-stretch md:px-5">
             <div className="ml-[74px] mr-6 flex items-center justify-between gap-5 md:mx-0 md:flex-col">
+              <a href="/">
               <Img
                 src="images/img_header_logo.png"
                 alt="Header Logo"
                 className="h-[32px] w-[92px] self-end object-contain md:self-auto"
               />
+              </a>
               <div className="flex w-[86%] items-center justify-between gap-5 md:w-full md:flex-col">
                 <InputDH
                   name="Search Box"
@@ -133,6 +135,7 @@ export default function Header2({ ...props }) {
                         />
                       </a>
                     </div>
+                    <a href="/Product">
                     <Text className="font-bevietnampro text-[14px] font-bold leading-[22px] text-blue_gray-900_01">
                       <span className="text-[13px] font-normal">
                         <>
@@ -142,6 +145,7 @@ export default function Header2({ ...props }) {
                       </span>
                       <span className="text-[16px] font-medium">Sản phẩm</span>
                     </Text>
+                    </a>
                   </div>
                   <div className="flex flex-1 items-center justify-center gap-3.5 sm:self-stretch">
                     <a href="#">
