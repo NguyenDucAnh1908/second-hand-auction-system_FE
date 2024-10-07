@@ -8,6 +8,96 @@ import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
 import Banner from '../../../partials/Banner';
 import { Link } from 'react-router-dom';
+import { DocumentIcon } from "@heroicons/react/24/solid";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import { Card, IconButton, Typography } from "@material-tailwind/react";
+import Pagination from "@/components/Pagination/index.jsx";
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
+import { Divider, Flex, Tag } from 'antd';
+
+const TABLE_HEAD = [
+  "Number",
+  "Sản phẩm",
+  "Hình ảnh",
+  "Thời gian",
+  "Trạng thái",
+  "Đấu giá",
+  "Tùy chỉnh"
+];
+
+const TABLE_ROWS = [
+  {
+    number: "#MS-415646",
+    product: "Smartphone",
+    image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+    time: "31 Jan 2024",
+    status: "Available",
+    auction: "Available",
+  },
+  {
+    number: "#MS-415647",
+    product: "Laptop",
+    image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+    time: "24 Jan 2024",
+    status: "pending",
+    auction: "pending",
+  },
+  {
+    number: "#MS-415648",
+    product: "Tablet",
+    image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+    time: "12 Jan 2024",
+    status: "UnAvailable",
+    auction: "UnAvailable",
+  },
+  {
+    number: "#MS-415649",
+    product: "Smartwatch",
+    image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+    time: "10 Jan 2024",
+    status: "Fail",
+    auction: "Fail",
+  },
+];
+
+
+// const TABLE_ROWS = [
+//   {
+//     number: "#MS-415646",
+//     customer: "CompanyINC",
+//     amount: "$14,000",
+//     issued: "31 Jan 2024",
+//     date: "31 Feb 2024",
+//   },
+//   {
+//     number: "#MS-415647",
+//     customer: "CompanyINC",
+//     amount: "$4,000",
+//     issued: "24 Jan 2024",
+//     date: "24 Feb 2024",
+//   },
+//   {
+//     number: "#MS-415648",
+//     customer: "CompanyINC",
+//     amount: "$11,000",
+//     issued: "12 Jan 2024",
+//     date: "12 Feb 2024",
+//   },
+//   {
+//     number: "#MS-415649",
+//     customer: "CompanyINC",
+//     amount: "$2,600",
+//     issued: "10 Jan 2024",
+//     date: "10 Feb 2024",
+//   },
+// ];
 
 
 const tableData = [
@@ -72,187 +162,6 @@ export default function ListOfSellerProductPage() {
   };
 
   const [searchBarValue1, setSearchBarValue1] = React.useState("");
-  const tableColumns = React.useMemo(() => {
-    const tableColumnHelper = createColumnHelper();
-    return [
-      tableColumnHelper.accessor("idHeaderRow", {
-        cell: (info) => (
-          <div className="flex flex-col items-end">
-            <Text
-              as="p"
-              className="mb-[22px] text-[15px] font-normal text-blue_gray-900_01"
-            >
-              {info.getValue()}
-            </Text>
-          </div>
-        ),
-        header: (info) => (
-          <div className="flex justify-center py-4">
-            <Heading
-              as="h2"
-              className="mb-1.5 text-[16px] font-medium text-blue_gray-900_01"
-            >
-              ID
-            </Heading>
-          </div>
-        ),
-        meta: { width: "70px" },
-      }),
-      tableColumnHelper.accessor("productHeaderRow", {
-        cell: (info) => (
-          <div className="ml-5 flex flex-1 justify-center px-5">
-            <Text
-              as="p"
-              className="mb-6 text-[15px] font-normal text-blue_gray-900_01"
-            >
-              {info.getValue()}
-            </Text>
-          </div>
-        ),
-        header: (info) => (
-          <div className="ml-5 flex justify-center p-4">
-            <Heading
-              as="h3"
-              className="mb-1.5 text-[16px] font-medium text-blue_gray-900_01"
-            >
-              Sản phẩm
-            </Heading>
-          </div>
-        ),
-        meta: { width: "178px" },
-      }),
-      tableColumnHelper.accessor("imageHeaderRow", {
-        cell: (info) => (
-          <div className="ml-7 flex px-7 sm:px-5">
-            <Img
-              src={info.getValue()}
-              alt="Product Image"
-              className="mb-2.5 h-[80px] w-[80px] object-cover"
-            />
-          </div>
-        ),
-        header: (info) => (
-          <div className="ml-7 flex justify-center p-3.5">
-            <Heading
-              as="h4"
-              className="mb-2.5 text-[16px] font-medium text-blue_gray-900_01"
-            >
-              Hình ảnh
-            </Heading>
-          </div>
-        ),
-        meta: { width: "146px" },
-      }),
-      tableColumnHelper.accessor("timeHeaderRow", {
-        cell: (info) => (
-          <div className="ml-12 flex-1 px-2">
-            <div className="mb-3 flex items-center">
-              <div className="h-[44px] w-[46%] rounded-md bg-gray-50" />
-              <Text
-                as="p"
-                className="relative ml-[-96px] w-[52%] text-[15px] font-normal leading-[22px] text-blue_gray-900_01"
-              >
-                {info.getValue()}
-              </Text>
-            </div>
-          </div>
-        ),
-        header: (info) => (
-          <div className="ml-12 flex flex-row justify-start px-[30px] py-[18px] sm:px-5">
-            <Heading
-              as="h5"
-              className="mb-1 text-[16px] font-medium text-blue_gray-900_01"
-            >
-              Thời gian
-            </Heading>
-          </div>
-        ),
-        meta: { width: "166px" },
-      }),
-      tableColumnHelper.accessor("statusHeaderRow", {
-        cell: (info) => (
-          <div className="flex">
-            <ButtonDH
-              className={`mb-[18px] flex h-[34px] min-w-[110px] flex-row items-center justify-center rounded-md ${getStatusColor(info.getValue())} px-3 text-center text-[13px] font-medium text-bg-white sm:px-5`}
-              style={{ minWidth: "120px", height: "40px" }} // Thêm chiều rộng tối thiểu và chiều cao cố định
-            >
-              {info.getValue()}
-            </ButtonDH>
-          </div>
-        ),
-        header: (info) => (
-          <div className="flex justify-start py-5">
-            <Heading
-              as="h6"
-              className="text-[16px] font-medium text-blue_gray-900_01"
-            >
-              Trạng thái
-            </Heading>
-          </div>
-        ),
-        meta: { width: "130px" },
-      }),
-
-      tableColumnHelper.accessor("priceHeaderRow", {
-        cell: (info) => (
-          <div className="ml-[22px] flex px-7 sm:px-5">
-            <Heading
-              size="headingxs"
-              as="p"
-              className="mb-3.5 flex text-[10px] font-semibold capitalize text-blue_gray-900_01 !important" // Thêm !important
-            >
-              <span>250.000</span>
-              <a href="#" className="inline underline">
-                đ
-              </a>
-            </Heading>
-          </div>
-        ),
-        header: (info) => (
-          <div className="ml-[22px] flex px-4 py-5">
-            <div className="flex w-full flex-col items-center">
-              <Heading
-                as="p"
-                className="text-[16px] font-medium text-blue_gray-900_01"
-              >
-                Giá khởi điểm
-              </Heading>
-            </div>
-          </div>
-        ),
-        meta: { width: "144px" },
-      }),
-      tableColumnHelper.accessor("editHeaderRow", {
-        cell: (info) => (
-          <div className="ml-4 px-1">
-            <div className="mb-[30px] ml-2 flex justify-center md:ml-0">
-              <Img
-                src="images/img_edit.png"
-                alt="Edit Icon"
-                className="h-[40px]"
-              />
-              <Img
-                src="images/img_delete.png"
-                alt="Delete Icon"
-                className="h-[40px]"
-              />
-            </div>
-          </div>
-        ),
-        header: (info) => (
-          <div className="ml-4 flex py-4">
-            <Heading
-              as="p"
-              className="mb-1.5 text-[16px] font-medium text-blue_gray-900_01"
-            >
-              Chỉnh sửa
-            </Heading>
-          </div>
-        ),
-        meta: { width: "76px" },
-      }),
-    ];
-  }, []);
 
   return (
     <>
@@ -323,16 +232,149 @@ export default function ListOfSellerProductPage() {
                             </Link>
 
                           </div>
-                          <div className="mr-[38px] flex flex-col gap-8 md:mr-0">
-                            <ReactTable1
-                              size="xs"
-                              className="producttable md:block md:overflow-x-auto md:whitespace-nowrap"
-                              bodyProps={{ className: "" }}
-                              headerCellProps={{ className: "bg-gray-100_01" }}
-                              columns={tableColumns}
-                              data={tableData}
-                            />
+                          {/*<div className="mr-[38px] flex flex-col gap-8 md:mr-0">*/}
+                          {/*  <ReactTable1*/}
+                          {/*    size="xs"*/}
+                          {/*    className="producttable md:block md:overflow-x-auto md:whitespace-nowrap"*/}
+                          {/*    bodyProps={{ className: "" }}*/}
+                          {/*    headerCellProps={{ className: "bg-gray-100_01" }}*/}
+                          {/*    columns={tableColumns}*/}
+                          {/*    data={tableData}*/}
+                          {/*  />*/}
+                          {/*</div>*/}
+                          <Card className="h-full w-full overflow-scroll">
+                            <table className="w-full min-w-max table-auto text-left">
+                              <thead>
+                              <tr>
+                                {TABLE_HEAD.map((head) => (
+                                    <th key={head} className="p-4 pt-10">
+                                      <Typography
+                                          variant="small"
+                                          color="blue-gray"
+                                          className="font-bold leading-none"
+                                      >
+                                        {head}
+                                      </Typography>
+                                    </th>
+                                ))}
+                              </tr>
+                              </thead>
+                              <tbody>
+                              {TABLE_ROWS.map(({ number, product, image, time, status, auction }) => {
+                                return (
+                                    <tr key={number}>
+                                      <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-bold"
+                                        >
+                                          {number}
+                                        </Typography>
+                                      </td>
+                                      <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                          {product}
+                                        </Typography>
+                                      </td>
+                                      <td className="p-4">
+                                        <img
+                                            src={image}
+                                            alt={product}
+                                            className="w-16 h-16 object-cover rounded"
+                                        />
+                                      </td>
+                                      <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                          {time}
+                                        </Typography>
+                                      </td>
+                                      {/*<td className="p-4">*/}
+                                      {/*  <Tag icon={<SyncOutlined spin />} color="processing">*/}
+                                      {/*    {status}*/}
+                                      {/*  </Tag>*/}
+                                      {/*</td>*/}
+                                      <td className="p-4">
+                                        {status === "Available" && (
+                                            <Tag icon={<CheckCircleOutlined/>} color="success">
+                                              Available
+                                            </Tag>
+                                        )}
+                                        {status === "pending" && (
+                                            <Tag icon={<SyncOutlined spin/>} color="processing">
+                                              Pending
+                                            </Tag>
+                                        )}
+                                        {status === "UnAvailable" && (
+                                            <Tag icon={<CloseCircleOutlined/>} color="error">
+                                              UnAvailable
+                                            </Tag>
+                                        )}
+                                        {status === "Fail" && (
+                                            <Tag icon={<ExclamationCircleOutlined/>} color="warning">
+                                              Fail
+                                            </Tag>
+                                        )}
+                                      </td>
+                                      {/*<td className="p-4">*/}
+                                      {/*  <Typography*/}
+                                      {/*      variant="small"*/}
+                                      {/*      className="font-normal text-gray-600"*/}
+                                      {/*  >*/}
+                                      {/*    {auction}*/}
+                                      {/*  </Typography>*/}
+                                      {/*</td>*/}
+                                      <td className="p-4">
+                                        {auction === "Available" && (
+                                            <Tag icon={<CheckCircleOutlined/>} color="success">
+                                              Available
+                                            </Tag>
+                                        )}
+                                        {auction === "pending" && (
+                                            <Tag icon={<SyncOutlined spin/>} color="processing">
+                                              Pending
+                                            </Tag>
+                                        )}
+                                        {auction === "UnAvailable" && (
+                                            <Tag icon={<CloseCircleOutlined/>} color="error">
+                                              UnAvailable
+                                            </Tag>
+                                        )}
+                                        {auction === "Fail" && (
+                                            <Tag icon={<ExclamationCircleOutlined/>} color="warning">
+                                              Fail
+                                            </Tag>
+                                        )}
+                                      </td>
+                                      <td className="p-4">
+                                        <div className="flex items-center gap-2">
+                                          <IconButton variant="text" size="sm">
+                                            <DocumentIcon className="h-4 w-4 text-gray-900"/>
+                                          </IconButton>
+                                          <IconButton variant="text" size="sm">
+                                            <ArrowDownTrayIcon
+                                                strokeWidth={3}
+                                                className="h-4 w-4 text-gray-900"
+                                            />
+                                          </IconButton>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                );
+                              })}
+                              </tbody>
+                            </table>
+                          </Card>
+                          <div className="flex justify-center items-center mt-4">
+                            <Pagination/>
                           </div>
+
                         </div>
                       </div>
                     </div>
@@ -343,12 +385,10 @@ export default function ListOfSellerProductPage() {
             </div>
           </main>
 
-          <Banner />
+          <Banner/>
 
         </div>
       </div>
-
-
 
 
     </>
