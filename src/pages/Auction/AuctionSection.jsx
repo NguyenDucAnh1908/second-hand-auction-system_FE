@@ -4,6 +4,7 @@ import React, { Suspense, useState } from "react";
 import { Modal } from "antd";
 import { Rate } from "antd";
 import BidForm from "../../components/BidForm";
+import { Link } from "react-router-dom";
 
 const thumbnailList = [
   { userImage: "images/img_image_75.png" },
@@ -210,22 +211,26 @@ export default function AuctionSection() {
             >
               Đặt giá thầu
             </ButtonDH>
-            <ButtonDH
-              color="green_50"
-              size="xl"
-              leftIcon={
-                <div className="flex h-[18px] w-[20px] items-center justify-center">
-                  <Img
-                    src="images/img_favorite.svg"
-                    alt="Favorite"
-                    className="h-[18px] w-[20px]"
-                  />
-                </div>
-              }
-              className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5"
-            >
-              Danh sách đấu giá{" "}
-            </ButtonDH>
+            <Link to="/ListOfBuyerBids">
+
+              <ButtonDH
+                color="green_50"
+                size="xl"
+                leftIcon={
+                  <div className="flex h-[18px] w-[20px] items-center justify-center">
+                    <Img
+                      src="images/img_favorite.svg"
+                      alt="Favorite"
+                      className="h-[18px] w-[20px]"
+                    />
+                  </div>
+                }
+                className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5"
+              >
+                Danh sách đấu giá{" "}
+              </ButtonDH>
+            </Link>
+
           </div>
 
           <Heading
