@@ -160,17 +160,18 @@ export default function ProductSection({ selectedBrands, onTagClose }) {
           </select>
         </div>
 
+
         <div
             className="mx-7 mt-5 grid grid-cols-4 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
           <Suspense fallback={<div>Loading feed...</div>}>
             {fashionItemsGrid.map((d, index) => (
-                <a href="#" target="_blank">
+                <a href="/Auction" target="_blank">
                   <ProductDetails21 {...d} key={"itemsGrid" + index}/>
                 </a>
             ))}
           </Suspense>
         </div>
-
+       
         <div className="my-10">
           {/*<PaginationBK/>*/}
           <Pagination />

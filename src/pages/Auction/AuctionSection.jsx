@@ -202,33 +202,26 @@ export default function AuctionSection() {
             2015-09-01 09:12:11
           </Text>
           <div className="ml-1.5 mt-[18px] flex flex-col gap-3 self-stretch md:ml-0">
-            <ButtonDH
-              onClick={showModal}
-              color="green_A700"
-              size="xl"
-              className="self-stretch rounded-[26px] border border-solid border-green-a700 px-[33px] !text-gray-100_01 sm:px-5"
-            >
-              Đặt giá thầu
-            </ButtonDH>
-            <a href="/ListOfBuyerBids">
 
+            <a href="/ListOfBuyerBids">
               <ButtonDH
                 color="green_50"
                 size="xl"
-                leftIcon={
-                  <div className="flex h-[18px] w-[20px] items-center justify-center">
-                    <Img
-                      src="images/img_favorite.svg"
-                      alt="Favorite"
-                      className="h-[18px] w-[20px]"
-                    />
-                  </div>
-                }
-                className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5"
+
+                className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5 "
               >
-                Danh sách đấu giá{" "}
+                Danh sách những người đang đấu giá{" "}
               </ButtonDH>
             </a>
+
+            <ButtonDH
+              onClick={showModal}
+              color=""
+              size="xl"
+              className="self-stretch rounded-[26px] border border-solid border-green-700 px-[33px] !text-gray-100_01 sm:px-5 transition-colors duration-300 hover:bg-green-500 hover:text-white"
+            >
+              Đặt giá thầu
+            </ButtonDH>
 
           </div>
 
