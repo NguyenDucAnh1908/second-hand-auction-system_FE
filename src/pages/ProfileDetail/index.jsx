@@ -161,16 +161,16 @@ export default function ProfileDetailPage() {
           content="Access your EZShop profile to manage your account information, view your balance of 20,000,000 VND, and update your favorite products. Get assistance and find stores easily."
         />
       </Helmet>
+      <Header2 />
       <div className="flex w-full flex-col items-center bg-bg-white">
-        <Header2 />
-        <div className="mx-auto w-full max-w-[1328px] md:px-5">
+        <div className="mx-auto w-full  md:px-5">
           <div className="mr-[46px] flex items-start gap-5 md:mr-0 md:flex-col">
         
             {/* bên trái */}
-            <div className="mt-12 flex w-[24%] flex-col gap-[20px] md:w-full -mt-[31px]">
-              <div className="py-0">
+            <div className=" w-[24%] ">
+           
                 <SiderUserBK/>
-              </div>
+            
             </div>
 
             {/* bên phải */}

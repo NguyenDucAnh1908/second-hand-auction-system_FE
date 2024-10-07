@@ -146,15 +146,15 @@ export default function AddressPage() {
       <div className=" w-full ">
         <div className="w-full md:w-full">
           <div className="flex w-full flex-col gap-7 md:px-5">
-            <div className="flex items-start gap-12 ">
+            <div className="flex items-start  ">
               
               <div className="w-[25%] ">
               <SiderUserBK/>
             
               </div>
 
-              <div className="relative h-[904px] flex-1">
-                <div className="absolute bottom-0 left-0 right-0 top-0 my-auto ml-1 mr-2 flex h-max flex-1 rounded-[16px] bg-gray-100 px-[22px] py-2.5 md:mx-0 sm:px-5">
+              <div className="relative h-[904px] flex-1 ">
+                <div className="absolute bottom-0 left-0 right-0 top-0 my-auto  flex h-max flex-1 rounded-[16px] bg-gray-100 px-[22px] py-2.5 md:mx-0 sm:px-5">
                   <Heading
                     size="text3xl"
                     as="h1"

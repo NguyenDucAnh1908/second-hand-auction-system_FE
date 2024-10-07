@@ -43,14 +43,15 @@ export default function DepositMoneyPage() {
           content="Easily deposit funds into your EZShop account using your preferred bank. Secure and convenient way to manage your balance and enhance your shopping experience."
         />
       </Helmet>
+      <Header2 />
       <div className="w-full bg-bg-white">
-        <Header2 />
-        <div className="mx-[76px] mt-[30px] md:mx-0">
+        
+        <div className="  md:mx-0">
           <div className="flex items-baseline gap-1 md:flex-col">
             <div className="mb-[22px] flex w-[24%] flex-col gap-[46px] md:w-full md:px-5">
               <div>
                 <div className="flex flex-col gap-[38px]">
-                  {/*<AccountOptions />*/}
+                 
                   <SiderUserBK/>
                 </div>
               </div>
