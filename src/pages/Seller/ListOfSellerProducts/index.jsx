@@ -7,6 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
 import Banner from '../../../partials/Banner';
+import { Link } from 'react-router-dom';
 
 
 const tableData = [
@@ -269,7 +270,7 @@ export default function ListOfSellerProductPage() {
           <main className="grow">
             <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
 
-            
+
 
               {/* noi dung */}
               <div className="w-full bg-gray-50_01">
@@ -313,9 +314,14 @@ export default function ListOfSellerProductPage() {
                               }
                               className="flex h-[40px] w-[24%] items-center justify-center gap-4 rounded bg-bg-white px-4 text-[16px] text-blue_gray-600 shadow-xs sm:w-full "
                             />
-                            <ButtonDH className="flex h-[40px] min-w-[152px] flex-row items-center justify-center gap-0.5 rounded-md bg-green-a700  text-center text-[14px] text-bg-white shadow-xs ml-auto">
+                            <Link
+                              to="/registerproduct"
+                              className="flex h-[40px] min-w-[152px] flex-row items-center justify-center gap-0.5 rounded-md"
+                              style={{ backgroundColor: '#28a745' }} // Mã màu xanh lá cây
+                            >
                               Tạo sản phẩm
-                            </ButtonDH>
+                            </Link>
+
                           </div>
                           <div className="mr-[38px] flex flex-col gap-8 md:mr-0">
                             <ReactTable1

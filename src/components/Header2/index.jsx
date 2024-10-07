@@ -58,10 +58,11 @@ export default function Header2({ ...props }) {
                           </Text>
                         </a>
                       </li>
+                     
                       <li>
-                        <a href="#">
+                        <a href="/Dashboard-Seller">
                           <Text className="text-[13px] font-normal text-blue_gray-900_01">
-                            Tìm cửa hàng
+                           Giao diện bán hàng
                           </Text>
                         </a>
                       </li>
