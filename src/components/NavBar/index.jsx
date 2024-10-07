@@ -60,7 +60,7 @@ const createMenu = (options) => {
 
 const NavBar = () => {
   return (
-    <div className="container-xs mt-1.5 flex flex-col items-start md:px-5">
+    <div className="container-xs mt-1.5 flex flex-col items-start md:px-5 mr-[200px]">
       <div className="flex w-[62%] items-start justify-between gap-5 md:w-full md:flex-col">
         {/* Sử dụng Dropdown */}
         <Dropdown

@@ -141,16 +141,16 @@ export default function AddressPage() {
           content="Easily add, edit, or delete shipping addresses in your EZShop account. Ensure your delivery details are up-to-date for a seamless shopping experience."
         />
       </Helmet>
-      <div className="flex w-full justify-center bg-bg-white p-6 sm:p-5">
-        <div className="w-[94%] md:w-full">
+      <Header2 />
+      
+      <div className=" w-full ">
+        <div className="w-full md:w-full">
           <div className="flex w-full flex-col gap-7 md:px-5">
-            <Header2 />
             <div className="flex items-start gap-12 ">
-              <div className="w-[24%] mt-[10]">
-                {/*<ProfileCard />*/}
-
-                {/*<AccountOptions />*/}
-                <SiderUserBK/>
+              
+              <div className="w-[25%] ">
+              <SiderUserBK/>
+            
               </div>
 
               <div className="relative h-[904px] flex-1">
@@ -277,11 +277,13 @@ export default function AddressPage() {
               </div>
             </div>
           </div>
-          <div className="mt-[194px] self-stretch">
+          
+        </div>
+        
+      </div>
+      <div className="mt-[194px] self-stretch">
             <FooterBK className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
           </div>
-        </div>
-      </div>
     </>
   );
 }
