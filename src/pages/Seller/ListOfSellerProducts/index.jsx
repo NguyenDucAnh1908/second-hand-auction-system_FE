@@ -1,11 +1,13 @@
-import { Helmet } from "react-helmet";
 import { Img, Text, ButtonDH, Heading, InputDH } from "../../../components";
-import HeaderSeller from "../../../components/HeaderSeller/index.jsx";
 import { CloseSVG } from "../../../components/InputDH/close.jsx";
 import { ReactTable1 } from "../../../components/ReactTable1";
-import SidebarSeller from "../../../components/SidebarSeller/index.jsx";
 import { createColumnHelper } from "@tanstack/react-table";
 import React, { useState } from "react";
+import 'react-datepicker/dist/react-datepicker.css';
+import Sidebar from '../../../partials/Sidebar';
+import Header from '../../../partials/Header';
+import Banner from '../../../partials/Banner';
+
 
 const tableData = [
   {
@@ -61,6 +63,8 @@ const getStatusColor = (status) => {
 
 export default function ListOfSellerProductPage() {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
 
   const toggleSidebar = () => {
     setSidebarVisible((prev) => !prev);
@@ -251,74 +255,96 @@ export default function ListOfSellerProductPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Seller Product Management - EZShop</title>
-        <meta
-          name="description"
-          content="Explore the comprehensive list of products managed by sellers on EZShop. Find items by ID, create new listings, and track product approval statuses. Ideal for seller inventory management and order processing."
-        />
-      </Helmet>
-      <div className="w-full bg-gray-50_01">
-        <div className="mt-4 flex flex-col items-end">
-          <div className="w-[100%] md:w-full md:px-5">
-            <HeaderSeller toggleSidebar={toggleSidebar} />
-            <div className="flex items-start">
-              {isSidebarVisible && <SidebarSeller />}
-              <div className="h-[1196px] flex-1 self-center rounded-[16px] bg-[url(/images/img_group_46876.png)] bg-cover bg-no-repeat py-[84px] md:h-auto md:py-5">
-                <div className="mb-[86px] flex flex-col gap-7">
-                  <div className="ml-1 flex md:ml-0">
-                    <Heading
-                      size="headingxl"
-                      as="h1"
-                      className="text-[30px] font-semibold uppercase text-gray-900_01 md:text-[44px] sm:text-[38px] -mt-[80px] ml-[20px]"
-                    >
-                      Danh sách sản phẩm
-                    </Heading>
-                  </div>
-                  <div className=" mr-[38px] flex justify-between gap-5 md:mx-0 sm:flex-col -mt-[50px] ml-[15px]">
-                    <InputDH
-                      name="Search Field"
-                      placeholder={`Tìm kiếm theo ID`}
-                      value={searchBarValue1}
-                      onChange={(e) => setSearchBarValue1(e.target.value)}
-                      suffix={
-                        searchBarValue1?.length > 0 ? (
-                          <CloseSVG
-                            onClick={() => setSearchBarValue1("")}
-                            height={18}
-                            width={18}
-                            fillColor="#626974ff"
-                          />
-                        ) : (
-                          <Img
-                            src="images/img_search.svg"
-                            alt="Search"
-                            className="h-[18px] w-[18px]"
-                          />
-                        )
-                      }
-                      className="flex h-[40px] w-[24%] items-center justify-center gap-4 rounded bg-bg-white px-4 text-[16px] text-blue_gray-600 shadow-xs sm:w-full "
-                    />
-                    <ButtonDH className="flex h-[40px] min-w-[152px] flex-row items-center justify-center gap-0.5 rounded-md bg-green-a700  text-center text-[14px] text-bg-white shadow-xs ml-auto">
-                      Tạo sản phẩm
-                    </ButtonDH>
-                  </div>
-                  <div className="mr-[38px] flex flex-col gap-8 md:mr-0">
-                    <ReactTable1
-                      size="xs"
-                      className="producttable md:block md:overflow-x-auto md:whitespace-nowrap"
-                      bodyProps={{ className: "" }}
-                      headerCellProps={{ className: "bg-gray-100_01" }}
-                      columns={tableColumns}
-                      data={tableData}
-                    />
+      <div className="flex h-screen overflow-hidden">
+
+        {/* Sidebar */}
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
+        {/* Content area */}
+        <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+
+          {/*  Site header */}
+          <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
+          <main className="grow">
+            <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+
+            
+
+              {/* noi dung */}
+              <div className="w-full bg-gray-50_01">
+                <div className="mt-4 flex flex-col items-end">
+                  <div className="w-[100%] md:w-full md:px-5">
+
+                    <div className="flex items-start">
+
+                      <div className="h-[1196px] flex-1 self-center rounded-[16px] bg-[url(/images/img_group_46876.png)] bg-cover bg-no-repeat py-[84px] md:h-auto md:py-5">
+                        <div className="mb-[86px] flex flex-col gap-7">
+                          <div className="ml-1 flex md:ml-0">
+                            <Heading
+                              size="headingxl"
+                              as="h1"
+                              className="text-[30px] font-semibold uppercase text-gray-900_01 md:text-[44px] sm:text-[38px] -mt-[80px] ml-[20px]"
+                            >
+                              Danh sách sản phẩm
+                            </Heading>
+                          </div>
+                          <div className=" mr-[38px] flex justify-between gap-5 md:mx-0 sm:flex-col -mt-[50px] ml-[15px]">
+                            <InputDH
+                              name="Search Field"
+                              placeholder={`Tìm kiếm theo ID`}
+                              value={searchBarValue1}
+                              onChange={(e) => setSearchBarValue1(e.target.value)}
+                              suffix={
+                                searchBarValue1?.length > 0 ? (
+                                  <CloseSVG
+                                    onClick={() => setSearchBarValue1("")}
+                                    height={18}
+                                    width={18}
+                                    fillColor="#626974ff"
+                                  />
+                                ) : (
+                                  <Img
+                                    src="images/img_search.svg"
+                                    alt="Search"
+                                    className="h-[18px] w-[18px]"
+                                  />
+                                )
+                              }
+                              className="flex h-[40px] w-[24%] items-center justify-center gap-4 rounded bg-bg-white px-4 text-[16px] text-blue_gray-600 shadow-xs sm:w-full "
+                            />
+                            <ButtonDH className="flex h-[40px] min-w-[152px] flex-row items-center justify-center gap-0.5 rounded-md bg-green-a700  text-center text-[14px] text-bg-white shadow-xs ml-auto">
+                              Tạo sản phẩm
+                            </ButtonDH>
+                          </div>
+                          <div className="mr-[38px] flex flex-col gap-8 md:mr-0">
+                            <ReactTable1
+                              size="xs"
+                              className="producttable md:block md:overflow-x-auto md:whitespace-nowrap"
+                              bodyProps={{ className: "" }}
+                              headerCellProps={{ className: "bg-gray-100_01" }}
+                              columns={tableColumns}
+                              data={tableData}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+
             </div>
-          </div>
+          </main>
+
+          <Banner />
+
         </div>
       </div>
+
+
+
+
     </>
   );
 }

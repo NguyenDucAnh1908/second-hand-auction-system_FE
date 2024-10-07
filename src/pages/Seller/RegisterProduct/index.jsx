@@ -3,8 +3,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
-import FilterButton from '../../../components/DashboardSeller/DropdownFilter';
-import Datepicker from '../../../components/DashboardSeller/Datepicker';
 import Banner from '../../../partials/Banner';
 import {
   ButtonDH,
@@ -19,7 +17,6 @@ import React, { useState } from "react";
 import { Select, Option } from "@material-tailwind/react";
 import { UploadOutlined, PlusOutlined  } from '@ant-design/icons';
 import { Button, message, Upload, InputNumber, Image } from 'antd';
-import { Input, IconButton, Typography } from "@material-tailwind/react";
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {

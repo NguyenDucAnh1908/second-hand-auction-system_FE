@@ -38,7 +38,7 @@ function App() {
                 <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
                 <Route path="Address" index element={<AddressPage/>}/>
                 {/*<Route path="AddAddress" index element={<CreateAddressPage/>}/>*/}
-                <Route path="ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
+                
                
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>
@@ -51,6 +51,7 @@ function App() {
             {/* seller */}
             <Route path="/dashboard-seller/*" element={<DashboardSeller />} /> 
             <Route path="RegisterProduct" index element={<RegisterProductPage/>}/>
+            <Route path="ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
         </Routes>
     );
 }

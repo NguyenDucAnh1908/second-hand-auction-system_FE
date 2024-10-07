@@ -180,7 +180,7 @@ function Sidebar({
                   );
                 }}
               </SidebarLinkGroup>
-              {/* E-Commerce */}
+              {/* Quản lý sản phẩm */}
               <SidebarLinkGroup activecondition={pathname.includes("ecommerce")}>
                 {(handleClick, open) => {
                   return (
@@ -217,6 +217,20 @@ function Sidebar({
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
+                              to="/ListOfSellerProduct"
+                              className={({ isActive }) =>
+                                "block transition duration-150 truncate " + (isActive ? "text-violet-500" : "text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")
+                              }
+                            >
+                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                Danh sách sản phẩm
+                              </span>
+                            </NavLink>
+                          </li>
+                                                  
+                          <li className="mb-1 last:mb-0">
+                            <NavLink
+                              end
                               to="/registerproduct"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " + (isActive ? "text-violet-500" : "text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")
@@ -227,21 +241,7 @@ function Sidebar({
                               </span>
                             </NavLink>
                           </li>
-                                                  
-                        
-                          <li className="mb-1 last:mb-0">
-                            <NavLink
-                              end
-                              to="0"
-                              className={({ isActive }) =>
-                                "block transition duration-150 truncate " + (isActive ? "text-violet-500" : "text-gray-500/90 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")
-                              }
-                            >
-                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                Cart
-                              </span>
-                            </NavLink>
-                          </li>
+                       
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
