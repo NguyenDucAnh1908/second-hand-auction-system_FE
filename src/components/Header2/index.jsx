@@ -58,11 +58,11 @@ export default function Header2({ ...props }) {
                           </Text>
                         </a>
                       </li>
-                     
+
                       <li>
                         <a href="/Dashboard-Seller">
                           <Text className="text-[13px] font-normal text-blue_gray-900_01">
-                           Giao diện bán hàng
+                            Giao diện bán hàng
                           </Text>
                         </a>
                       </li>
@@ -94,11 +94,11 @@ export default function Header2({ ...props }) {
           <div className="container-md mt-5 flex flex-col gap-9 self-stretch md:px-5">
             <div className="ml-[74px] mr-6 flex items-center justify-between gap-5 md:mx-0 md:flex-col">
               <a href="/">
-              <Img
-                src="images/img_header_logo.png"
-                alt="Header Logo"
-                className="h-[32px] w-[92px] self-end object-contain md:self-auto"
-              />
+                <Img
+                  src="images/img_header_logo.png"
+                  alt="Header Logo"
+                  className="h-[32px] w-[92px] self-end object-contain md:self-auto"
+                />
               </a>
               <div className="flex w-[86%] items-center justify-between gap-5 md:w-full md:flex-col">
                 <InputDH
@@ -126,7 +126,7 @@ export default function Header2({ ...props }) {
 
                 <div className="mr-4 flex w-[32%] items-end justify-center gap-4 md:mr-0 md:w-full sm:flex-col">
                   <div className="flex flex-1 justify-center gap-3.5 sm:self-stretch">
-                    <div className="flex rounded-md bg-green-a700_11 p-2.5">
+                    <div className="flex rounded-md bg-green-50 p-2.5">
                       <a href="#">
                         <Img
                           src="images/img_heart_1.svg"
@@ -135,8 +135,7 @@ export default function Header2({ ...props }) {
                         />
                       </a>
                     </div>
-                    <a href="/Product">
-                    <Text className="font-bevietnampro text-[14px] font-bold leading-[22px] text-blue_gray-900_01">
+                    <Text className="font-semibold text-[14px] leading-[22px] text-gray-900">
                       <span className="text-[13px] font-normal">
                         <>
                           Yêu thích
@@ -145,11 +144,11 @@ export default function Header2({ ...props }) {
                       </span>
                       <span className="text-[16px] font-medium">Sản phẩm</span>
                     </Text>
-                    </a>
+
                   </div>
                   <div className="flex flex-1 items-center justify-center gap-3.5 sm:self-stretch">
                     <a href="#">
-                      <ButtonDH className="h-[48px] w-[50px] rounded-md bg-green-a700_11 p-2.5">
+                      <ButtonDH className="h-[48px] w-[50px] rounded-md bg-green-50 p-2.5">
                         <Img src="images/img_profile_1.svg" />
                       </ButtonDH>
                     </a>
@@ -164,7 +163,7 @@ export default function Header2({ ...props }) {
                     </Text>
                   </div>
                   <div className="relative h-[52px] w-[14%] self-center sm:w-full">
-                    <div className="absolute bottom-[-0.82px] left-0 my-auto ml-auto mr-1 flex flex-1 flex-col items-center rounded-md bg-green-a700 px-3 py-3.5 md:mr-0">
+                    <div className="absolute bottom-[-0.82px] left-0 my-auto ml-auto mr-1 flex flex-1 flex-col items-center rounded-md bg-green-500 px-3 py-3.5 md:mr-0">
                       <a href="#">
                         <Img
                           src="images/img_shopping_cart_1.svg"
@@ -183,39 +182,7 @@ export default function Header2({ ...props }) {
             <div className="h-[0.67px] bg-gray-200" />
           </div>
           <NavBar />
-          {/*<div className="container-xs mt-1.5 flex flex-col items-start md:px-5">*/}
-          {/*  <div className="flex w-[62%] items-start justify-between gap-5 md:w-full md:flex-col">*/}
-          {/*    <SelectBox*/}
-          {/*      indicator={<Img src="images/img_vector_bg_white_.svg" alt="Vector" className="h-[6px] w-[8px]" />}*/}
-          {/*      name="Dropdown Categories"*/}
-          {/*      placeholder={`Danh mục`}*/}
-          {/*      options={dropDownOptions}*/}
-          {/*      className="w-[38%] gap-4 self-center bg-green-a700 py-[18px] pl-[22px] pr-8 text-[16px] font-semibold text-bg-white md:w-full sm:px-5"*/}
-          {/*    />*/}
-          {/*    <ul className="!mt-3.5 flex flex-wrap gap-[66px] md:gap-5">*/}
-          {/*      <li>*/}
-          {/*        <a href="#">*/}
-          {/*          <Text className="text-[16px] font-medium text-blue_gray-900_01">Trang chủ</Text>*/}
-          {/*        </a>*/}
-          {/*      </li>*/}
-          {/*      <li>*/}
-          {/*        <a href="#">*/}
-          {/*          <Text className="text-[16px] font-medium text-blue_gray-900_01">Sản phẩm</Text>*/}
-          {/*        </a>*/}
-          {/*      </li>*/}
-          {/*      <li>*/}
-          {/*        <a href="#">*/}
-          {/*          <Text className="text-[16px] font-medium text-blue_gray-900_01">Liên hệ</Text>*/}
-          {/*        </a>*/}
-          {/*      </li>*/}
-          {/*      <li>*/}
-          {/*        <a href="#">*/}
-          {/*          <Text className="text-[16px] font-medium text-blue_gray-900_01">Bài viết</Text>*/}
-          {/*        </a>*/}
-          {/*      </li>*/}
-          {/*    </ul>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
+
         </div>
       </div>
     </header>

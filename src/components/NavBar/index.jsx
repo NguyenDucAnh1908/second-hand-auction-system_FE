@@ -68,7 +68,7 @@ const NavBar = () => {
           trigger={["hover"]} // Sử dụng hover để hiển thị
           overlayClassName="custom-dropdown" // Thêm lớp tùy chỉnh
         >
-          <a className="w-[38%] bg-green-a700 py-[18px] pl-[22px] pr-8 text-[16px] font-semibold text-white flex items-center justify-between hover:bg-green-600 transition duration-200">
+          <a className="w-[38%] bg-green-500 py-[18px] pl-[22px] pr-8 text-[16px] font-semibold text-white flex items-center justify-between hover:bg-green-600 transition duration-200">
             Danh mục <DownOutlined />
           </a>
         </Dropdown>

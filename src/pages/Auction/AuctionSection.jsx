@@ -4,7 +4,6 @@ import React, { Suspense, useState } from "react";
 import { Modal } from "antd";
 import { Rate } from "antd";
 import BidForm from "../../components/BidForm";
-import { Link } from "react-router-dom";
 
 const thumbnailList = [
   { userImage: "images/img_image_75.png" },
