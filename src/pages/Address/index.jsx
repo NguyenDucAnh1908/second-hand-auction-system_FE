@@ -163,7 +163,7 @@ export default function AddressPage() {
                     Quản Lý Địa Chỉ
                   </Heading>
                 </div>
-                <div className="absolute bottom-px left-0 right-0 m-auto flex flex-1 flex-col gap-10 rounded-[14px] bg-bg-white px-3.5 py-[26px] shadow-sm sm:py-5">
+                <div className="absolute bottom-[130px] left-0 right-0 m-auto flex flex-1 flex-col gap-10 rounded-[14px] bg-bg-white px-3.5 py-[26px] shadow-sm sm:py-5">
                   <div className="ml-3 flex items-center justify-between gap-5 md:ml-0 md:flex-col">
                     <InputDH
                       shape="round"
