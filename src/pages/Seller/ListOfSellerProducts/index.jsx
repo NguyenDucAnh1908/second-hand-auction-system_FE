@@ -1,7 +1,5 @@
-import { Img, Text, ButtonDH, Heading, InputDH } from "../../../components";
+import { Img, Heading, InputDH } from "../../../components";
 import { CloseSVG } from "../../../components/InputDH/close.jsx";
-import { ReactTable1 } from "../../../components/ReactTable1";
-import { createColumnHelper } from "@tanstack/react-table";
 import React, { useState } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import Sidebar from '../../../partials/Sidebar';
@@ -14,13 +12,11 @@ import { Card, IconButton, Typography } from "@material-tailwind/react";
 import Pagination from "@/components/Pagination/index.jsx";
 import {
   CheckCircleOutlined,
-  ClockCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
-  MinusCircleOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
-import { Divider, Flex, Tag } from 'antd';
+import { Tag } from 'antd';
 
 const TABLE_HEAD = [
   "Number",
