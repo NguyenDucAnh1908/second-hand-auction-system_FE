@@ -9,6 +9,7 @@ import {
 import { Home, Profile, Tables, Notifications } from "./pages/Admin/Dashboard";
 import { SignIn, SignUp } from "./pages/Admin/auth";
 import AppraisalFormPage from "./pages/Admin/AppraisalForm/index.jsx";
+import StaffProductListPage from "./pages/Admin/StaffProductList/index.jsx";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -30,6 +31,14 @@ export const routesAdmin = [
         path: "/profile",
         element: <Profile />,
       },
+      
+      {
+        icon: <UserCircleIcon {...icon} />,
+        name: "Danh sách sản phẩm",
+        path: "/StaffProductList",
+        element: <StaffProductListPage />,
+      },
+      
 
       {
         icon: <UserCircleIcon {...icon} />,

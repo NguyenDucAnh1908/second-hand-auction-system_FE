@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   flexRender,
   getCoreRowModel,
@@ -21,7 +20,6 @@ const ReactTable1 = ({
   rowDataProps = { className: "" },
   cellProps = { className: "" },
   size,
-
   ...restConfig
 }) => {
   const tableConfig = {
@@ -36,21 +34,35 @@ const ReactTable1 = ({
 
   // Render the UI for your table
   return (
-    <table className={className}>
+    <table
+      className={`${className}`}
+      style={{
+        width: "100%", // Đảm bảo bảng sử dụng toàn bộ chiều rộng
+      }}
+    >
       <thead {...headerProps}>
         {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
+          <tr
+            key={headerGroup.id}
+            style={{
+              backgroundColor: "#d1d5db", // Thay đổi màu nền thành màu đậm hơn
+            }}
+          >
             {headerGroup.headers.map((header) => (
               <th
                 key={header.id}
                 {...header.column.columnDef?.meta}
                 {...headerCellProps}
+                style={{
+                  padding: "8px", // Giữ khoảng cách hợp lý trong header
+                  textAlign: "left",
+                }}
               >
                 {header.isPlaceholder
                   ? null
                   : flexRender(
                       header.column.columnDef.header,
-                      header.getContext(),
+                      header.getContext()
                     )}
               </th>
             ))}
@@ -68,6 +80,10 @@ const ReactTable1 = ({
               <td
                 key={cell.id}
                 className={`${size ? sizes[size] : ""} ${cellProps?.className}`}
+                style={{
+                  padding: "8px", // Giữ khoảng cách hợp lý trong dữ liệu
+                  textAlign: "left",
+                }}
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </td>

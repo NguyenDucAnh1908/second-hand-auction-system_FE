@@ -19,6 +19,7 @@ import RegisterProductPage from "./pages/Seller/RegisterProduct/index.jsx";
 import Dashboard from "./layouts-admin/dashboard.jsx";
 import Auth from "./layouts-admin/auth.jsx";
 import DashboardSeller from "./pages/Seller/Dashboard.jsx";
+import StaffProductListPage from "./pages/Admin/StaffProductList/index.jsx";
 
 
 function App() {
@@ -37,8 +38,9 @@ function App() {
                 <Route path="ProfileDetail" index element={<ProfileDetailPage/>}/>
                 <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
                 <Route path="Address" index element={<AddressPage/>}/>
-                {/*<Route path="AddAddress" index element={<CreateAddressPage/>}/>*/}
+          
                 
+                <Route path="Address" index element={<AddressPage/>}/>
                
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>
