@@ -19,11 +19,9 @@ import RegisterProductPage from "./pages/Seller/RegisterProduct/index.jsx";
 import Dashboard from "./layouts-admin/dashboard.jsx";
 import Auth from "./layouts-admin/auth.jsx";
 import DashboardSeller from "./pages/Seller/Dashboard.jsx";
-import StaffProductListPage from "./pages/Admin/StaffProductList/index.jsx";
 import ListOfBuyerBids from "./pages/ListOfBuyerBids/index.jsx";
 import KNCPage from "./pages/Kyc/Kyc.jsx";
-import KYCOnePage from "./pages/Seller/Kyc1/index.jsx";
-import ManageFeedback from "./pages/Admin/ManageFeedback/index.jsx";
+import OrderManagementBuyer from "./pages/OrderBuyer/index.jsx";
 
 function App() {
     return (
@@ -42,8 +40,10 @@ function App() {
                 <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
                 <Route path="Address" index element={<AddressPage/>}/>        
                 <Route path="ListOfBuyerBids" index element={<ListOfBuyerBids/>}/>
-                {/* <Route path="KYCOnePage" index element={<KYCOnePage/>}/> */}
                 <Route path="KNCPage" index element={<KNCPage/>}/>
+                <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
+
+                {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>
                 <Route path="NotFound" index element={<NotFound/>}/>
