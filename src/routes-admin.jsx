@@ -12,6 +12,7 @@ import AppraisalFormPage from "./pages/Admin/AppraisalForm/index.jsx";
 import StaffProductListPage from "./pages/Admin/StaffProductList/index.jsx";
 import CreateAuction from "./pages/Admin/CreateAuction/index.jsx";
 import ManageFeedback from "./pages/Admin/ManageFeedback/index.jsx";
+import OrderManagementAdmin from "./pages/Admin/OrderManagement/index.jsx";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -59,6 +60,12 @@ export const routesAdmin = [
         name: "Quản Lý FeedBack",
         path: "/ManageFeedback",
         element: <ManageFeedback />,
+      },
+      {
+        icon: <UserCircleIcon {...icon} />,
+        name: "Quản Lý Đơn hàng",
+        path: "/OrderManagementAdmin",
+        element: <OrderManagementAdmin />,
       },
       
       

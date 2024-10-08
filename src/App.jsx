@@ -25,7 +25,6 @@ import KNCPage from "./pages/Kyc/Kyc.jsx";
 import KYCOnePage from "./pages/Seller/Kyc1/index.jsx";
 import ManageFeedback from "./pages/Admin/ManageFeedback/index.jsx";
 
-
 function App() {
     return (
         <Routes>
@@ -59,7 +58,6 @@ function App() {
             <Route path="ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
 
             {/* test */}
-           
 
         </Routes>
     );
