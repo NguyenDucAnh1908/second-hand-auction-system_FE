@@ -12,7 +12,7 @@ const AccountOptions = () => {
     {
       imgSrc: "images/img_checked_box_1.svg",
       alt: "Favorites Image",
-      text: "Danh sách yêu thích",
+      text: "Xác minh tài khoản",
       href: "/favorites",
     },
     {

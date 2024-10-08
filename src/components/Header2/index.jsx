@@ -139,11 +139,10 @@ export default function Header2({ ...props }) {
                     <Text className="font-semibold text-[14px] leading-[22px] text-gray-900">
                       <span className="text-[13px] font-normal">
                         <>
-                          Yêu thích
-                          <br />
+                          Kênh                           <br />
                         </>
                       </span>
-                      <span className="text-[16px] font-medium">Sản phẩm</span>
+                      <span className="text-[16px] font-medium">Cửa hàng</span>
                     </Text>
 
                   </div>
