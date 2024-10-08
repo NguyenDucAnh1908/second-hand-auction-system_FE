@@ -1,188 +1,211 @@
-import { Helmet } from "react-helmet";
-import { Text, Heading } from "../../components";
-import { ReactTable1 } from "../../components/ReactTable1";
-import { createColumnHelper } from "@tanstack/react-table";
+import {Helmet} from "react-helmet";
 import React from "react";
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK";
+import {
+    Button,
+    Typography,
+    Card,
+    CardHeader,
+    CardBody,
+    IconButton,
+    Input,
+} from "@material-tailwind/react";
 
-const tableData = [
-  {
-    idRow: "#6548",
-    customerRow: "Joseph*******",
-    bidRow: "2.500.000đ",
-    dateRow: "2024-09-20",
-  },
-  {
-    idRow: "#6548",
-    customerRow: "Joseph*******",
-    bidRow: "2.400.000đ",
-    dateRow: "2024-09-19",
-  },
-  {
-    idRow: "#6548",
-    customerRow: "Joseph*******",
-    bidRow: "2.300.000đ",
-    dateRow: "2024-09-18",
-  },
-  {
-    idRow: "#6548",
-    customerRow: "Joseph*******",
-    bidRow: "2.200.000đ",
-    dateRow: "2024-09-17",
-  },
-  {
-    idRow: "#6548",
-    customerRow: "Joseph*******",
-    bidRow: "2.200.000đ",
-    dateRow: "2024-09-17",
-  },
-  {
-    idRow: "#6548",
-    customerRow: "Joseph*******",
-    bidRow: "2.200.000đ",
-    dateRow: "2024-09-16",
-  },
-  {
-    idRow: "#6548",
-    customerRow: "Joseph*******",
-    bidRow: "2.200.000đ",
-    dateRow: "2024-09-15",
-  },
-  {
-    idRow: "#6548",
-    customerRow: "Joseph*******",
-    bidRow: "2.200.000đ",
-    dateRow: "2024-09-14",
-  },
-  {
-    idRow: "#6548",
-    customerRow: "Joseph*******",
-    bidRow: "250.000đ",
-    dateRow: "2024-09-12",
-  },
-  {
-    idRow: "#6548",
-    customerRow: "Joseph*******",
-    bidRow: "250.000đ",
-    dateRow: "2024-09-12",
-  },
+import {ChevronDownIcon} from "@heroicons/react/24/outline";
+import {DocumentMagnifyingGlassIcon, FlagIcon, MagnifyingGlassIcon} from "@heroicons/react/24/solid";
+import Pagination from "@/components/Pagination/index.jsx";
+
+const TABLE_ROW = [
+    {
+        customer: "Nguyen Van A",
+        bidPrice: "$1,000",
+        change: "+10%",
+        bidDate: "2023-10-05",
+        trend: 4,
+        actions: "",
+        color: "green",
+    },
+    {
+        customer: "Tran Thi B",
+        bidPrice: "$950",
+        change: "-5%",
+        bidDate: "2023-10-04",
+        actions: "",
+        color: "red",
+    },
+    {
+        customer: "Le Van C",
+        bidPrice: "$980",
+        change: "+2%",
+        bidDate: "2023-10-04",
+        actions: "",
+        color: "green",
+    },
+];
+
+const TABLE_HEAD = [
+    {head: "Khách hàng", customeStyle: "!text-left"},
+    {head: "Giá thầu", customeStyle: "text-right"},
+    {head: "Thay đổi", customeStyle: "text-right"},
+    {head: "Ngày", customeStyle: "text-right"},
+    {head: "Trend", customeStyle: "text-right"},
+    {head: "Hành động", customeStyle: "text-right"},
 ];
 
 export default function ListOfBuyerBids() {
-  const tableColumns = React.useMemo(() => {
-    const tableColumnHelper = createColumnHelper();
-    return [
-      tableColumnHelper.accessor("idRow", {
-        cell: (info) => (
-          <div className="flex px-3.5">
-            <Heading as="h2" className="text-[15px] font-semibold text-blue_gray-900">
-              {info.getValue()}
-            </Heading>
-          </div>
-        ),
-        header: (info) => (
-          <div className="flex p-4">
-            <Heading size="headings" as="h1" className="text-[16px] font-semibold text-blue_gray-900 sm:text-[13px]">
-              Mã ID
-            </Heading>
-          </div>
-        ),
-        meta: { width: "88px" },
-      }),
-      tableColumnHelper.accessor("customerRow", {
-        cell: (info) => (
-          <div className="ml-[94px] flex px-3">
-            <Text size="textxs" as="p" className="self-end text-[15px] font-normal text-blue_gray-900">
-              {info.getValue()}
-            </Text>
-          </div>
-        ),
-        header: (info) => (
-          <div className="ml-[94px] flex p-4">
-            <Heading
-              size="headings"
-              as="h2"
-              className="self-end text-[16px] font-semibold text-blue_gray-900 sm:text-[13px]"
-            >
-              Khách hàng
-            </Heading>
-          </div>
-        ),
-        meta: { width: "230px" },
-      }),
-      tableColumnHelper.accessor("bidRow", {
-        cell: (info) => (
-          <div className="ml-[30px] flex px-3.5">
-            <Text as="p" className="text-[16px] font-normal text-blue_gray-900 sm:text-[13px]">
-              {info.getValue()}
-            </Text>
-          </div>
-        ),
-        header: (info) => (
-          <div className="ml-[30px] flex p-4">
-            <Heading size="headings" as="h3" className="text-[16px] font-semibold text-blue_gray-900 sm:text-[13px]">
-              Giá thầu
-            </Heading>
-          </div>
-        ),
-        meta: { width: "158px" },
-      }),
-      tableColumnHelper.accessor("dateRow", {
-        cell: (info) => (
-          <div className="ml-[98px] flex flex-1 items-center">
-            <Text as="p" className="text-[16px] font-normal text-blue_gray-900 sm:text-[13px]">
-              {info.getValue()}
-            </Text>
-            <div className="h-[22px] w-[8px] rounded bg-green-a700_28" />
-          </div>
-        ),
-        header: (info) => (
-          <div className="ml-[98px] flex flex-1 py-4">
-            <Heading
-              size="headings"
-              as="h4"
-              className="self-end text-[16px] font-semibold text-blue_gray-900 sm:text-[13px]"
-            >
-                   Ngày
-            </Heading>
-          </div>
-        ),
-        meta: { width: "268px" },
-      }),
-    ];
-  }, []);
+    return (
+        <>
+            <Helmet>
+                <title>Lịch sử giá thầu sản phẩm</title>
+                <meta
+                    name="description"
+                    content="Xem lại lịch sử đấu giá của sản phẩm với các thông tin chi tiết về giá thầu, khách hàng và ngày tháng."
+                />
+            </Helmet>
+            <div className="w-full">
+                <Header2/>
+                <section className="m-10">
+                    <Card className="h-full w-full">
+                        <CardHeader
+                            floated={false}
+                            shadow={false}
+                            className="rounded-none flex flex-wrap gap-4 justify-between mb-4"
+                        >
+                            <div>
+                                <Typography variant="h6" color="blue-gray">
+                                    Lịch sử đấu giá
+                                </Typography>
+                                <Typography
+                                    variant="small"
+                                    className="text-gray-600 font-normal mt-1"
+                                >
+                                    Xem chi tiết lịch sử giá thầu từ các khách hàng.
+                                </Typography>
+                            </div>
+                            <div className="flex items-center w-full shrink-0 gap-4 md:w-max">
+                                <div className="w-full md:w-72">
+                                    <Input
+                                        size="lg"
+                                        label="Tìm kiếm"
+                                        icon={<MagnifyingGlassIcon className="h-5 w-5"/>}
+                                    />
+                                </div>
+                                <Button variant="outlined" className="flex items-center gap-2">
+                                    24h
+                                    <ChevronDownIcon strokeWidth={3} className="w-3 h-3"/>
+                                </Button>
+                            </div>
+                        </CardHeader>
+                        <CardBody className="overflow-scroll !px-0 py-2">
+                            <table className="w-full min-w-max table-auto">
+                                <thead>
+                                <tr>
+                                    {TABLE_HEAD.map(({head, customeStyle}) => (
+                                        <th
+                                            key={head}
+                                            className={`border-b border-gray-300 !p-4 pb-8 ${customeStyle}`}
+                                        >
+                                            <Typography
+                                                color="blue-gray"
+                                                variant="small"
+                                                className="!font-bold"
+                                            >
+                                                {head}
+                                            </Typography>
+                                        </th>
+                                    ))}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {TABLE_ROW.map(
+                                    ({customer, bidPrice, change, bidDate, color}, index) => {
+                                        const isLast = index === TABLE_ROW.length - 1;
+                                        const classes = isLast
+                                            ? "!p-4"
+                                            : "!p-4 border-b border-gray-300";
+                                        return (
+                                            <tr key={customer}>
+                                                <td className={classes}>
+                                                    <Typography
+                                                        variant="small"
+                                                        color="blue-gray"
+                                                        className="!font-semibold"
+                                                    >
+                                                        {customer}
+                                                    </Typography>
+                                                </td>
+                                                <td className={classes}>
+                                                    <Typography
+                                                        variant="small"
+                                                        className="!font-normal text-gray-600 text-right"
+                                                    >
+                                                        {bidPrice}
+                                                    </Typography>
+                                                </td>
+                                                <td className={classes}>
+                                                    <Typography
+                                                        variant="small"
+                                                        color={color}
+                                                        className="!font-bold text-right"
+                                                    >
+                                                        {change}
+                                                    </Typography>
+                                                </td>
+                                                <td className={classes}>
+                                                    <Typography
+                                                        variant="small"
+                                                        className="!font-normal text-gray-600 text-right"
+                                                    >
+                                                        {bidDate}
+                                                    </Typography>
+                                                </td>
+                                                <td className={classes}>
+                                                    <div className="max-w-[12rem] ml-auto h-12 -translate-y-6">
+                                                        {/*<AreaChart*/}
+                                                        {/*    colors={["#2196F373"]}*/}
+                                                        {/*    options={{}}*/}
+                                                        {/*    series={[*/}
+                                                        {/*        {*/}
+                                                        {/*            name: "2023 Sales",*/}
+                                                        {/*            data: [*/}
+                                                        {/*                30, 40, 500, 420, 700, 350, 500, 330, 900,*/}
+                                                        {/*            ],*/}
+                                                        {/*        },*/}
+                                                        {/*    ]}*/}
+                                                        {/*/>*/}
+                                                    </div>
+                                                </td>
+                                                <td className={classes}>
+                                                    <div className="flex justify-end gap-4">
+                                                        <IconButton variant="text" size="sm">
+                                                            <DocumentMagnifyingGlassIcon
+                                                                className="h-5 w-5 text-gray-900"/>
+                                                        </IconButton>
+                                                        <IconButton variant="text" size="sm">
+                                                            <FlagIcon className="h-5 w-5 text-gray-900"/>
+                                                        </IconButton>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
+                                )}
+                                </tbody>
+                            </table>
+                        </CardBody>
+                        <div className="flex justify-center items-center mt-4">
+                            <Pagination/>
+                        </div>
+                    </Card>
+                </section>
 
-  return (
-    <>
-      <Helmet>
-        <title>Product Bid History - Detailed Bidding Information</title>
-        <meta
-          name="description"
-          content="Explore the comprehensive bid history for product ID #6548. Review the competitive bids, customer names, and dates to understand the bidding timeline and pricing trends."
-        />
-      </Helmet>
-      <div className="w-full">
-      <Header2 />
-        <ReactTable1
-          size="xs"
-          className="tablemid border-separate border-spacing-0 rounded-[16px] bg-white-a700 p-[30px] sm:block sm:overflow-x-auto sm:whitespace-nowrap sm:p-5"
-          bodyProps={{ className: "" }}
-          headerCellProps={{ className: "bg-gray-100" }}
-          headerProps={{ className: "border-gray-100 border-b border-solid" }}
-          cellProps={{ className: "border-indigo-50 border-b border-solid" }}
-          columns={tableColumns}
-          data={tableData}
-        />
-         <div className="mt-[194px] self-stretch">
-          <FooterBK className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
-        </div>
-      </div>
-    </>
-  );
+                <div className="mt-[194px] self-stretch">
+                    <FooterBK
+                        className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"
+                    />
+                </div>
+            </div>
+        </>
+    );
 }
-
-
-
-
-

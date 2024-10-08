@@ -23,6 +23,7 @@ import StaffProductListPage from "./pages/Admin/StaffProductList/index.jsx";
 import ListOfBuyerBids from "./pages/ListOfBuyerBids/index.jsx";
 import KNCPage from "./pages/Kyc/Kyc.jsx";
 import KYCOnePage from "./pages/Seller/Kyc1/index.jsx";
+import ManageFeedback from "./pages/Admin/ManageFeedback/index.jsx";
 
 
 function App() {
@@ -56,6 +57,10 @@ function App() {
             <Route path="/dashboard-seller/*" element={<DashboardSeller />} /> 
             <Route path="RegisterProduct" index element={<RegisterProductPage/>}/>
             <Route path="ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
+
+            {/* test */}
+           
+
         </Routes>
     );
 }

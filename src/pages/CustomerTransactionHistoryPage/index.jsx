@@ -153,7 +153,7 @@ export default function CustomerTransactionHistoryPagePage() {
                   as="h1"
                   className="mb-[20px] text-[28px] font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
               >
-                Quản Lý Địa Chỉ
+                Lịch sử nạp tiền
               </Heading>
               <Table columns={columns} dataSource={data} bordered />
               {/*<Pagination className="ml-[290px]" />*/}
