@@ -95,9 +95,9 @@ export default function Header2({ ...props }) {
             <div className="ml-[74px] mr-6 flex items-center justify-between gap-5 md:mx-0 md:flex-col">
               <a href="/">
                 <Img
-                  src="images/img_header_logo.png"
+                  src="images/img_auction.png"
                   alt="Header Logo"
-                  className="h-[32px] w-[92px] self-end object-contain md:self-auto"
+                  className="h-[60px] w-[60px] self-end object-contain md:self-auto"
                 />
               </a>
               <div className="flex w-[86%] items-center justify-between gap-5 md:w-full md:flex-col">

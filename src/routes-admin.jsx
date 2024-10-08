@@ -10,6 +10,7 @@ import { Home, Profile, Tables, Notifications } from "./pages/Admin/Dashboard";
 import { SignIn, SignUp } from "./pages/Admin/auth";
 import AppraisalFormPage from "./pages/Admin/AppraisalForm/index.jsx";
 import StaffProductListPage from "./pages/Admin/StaffProductList/index.jsx";
+import CreateAuction from "./pages/Admin/CreateAuction/index.jsx";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -45,6 +46,12 @@ export const routesAdmin = [
         name: "Thẩm định sản phẩm",
         path: "/AppraisalForm",
         element: <AppraisalFormPage />,
+      },
+      {
+        icon: <UserCircleIcon {...icon} />,
+        name: "Tạo phiên đấu giá",
+        path: "/CreateAuction",
+        element: <CreateAuction />,
       },
       
       {

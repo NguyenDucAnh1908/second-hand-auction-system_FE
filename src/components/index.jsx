@@ -9,6 +9,8 @@ import { SelectBox } from "./SelectBox";
 import { Slider } from "./Slider";
 import { Text } from "./Text";
 import { TextArea } from "./TextArea";
+import { Radio } from "./Radio";
+import { RadioGroup } from "./RadioGroup"
 
 export {
   ButtonDH,
@@ -22,4 +24,6 @@ export {
   Slider,
   Text,
   TextArea,
+  Radio,
+  RadioGroup
 };
