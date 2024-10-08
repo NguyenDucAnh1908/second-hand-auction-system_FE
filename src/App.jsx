@@ -22,6 +22,8 @@ import DashboardSeller from "./pages/Seller/Dashboard.jsx";
 import StaffProductListPage from "./pages/Admin/StaffProductList/index.jsx";
 import ListOfBuyerBids from "./pages/ListOfBuyerBids/index.jsx";
 
+import KYCOnePage from "./pages/Seller/Kyc1/index.jsx";
+
 
 function App() {
     return (
@@ -42,6 +44,8 @@ function App() {
                 <Route path="ListOfBuyerBids" index element={<ListOfBuyerBids/>}/>
                 
               
+                <Route path="KYCOnePage" index element={<KYCOnePage/>}/>
+
                
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>
