@@ -13,7 +13,7 @@ import React from "react";
 import { TabPanel, TabList, Tab, Tabs } from "react-tabs";
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import { Table, Button } from "antd";
+import {Table, Button, theme, Layout, Breadcrumb, Menu} from "antd";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 
 const dropDownOptions = [
@@ -97,71 +97,71 @@ const data = [
     status: "Hoàn thành",
     amount: +250000,
   },
-  // Thêm các hàng khác tương tự...
 ];
-
+const {  Content, Sider } = Layout;
 export default function CustomerTransactionHistoryPagePage() {
   const [searchBarValue8, setSearchBarValue8] = React.useState("");
-
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
   return (
     <>
-      <Helmet>
-        <title>User Profile Details - EZShop</title>
-        <meta
-          name="description"
-          content="Access your EZShop profile to manage your account information, view your balance of 20,000,000 VND, and update your favorite products. Get assistance and find stores easily."
-        />
-      </Helmet>
-      <div className="flex w-full flex-col items-center gap-10 bg-bg-white">
+      <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header2 />
-
-
-
-          <div className="mx-auto w-full max-w-[1328px] md:px-5">
-            <div className="mr-[46px] flex items-start gap-5 md:mr-0 md:flex-col">
-
-              {/* bên trái */}
-              <div className="mt-12 flex w-[24%] flex-col gap-[20px] md:w-full -mt-[71px]">
-                <div className="py-0">
-                  {/*<AccountOptions />*/}
-                  <SiderUserBK />
-                </div>
-              </div>
-
-
-
-              {/* Phần bên phải chiếm phần còn lại */}
-              <div className="flex flex-1 flex-col items-center gap-[38px] self-center md:self-stretch ">
-                <div className="self-stretch">
-                  <div className="flex flex-col gap-4">
-                    <div className="mr-1 md:mr-0">
-                      <div className="flex flex-col items-start gap-1.5 self-end py-7">
-
-                      <Heading
-                        size="headingmd"
-                        as="h4"
-                        className="text-[16px] font-semibold text-blue_gray-900_01 -mt-[335px]"
-                      >
-                        Lịch sử nạp tiền{" "}
-                      </Heading>
-                      <div className="h-[2px] w-[14%] bg-blue_gray-900_01" />
-
-                        <Table columns={columns} dataSource={data} bordered />;
-                        {/*<Pagination className="ml-[290px]" />*/}
-                      </div>
-                      {/* <NumberRow className="mx-[294px]" /> */}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        
-
-        <div className="mt-[194px] self-stretch">
-          <FooterBK className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
-        </div>
-      </div>
+        <Content
+            style={{
+              padding: '0 48px',
+              flex: 1, // Cho phép Content chiếm không gian còn lại
+              display: 'flex', // Đặt display là flex để chứa nội dung
+              flexDirection: 'column', // Hướng theo chiều dọc
+            }}
+        >
+          <Breadcrumb
+              style={{
+                margin: '16px 0',
+              }}
+          >
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>List</Breadcrumb.Item>
+            <Breadcrumb.Item>App</Breadcrumb.Item>
+          </Breadcrumb>
+          <Layout
+              style={{
+                padding: '24px 0',
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+                flex: 1, // Để Layout chiếm hết không gian còn lại
+              }}
+          >
+            <Sider
+                style={{
+                  background: colorBgContainer,
+                }}
+                width={300}
+            >
+              <SiderUserBK/>
+            </Sider>
+            <Content
+                style={{
+                  padding: '0 24px',
+                  minHeight: 280,
+                  flex: 1, // Để Content bên trong chiếm hết không gian còn lại
+                }}
+            >
+              <Heading
+                  size="text3xl"
+                  as="h1"
+                  className="mb-[20px] text-[28px] font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
+              >
+                Quản Lý Địa Chỉ
+              </Heading>
+              <Table columns={columns} dataSource={data} bordered />
+              {/*<Pagination className="ml-[290px]" />*/}
+            </Content>
+          </Layout>
+        </Content>
+        <FooterBK className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
+      </Layout>
     </>
   );
 }

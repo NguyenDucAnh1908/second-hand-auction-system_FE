@@ -194,18 +194,7 @@ export default function ProfileDetailPage() {
                             }}
                         >
                             <div className="flex flex-col gap-4">
-                                {/*<div className="mr-1 md:mr-0">*/}
-                                {/*    <div className="flex flex-col items-start gap-1.5 self-end py-7">*/}
-                                {/*        <Heading*/}
-                                {/*            size="headingmd"*/}
-                                {/*            as="h4"*/}
-                                {/*            className="text-[16px] font-semibold text-blue_gray-900_01"*/}
-                                {/*        >*/}
-                                {/*            Thông tin tài khoản{" "}*/}
-                                {/*        </Heading>*/}
-                                {/*        <div className="h-[2px] w-[14%] bg-blue_gray-900_01"/>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
+
                                 <Heading
                                     size="text3xl"
                                     as="h1"

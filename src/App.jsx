@@ -42,11 +42,7 @@ function App() {
                 <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
                 <Route path="Address" index element={<AddressPage/>}/>
                 <Route path="ListOfBuyerBids" index element={<ListOfBuyerBids/>}/>
-                
-              
                 <Route path="KYCOnePage" index element={<KYCOnePage/>}/>
-
-               
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>
                 <Route path="NotFound" index element={<NotFound/>}/>
