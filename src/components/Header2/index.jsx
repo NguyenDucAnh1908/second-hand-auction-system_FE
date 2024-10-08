@@ -2,6 +2,7 @@ import { CloseSVG } from "../InputDH/close.jsx";
 import { Text, SelectBox, Img, ButtonDH, InputDH } from "./..";
 import NavBar from "../NavBar/index.jsx";
 import React from "react";
+import NavBarBK from "@/components/NavBarBK/index.jsx";
 
 export default function Header2({ ...props }) {
   const [searchBarValue, setSearchBarValue] = React.useState("");
@@ -181,7 +182,8 @@ export default function Header2({ ...props }) {
             </div>
             <div className="h-[0.67px] bg-gray-200" />
           </div>
-          <NavBar />
+          <NavBarBK />
+          {/*<NavBar/>*/}
 
         </div>
       </div>
