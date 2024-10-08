@@ -11,6 +11,7 @@ import { SignIn, SignUp } from "./pages/Admin/auth";
 import AppraisalFormPage from "./pages/Admin/AppraisalForm/index.jsx";
 import StaffProductListPage from "./pages/Admin/StaffProductList/index.jsx";
 import CreateAuction from "./pages/Admin/CreateAuction/index.jsx";
+import ManageFeedback from "./pages/Admin/ManageFeedback/index.jsx";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -53,6 +54,13 @@ export const routesAdmin = [
         path: "/CreateAuction",
         element: <CreateAuction />,
       },
+      {
+        icon: <UserCircleIcon {...icon} />,
+        name: "Quản Lý FeedBack",
+        path: "/ManageFeedback",
+        element: <ManageFeedback />,
+      },
+      
       
       {
         icon: <TableCellsIcon {...icon} />,
