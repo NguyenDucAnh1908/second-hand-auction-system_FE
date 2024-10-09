@@ -22,6 +22,7 @@ import DashboardSeller from "./pages/Seller/Dashboard.jsx";
 import ListOfBuyerBids from "./pages/ListOfBuyerBids/index.jsx";
 import KNCPage from "./pages/Kyc/Kyc.jsx";
 import OrderManagementBuyer from "./pages/OrderBuyer/index.jsx";
+import OrderManagementSeller from "./pages/Seller/OrderSeller/index.jsx";
 
 function App() {
     return (
@@ -56,6 +57,7 @@ function App() {
             <Route path="/dashboard-seller/*" element={<DashboardSeller />} /> 
             <Route path="RegisterProduct" index element={<RegisterProductPage/>}/>
             <Route path="ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
+            <Route path="OrderManagementSeller" index element={<OrderManagementSeller/>}/>
 
             {/* test */}
 
