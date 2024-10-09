@@ -24,6 +24,7 @@ import KNCPage from "./pages/Kyc/Kyc.jsx";
 import OrderManagementBuyer from "./pages/OrderBuyer/index.jsx";
 import OrderManagementSeller from "./pages/Seller/OrderSeller/index.jsx";
 import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
+import ListOfSellerPage from "./pages/ListOfSeller/index.jsx";
 function App() {
     return (
         <Routes>
@@ -43,6 +44,7 @@ function App() {
                 <Route path="ListOfBuyerBids" index element={<ListOfBuyerBids/>}/>
                 <Route path="RegisterKYC" index element={<KNCPage/>}/>
                 <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
+                <Route path="ListOfSellerPage" index element={<ListOfSellerPage/>}/>
 
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
