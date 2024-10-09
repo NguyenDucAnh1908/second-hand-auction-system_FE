@@ -13,6 +13,7 @@ import StaffProductListPage from "./pages/Admin/StaffProductList/index.jsx";
 import CreateAuction from "./pages/Admin/CreateAuction/index.jsx";
 import ManageFeedback from "./pages/Admin/ManageFeedback/index.jsx";
 import OrderManagementAdmin from "./pages/Admin/OrderManagement/index.jsx";
+import StoreOrders from "pages/Admin/StoreOrders/index.jsx";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -34,14 +35,14 @@ export const routesAdmin = [
         path: "/profile",
         element: <Profile />,
       },
-      
+
       {
         icon: <UserCircleIcon {...icon} />,
         name: "Danh sách sản phẩm",
         path: "/StaffProductList",
         element: <StaffProductListPage />,
       },
-      
+
 
       {
         icon: <UserCircleIcon {...icon} />,
@@ -63,12 +64,11 @@ export const routesAdmin = [
       },
       {
         icon: <UserCircleIcon {...icon} />,
-        name: "Quản Lý Đơn hàng",
-        path: "/OrderManagementAdmin",
-        element: <OrderManagementAdmin />,
+        name: "Quản Lý Đơn hàng của cửa hàng",
+        path: "/StoreOrders",
+        //element: <OrderManagementAdmin />,
+        element: <StoreOrders />,
       },
-      
-      
       {
         icon: <TableCellsIcon {...icon} />,
         name: "tables",
@@ -98,6 +98,16 @@ export const routesAdmin = [
         name: "sign up",
         path: "/sign-up",
         element: <SignUp />,
+      },
+    ],
+  },
+  {
+    layout: "dashboard",
+    pages: [
+      {
+        name: "Quản Lý Đơn hàng",
+        path: "/StoreOrders/OrderManagementAdmin",
+        element: <OrderManagementAdmin />,
       },
     ],
   },
