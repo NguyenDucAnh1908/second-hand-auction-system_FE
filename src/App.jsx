@@ -23,7 +23,7 @@ import ListOfBuyerBids from "./pages/ListOfBuyerBids/index.jsx";
 import KNCPage from "./pages/Kyc/Kyc.jsx";
 import OrderManagementBuyer from "./pages/OrderBuyer/index.jsx";
 import OrderManagementSeller from "./pages/Seller/OrderSeller/index.jsx";
-
+import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
 function App() {
     return (
         <Routes>
@@ -41,7 +41,7 @@ function App() {
                 <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
                 <Route path="Address" index element={<AddressPage/>}/>        
                 <Route path="ListOfBuyerBids" index element={<ListOfBuyerBids/>}/>
-                <Route path="KNCPage" index element={<KNCPage/>}/>
+                <Route path="RegisterKYC" index element={<KNCPage/>}/>
                 <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
 
                 {/* Test */}
@@ -52,6 +52,7 @@ function App() {
             <Route path="/dashboard/*" element={<Dashboard/>}/>
             <Route path="/auth/*" element={<Auth/>}/>
             <Route path="*" element={<Navigate to="/dashboard/home" replace/>}/>
+            <Route path="KiemduyetStaffPage" index element={<KiemduyetStaffPage/>}/>
 
             {/* seller */}
             <Route path="/dashboard-seller/*" element={<DashboardSeller />} /> 
