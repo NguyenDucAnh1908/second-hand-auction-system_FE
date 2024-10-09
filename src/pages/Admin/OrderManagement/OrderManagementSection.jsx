@@ -3,8 +3,10 @@ import { CloseSVG } from "../../../components/InputDH/close.jsx";
 import { ReactTable } from "../../../components/ReactTable";
 import { createColumnHelper } from "@tanstack/react-table";
 import React, { useState } from 'react';
-
-
+import {Button, Card, Typography} from "@material-tailwind/react";
+import {Tag} from "antd";
+import {CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined} from "@ant-design/icons";
+import Pagination from "@/components/Pagination/index.jsx";
 
 const dropDownOptions = [
     { value: 'waiting', label: 'Đang chờ', color: '#FFC107' },
@@ -70,6 +72,62 @@ const tableData = [
         customerHeader: "Joseph Wheeler",
         totalHeader: "250.000đ",
         profitHeader: "50.000đ",
+    },
+];
+
+
+const TABLE_HEAD = [
+    "Number",
+    "Sản phẩm",
+    "Hình ảnh",
+    "Thời gian",
+    "Trạng thái",
+    "Người bán",
+    "Tổng doanh thu",
+    "Lợi nhuận",
+    "Tùy chỉnh"
+];
+
+const TABLE_ROWS = [
+    {
+        number: "#MS-415646",
+        product: "Smartphone",
+        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+        time: "31 Jan 2024",
+        status: "Available",
+        sellerHeader: "han so hee",
+        totalHeader: "$500",
+        profitHeader: "$100",
+    },
+    {
+        number: "#MS-415647",
+        product: "Laptop",
+        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+        time: "24 Jan 2024",
+        status: "pending",
+        sellerHeader: "han so hee",
+        totalHeader: "$1000",
+        profitHeader: "$150",
+    },
+    {
+        number: "#MS-415648",
+        product: "Tablet",
+        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+        time: "12 Jan 2024",
+        status: "UnAvailable",
+        sellerHeader: "han so hee",
+        totalHeader: "$300",
+        profitHeader: "$50",
+    },
+    {
+        number: "#MS-415649",
+        product: "Smartwatch",
+        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+        time: "10 Jan 2024",
+        status: "Fail",
+        sellerHeader: "han so hee",
+        totalHeader: "$200",
+        profitHeader: "$20",
     },
 ];
 
@@ -249,16 +307,137 @@ export default function OrderManagementSection() {
                             className="flex w-[25%] gap-1.5 rounded-md bg-bg-white px-4 py-2.5 text-[14px] text-blue_gray-600 shadow-xs sm:w-full"
                         />
                     </div>
-                    <ReactTable
-                        size="xs"
-                        bodyProps={{ className: "before:content-['-'] before:opacity-0 before:leading-[56px]" }}
-                        headerCellProps={{ className: "bg-gray-100" }}
-                        headerProps={{ className: "border-gray-100 border-b border-solid" }}
-                        cellProps={{ className: "border-indigo-50 border-b border-solid" }}
-                        className="md:block md:overflow-x-auto md:whitespace-nowrap"
-                        columns={tableColumns}
-                        data={tableData}
-                    />
+                    {/*<ReactTable*/}
+                    {/*    size="xs"*/}
+                    {/*    bodyProps={{ className: "before:content-['-'] before:opacity-0 before:leading-[56px]" }}*/}
+                    {/*    headerCellProps={{ className: "bg-gray-100" }}*/}
+                    {/*    headerProps={{ className: "border-gray-100 border-b border-solid" }}*/}
+                    {/*    cellProps={{ className: "border-indigo-50 border-b border-solid" }}*/}
+                    {/*    className="md:block md:overflow-x-auto md:whitespace-nowrap"*/}
+                    {/*    columns={tableColumns}*/}
+                    {/*    data={tableData}*/}
+                    {/*/>*/}
+                    <Card className="h-full w-full overflow-auto">
+                        <table className="w-full min-w-max table-auto text-left">
+                            <thead>
+                            <tr>
+                                {TABLE_HEAD.map((head) => (
+                                    <th key={head} className="p-4 pt-10">
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-bold leading-none"
+                                        >
+                                            {head}
+                                        </Typography>
+                                    </th>
+                                ))}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {TABLE_ROWS.map(({
+                                                 number,
+                                                 product,
+                                                 image,
+                                                 time,
+                                                 status,
+                                                 sellerHeader,
+                                                 totalHeader,
+                                                 profitHeader
+                                             }) => (
+                                <tr key={number}>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-bold"
+                                        >
+                                            {number}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                            {product}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <img
+                                            src={image}
+                                            alt={product}
+                                            className="w-16 h-16 object-cover rounded"
+                                        />
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                            {time}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        {status === "Available" && (
+                                            <Tag icon={<CheckCircleOutlined />} color="success">
+                                                Available
+                                            </Tag>
+                                        )}
+                                        {status === "pending" && (
+                                            <Tag icon={<SyncOutlined spin />} color="processing">
+                                                Pending
+                                            </Tag>
+                                        )}
+                                        {status === "UnAvailable" && (
+                                            <Tag icon={<CloseCircleOutlined />} color="error">
+                                                UnAvailable
+                                            </Tag>
+                                        )}
+                                        {status === "Fail" && (
+                                            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                                                Fail
+                                            </Tag>
+                                        )}
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                            {sellerHeader}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                            {totalHeader}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                            {profitHeader}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <div className="flex items-center gap-2">
+                                            <Button color="blue">Chi tiết</Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </Card>
+                    <div className="flex justify-center items-center mt-4">
+                        <Pagination />
+                    </div>
+
                 </div>
             </div>
         </div>
