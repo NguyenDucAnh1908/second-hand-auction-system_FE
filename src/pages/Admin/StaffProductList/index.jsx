@@ -314,16 +314,6 @@ export default function StaffProductListPage() {
                                         </td>
                                         <td className="p-4">
                                             <div className="flex items-center gap-2">
-                                                {/*<IconButton variant="text" size="sm">*/}
-                                                {/*    <DocumentIcon*/}
-                                                {/*        className="h-4 w-4 text-gray-900"/>*/}
-                                                {/*</IconButton>*/}
-                                                {/*<IconButton variant="text" size="sm">*/}
-                                                {/*    <ArrowDownTrayIcon*/}
-                                                {/*        strokeWidth={3}*/}
-                                                {/*        className="h-4 w-4 text-gray-900"*/}
-                                                {/*    />*/}
-                                                {/*</IconButton>*/}
                                                 <Button color="blue">Thẩm định</Button>
                                             </div>
                                         </td>
