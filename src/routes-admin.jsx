@@ -14,6 +14,7 @@ import CreateAuction from "./pages/Admin/CreateAuction/index.jsx";
 import ManageFeedback from "./pages/Admin/ManageFeedback/index.jsx";
 import OrderManagementAdmin from "./pages/Admin/OrderManagement/index.jsx";
 import StoreOrders from "pages/Admin/StoreOrders/index.jsx";
+import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -71,9 +72,9 @@ export const routesAdmin = [
       },
       {
         icon: <TableCellsIcon {...icon} />,
-        name: "tables",
-        path: "/tables",
-        element: <Tables />,
+        name: "Duyệt KYC Staffnpm",
+        path: "/KiemduyetStaffPage",
+        element: <KiemduyetStaffPage />,
       },
       {
         icon: <InformationCircleIcon {...icon} />,

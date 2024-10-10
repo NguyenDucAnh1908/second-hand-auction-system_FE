@@ -21,7 +21,6 @@ import Auth from "./layouts-admin/auth.jsx";
 import DashboardSeller from "./pages/Seller/Dashboard.jsx";
 import ListOfBuyerBids from "./pages/ListOfBuyerBids/index.jsx";
 import KNCPage from "./pages/Kyc/RegisterKYC.jsx";
-import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
 import OrderManagementBuyer from "./pages/OrderBuyer/index.jsx";
 import OrderManagementSeller from "./pages/Seller/OrderSeller/index.jsx";
 import ListOfSellerPage from "./pages/ListOfSeller/index.jsx";
@@ -55,7 +54,6 @@ function App() {
             <Route path="/dashboard/*" element={<Dashboard/>}/>
             <Route path="/auth/*" element={<Auth/>}/>
             <Route path="*" element={<Navigate to="/dashboard/home" replace/>}/>
-            <Route path="KiemduyetStaffPage" index element={<KiemduyetStaffPage/>}/>
 
             {/* seller */}
             <Route path="/dashboard-seller/*" element={<DashboardSeller />} /> 
@@ -64,7 +62,6 @@ function App() {
             <Route path="OrderManagementSeller" index element={<OrderManagementSeller/>}/>
 
             {/* test */}
-            <Route path="/Approval/*" element={<KiemduyetStaffPage/>}/>
             <Route path="RegisterAuction" index element={<RegisterAuction/>}/>
 
         </Routes>

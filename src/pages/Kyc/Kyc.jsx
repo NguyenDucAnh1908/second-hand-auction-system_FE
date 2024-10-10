@@ -1,10 +1,7 @@
 import React from "react";
-import { Helmet } from "react-helmet";
 import { TextArea, Heading, InputDH, Text, Img, CheckBox } from "../../components";
-import Header2 from "../../components/Header2/index.jsx";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import { ButtonDH } from "../../components/index.jsx";
-import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import StaffVerificationSection from "./VerifaicationForm.jsx";
 import AddressForm from "./Address.jsx";
 
@@ -12,10 +9,10 @@ export default function KiemduyetStaffPage() {
     return (
         <>
             <div className="w-full bg-white-a700">
-                <Header2 />
+               
                 <div className="flex flex-col items-center gap-10 bg-white-a700">
                     <div className="mx-auto mt-5 w-full max-w-[1292px] flex gap-5 px-5">
-                        <SiderUserBK className="flex-none w-[250px]" />
+                     
                         <div className="flex-grow">
                             <Heading size="textlg" as="h2" className="text-[24px] font-bold text-blue_gray-900 text-center">
                                 Thẩm định KYC
