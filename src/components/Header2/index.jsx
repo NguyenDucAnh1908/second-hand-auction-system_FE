@@ -13,7 +13,7 @@ export default function Header2({ ...props }) {
       className={`${props.className} flex self-stretch items-center z-[3] relative`}
     >
       <div className="w-full">
-        <div className="flex flex-col items-center bg-bg-white py-2.5">
+        <div className="flex flex-col items-center bg-blue-gray-400 py-2.5">
           <div className="flex flex-col items-center gap-1 self-stretch">
             <div className="container-sm flex items-start justify-between gap-5 self-stretch md:flex-col md:px-5">
               <div className="flex w-[36%] items-center justify-center md:w-full sm:flex-col">

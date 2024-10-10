@@ -6,21 +6,21 @@ import { Input } from "@material-tailwind/react";
 export default function RegisterSection() {
   return (
     <div className="mt-[134px] flex justify-center">
-      <div className="container-xs flex w-full items-center justify-between gap-5 px-2.5 md:flex-col md:px-5">
+      <div className="container-xs flex w-full items-stretch justify-between gap-5 px-2.5 md:flex-col md:px-5">
         {/* Left side: Image */}
         <Img
-          src="images/img_image_1036x648.png"
+          src="https://c.pxhere.com/photos/3f/aa/watch_3d_graphics_ticker_men_s_watch-386868.jpg!d"
           alt="Featured Image"
-          className="h-[742px] w-[50%] rounded-[20px] object-contain md:w-full"
+          className="h-[742px] w-[60%] rounded-[20px] object-cover md:w-full"
         />
 
         {/* Right side: Registration form */}
-        <div className="relative w-[50%] md:w-full">
-          <div className="ml-1 flex flex-col items-start gap-[40px] rounded-[40px] bg-white bg-opacity-60 backdrop-blur-lg py-7 pl-20 pr-14 md:ml-0 md:px-5 sm:p-5">
+        <div className="relative w-[60%] md:w-full h-[742px]"> {/* Set height to match image height */}
+          <div className="ml-1 flex flex-col items-start gap-[40px] rounded-[20px] bg-blue-gray-200 bg-opacity-90 backdrop-blur-lg py-7 pl-10 pr-10 md:ml-0 md:px-5 sm:p-5 shadow-lg h-full"> {/* Use h-full to take full height */}
             <Heading
-              size="heading5xl"
+              size="heading4xl"
               as="h1"
-              className="ml-[72px] text-[48px] font-semibold uppercase text-blue-gray-800 md:ml-0 md:text-[44px] sm:text-[38px]"
+              className="ml-[0px] text-[38px] font-semibold uppercase text-blue-gray-800 md:ml-0 md:text-[44px] sm:text-[38px]"
             >
               Tạo tài khoản
             </Heading>
@@ -96,6 +96,14 @@ export default function RegisterSection() {
                   className="self-stretch rounded-lg border-2 border-gray-400 bg-white text-gray-800 placeholder-gray-500 px-4 py-3 focus:ring-2 focus:ring-gray-600 focus:outline-none transition duration-150 ease-in-out shadow-md"
                 />
               </div>
+              
+              {/* Link to Login */}
+              <Link to="/login" className="mt-[26px] text-[14px] font-normal hover:text-gray-700">
+                <Text as="p" className="text-light-blue-800">
+                  Bạn đã có tài khoản?&nbsp;
+                  <span className="text-green-a700">Đăng nhập</span>
+                </Text>
+              </Link>
 
               {/* Submit Button */}
               <ButtonDH
@@ -106,15 +114,6 @@ export default function RegisterSection() {
               >
                 Tạo tài khoản
               </ButtonDH>
-
-
-              {/* Link to Login */}
-              <Link to="/login" className="mt-[26px] text-[14px] font-normal hover:text-gray-700">
-                <Text as="p" className="text-blue_gray-900_01">
-                  Bạn đã có tài khoản?&nbsp;
-                  <span className="text-green-a700">Đăng nhập</span>
-                </Text>
-              </Link>
             </div>
           </div>
         </div>
