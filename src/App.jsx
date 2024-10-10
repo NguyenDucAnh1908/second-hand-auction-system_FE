@@ -25,6 +25,7 @@ import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
 import OrderManagementBuyer from "./pages/OrderBuyer/index.jsx";
 import OrderManagementSeller from "./pages/Seller/OrderSeller/index.jsx";
 import ListOfSellerPage from "./pages/ListOfSeller/index.jsx";
+import RegisterAuction from "./pages/RegisterAuction-Buyer/RegisterAuction.jsx";
 function App() {
     return (
         <Routes>
@@ -64,6 +65,7 @@ function App() {
 
             {/* test */}
             <Route path="/Approval/*" element={<KiemduyetStaffPage/>}/>
+            <Route path="RegisterAuction" index element={<RegisterAuction/>}/>
 
         </Routes>
     );
