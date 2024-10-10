@@ -13,8 +13,8 @@ export default function LoginPage() {
           content="Log in to your EZShop account to access your personal dashboard, track orders, and enjoy a personalized shopping experience. Don't miss out on our exclusive offers!"
         />
       </Helmet>
-      <div className="flex w-full flex-col gap-[100px] bg-indigo-100 md:gap-[75px] sm:gap-[50px]">
-        {/* login section */}
+      <div className="flex w-full flex-col gap-[100px] bg-gradient-to-b from-blue-gray-900 to-blue-black-900 text-white md:gap-[75px] sm:gap-[50px]"> {/* Gradient background */}
+        {/* Login Section */}
         <LoginSection />
         <div className="mt-[194px] self-stretch">
           <FooterBK className="mt-[34px] h-[388px] bg-[url(/public/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />

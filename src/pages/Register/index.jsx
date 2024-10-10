@@ -13,7 +13,7 @@ export default function RegisterPage() {
           content="Sign up for a new EZShop account to start shopping, save your wishlist, and manage your orders with ease. Join us for a seamless shopping experience!"
         />
       </Helmet>
-      <div className="flex w-full flex-col gap-[82px] bg-indigo-100_01 md:gap-[61px] sm:gap-[41px]">
+      <div className="flex w-full flex-col gap-[100px] bg-gradient-to-b from-blue-gray-900 to-blue-black-900 text-white md:gap-[75px] sm:gap-[50px]"> {/* Gradient background */}
         {/* register section */}
         <RegisterSection />
         <div className="mt-[194px] self-stretch">
