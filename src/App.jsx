@@ -20,10 +20,10 @@ import Dashboard from "./layouts-admin/dashboard.jsx";
 import Auth from "./layouts-admin/auth.jsx";
 import DashboardSeller from "./pages/Seller/Dashboard.jsx";
 import ListOfBuyerBids from "./pages/ListOfBuyerBids/index.jsx";
-import KNCPage from "./pages/Kyc/Kyc.jsx";
+import KNCPage from "./pages/Kyc/RegisterKYC.jsx";
+import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
 import OrderManagementBuyer from "./pages/OrderBuyer/index.jsx";
 import OrderManagementSeller from "./pages/Seller/OrderSeller/index.jsx";
-import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
 import ListOfSellerPage from "./pages/ListOfSeller/index.jsx";
 function App() {
     return (
@@ -63,6 +63,7 @@ function App() {
             <Route path="OrderManagementSeller" index element={<OrderManagementSeller/>}/>
 
             {/* test */}
+            <Route path="/Approval/*" element={<KiemduyetStaffPage/>}/>
 
         </Routes>
     );
