@@ -1,6 +1,5 @@
 import { CloseSVG } from "../InputDH/close.jsx";
 import { Text, SelectBox, Img, ButtonDH, InputDH } from "./..";
-import NavBar from "../NavBar/index.jsx";
 import React from "react";
 import NavBarBK from "@/components/NavBarBK/index.jsx";
 
@@ -13,7 +12,7 @@ export default function Header2({ ...props }) {
       className={`${props.className} flex self-stretch items-center z-[3] relative`}
     >
       <div className="w-full">
-        <div className="flex flex-col items-center bg-blue-gray-400 py-2.5">
+        <div className="flex flex-col items-center bg-gradient-to-b from-blue-gray-200 to-blue-gray-800 py-2.5">
           <div className="flex flex-col items-center gap-1 self-stretch">
             <div className="container-sm flex items-start justify-between gap-5 self-stretch md:flex-col md:px-5">
               <div className="flex w-[36%] items-center justify-center md:w-full sm:flex-col">
@@ -138,32 +137,30 @@ export default function Header2({ ...props }) {
                     </div>
                     <Text className="font-semibold text-[14px] leading-[22px] text-gray-900">
                       <span className="text-[13px] font-normal">
-                        <>
-                          Kênh                           <br />
-                        </>
+                        Kênh
+                        <br />
                       </span>
                       <span className="text-[16px] font-medium">Cửa hàng</span>
                     </Text>
-
                   </div>
+
                   <div className="flex flex-1 items-center justify-center gap-3.5 sm:self-stretch">
                     <a href="#">
-                      <ButtonDH className="h-[48px] w-[50px] rounded-md bg-green-50 p-2.5">
-                        <Img src="images/img_profile_1.svg" />
+                      <ButtonDH className="h-[48px] w-[50px] rounded-md bg-green-50 p-2.5 flex items-center justify-center">
+                        <Img src="images/img_profile_1.svg" className="h-[20px]" />
                       </ButtonDH>
                     </a>
                     <Text className="font-bevietnampro text-[14px] font-bold leading-[22px] text-blue_gray-900_01">
                       <span className="text-[13px] font-normal">
-                        <>
-                          Đăng nhập
-                          <br />
-                        </>
+                        Đăng nhập
+                        <br />
                       </span>
                       <span className="text-[16px] font-medium">Tài khoản</span>
                     </Text>
                   </div>
+
                   <div className="relative h-[52px] w-[14%] self-center sm:w-full">
-                    <div className="absolute bottom-[-0.82px] left-0 my-auto ml-auto mr-1 flex flex-1 flex-col items-center rounded-md bg-green-500 px-3 py-3.5 md:mr-0">
+                    <div className="absolute bottom-[-0.82px] left-0 flex flex-col items-center rounded-md bg-green-500 px-3 py-3.5">
                       <a href="#">
                         <Img
                           src="images/img_shopping_cart_1.svg"
@@ -172,7 +169,7 @@ export default function Header2({ ...props }) {
                         />
                       </a>
                     </div>
-                    <Text className="absolute right-[0.12px] top-0 m-auto rounded-md bg-orange-300 p-0.5 text-[8px] font-bold text-blue_gray-900_02">
+                    <Text className="absolute right-0 top-0 m-auto rounded-md bg-orange-300 p-0.5 text-[8px] font-bold text-blue_gray-900_02">
                       2
                     </Text>
                   </div>

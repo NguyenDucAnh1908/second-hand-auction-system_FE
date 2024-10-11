@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Navbar,
   Collapse,
@@ -17,234 +17,191 @@ import {
   Bars3Icon,
   XMarkIcon,
   ChevronUpIcon,
+  HomeIcon,
+  InformationCircleIcon,
+  ShoppingCartIcon,
+  DocumentIcon,
+  PhoneIcon,
 } from "@heroicons/react/24/outline";
 
 const nestedMenuItems = [
-  {
-    title: "Hero",
-  },
-  {
-    title: "Features",
-  },
-  {
-    title: "Testimonials",
-  },
-  {
-    title: "Ecommerce",
-  },
+  { title: "Hero" },
+  { title: "Features" },
+  { title: "Testimonials" },
+  { title: "Ecommerce" },
 ];
-
-
 
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [openNestedMenu, setopenNestedMenu] = React.useState(false);
+  const [openNestedMenu, setOpenNestedMenu] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const renderItems = nestedMenuItems.map(({ title }, key) => (
+
+  // Memoize the rendered items for performance
+  const renderItems = useMemo(() => {
+    return nestedMenuItems.map(({ title }, key) => (
       <a href="#" key={key}>
         <MenuItem>{title}</MenuItem>
       </a>
-  ));
+    ));
+  }, [nestedMenuItems]);
 
   return (
-      <React.Fragment>
-        <Menu
-            open={isMenuOpen}
-            handler={setIsMenuOpen}
+    <React.Fragment>
+      <Menu
+        open={isMenuOpen}
+        handler={setIsMenuOpen}
+        placement="bottom"
+        allowHover={true}
+      >
+        <MenuHandler>
+          <Typography
+            as="div"
+            variant="h5"
+            className="mr-4 cursor-pointer py-1.5 lg:ml-2 font-bold"
+          >
+            <ListItem
+              className="flex items-center gap-2 py-2 pr-4 font-bold text-gray-900"
+              selected={isMenuOpen || isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen((cur) => !cur)}
+            >
+              Danh Mục
+              <ChevronDownIcon
+                strokeWidth={2.5}
+                className={`hidden h-3 w-3 transition-transform lg:block ${isMenuOpen ? "rotate-180" : ""
+                  }`}
+              />
+              <ChevronDownIcon
+                strokeWidth={2.5}
+                className={`block h-3 w-3 transition-transform lg:hidden ${isMobileMenuOpen ? "rotate-180" : ""
+                  }`}
+              />
+            </ListItem>
+          </Typography>
+        </MenuHandler>
+        <MenuList className="hidden rounded-xl lg:block">
+          <Menu
+            placement="right-start"
+            allowHover
+            offset={15}
+            open={openNestedMenu}
+            handler={setOpenNestedMenu}
+          >
+            <MenuHandler className="flex items-center justify-between">
+              <MenuItem>
+                Thời trang
+                <ChevronUpIcon
+                  strokeWidth={2.5}
+                  className={`h-3.5 w-3.5 transition-transform ${isMenuOpen ? "rotate-90" : ""
+                    }`}
+                />
+              </MenuItem>
+            </MenuHandler>
+            <MenuList className="rounded-xl">{renderItems}</MenuList>
+          </Menu>
+          <MenuItem>Điện tử</MenuItem>
+          <MenuItem>Xe</MenuItem>
+        </MenuList>
+      </Menu>
+      <div className="block lg:hidden">
+        <Collapse open={isMobileMenuOpen}>
+          <Menu
             placement="bottom"
-            allowHover={true}
-        >
-          <MenuHandler>
-            <Typography as="div" variant="h5" className="mr-4 cursor-pointer py-1.5 lg:ml-2 font-bold">
-              <ListItem
-                  className="flex items-center gap-2 py-2 pr-4 font-bold text-gray-900"
-                  selected={isMenuOpen || isMobileMenuOpen}
-                  onClick={() => setIsMobileMenuOpen((cur) => !cur)}
-              >
-                Danh Mục
-                <ChevronDownIcon
-                    strokeWidth={2.5}
-                    className={`hidden h-3 w-3 transition-transform lg:block ${
-                        isMenuOpen ? "rotate-180" : ""
+            allowHover
+            offset={6}
+            open={openNestedMenu}
+            handler={setOpenNestedMenu}
+          >
+            <MenuHandler className="flex items-center justify-between">
+              <MenuItem>
+                Figma
+                <ChevronUpIcon
+                  strokeWidth={2.5}
+                  className={`h-3.5 w-3.5 transition-transform ${isMenuOpen ? "rotate-90" : ""
                     }`}
                 />
-                <ChevronDownIcon
-                    strokeWidth={2.5}
-                    className={`block h-3 w-3 transition-transform lg:hidden ${
-                        isMobileMenuOpen ? "rotate-180" : ""
-                    }`}
-                />
-              </ListItem>
-            </Typography>
-          </MenuHandler>
-          <MenuList className="hidden rounded-xl lg:block">
-            <Menu
-                placement="right-start"
-                allowHover
-                offset={15}
-                open={openNestedMenu}
-                handler={setopenNestedMenu}
-            >
-              <MenuHandler className="flex items-center justify-between">
-                <MenuItem>
-                  Figma
-                  <ChevronUpIcon
-                      strokeWidth={2.5}
-                      className={`h-3.5 w-3.5 transition-transform ${
-                          isMenuOpen ? "rotate-90" : ""
-                      }`}
-                  />
-                </MenuItem>
-              </MenuHandler>
-              <MenuList className="rounded-xl">{renderItems}</MenuList>
-            </Menu>
-            <MenuItem>React</MenuItem>
-            <MenuItem>TailwindCSS</MenuItem>
-          </MenuList>
-        </Menu>
-        <div className="block lg:hidden">
-          <Collapse open={isMobileMenuOpen}>
-            <Menu
-                placement="bottom"
-                allowHover
-                offset={6}
-                open={openNestedMenu}
-                handler={setopenNestedMenu}
-            >
-              <MenuHandler className="flex items-center justify-between">
-                <MenuItem>
-                  Figma
-                  <ChevronUpIcon
-                      strokeWidth={2.5}
-                      className={`h-3.5 w-3.5 transition-transform ${
-                          isMenuOpen ? "rotate-90" : ""
-                      }`}
-                  />
-                </MenuItem>
-              </MenuHandler>
-              <MenuList className="block rounded-xl lg:hidden">
-                {renderItems}
-              </MenuList>
-            </Menu>
-            <MenuItem>React</MenuItem>
-            <MenuItem>TailwindCSS</MenuItem>
-          </Collapse>
-        </div>
-      </React.Fragment>
+              </MenuItem>
+            </MenuHandler>
+            <MenuList className="block rounded-xl lg:hidden">
+              {renderItems}
+            </MenuList>
+          </Menu>
+          <MenuItem>React</MenuItem>
+          <MenuItem>TailwindCSS</MenuItem>
+        </Collapse>
+      </div>
+    </React.Fragment>
   );
 }
 
 function NavList() {
   return (
-      <List className="mb-6 mt-4 p-0 lg:mb-0 lg:mt-0 lg:flex-row lg:p-1">
+    <List className="mb-6 mt-4 p-0 lg:mb-0 lg:mt-0 lg:flex-row lg:p-1">
+      {[
+        { title: "Trang chủ", icon: <HomeIcon className="h-5 w-5 mr-2" /> },
+        { title: "Sản phẩm", icon: <ShoppingCartIcon className="h-5 w-5 mr-2" /> },
+        { title: "Liên hệ", icon: <PhoneIcon className="h-5 w-5 mr-2" /> },
+        { title: "Bài viết", icon: <DocumentIcon className="h-5 w-5 mr-2" /> },
+        { title: "Chính sách", icon: <InformationCircleIcon className="h-5 w-5 mr-2" /> },
+      ].map((item, index) => (
         <Typography
-            as="a"
-            href="#"
-            variant="small"
-            color="blue-gray"
-            className="font-medium"
+          as="a"
+          href="#"
+          variant="small"
+          color="blue-gray"
+          className="font-medium"
+          key={index}
         >
-          <ListItem className="flex items-center gap-2 py-2 pr-4">Trang chủ</ListItem>
-        </Typography>
-        <Typography
-            as="a"
-            href="#"
-            variant="small"
-            color="blue-gray"
-            className="font-medium"
-        >
-          <ListItem className="flex items-center gap-2 py-2 pr-4">
-            Sản phẩm
+          <ListItem className="flex items-center gap-2 py-2 pr-4 transition-transform hover:bg-green-100 hover:scale-105 hover:font-bold"> {/* Added hover:bg-green-100 */}
+            {item.icon}
+            {item.title}
           </ListItem>
         </Typography>
-
-        <Typography
-            as="a"
-            href="#"
-            variant="small"
-            color="blue-gray"
-            className="font-medium"
-        >
-          <ListItem className="flex items-center gap-2 py-2 pr-4">
-            Liên hệ
-          </ListItem>
-        </Typography>
-
-        <Typography
-            as="a"
-            href="#"
-            variant="small"
-            color="blue-gray"
-            className="font-medium"
-        >
-          <ListItem className="flex items-center gap-2 py-2 pr-4">
-            Bài viết
-          </ListItem>
-        </Typography>
-        {/*<NavListMenu />*/}
-        <Typography
-            as="a"
-            href="#"
-            variant="small"
-            color="blue-gray"
-            className="font-medium"
-        >
-          <ListItem className="flex items-center gap-2 py-2 pr-4">Docs</ListItem>
-        </Typography>
-      </List>
+      ))}
+    </List>
   );
 }
+
 
 function NavBarBK() {
   const [openNav, setOpenNav] = React.useState(false);
 
   React.useEffect(() => {
     window.addEventListener(
-        "resize",
-        () => window.innerWidth >= 960 && setOpenNav(false),
+      "resize",
+      () => window.innerWidth >= 960 && setOpenNav(false),
     );
   }, []);
 
   return (
-      <Navbar className="mx-auto max-w-screen-xl px-4 py-2">
-        <div className="flex items-center justify-between text-blue-gray-900">
-          <Typography
-              as="a"
-              href="#"
-              variant="h6"
-              className="mr-4 cursor-pointer py-1.5 lg:ml-2"
-          >
-            <NavListMenu />
-          </Typography>
-          <div className="hidden lg:block">
-            <NavList />
-          </div>
-          <div className="hidden gap-2 lg:flex">
-          </div>
-          <IconButton
-              variant="text"
-              className="lg:hidden"
-              onClick={() => setOpenNav(!openNav)}
-          >
-            {openNav ? (
-                <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-            ) : (
-                <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-            )}
-          </IconButton>
-        </div>
-        <Collapse open={openNav}>
+    <Navbar className="w-full max-w-[1440px] px-5 py-2 bg-white shadow-md rounded-md"> {/* Changed rounded-lg to rounded-md */}
+      <div className="flex items-center justify-between text-black w-full">
+        <Typography
+          as="a"
+          href="#"
+          variant="h6"
+          className="mr-4 cursor-pointer py-2 lg:ml-2 font-semibold text-xl"
+        >
+          <NavListMenu />
+        </Typography>
+
+        <div className="hidden lg:block">
           <NavList />
-          <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-            <Button size="sm" fullWidth>
-              Get Started
-            </Button>
-            <Button variant="outlined" size="sm" fullWidth>
-              Log In
-            </Button>
-          </div>
-        </Collapse>
-      </Navbar>
+        </div>
+
+        <IconButton
+          variant="text"
+          className="lg:hidden"
+          onClick={() => setOpenNav(!openNav)}
+        >
+          {openNav ? (
+            <XMarkIcon className="h-6 w-6" strokeWidth={2} />
+          ) : (
+            <Bars3Icon className="h-6 w-6" strokeWidth={2} />
+          )}
+        </IconButton>
+      </div>
+    </Navbar>
+
   );
 }
 
