@@ -9,38 +9,18 @@ export default function Header2({ ...props }) {
   return (
     <header
       {...props}
-      className={`${props.className} flex self-stretch items-center z-[3] relative`}
+      className={`${props.className} flex self-stretch items-center z-[3] relative bg-gradient-to-b from-blue-gray-100 to-blue-gray-200`}
     >
       <div className="w-full">
-        <div className="flex flex-col items-center bg-gradient-to-b from-blue-gray-200 to-blue-gray-800 py-2.5">
+        <div className="flex flex-col items-center bg-gradient-to-b from-blue-gray-100 to-blue-gray-200 py-2.5">
           <div className="flex flex-col items-center gap-1 self-stretch">
             <div className="container-sm flex items-start justify-between gap-5 self-stretch md:flex-col md:px-5">
-              <div className="flex w-[36%] items-center justify-center md:w-full sm:flex-col">
-                <a href="#">
-                  <Img
-                    src="images/img_pin_1.svg"
-                    alt="Pin Icon"
-                    className="h-[24px] sm:w-full"
-                  />
-                </a>
-                <Text className="ml-1 self-start text-[13px] font-normal text-blue_gray-900_01 sm:ml-0 sm:self-auto">
-                  118 Cách Mạng Tháng 8
-                </Text>
+              <div className="flex w-[40%] items-center justify-center md:w-full sm:flex-col ">
+            
                 <div className="ml-4 h-[32px] w-px bg-gray-200 sm:ml-0 sm:h-px sm:w-[32px]" />
-                <div className="ml-5 flex flex-1 items-start justify-center gap-1 sm:ml-0 sm:self-stretch">
-                  <a href="#">
-                    <Img
-                      src="images/img_phone_1.svg"
-                      alt="Phone Icon"
-                      className="h-[24px] self-end"
-                    />
-                  </a>
-                  <Text className="font-bevietnampro text-[13px] font-normal text-blue_gray-900_01">
-                    <span>Bạn cần trợ giúp? Gọi ngay:&nbsp;</span>
-                    <span className="font-medium">+84 1800 900</span>
-                  </Text>
-                </div>
+           
               </div>
+
               <div className="mt-2 flex w-[28%] justify-center self-end p-2 md:w-full md:self-auto">
                 <div className="flex w-[86%] items-center justify-center gap-3 md:w-full">
                   <div className="flex flex-1 items-center justify-center">
@@ -50,23 +30,7 @@ export default function Header2({ ...props }) {
                       </div>
                       <div className="h-[20px] w-px bg-gray-200" />
                     </div>
-                    <ul className="relative !ml-[-82px] flex flex-wrap gap-[46px] self-end">
-                      <li>
-                        <a href="#">
-                          <Text className="text-[13px] font-normal text-blue_gray-900_01">
-                            Trợ giúp
-                          </Text>
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="/Dashboard-Seller">
-                          <Text className="text-[13px] font-normal text-blue_gray-900_01">
-                            Giao diện bán hàng
-                          </Text>
-                        </a>
-                      </li>
-                    </ul>
+            
                   </div>
                   <div className="h-[20px] w-px bg-gray-200" />
                   <div className="flex items-center gap-4 self-end">
@@ -176,11 +140,8 @@ export default function Header2({ ...props }) {
                 </div>
               </div>
             </div>
-            <div className="h-[0.67px] bg-gray-200" />
+            <NavBarBK />
           </div>
-          <NavBarBK />
-          {/*<NavBar/>*/}
-
         </div>
       </div>
     </header>

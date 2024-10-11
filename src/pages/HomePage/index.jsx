@@ -14,7 +14,7 @@ import TrustedBrandsSection from "./TrustedBrandsSection";
 import React, { Suspense } from "react";
 import ProductDetails31 from "../../components/ProductDetails31/index.jsx";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {IconButton} from "@material-tailwind/react";
+import { Button, IconButton } from "@material-tailwind/react";
 
 const fashionItemsList = [
   {
@@ -41,7 +41,7 @@ const fashionItemsList = [
 ];
 const beautyProductsList = [
   {
-    productImage: "images/img_image_30_190x190.png",
+    productImage: "https://png.pngtree.com/thumb_back/fw800/background/20230425/pngtree-the-nib-of-a-fountain-pen-on-dark-background-image_2511744.jpg",
     productTitle: "Sắc đẹp",
     productDescription: (
       <>
@@ -55,7 +55,7 @@ const beautyProductsList = [
     originalPrice: "328.000đ",
   },
   {
-    productImage: "images/img_image_30_190x190.png",
+    productImage: "https://png.pngtree.com/thumb_back/fw800/background/20230425/pngtree-the-nib-of-a-fountain-pen-on-dark-background-image_2511744.jpg",
     productTitle: "Sắc đẹp",
     productDescription: (
       <>
@@ -103,10 +103,11 @@ export default function HomePagePage() {
       </Helmet>
       <div className="w-full bg-bg-white">
         <div className="flex flex-col items-center">
-          <div className="flex flex-col items-center self-stretch">
+          <div className="flex flex-col items-center self-stretch ">
             <Header2 />
-            <div className="container-xs relative mt-[-34px] md:px-5">
-              <div className="relative mr-2.5 h-[486px] content-end rounded-md bg-gray-100_01 md:mr-0 md:h-auto">
+            
+            <div className="container-xs relative mt-3 md:px-5">
+              <div className="relative mr-2.5 h-[450px] content-end rounded-md border-spacing-3 bg-gradient-to-b from-blue-gray-100 to-blue-gray-600 border-gray-600 bg-gray-200 md:mr-0 md:h-auto">
                 <div className="mx-auto flex w-full px-1">
                   <Slider
                     autoPlay
@@ -122,119 +123,127 @@ export default function HomePagePage() {
                       setSliderState1(e?.item);
                     }}
                     ref={sliderRef1}
-                    items={[...Array(3)].map(() => (
-                      <React.Fragment key={Math.random()}>
-                        <div className="flex items-start md:flex-col">
-                          <div className="mt-[62px] flex w-[30%] flex-col items-start gap-6 md:w-full">
-                            <div className="flex flex-col items-start gap-2.5 self-stretch">
-                              <ButtonDH
-                                color="blue_gray_900_01"
-                                size="xs"
-                                shape="round"
-                                className="min-w-[172px] rounded-md px-3.5 font-medium"
-                              >
-                                Khuyến mãi cuối tháng
-                              </ButtonDH>
+                    items={[...Array(3)].map((_, index) => (
+                      <React.Fragment key={index}>
+                        <div className="flex items-start md:flex-col mt-2">
+                          <div className="mt-[62px] flex w-[30%] flex-col items-start gap-6 md:w-full ml-auto">
+                            <div className="flex flex-col items-start self-stretch">
+                              <div className="flex flex-col items-start self-stretch">
+                              </div>
+                              <br />
                               <Heading
                                 size="heading5xl"
                                 as="h1"
-                                className="text-[48px] font-semibold uppercase leading-[60px] text-blue_gray-900_01 md:text-[44px] sm:text-[38px]"
+                                className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-blue-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
                               >
-                                <>
-                                  BỘ SƯU TẬP
-                                  <br />
-                                  MÙA ĐÔNG
-                                </>
+                                {Array.from("ĐẤU GIÁ VINTAGE").map((letter, index) => (
+                                  <span
+                                    key={index}
+                                    className="letter"
+                                    style={{
+                                      animationDelay: `${index * 0.1}s`, // Đặt độ trễ cho từng chữ
+                                      opacity: 1, // Đặt độ mờ thành 1 khi hoạt ảnh bắt đầu
+                                      animationFillMode: 'forwards', // Để duy trì trạng thái cuối cùng của hoạt ảnh
+                                    }}
+                                  >
+                                    {letter}
+                                  </span>
+                                ))}
                               </Heading>
+
                               <Heading
                                 as="h2"
                                 className="w-[86%] text-[16px] font-normal leading-[150%] text-blue_gray-600 md:w-full"
                               >
-                                Những gì chúng tôi mất hàng giờ để thực hiện sẽ
-                                là của bạn để tận hưởng
+                                Khám phá những món đồ cổ quý giá để sở hữu
                               </Heading>
                             </div>
-                            <ButtonDH
+
+
+                            <Button
                               color="green_A700"
                               size="xl"
                               shape="round"
-                              className="min-w-[176px] rounded-md px-[34px] sm:px-5"
+                              className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4"
                             >
-                              Khám phá ngay
-                            </ButtonDH>
+                              Tham gia ngay
+                            </Button>
                           </div>
                           <div className="relative h-[446px] w-[56%] content-end self-center px-8 md:h-auto md:w-full sm:px-5">
                             <div className="mx-auto h-[360px] flex-1 rounded-[318px] bg-green-a700_19" />
                             <div className="absolute bottom-0 left-0 right-0 top-0 m-auto flex h-max flex-1 items-center px-6 sm:relative sm:flex-col sm:px-5">
-                              <div className="relative h-[428px] flex-1 content-center md:h-auto sm:w-full sm:flex-none sm:self-stretch">
+                              <div className="relative flex-1 content-center md:h-auto sm:w-full sm:flex-none sm:self-stretch">
                                 <Img
-                                  src="images/img_man.png"
-                                  alt="Man Image"
-                                  className="ml-auto h-[428px] flex-1 rounded-md object-cover"
+                                  src="https://assets2.htv.com.vn/Images/1/News/118276/34.jpg"
+                                  alt="Vintage Auction"
+                                  className="ml-auto w-full h-[300px] rounded-md object-cover mr-auto"
                                 />
-                                <div className="absolute bottom-[0.55px] right-[17.46px] m-auto h-[224px] w-[28%] rounded-[50%] bg-gray-900_cc blur-[20.00px] backdrop-opacity-[0.5]" />
                               </div>
-                              <Img
-                                src="images/img_women.png"
-                                alt="Woman Image"
-                                className="relative z-[1] ml-[-186px] h-[446px] w-[50%] rounded-md object-contain sm:ml-0 sm:w-full"
-                              />
                             </div>
                           </div>
                         </div>
+
+                        {/* Nút điều khiển carousel */}
+                        <div className="absolute top-1/2 left-0 right-0 transform -translate-y-1/2 m-auto flex items-center justify-between px-0 ">
+                          <IconButton
+                            variant="outlined"
+                            className="rounded-full bg-white z-10" // Thêm z-index để nút luôn nằm trên hình
+                            onClick={() => {
+                              sliderRef1?.current?.slidePrev();
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M15.75 19.5 8.25 12l7.5-7.5"
+                              />
+                            </svg>
+                          </IconButton>
+                          <IconButton
+                            variant="outlined"
+                            className="rounded-full bg-white z-10" // Thêm z-index để nút luôn nằm trên hình
+                            onClick={() => {
+                              sliderRef1?.current?.slideNext();
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m8.25 4.5 7.5 7.5-7.5 7.5"
+                              />
+                            </svg>
+                          </IconButton>
+                        </div>
                       </React.Fragment>
+
                     ))}
                   />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 top-0 z-[2] m-auto flex h-max flex-1 justify-between gap-5">
-                  {/*<ButtonDH*/}
-                  {/*  onClick={() => {*/}
-                  {/*    sliderRef1?.current?.slidePrev();*/}
-                  {/*  }}*/}
-                  {/*  className="w-[60px] rounded-[24px] px-4 shadow-xs"*/}
-                  {/*>*/}
-                  {/*  <Img src="images/img_arrow_left.svg" />*/}
-                  {/*</ButtonDH>*/}
-                  <IconButton variant="outlined" className="rounded-full"
-                              onClick={() => {
-                                sliderRef?.current?.slidePrev();
-                              }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         strokeWidth={1.5}
-                         stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
-                    </svg>
-                  </IconButton>
-                  {/*<ButtonDH*/}
-                  {/*  onClick={() => {*/}
-                  {/*    sliderRef1?.current?.slideNext();*/}
-                  {/*  }}*/}
-                  {/*  className="mr-1 w-[60px] rounded-[24px] px-4 shadow-xs"*/}
-                  {/*>*/}
-                  {/*  <Img src="images/img_arrow_right_blue_gray_900_1.svg" />*/}
-                  {/*</ButtonDH>*/}
-                  <IconButton variant="outlined" className="rounded-full"
-                              onClick={() => {
-                                sliderRef?.current?.slideNext();
-                              }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         strokeWidth={1.5}
-                         stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
-                    </svg>
-                  </IconButton>
-                </div>
               </div>
             </div>
+
           </div>
 
           {/* free shipping section */}
           <FreeShippingSection />
 
-          {/* recently viewed section */}
-          <RecentlyViewedSection />
+
 
           {/* trending products section */}
           <TrendingProductsSection />
@@ -330,25 +339,25 @@ export default function HomePagePage() {
                   {/*  <Img src="images/img_arrow_left_blue_gray_900.svg" />*/}
                   {/*</ButtonDH>*/}
                   <IconButton variant="outlined" className="rounded-full"
-                                onClick={() => {
-                                  sliderRef?.current?.slidePrev();
-                                }}
+                    onClick={() => {
+                      sliderRef?.current?.slidePrev();
+                    }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         strokeWidth={1.5}
-                         stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
+                      strokeWidth={1.5}
+                      stroke="currentColor" className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                   </IconButton>
                   <IconButton variant="outlined" className="rounded-full"
-                              onClick={() => {
-                                sliderRef?.current?.slideNext();
-                              }}
+                    onClick={() => {
+                      sliderRef?.current?.slideNext();
+                    }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         strokeWidth={1.5}
-                         stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
+                      strokeWidth={1.5}
+                      stroke="currentColor" className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
                   </IconButton>
                   {/*<ButtonDH*/}
@@ -372,7 +381,7 @@ export default function HomePagePage() {
                 <div className="mr-4 flex gap-[26px] self-stretch md:mr-0 md:flex-col">
                   <div className="relative h-[390px] w-[42%] rounded-md bg-gray-100_01 md:w-full">
                     <Img
-                      src="images/img_men_s_clothing.png"
+                      src="https://cdn.pixabay.com/photo/2016/01/09/18/27/camera-1130731_1280.jpg"
                       alt="Mens Clothing Image"
                       className="absolute bottom-[-1px] right-[0.96px] m-auto h-[234px] w-[86%] rounded-md object-contain"
                     />

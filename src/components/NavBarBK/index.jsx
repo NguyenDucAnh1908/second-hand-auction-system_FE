@@ -151,10 +151,14 @@ function NavList() {
           className="font-medium"
           key={index}
         >
-          <ListItem className="flex items-center gap-2 py-2 pr-4 transition-transform hover:bg-green-100 hover:scale-105 hover:font-bold"> {/* Added hover:bg-green-100 */}
-            {item.icon}
-            {item.title}
+          <ListItem className="flex items-center gap-2 py-2 pr-4 transition-transform duration-200 ease-in-out hover:bg-gray-300 hover:scale-105 hover:font-bold rounded-md"> {/* Added hover:bg-gray-300 */}
+            <div className="flex items-center justify-center w-6 h-6"> {/* Optional: Centering icon */}
+              {item.icon}
+
+            </div>
+            <span className="text-base">{item.title}</span> {/* Added span for better styling */}
           </ListItem>
+
         </Typography>
       ))}
     </List>
@@ -173,8 +177,8 @@ function NavBarBK() {
   }, []);
 
   return (
-    <Navbar className="w-full max-w-[1440px] px-5 py-2 bg-white shadow-md rounded-md"> {/* Changed rounded-lg to rounded-md */}
-      <div className="flex items-center justify-between text-black w-full">
+    <Navbar className="w-full max-w-[1440px] px-5 py-2 bg-gradient-to-r from-gray-200 to-gray-300 bg-opacity-80 shadow-lg backdrop-blur-md rounded-md border border-gray-700">
+      <div className="flex items-center justify-between text-white w-full">
         <Typography
           as="a"
           href="#"
@@ -190,7 +194,7 @@ function NavBarBK() {
 
         <IconButton
           variant="text"
-          className="lg:hidden"
+          className="lg:hidden text-white hover:text-blue-200"
           onClick={() => setOpenNav(!openNav)}
         >
           {openNav ? (
@@ -201,6 +205,10 @@ function NavBarBK() {
         </IconButton>
       </div>
     </Navbar>
+
+
+
+
 
   );
 }
