@@ -2,6 +2,7 @@ import { CloseSVG } from "../InputDH/close.jsx";
 import { Text, SelectBox, Img, ButtonDH, InputDH } from "./..";
 import React from "react";
 import NavBarBK from "@/components/NavBarBK/index.jsx";
+import logo from "../../assets/auction-svgrepo-com.svg"
 
 export default function Header2({ ...props }) {
   const [searchBarValue, setSearchBarValue] = React.useState("");
