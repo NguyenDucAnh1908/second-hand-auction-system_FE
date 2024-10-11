@@ -182,78 +182,12 @@ export default function ListOfSellerPage() {
                                                     icon={<MagnifyingGlassIcon className="h-5 w-5"/>}
                                                 />
                                             </div>
-                                            {/*<div className="mt-5">*/}
-                                            {/*        <div className="flex items-center justify-between gap-5">*/}
-                                            {/*            <Heading as="h3" className="text-[18px] font-medium text-blue_gray-900_01">*/}
-                                            {/*                Lọc theo vị trí*/}
-                                            {/*            </Heading>*/}
-                                            {/*            <div className="h-px w-[20px] bg-blue_gray-900_01"/>*/}
-                                            {/*        </div>*/}
-                                            {/*    <div className="flex items-center justify-center">*/}
-                                            {/*        <div className="flex w-[8%] flex-col gap-3.5">*/}
-                                            {/*            <div*/}
-                                            {/*                className="h-[16px] w-[22px] rounded border border-solid border-blue_gray-900_01"/>*/}
-                                            {/*            <Img src="images/img_checkmark_green_a700.svg"*/}
-                                            {/*                 alt="Checkmark Image" className="h-[16px]"/>*/}
-                                            {/*            <div*/}
-                                            {/*                className="h-[16px] w-[22px] rounded border border-solid border-blue_gray-900_01"/>*/}
-                                            {/*            <div*/}
-                                            {/*                className="h-[16px] w-[22px] rounded border border-solid border-blue_gray-900_01"/>*/}
-                                            {/*            <div*/}
-                                            {/*                className="h-[16px] w-[22px] rounded border border-solid border-blue_gray-900_01"/>*/}
-                                            {/*        </div>*/}
-                                            {/*        <Text*/}
-                                            {/*            size="textlg"*/}
-                                            {/*            as="p"*/}
-                                            {/*            className="ml-3 font-bevietnampro text-[15px] font-normal leading-[30px] text-blue_gray-900_01"*/}
-                                            {/*        >*/}
-                                            {/*            <span className="text-blue_gray-900_01">*/}
-                                            {/*                <>*/}
-                                            {/*                    Đang giảm giá*/}
-                                            {/*                    <br/>*/}
-                                            {/*                </>*/}
-                                            {/*            </span>*/}
-                                            {/*            <span className="text-green-a700">*/}
-                                            {/*                <>*/}
-                                            {/*                    Nhà & Bếp*/}
-                                            {/*                    <br/>*/}
-                                            {/*                </>*/}
-                                            {/*            </span>*/}
-                                            {/*            <span className="text-blue_gray-900_01">*/}
-                                            {/*                <>*/}
-                                            {/*                    Nhà & Nội thất*/}
-                                            {/*                    <br/>*/}
-                                            {/*                </>*/}
-                                            {/*            </span>*/}
-                                            {/*            <span className="text-blue_gray-900_01">*/}
-                                            {/*                <>*/}
-                                            {/*                    Điện tử*/}
-                                            {/*                    <br/>*/}
-                                            {/*                </>*/}
-                                            {/*            </span>*/}
-                                            {/*            <span*/}
-                                            {/*                className="text-blue_gray-900_01">Quần áo & Phụ kiện</span>*/}
-                                            {/*        </Text>*/}
-                                            {/*        <Text*/}
-                                            {/*            size="texts"*/}
-                                            {/*            as="p"*/}
-                                            {/*            className="ml-[26px] w-[12%] text-right text-[13px] font-normal leading-[30px] text-blue_gray-900_01"*/}
-                                            {/*        >*/}
-                                            {/*            <>*/}
-                                            {/*                87*/}
-                                            {/*                <br/>*/}
-                                            {/*                92*/}
-                                            {/*                <br/>*/}
-                                            {/*                123*/}
-                                            {/*                <br/>*/}
-                                            {/*                49*/}
-                                            {/*                <br/>*/}
-                                            {/*                12*/}
-                                            {/*            </>*/}
-                                            {/*        </Text>*/}
-                                            {/*    </div>*/}
-                                            {/*</div>*/}
+
                                             <div className="flex flex-col gap-8 mt-12">
+                                                <Heading as="h2"
+                                                         className="text-[18px] font-medium text-blue_gray-900_01">
+                                                    Đánh giá
+                                                </Heading>
                                                 <Radio
                                                     name="description"
                                                     label={
@@ -322,69 +256,10 @@ export default function ListOfSellerPage() {
                                                     }}
                                                 />
                                             </div>
-                                            {/*<div className="mt-2.5 flex flex-col items-start justify-center gap-1">*/}
-                                            {/*    <Text size="textlg" as="p"*/}
-                                            {/*          className="text-[15px] font-normal text-blue_gray-900_01">*/}
-                                            {/*        Xem thêm*/}
-                                            {/*    </Text>*/}
-                                            {/*    <div className="h-[2px] w-[32px] bg-blue_gray-900_01"/>*/}
-                                            {/*</div>*/}
                                         </div>
                                         <div className="h-px bg-gray-200"/>
                                     </div>
                                 </div>
-                                {/*<div className="flex flex-col gap-5">*/}
-                                {/*    <div className="flex items-center justify-between gap-5">*/}
-                                {/*        <Heading as="h3" className="text-[18px] font-medium text-blue_gray-900_01">*/}
-                                {/*            Lọc theo vị trí*/}
-                                {/*        </Heading>*/}
-                                {/*        <div className="h-px w-[20px] bg-blue_gray-900_01"/>*/}
-                                {/*    </div>*/}
-                                {/*    <div className="flex flex-col gap-2.5">*/}
-                                {/*        <InputDH*/}
-                                {/*            shape="round"*/}
-                                {/*            name="Country Field"*/}
-                                {/*            placeholder={`Quốc gia`}*/}
-                                {/*            suffix={*/}
-                                {/*                <div className="flex h-[4px] w-[10px] items-center justify-center">*/}
-                                {/*                    <Img src="images/img_vector.svg" alt="Vector"*/}
-                                {/*                         className="my-1 h-[8px] w-[10px]"/>*/}
-                                {/*                </div>*/}
-                                {/*            }*/}
-                                {/*            className="gap-4 rounded-md border px-[18px]"*/}
-                                {/*        />*/}
-                                {/*        <InputDH*/}
-                                {/*            shape="round"*/}
-                                {/*            name="City Field"*/}
-                                {/*            placeholder={`Tỉnh/ Thành phố`}*/}
-                                {/*            suffix={*/}
-                                {/*                <div className="flex h-[4px] w-[10px] items-center justify-center">*/}
-                                {/*                    <Img src="images/img_vector.svg" alt="Vector"*/}
-                                {/*                         className="my-1 h-[8px] w-[10px]"/>*/}
-                                {/*                </div>*/}
-                                {/*            }*/}
-                                {/*            className="gap-4 rounded-md border px-[18px]"*/}
-                                {/*        />*/}
-                                {/*        <InputDH*/}
-                                {/*            shape="round"*/}
-                                {/*            name="District Field"*/}
-                                {/*            placeholder={`Quận/ Huyện`}*/}
-                                {/*            suffix={*/}
-                                {/*                <div className="flex h-[4px] w-[10px] items-center justify-center">*/}
-                                {/*                    <Img src="images/img_vector.svg" alt="Vector"*/}
-                                {/*                         className="my-1 h-[8px] w-[10px]"/>*/}
-                                {/*                </div>*/}
-                                {/*            }*/}
-                                {/*            className="gap-4 rounded-md border px-[18px]"*/}
-                                {/*        />*/}
-                                {/*        <InputDH*/}
-                                {/*            shape="round"*/}
-                                {/*            name="Zip Code Field"*/}
-                                {/*            placeholder={`Mã vùng`}*/}
-                                {/*            className="rounded-md border px-5"*/}
-                                {/*        />*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
                             </div>
                         </Sider>
                         <Content
