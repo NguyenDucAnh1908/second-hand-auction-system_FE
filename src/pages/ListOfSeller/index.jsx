@@ -6,8 +6,9 @@ import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import {Breadcrumb, Layout, Menu, theme} from 'antd';
 import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
-import {Radio, Typography, Rating, Input} from "@material-tailwind/react";
+import {Radio, Typography, Rating, Input, Select, Option} from "@material-tailwind/react";
 import {MagnifyingGlassIcon} from "@heroicons/react/24/solid";
+import Pagination from "@/components/Pagination/index.jsx";
 
 const {Content, Sider} = Layout;
 
@@ -168,13 +169,6 @@ export default function ListOfSellerPage() {
                                     </div>
                                     <div className="flex flex-col gap-5">
                                         <div>
-                                            {/*<div*/}
-                                            {/*    className="flex rounded-md border border-solid border-gray-200 bg-bg-white px-5 py-3">*/}
-                                            {/*    <Text size="textlg" as="p"*/}
-                                            {/*          className="text-[15px] font-normal text-blue_gray-900_01">*/}
-                                            {/*        Tìm kiếm*/}
-                                            {/*    </Text>*/}
-                                            {/*</div>*/}
                                             <div className="w-full md:w-65">
                                                 <Input
                                                     size="lg"
@@ -279,21 +273,21 @@ export default function ListOfSellerPage() {
                                     Danh sách seller đấu giá
                                 </Heading>
                                 <div className="flex">
-                                    <div className="flex flex-1">
-                                        <Text size="textlg" as="p"
-                                              className="text-[15px] font-normal text-blue_gray-900_01">
-                                            Hiển thị 1–20 của 175 kết quả
-                                        </Text>
+                                    {/*<div className="flex flex-1">*/}
+                                    {/*    <Text size="textlg" as="p"*/}
+                                    {/*          className="text-[15px] font-normal text-blue_gray-900_01">*/}
+                                    {/*        Hiển thị 1–20 của 175 kết quả*/}
+                                    {/*    </Text>*/}
+                                    {/*</div>*/}
+                                    <div className="inline-block min-w-[20px]">
+                                        <Select label="Select Version">
+                                            <Option>???????</Option>
+                                            <Option>???????</Option>
+                                            <Option>???????</Option>
+                                            <Option>???????</Option>
+                                            <Option>???????</Option>
+                                        </Select>
                                     </div>
-                                    <SelectBox
-                                        shape="square"
-                                        indicator={<Img src="images/img_vector.svg" alt="Vector"
-                                                        className="h-[6px] w-[8px]"/>}
-                                        name="Default Dropdown"
-                                        placeholder={`Lọc mặc định`}
-                                        options={dropDownOptions}
-                                        className="w-[12%] gap-2 font-medium text-blue_gray-900_01"
-                                    />
                                 </div>
                                 <div className="grid grid-cols-3 justify-center gap-7 md:grid-cols-2 sm:grid-cols-1">
                                     <Suspense fallback={<div>Loading feed...</div>}>
@@ -301,6 +295,10 @@ export default function ListOfSellerPage() {
                                             <StoreProfile {...d} key={"itemsGrid" + index}/>
                                         ))}
                                     </Suspense>
+
+                                </div>
+                                <div className="my-10 flex justify-center">
+                                    <Pagination/>
                                 </div>
 
                             </div>
