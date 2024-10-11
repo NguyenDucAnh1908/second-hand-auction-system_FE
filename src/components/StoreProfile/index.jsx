@@ -1,5 +1,6 @@
 import { ButtonDH, Heading, Img, Text } from "./..";
 import React from "react";
+import {Button} from "@material-tailwind/react";
 
 
 export default function StoreProfile({
@@ -47,9 +48,17 @@ export default function StoreProfile({
         <Heading size="textxl" as="p" className="font-jost text-[16px] font-normal leading-7 text-blue_gray-900_01">
           {storeDescription}
         </Heading>
-        <ButtonDH variant="fill" shape="round" className="rounded-md border px-[33px]">
-          {viewStoreButtonText}
-        </ButtonDH>
+        {/*<ButtonDH variant="fill" shape="round" className="rounded-md border px-[33px]">*/}
+        {/*  {viewStoreButtonText}*/}
+        {/*</ButtonDH>*/}
+        <Button
+            ripple={false}
+            fullWidth={true}
+            className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
+        >
+          Xem cửa hàng
+        </Button>
+
       </div>
     </div>
   );

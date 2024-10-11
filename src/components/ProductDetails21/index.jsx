@@ -9,6 +9,7 @@ export default function ProductDetails21({
                                              reviewCount = "3,014 đánh giá",
                                              salePrice,
                                              originalPrice = "328.000đ",
+                                             auctionEndTime = "23h:03m:33s",
                                              onBidClick,
                                              ...props
                                          }) {
@@ -17,13 +18,17 @@ export default function ProductDetails21({
             {...props}
             className={`${props.className} flex flex-col items-center w-full border-gray-200 border border-solid bg-bg-white rounded-lg overflow-hidden`}
         >
-            <div className="self-stretch bg-bg-white px-3 py-3 sm:py-5">
+            <div className="relative self-stretch bg-bg-white px-3 py-3 sm:py-5">
                 <Img
                     src={productImage}
                     alt="Fashion Image"
                     className="h-[230px] w-[230px] object-cover rounded-lg"
                 />
+                <div className="absolute top-2 right-2 bg-pink-400 text-white text-sm px-2 py-1 rounded">
+                    Auction ends in {auctionEndTime}
+                </div>
             </div>
+
             <div className="mx-3.5 mb-6 flex flex-col items-start gap-2.5 self-stretch">
                 <Text
                     size="textxs"
