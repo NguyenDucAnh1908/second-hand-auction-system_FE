@@ -8,6 +8,7 @@ import "./styles/font.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/store/configureStoreRedux.js";
+import { MaterialTailwindControllerProvider } from "./context/index.jsx";
 
 // const container = document.getElementById("root");
 // const root = createRoot(container);
@@ -17,11 +18,13 @@ import { store } from "./redux/store/configureStoreRedux.js";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
+    <MaterialTailwindControllerProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/*" element={<App />} />
         </Routes>
       </BrowserRouter>
+      </MaterialTailwindControllerProvider>
     </Provider>
   </StrictMode>
 );
