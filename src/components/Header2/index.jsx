@@ -13,6 +13,7 @@ import {
   IconButton,
 } from "@material-tailwind/react";
 import { Button } from "antd";
+import {ShopOutlined } from '@ant-design/icons';
 
 export default function Header2({ ...props }) {
   const [searchBarValue, setSearchBarValue] = React.useState("");
@@ -82,7 +83,7 @@ export default function Header2({ ...props }) {
               <div className="mr-4 flex w-[32%] items-end justify-center gap-4 md:mr-0 md:w-full sm:flex-col">
                 <div className="flex flex-1 justify-center gap-3.5 sm:self-stretch">
                   <IconButton className="bg-blue-gray-900">
-                    <img src="https://png.pngtree.com/png-vector/20190917/ourlarge/pngtree-store-icon-in-line-style-png-image_1736161.jpg" />
+                    <ShopOutlined style={{ fontSize: '20px' }}/>
                   </IconButton>
                   <Text className="font-semibold text-[14px] leading-[22px] text-gray-900">
                     <span className="text-[13px] font-normal">

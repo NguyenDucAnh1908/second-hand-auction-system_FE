@@ -8,7 +8,7 @@ export default function StaffVerificationSection() {
       {/* staff verification section */}
       <div>
         <div className="flex flex-col gap-14 sm:gap-7">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div className="flex flex-col items-start justify-center gap-1.5">
               <Heading size="textmd" as="h3" className="text-[16px] font-medium text-blue_gray-900">
                 Họ tên đầy đủ
@@ -32,7 +32,7 @@ export default function StaffVerificationSection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div className="flex flex-col items-start justify-center gap-1.5">
               <Heading size="textmd" as="h5" className="text-[16px] font-medium text-blue_gray-900">
                 Email
@@ -59,7 +59,7 @@ export default function StaffVerificationSection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div className="flex flex-col items-start justify-center gap-1.5">
               <Heading size="textmd" as="p" className="text-[16px] font-medium text-blue_gray-900">
                 Nghề nghiệp
