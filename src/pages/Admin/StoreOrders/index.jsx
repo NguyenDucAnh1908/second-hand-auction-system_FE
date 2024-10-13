@@ -1,7 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { PencilIcon } from "@heroicons/react/24/solid";
+import {useNavigate} from "react-router-dom"; // Import useNavigate
+import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
+import {PencilIcon} from "@heroicons/react/24/solid";
 import {
     Card,
     CardHeader,
@@ -18,6 +18,7 @@ import {
     IconButton,
     Tooltip,
 } from "@material-tailwind/react";
+import Pagination from "@/components/Pagination/index.jsx";
 
 const TABS = [
     {
@@ -216,19 +217,9 @@ export default function StoreOrders() {
                             </tbody>
                         </table>
                     </CardBody>
-                    <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-                        <Typography variant="small" color="blue-gray" className="font-normal">
-                            Page 1 of 10
-                        </Typography>
-                        <div className="flex gap-2">
-                            <Button variant="outlined" size="sm">
-                                Previous
-                            </Button>
-                            <Button variant="outlined" size="sm">
-                                Next
-                            </Button>
-                        </div>
-                    </CardFooter>
+                    <div className="flex justify-center items-center mt-4">
+                        <Pagination/>
+                    </div>
                 </Card>
             </div>
         </>

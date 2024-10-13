@@ -1,9 +1,14 @@
-import { ButtonDH, Radio, RadioGroup, Heading, TextArea, InputDH } from "../../../components";
+import { ButtonDH, Radio, RadioGroup, Heading, InputDH } from "../../../components";
 import TimeDisplayRow from "../../../components/TimeDisplayRow";
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import { Flex, Input } from 'antd';
+import { Button } from "@material-tailwind/react";
+const { TextArea } = Input;
+const onChange = (e) => {
+    console.log('Change:', e.target.value);
+};
 export default function AuctionCreationSection1() {
 
     const [startDate, setStartDate] = useState(new Date());
@@ -13,11 +18,11 @@ export default function AuctionCreationSection1() {
         <>
             {/* auction creation section */}
             <div className=" w-[100%] ">
-                <div className="flex flex-col items-center gap-10">
+                <div className="flex flex-col items-center gap-4">
                     <Heading
                         size="textxl"
                         as="h2"
-                        className="bg-green-700 rounded-[12px] bg-green-500 px-[34px] pb-1.5 pt-0.5 text-[25px] font-medium text-white md:text-[23px] sm:px-5 sm:text-[21px]"
+                        className="rounded-[12px] px-[34px] mt-12 pb-1.5 pt-0.5 text-[25px] font-medium text-black md:text-[23px] sm:px-5 sm:text-[21px]"
                     >
                         Thông tin đấu giá
                     </Heading>
@@ -26,62 +31,70 @@ export default function AuctionCreationSection1() {
                             <div className="flex flex-col gap-10 self-stretch md:ml-0">
                                 {/* Time and Price Input Fields */}
                                 <div className="flex items-center justify-between self-stretch md:flex-col">
-                                    <div className="flex flex-1 flex-col gap-10 md:w-full">
-                                        <div className="flex justify-between px-[200px]">
+                                    <div className="flex flex-1 flex-col mt-12 gap-10 md:w-full">
+                                        <div className="grid grid-cols-2 gap-x-10 gap-y-6 px-[200px]">
+                                            {/* Thời gian bắt đầu */}
                                             <div className="flex flex-col">
-                                                <label className="text-[15px] font-medium text-black-900">Thời gian bắt đầu:</label>
+                                                <label className="text-[15px] font-medium text-black-900">Thời gian bắt
+                                                    đầu:</label>
                                                 <DatePicker
                                                     selected={startDate}
                                                     onChange={(date) => setStartDate(date)}
                                                     dateFormat="dd/MM/yyyy"
-                                                    className="border rounded-md px-3 py-2"
+                                                    className="border rounded-md px-3 py-2 mt-2"
                                                 />
                                             </div>
+
+                                            {/* Thời gian kết thúc */}
                                             <div className="flex flex-col">
-                                                <label className="text-[15px] font-medium text-black-900">Thời gian kết thúc:</label>
+                                                <label className="text-[15px] font-medium text-black-900">Thời gian kết
+                                                    thúc:</label>
                                                 <DatePicker
                                                     selected={endDate}
                                                     onChange={(date) => setEndDate(date)}
                                                     dateFormat="dd/MM/yyyy"
-                                                    className="border rounded-md px-3 py-2"
+                                                    className="border rounded-md px-3 py-2 mt-2"
+                                                />
+                                            </div>
+
+                                            {/* Giá khởi điểm */}
+                                            <div className="flex flex-col">
+                                                <label className="text-[15px] font-medium text-black-900">Giá khởi
+                                                    điểm:</label>
+                                                <InputDH
+                                                    shape="round"
+                                                    name="Starting Price"
+                                                    placeholder={`VND`}
+                                                    className="rounded-md border px-3 mt-2 bg-white"
+                                                />
+                                            </div>
+
+                                            {/* Giá mong muốn */}
+                                            <div className="flex flex-col">
+                                                <label className="text-[15px] font-medium text-black-900">Giá mong
+                                                    muốn:</label>
+                                                <InputDH
+                                                    shape="round"
+                                                    name="Desired Price"
+                                                    placeholder={`VND`}
+                                                    className="rounded-md bg-white border px-3 mt-2"
                                                 />
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <div className="flex flex-col gap-4">
-                                            <div className="flex justify-between mx-[200px]">
-                                                <div className="flex flex-col">
-                                                    <label className="text-[15px] font-medium text-black-900">Giá khởi điểm:</label>
-                                                    <InputDH
-                                                        shape="round"
-                                                        name="Starting Price"
-                                                        placeholder={`VND`}
-                                                        className="rounded-md border px-3"
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <label className="text-[15px] font-medium text-black-900">Giá mong muốn:</label>
-                                                    <InputDH
-                                                        shape="round"
-                                                        name="Desired Price"
-                                                        placeholder={`VND`}
-                                                        className="rounded-md border px-3"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="flex flex-col items-center">
-                                                <div className="flex flex-col items-center w-full">
-                                                    <label className="text-[15px] font-medium text-black-900 mb-1">Mô tả:</label>
-                                                    <TextArea
-                                                        shape="round"
-                                                        name="Description TextArea"
-                                                        className="rounded-md !border !border-black-900 px-3 w-[80%] min-h-[100px] py-2" // Điều chỉnh chiều rộng và chiều cao tối thiểu
-                                                    />
-                                                </div>
-                                            </div>
-
-                                        </div>
+                                </div>
+                                <div className="flex flex-col items-center">
+                                    <div className="flex flex-col items-center w-full">
+                                        <label className="text-[15px] font-medium text-black-900 mb-1">Mô tả:</label>
+                                        <TextArea
+                                            showCount
+                                            maxLength={100}
+                                            onChange={onChange}
+                                            placeholder="disable resize"
+                                            style={{ height: 200, resize: 'none' }}
+                                            className="rounded-md !border !border-black-900 px-3 w-[65%] min-h-[100px] py-2"
+                                        />
                                     </div>
                                 </div>
 
@@ -117,8 +130,14 @@ export default function AuctionCreationSection1() {
                             {/* Buttons for auction actions */}
                             <div className="mt-8 flex justify-center mr-[450px]">
                                 <div className="flex gap-4">
-                                    <button className="rounded-md bg-blue-600 px-4 py-2 text-white font-bold hover:bg-blue-500">Tạo đấu giá</button>
-                                    <button className="rounded-md bg-red-600 px-4 py-2 text-white font-bold hover:bg-red-500">Hủy tạo</button>
+                                    <Button
+                                        className="rounded-md bg-blue-600 px-4 py-2 text-white font-bold hover:bg-blue-500">Tạo
+                                        đấu giá
+                                    </Button>
+                                    <Button
+                                        className="rounded-md bg-red-600 px-4 py-2 text-white font-bold hover:bg-red-500">Hủy
+                                        tạo
+                                    </Button>
                                 </div>
                             </div>
 

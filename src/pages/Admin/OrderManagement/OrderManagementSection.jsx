@@ -1,20 +1,19 @@
-import { Img, SelectBox, Heading, Text, InputDH } from "../../../components";
-import { CloseSVG } from "../../../components/InputDH/close.jsx";
-import { ReactTable } from "../../../components/ReactTable";
-import { createColumnHelper } from "@tanstack/react-table";
-import React, { useState } from 'react';
+import {Img, SelectBox, Heading, Text, InputDH} from "../../../components";
+import {CloseSVG} from "../../../components/InputDH/close.jsx";
+import {ReactTable} from "../../../components/ReactTable";
+import {createColumnHelper} from "@tanstack/react-table";
+import React, {useState} from 'react';
 import {Button, Card, Option, Select, Typography} from "@material-tailwind/react";
 import {Tag} from "antd";
 import {CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined} from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
 
 const dropDownOptions = [
-    { value: 'waiting', label: 'Đang chờ', color: '#FFC107' },
-    { value: 'shipping', label: 'Đang vận chuyển', color: '#2196F3' },
-    { value: 'canceled', label: 'Đã Hủy', color: '#F44336' },
-    { value: 'success', label: 'Thành Công', color: '#4CAF50' },
+    {value: 'waiting', label: 'Đang chờ', color: '#FFC107'},
+    {value: 'shipping', label: 'Đang vận chuyển', color: '#2196F3'},
+    {value: 'canceled', label: 'Đã Hủy', color: '#F44336'},
+    {value: 'success', label: 'Thành Công', color: '#4CAF50'},
 ];
-
 
 
 const tableData = [
@@ -147,9 +146,10 @@ export default function OrderManagementSection() {
                             onChange={(e) => setSearchBarValue(e.target.value)}
                             suffix={
                                 searchBarValue?.length > 0 ? (
-                                    <CloseSVG onClick={() => setSearchBarValue("")} height={16} width={18} fillColor="#626974ff" />
+                                    <CloseSVG onClick={() => setSearchBarValue("")} height={16} width={18}
+                                              fillColor="#626974ff"/>
                                 ) : (
-                                    <Img src="/images/img_search.svg" alt="Search" className="h-[16px] w-[18px]" />
+                                    <Img src="/images/img_search.svg" alt="Search" className="h-[16px] w-[18px]"/>
                                 )
                             }
                             className="flex h-[40px] w-[20%] items-center justify-center gap-1.5 rounded bg-bg-white px-4 text-[16px] text-blue_gray-600 shadow-xs sm:w-full"
@@ -227,22 +227,22 @@ export default function OrderManagementSection() {
                                     </td>
                                     <td className="p-4">
                                         {status === "Available" && (
-                                            <Tag icon={<CheckCircleOutlined />} color="success">
+                                            <Tag icon={<CheckCircleOutlined/>} color="success">
                                                 Available
                                             </Tag>
                                         )}
                                         {status === "pending" && (
-                                            <Tag icon={<SyncOutlined spin />} color="processing">
+                                            <Tag icon={<SyncOutlined spin/>} color="processing">
                                                 Pending
                                             </Tag>
                                         )}
                                         {status === "UnAvailable" && (
-                                            <Tag icon={<CloseCircleOutlined />} color="error">
+                                            <Tag icon={<CloseCircleOutlined/>} color="error">
                                                 UnAvailable
                                             </Tag>
                                         )}
                                         {status === "Fail" && (
-                                            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                                            <Tag icon={<ExclamationCircleOutlined/>} color="warning">
                                                 Fail
                                             </Tag>
                                         )}
@@ -282,9 +282,8 @@ export default function OrderManagementSection() {
                         </table>
                     </Card>
                     <div className="flex justify-center items-center mt-4">
-                        <Pagination />
+                        <Pagination/>
                     </div>
-
                 </div>
             </div>
         </div>
