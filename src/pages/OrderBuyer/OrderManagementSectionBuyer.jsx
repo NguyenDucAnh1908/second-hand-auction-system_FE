@@ -3,191 +3,64 @@ import { CloseSVG } from "../../components/InputDH/close.jsx";
 import { ReactTable } from "../../components/ReactTable/index.jsx";
 import { createColumnHelper } from "@tanstack/react-table";
 import React, { useState } from 'react';
+import {Button, Card, Typography, Select, Option} from "@material-tailwind/react";
+import {Tag} from "antd";
+import {CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined} from "@ant-design/icons";
+import Pagination from "@/components/Pagination/index.jsx";
 
 
-
-
-
-const dropDownOptions = [
-    { value: 'waiting', label: 'Đang chờ', color: '#FFC107' },
-    { value: 'shipping', label: 'Đang vận chuyển', color: '#2196F3' },
-    { value: 'canceled', label: 'Đã Hủy', color: '#F44336' },
-    { value: 'success', label: 'Thành Công', color: '#4CAF50' },
+const TABLE_HEAD = [
+    "Number",
+    "Hình ảnh",
+    "Sản phẩm",
+    "Thời gian",
+    "Trạng thái",
+    "Người bán",
+    "Tổng doanh thu",
+    "Tùy chỉnh"
 ];
 
-const tableData = [
+const TABLE_ROWS = [
     {
-        idHeader: "#6548",
-        createdHeader: "Đồng Hồ",
-        productImage: "images/img_giuong.png",
-        customerHeader: "23/11/2023",
-        totalHeader: "hehhe",
-        profitHeader: "50.000đ",
-        statusHeader: { label: 'Đang chờ', color: '#FFC107' }, // Trạng thái
+        number: "#MS-415646",
+        product: "Smartphone",
+        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+        time: "31 Jan 2024",
+        status: "Available",
+        sellerHeader: "han so hee",
+        totalHeader: "$500",
     },
     {
-        idHeader: "#6549",
-        createdHeader: "Máy Tính",
-        productImage: "images/img_giuong.png",
-        customerHeader: "24/11/2023",
-        totalHeader: "hehhe",
-        profitHeader: "100.000đ",
-        statusHeader: { label: 'Đang vận chuyển', color: '#2196F3' },
+        number: "#MS-415647",
+        product: "Laptop",
+        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+        time: "24 Jan 2024",
+        status: "pending",
+        sellerHeader: "han so hee",
+        totalHeader: "$1000",
     },
     {
-        idHeader: "#6550",
-        createdHeader: "Điện Thoại",
-        productImage: "images/img_giuong.png",
-        customerHeader: "25/11/2023",
-        totalHeader: "cc",
-        profitHeader: "70.000đ",
-        statusHeader: { label: 'Đã Hủy', color: '#F44336' },
+        number: "#MS-415648",
+        product: "Tablet",
+        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+        time: "12 Jan 2024",
+        status: "UnAvailable",
+        sellerHeader: "han so hee",
+        totalHeader: "$300",
     },
     {
-        idHeader: "#6551",
-        createdHeader: "Máy Ảnh",
-        productImage: "images/img_giuong.png",
-        customerHeader: "26/11/2023",
-        totalHeader: "hehhe",
-        profitHeader: "150.000đ",
-        statusHeader: { label: 'Thành Công', color: '#4CAF50' },
+        number: "#MS-415649",
+        product: "Smartwatch",
+        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
+        time: "10 Jan 2024",
+        status: "Fail",
+        sellerHeader: "han so hee",
+        totalHeader: "$200",
     },
 ];
-
 
 export default function OrderManagementSectionBuyer() {
     const [searchBarValue, setSearchBarValue] = React.useState("");
-
-  
-
-
-    const tableColumns = React.useMemo(() => {
-        const tableColumnHelper = createColumnHelper();
-        return [
-            tableColumnHelper.accessor("idHeader", {
-                cell: (info) => (
-                    <div className="flex px-[18px]">
-                        <Heading size="headings" as="p" className="text-[15px] font-semibold text-blue_gray-900">
-                            {info.getValue()}
-                        </Heading>
-                    </div>
-                ),
-                header: (info) => (
-                    <div className="flex py-4 pl-[18px] pr-4">
-                        <Heading size="headingmd" as="h2" className="text-[16px] font-semibold text-blue_gray-900">
-                            Mã ID
-                        </Heading>
-                    </div>
-                ),
-                meta: { width: "88px" },
-            }),
-            tableColumnHelper.accessor("createdHeader", {
-                cell: (info) => {
-                    const row = info.row.original;
-                    return (
-                        <div className="ml-[126px] flex items-center">
-                            <Img
-                                src={row.productImage}
-                                alt={info.getValue()}
-                                className="w-10 h-10 object-cover mr-3"
-                            />
-                            <Text size="textxs" as="p" className="self-end text-[15px] font-normal text-blue_gray-900">
-                                {info.getValue()}
-                            </Text>
-                        </div>
-                    );
-                },
-                header: (info) => (
-                    <div className="ml-[126px] flex py-3.5">
-                        <Heading size="headingmd" as="h3" className="self-end text-[16px] font-semibold text-blue_gray-900">
-                            Sản phẩm
-                        </Heading>
-                    </div>
-                ),
-                meta: { width: "250px" },
-            }),
-            
-            tableColumnHelper.accessor("customerHeader", {
-                cell: (info) => (
-                    <div className="flex ml-[100px]"> {/* Added ml-[100px] to create a gap */}
-                        <Text size="textxs" as="p" className="self-end text-[15px] font-normal text-blue_gray-900">
-                            {info.getValue()}
-                        </Text>
-                    </div>
-                ),
-                header: (info) => (
-                    <div className="flex py-4 ml-[100px]"> {/* Added ml-[100px] to create a gap */}
-                        <Heading size="headingmd" as="h4" className="self-end text-[16px] font-semibold text-blue_gray-900">
-                            Ngày
-                        </Heading>
-                    </div>
-                ),
-                meta: { width: "156px" },
-            }),
-            
-            tableColumnHelper.accessor("totalHeader", {
-                cell: (info) => (
-                    <div className="flex px-[18px]">
-                        <Text as="p" className="text-[16px] font-normal text-blue_gray-900">
-                            {info.getValue()}
-                        </Text>
-                    </div>
-                ),
-                header: (info) => (
-                    <div className="flex p-4">
-                        <Heading size="headingmd" as="h5" className="text-[16px] font-semibold text-blue_gray-900">
-                            Ghi chú
-                        </Heading>
-                    </div>
-                ),
-                meta: { width: "166px" },
-            }),
-            tableColumnHelper.accessor("profitHeader", {
-                cell: (info) => (
-                    <div className="ml-[72px] flex flex-wrap items-center">
-                        <Text as="p" className="text-[16px] font-normal text-blue_gray-900">
-                            <span>50.000</span>
-                            <span>đ</span>
-                        </Text>
-                       
-                    </div>
-                ),
-                header: (info) => (
-                    <div className="ml-[72px] flex py-3.5">
-                        <Heading size="headingmd" as="h6" className="self-end text-[16px] font-semibold text-blue_gray-900">
-                            Tổng
-                        </Heading>
-                    </div>
-                ),
-                meta: { width: "198px" },
-            }),
-            tableColumnHelper.accessor("statusHeader", {
-                cell: (info) => {
-                    const status = info.getValue(); 
-                    
-                    return (
-                        <div
-                            className="flex w-[60%] items-center justify-between py-1 px-3 text-[13px] font-semibold rounded"
-                            style={{
-                                borderColor: status.color,
-                                backgroundColor: status.color + '28',
-                            }}
-                        >
-                            {status.label}
-                        </div>
-                    );
-                },
-                header: (info) => (
-                    <div className="flex flex-1 py-3.5 pr-[18px]">
-                        <Heading size="headingmd" as="h6" className="self-end text-[16px] font-semibold text-blue_gray-900">
-                            Trạng thái
-                        </Heading>
-                    </div>
-                ),
-                meta: { width: "242px" },
-            }),            
-        ];
-    }, );
 
     return (
         <div>
@@ -208,23 +81,128 @@ export default function OrderManagementSectionBuyer() {
                             }
                             className="flex h-[40px] w-[20%] items-center justify-center gap-1.5 rounded bg-bg-white px-4 text-[16px] text-blue_gray-600 shadow-xs sm:w-full"
                         />
-                        <SelectBox
-                            name="Category Filter"
-                            placeholder={`Lọc bởi danh mục`}
-                            options={dropDownOptions}
-                            className="flex w-[25%] gap-1.5 rounded-md bg-bg-white px-4 py-2.5 text-[14px] text-blue_gray-600 shadow-xs sm:w-full"
-                        />
+                        <div className="flex justify-between gap-5 sm:flex-col mt-2">
+                        <Select size="lg" label="Select Version">
+                            <Option>Tat ca</Option>
+                            <Option>Dang cho</Option>
+                            <Option>Dang van chuyen</Option>
+                            <Option>Da huy</Option>
+                            <Option>Thanh cong</Option>
+                        </Select>
+                        </div>
                     </div>
-                    <ReactTable
-                        size="xs"
-                        bodyProps={{ className: "before:content-['-'] before:opacity-0 before:leading-[56px]" }}
-                        headerCellProps={{ className: "bg-gray-100" }}
-                        headerProps={{ className: "border-gray-100 border-b border-solid" }}
-                        cellProps={{ className: "border-indigo-50 border-b border-solid" }}
-                        className="md:block md:overflow-x-auto md:whitespace-nowrap"
-                        columns={tableColumns}
-                        data={tableData}
-                    />
+                    <Card className="h-full w-full overflow-auto">
+                        <table className="w-full min-w-max table-auto text-left">
+                            <thead>
+                            <tr>
+                                {TABLE_HEAD.map((head) => (
+                                    <th key={head} className="p-4 pt-10">
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-bold leading-none"
+                                        >
+                                            {head}
+                                        </Typography>
+                                    </th>
+                                ))}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {TABLE_ROWS.map(({
+                                                 number,
+                                                 product,
+                                                 image,
+                                                 time,
+                                                 status,
+                                                 sellerHeader,
+                                                 totalHeader,
+                                                 profitHeader
+                                             }) => (
+                                <tr key={number}>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-bold"
+                                        >
+                                            {number}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <img
+                                            src={image}
+                                            alt={product}
+                                            className="w-16 h-16 object-cover rounded"
+                                        />
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                            {product}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                            {time}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        {status === "Available" && (
+                                            <Tag icon={<CheckCircleOutlined/>} color="success">
+                                                Available
+                                            </Tag>
+                                        )}
+                                        {status === "pending" && (
+                                            <Tag icon={<SyncOutlined spin/>} color="processing">
+                                                Pending
+                                            </Tag>
+                                        )}
+                                        {status === "UnAvailable" && (
+                                            <Tag icon={<CloseCircleOutlined/>} color="error">
+                                                UnAvailable
+                                            </Tag>
+                                        )}
+                                        {status === "Fail" && (
+                                            <Tag icon={<ExclamationCircleOutlined/>} color="warning">
+                                                Fail
+                                            </Tag>
+                                        )}
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                            {sellerHeader}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className="font-normal text-gray-600"
+                                        >
+                                            {totalHeader}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <div className="flex items-center gap-2">
+                                            <Button color="blue">Chi tiết</Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </Card>
+                    <div className="flex justify-center items-center mt-4">
+                        <Pagination/>
+                    </div>
                 </div>
             </div>
         </div>

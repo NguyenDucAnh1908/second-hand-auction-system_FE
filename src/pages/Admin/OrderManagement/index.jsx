@@ -14,7 +14,7 @@ export default function OrderManagementAdmin() {
           selectedTabClassName=""
           selectedTabPanelClassName="tab-panel--selected"
         >
-          <Status />
+          {/*<Status />*/}
           <OrderManagementSection />
         </Tabs>
       </div>

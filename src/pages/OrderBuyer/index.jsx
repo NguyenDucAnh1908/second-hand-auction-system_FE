@@ -73,8 +73,6 @@ export default function OrderManagementBuyer() {
 
                                     <OrderManagementSectionBuyer />
 
-
-
                                 </Tabs>
                             </div>
                         </Content>
