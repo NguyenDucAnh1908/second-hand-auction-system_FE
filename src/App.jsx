@@ -27,6 +27,8 @@ import ListOfSellerPage from "./pages/ListOfSeller/index.jsx";
 import RegisterAuction from "./pages/RegisterAuction-Buyer/RegisterAuction.jsx";
 import ForgotPassword from "./pages/ForgotPassword/index.jsx";
 import VerifyAccount from "./pages/Register/VerifyAccount.jsx";
+import WithdrawMoney from "./pages/Seller/WithdrawMoney/index.jsx";
+import ListTransaction from "./pages/ListTransactions/index.jsx";
 function App() {
     return (
         <Routes>
@@ -61,8 +63,10 @@ function App() {
             {/* seller */}
             <Route path="/dashboard-seller/*" element={<DashboardSeller />} /> 
             <Route path="RegisterProduct" index element={<RegisterProductPage/>}/>
+            <Route path="WithdrawMoney" index element={<WithdrawMoney/>}/>
             <Route path="ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
             <Route path="OrderManagementSeller" index element={<OrderManagementSeller/>}/>
+            <Route path="ListTransaction" index element={<ListTransaction/>}/>
 
             {/* test */}
             <Route path="RegisterAuction" index element={<RegisterAuction/>}/>

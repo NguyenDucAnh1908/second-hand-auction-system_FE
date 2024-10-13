@@ -137,33 +137,32 @@ function NavList() {
   return (
     <List className="mb-6 mt-4 p-0 lg:mb-0 lg:mt-0 lg:flex-row lg:p-1">
       {[
-        { title: "Trang chủ", icon: <HomeIcon className="h-5 w-5 mr-2" /> },
-        { title: "Sản phẩm", icon: <ShoppingCartIcon className="h-5 w-5 mr-2" /> },
-        { title: "Liên hệ", icon: <PhoneIcon className="h-5 w-5 mr-2" /> },
-        { title: "Bài viết", icon: <DocumentIcon className="h-5 w-5 mr-2" /> },
-        { title: "Chính sách", icon: <InformationCircleIcon className="h-5 w-5 mr-2" /> },
+        { title: "Trang chủ", icon: <HomeIcon className="nav-icon" /> },
+        { title: "Sản phẩm", icon: <ShoppingCartIcon className="nav-icon" /> },
+        { title: "Liên hệ", icon: <PhoneIcon className="nav-icon" /> },
+        { title: "Bài viết", icon: <DocumentIcon className="nav-icon" /> },
+        { title: "Chính sách", icon: <InformationCircleIcon className="nav-icon" /> },
       ].map((item, index) => (
         <Typography
           as="a"
           href="#"
           variant="small"
           color="blue-gray"
-          className="font-medium"
+          className="font-medium nav-item"
           key={index}
         >
-          <ListItem className="flex items-center gap-2 py-2 pr-4 transition-transform duration-200 ease-in-out hover:bg-gray-300 hover:scale-105 hover:font-bold rounded-md"> {/* Added hover:bg-gray-300 */}
-            <div className="flex items-center justify-center w-6 h-6"> {/* Optional: Centering icon */}
+          <ListItem className="flex items-center gap-2 py-2 pr-4 transition-transform duration-200 ease-in-out">
+            <div className="flex items-center justify-center w-6 h-6">
               {item.icon}
-
             </div>
-            <span className="text-base">{item.title}</span> {/* Added span for better styling */}
+            <span className="text-base">{item.title}</span>
           </ListItem>
-
         </Typography>
       ))}
     </List>
   );
 }
+
 
 
 function NavBarBK() {

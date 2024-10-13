@@ -9,8 +9,8 @@ export default function FreeShippingSection() {
       <div className="mt-5 flex justify-center self-stretch">
         <div className="container-xs flex justify-center md:px-5">
           <div className="w-full rounded-md border border-solid border-gray-200 px-[26px] py-[30px] sm:p-5">
-            <div className="mb-1 ml-3.5 flex md:ml-0 md:flex-col">
-              <DeliveryInfo className="w-[14%]" />
+            <div className="mb-1 ml-3.5 flex md:ml-0 ">
+              <DeliveryInfo className="w-[10%]" />
               <Text
                 size="textlg"
                 as="p"

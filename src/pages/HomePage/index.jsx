@@ -94,18 +94,13 @@ export default function HomePagePage() {
     <>
       <Helmet>
         <title>
-          Home Fashion - Discover Winter Collection and Exclusive Deals
+          Home Page
         </title>
-        <meta
-          name="description"
-          content="Explore our Home Fashion page for the latest winter collection and enjoy exclusive end-of-month promotions. Free shipping on orders over 200K and a 30-day money-back guarantee."
-        />
       </Helmet>
       <div className="w-full bg-bg-white">
         <div className="flex flex-col items-center">
           <div className="flex flex-col items-center self-stretch ">
             <Header2 />
-            
             <div className="container-xs relative mt-3 md:px-5">
               <div className="relative mr-2.5 h-[450px] content-end rounded-md border-spacing-3 bg-gradient-to-b from-blue-gray-100 to-blue-gray-600 border-gray-600 bg-gray-200 md:mr-0 md:h-auto">
                 <div className="mx-auto flex w-full px-1">
@@ -125,7 +120,7 @@ export default function HomePagePage() {
                     ref={sliderRef1}
                     items={[...Array(3)].map((_, index) => (
                       <React.Fragment key={index}>
-                        <div className="flex items-start md:flex-col mt-2">
+                        <div className="flex items-start md:flex-col mt-2 rounded-full object-fill ">
                           <div className="mt-[62px] flex w-[30%] flex-col items-start gap-6 md:w-full ml-auto">
                             <div className="flex flex-col items-start self-stretch">
                               <div className="flex flex-col items-start self-stretch">
@@ -134,7 +129,7 @@ export default function HomePagePage() {
                               <Heading
                                 size="heading5xl"
                                 as="h1"
-                                className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-blue-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
+                                className="text-[48px] font-semibold  uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-blue-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
                               >
                                 {Array.from("ĐẤU GIÁ VINTAGE").map((letter, index) => (
                                   <span
@@ -240,8 +235,8 @@ export default function HomePagePage() {
 
           </div>
 
-          {/* free shipping section */}
-          <FreeShippingSection />
+          {/* free shipping section
+          <FreeShippingSection /> */}
 
 
 
