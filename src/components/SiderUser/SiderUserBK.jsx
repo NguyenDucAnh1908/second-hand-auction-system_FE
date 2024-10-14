@@ -25,11 +25,22 @@ import {
     ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 
+import { useNavigate } from "react-router-dom";
+
+
+
 export function SiderUserBK() {
     const [open, setOpen] = React.useState(0);
     const handleOpen = (value) => {
         setOpen(open === value ? 0 : value);
     };
+
+    const navigate = useNavigate(); 
+
+    const handleNavigate = (path) => {
+        navigate(path);
+    };
+
     return (
         <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
             <div className="mb-2 p-4">
@@ -66,7 +77,7 @@ export function SiderUserBK() {
                     </ListItem>
                     <AccordionBody className="py-1">
                         <List className="p-0">
-                            <ListItem>
+                            <ListItem onClick={() => handleNavigate('/ProfileDetail')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
@@ -78,12 +89,13 @@ export function SiderUserBK() {
                                 </ListItemPrefix>
                                 Danh sách yêu thích
                             </ListItem>
-                            <ListItem>
+                            <ListItem  onClick={() => handleNavigate('/Address')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
                                 Quản lý địa chỉ
                             </ListItem>
+                           
                         </List>
                     </AccordionBody>
                 </Accordion>
@@ -108,11 +120,11 @@ export function SiderUserBK() {
                     </ListItem>
                     <AccordionBody className="py-1">
                         <List className="p-0">
-                            <ListItem>
+                            <ListItem  onClick={() => handleNavigate('/OrderManagementBuyer')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
-                                Analytics
+                                Danh sách đơn hàng
                             </ListItem>
                             <ListItem>
                                 <ListItemPrefix>
@@ -150,13 +162,13 @@ export function SiderUserBK() {
                     </ListItem>
                     <AccordionBody className="py-1">
                         <List className="p-0">
-                            <ListItem>
+                            <ListItem  onClick={() => handleNavigate('/DepositMoney')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
                                 Nạp tiền
                             </ListItem>
-                            <ListItem>
+                            <ListItem  onClick={() => handleNavigate('/HistoryPage')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
