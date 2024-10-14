@@ -10,6 +10,7 @@ import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
 import FooterBK from "@/components/FooterBK/index.jsx";
 import Pagination from "@/components/Pagination/index.jsx";
 import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
+import HorizontalTab from "../../components/HorizontalTabSeller";
 const { Panel } = Collapse;
 const {Content, Sider} = Layout;
 
@@ -20,92 +21,10 @@ const brands = [
     { name: "Dell", count: 49 },
     { name: "Lenovo", count: 12 },
 ];
-const fashionItemsGrid = [
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
 
-    // ... (other items remain unchanged)
-];
 
 export default function SellerDetailPage() {
-    const {
-        token: {colorBgContainer, borderRadiusLG},
-    } = theme.useToken();
+   
     return (
         <>
             <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
@@ -114,7 +33,8 @@ export default function SellerDetailPage() {
                     className="flex w-full flex-col items-center gap-[104px] overflow-auto bg-bg-white py-[66px] md:gap-[78px] md:py-5 sm:gap-[52px]">
                     <SellerDetailHeader/>
                 </div>
-                    <Content
+                <HorizontalTab/>
+                    {/* <Content
                         style={{
                             padding: '0 48px',
                             flex: 1, // Cho phép Content chiếm không gian còn lại
@@ -221,7 +141,7 @@ export default function SellerDetailPage() {
                                 </div>
                             </Content>
                         </Layout>
-                    </Content>
+                    </Content> */}
                 <FooterBK
                     className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
             </Layout>
