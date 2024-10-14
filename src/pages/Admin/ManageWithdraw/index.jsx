@@ -1,219 +1,384 @@
 import React, { useState } from 'react';
+import { PencilIcon } from "@heroicons/react/24/solid";
+import {
+    ArrowDownTrayIcon,
+    MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
+import {
+    Card,
+    CardHeader,
+    Typography,
+    Button,
+    CardBody,
+    Chip,
+    CardFooter,
+    Avatar,
+    IconButton,
+    Tooltip,
+    Input,
+} from "@material-tailwind/react";
+import { Col, Divider, Drawer, List, Row } from 'antd';
+
+import Pagination from "@/components/Pagination/index.jsx";
+
+const TABLE_HEAD = ["Name", "Amount", "Date", "Status", "Account","Reason", "Detail",""];
+
+const TABLE_ROWS = [
+    {
+        img: "https://docs.material-tailwind.com/img/logos/logo-spotify.svg",
+        name: "Spotify",
+        amount: "$2,500",
+        date: "Wed 3:00pm",
+        status: "paid",
+        account: "visa",
+        accountNumber: "1234",
+        expiry: "06/2026",
+        reason: 'Product Return roduct Return roduct Return roduct Return'
+    },
+    {
+        img: "https://docs.material-tailwind.com/img/logos/logo-amazon.svg",
+        name: "Amazon",
+        amount: "$5,000",
+        date: "Wed 1:00pm",
+        status: "paid",
+        account: "master-card",
+        accountNumber: "1234",
+        expiry: "06/2026",
+        reason: 'Product Return'
+    },
+    {
+        img: "https://docs.material-tailwind.com/img/logos/logo-pinterest.svg",
+        name: "Pinterest",
+        amount: "$3,400",
+        date: "Mon 7:40pm",
+        status: "pending",
+        account: "master-card",
+        accountNumber: "1234",
+        expiry: "06/2026",
+        reason: 'Product Return'
+    },
+    {
+        img: "https://docs.material-tailwind.com/img/logos/logo-google.svg",
+        name: "Google",
+        amount: "$1,000",
+        date: "Wed 5:00pm",
+        status: "paid",
+        account: "visa",
+        accountNumber: "1234",
+        expiry: "06/2026",
+        reason: 'Product Return'
+    },
+    {
+        img: "https://docs.material-tailwind.com/img/logos/logo-netflix.svg",
+        name: "netflix",
+        amount: "$14,000",
+        date: "Wed 3:30am",
+        status: "cancelled",
+        account: "visa",
+        accountNumber: "1234",
+        expiry: "06/2026",
+        reason: 'Product Return'
+    },
+];
+
+const DescriptionItem = ({ title, content }) => (
+    <div className="site-description-item-profile-wrapper">
+        <p className="site-description-item-profile-p-label">{title}:</p>
+        {content}
+    </div>
+);
 
 const ManagementWithdrawOfSeller = () => {
-    const withdrawalRequests = [
-        {
-            id: 1,
-            sellerName: 'Seller A',
-            amount: '1,000,000 VND',
-            status: 'Pending',
-            requestDate: '2024-10-01',
-            bankAccount: '1234567890',
-            bankName: 'ABC Bank',
-            reason: 'Product Sale'
-        },
-        {
-            id: 2,
-            sellerName: 'Seller B',
-            amount: '2,500,000 VND',
-            status: 'Completed',
-            requestDate: '2024-10-05',
-            bankAccount: '0987654321',
-            bankName: 'XYZ Bank',
-            reason: 'Service Fee'
-        },
-        {
-            id: 3,
-            sellerName: 'Seller C',
-            amount: '3,200,000 VND',
-            status: 'Rejected',
-            requestDate: '2024-10-10',
-            bankAccount: '5678901234',
-            bankName: 'DEF Bank',
-            reason: 'Product Return'
-        },
-        {
-            id: 4,
-            sellerName: 'Seller D',
-            amount: '4,500,000 VND',
-            status: 'Pending',
-            requestDate: '2024-10-12',
-            bankAccount: '1357924680',
-            bankName: 'GHI Bank',
-            reason: 'Product Sale'
-        },
-        {
-            id: 5,
-            sellerName: 'Seller E',
-            amount: '5,000,000 VND',
-            status: 'Completed',
-            requestDate: '2024-10-14',
-            bankAccount: '2468135790',
-            bankName: 'JKL Bank',
-            reason: 'Service Fee'
-        },
-        {
-            id: 6,
-            sellerName: 'Seller F',
-            amount: '1,800,000 VND',
-            status: 'Pending',
-            requestDate: '2024-10-15',
-            bankAccount: '9876543210',
-            bankName: 'MNO Bank',
-            reason: 'Product Sale'
-        },
-        {
-            id: 7,
-            sellerName: 'Seller G',
-            amount: '3,600,000 VND',
-            status: 'Rejected',
-            requestDate: '2024-10-16',
-            bankAccount: '1234567890',
-            bankName: 'PQR Bank',
-            reason: 'Fraudulent Activity'
-        },
-          ];
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const requestsPerPage = 3;
-    const totalRequests = withdrawalRequests.length;
-
-    const indexOfLastRequest = currentPage * requestsPerPage;
-    const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
-    const currentRequests = withdrawalRequests.slice(indexOfFirstRequest, indexOfLastRequest);
-
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(totalRequests / requestsPerPage); i++) {
-        pageNumbers.push(i);
-    }
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedRequest, setSelectedRequest] = useState(null);
-
-    const handleDetailClick = (request) => {
-        setSelectedRequest(request);
-        setIsModalOpen(true);
+    const [open, setOpen] = useState(false);
+    const showDrawer = () => {
+        setOpen(true);
     };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedRequest(null);
+    const onClose = () => {
+        setOpen(false);
     };
-
-    const handleApprove = () => {
-        // Handle the logic for approving the withdrawal request
-        alert(`Approved withdrawal for ${selectedRequest.sellerName}`);
-        handleCloseModal();
-    };
-
-    const handleReject = () => {
-        // Handle the logic for rejecting the withdrawal request
-        alert(`Rejected withdrawal for ${selectedRequest.sellerName}`);
-        handleCloseModal();
-    };
-
     return (
         <div className="container mx-auto py-10">
+            <Drawer width={640} placement="right" closable={false} onClose={onClose} open={open}>
+                <p
+                    className="site-description-item-profile-p"
+                    style={{
+                        marginBottom: 24,
+                    }}
+                >
+                    User Profile
+                </p>
+                <p className="site-description-item-profile-p">Personal</p>
+                <Row>
+                    <Col span={12}>
+                        <DescriptionItem title="Full Name" content="Lily" />
+                    </Col>
+                    <Col span={12}>
+                        <DescriptionItem title="Account" content="AntDesign@example.com" />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                        <DescriptionItem title="City" content="HangZhou" />
+                    </Col>
+                    <Col span={12}>
+                        <DescriptionItem title="Country" content="China🇨🇳" />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                        <DescriptionItem title="Birthday" content="February 2,1900" />
+                    </Col>
+                    <Col span={12}>
+                        <DescriptionItem title="Website" content="-" />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={24}>
+                        <DescriptionItem
+                            title="Message"
+                            content="Make things as simple as possible but no simpler."
+                        />
+                    </Col>
+                </Row>
+                <Divider />
+                <p className="site-description-item-profile-p">Company</p>
+                <Row>
+                    <Col span={12}>
+                        <DescriptionItem title="Position" content="Programmer" />
+                    </Col>
+                    <Col span={12}>
+                        <DescriptionItem title="Responsibilities" content="Coding" />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                        <DescriptionItem title="Department" content="XTech" />
+                    </Col>
+                    <Col span={12}>
+                        <DescriptionItem title="Supervisor" content={<a>Lin</a>} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={24}>
+                        <DescriptionItem
+                            title="Skills"
+                            content="C / C + +, data structures, software engineering, operating systems, computer networks, databases, compiler theory, computer architecture, Microcomputer Principle and Interface Technology, Computer English, Java, ASP, etc."
+                        />
+                    </Col>
+                </Row>
+                <Divider />
+                <p className="site-description-item-profile-p">Contacts</p>
+                <Row>
+                    <Col span={12}>
+                        <DescriptionItem title="Email" content="AntDesign@example.com" />
+                    </Col>
+                    <Col span={12}>
+                        <DescriptionItem title="Phone Number" content="+86 181 0000 0000" />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={24}>
+                        <DescriptionItem
+                            title="Github"
+                            content={
+                                <a href="http://github.com/ant-design/ant-design/">
+                                    github.com/ant-design/ant-design/
+                                </a>
+                            }
+                        />
+                    </Col>
+                </Row>
+            </Drawer>
             <h1 className="text-3xl font-bold text-center mb-8">Withdrawal Requests Management</h1>
-            <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-300 shadow-lg rounded-lg">
-                    <thead className="bg-gray-200">
-                        <tr>
-                            <th className="px-4 py-2 border-b text-left text-lg">ID</th>
-                            <th className="px-4 py-2 border-b text-left text-lg">Seller Name</th>
-                            <th className="px-4 py-2 border-b text-left text-lg">Amount</th>
-                            <th className="px-4 py-2 border-b text-left text-lg">Status</th>
-                            <th className="px-4 py-2 border-b text-left text-lg">Request Date</th>
-                            <th className="px-4 py-2 border-b text-left text-lg">Bank Name</th>
-                            <th className="px-4 py-2 border-b text-left text-lg">Bank Account</th>
-                            <th className="px-4 py-2 border-b text-left text-lg">Reason</th>
-                            <th className="px-4 py-2 border-b text-left text-lg">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentRequests.map(request => (
-                            <tr key={request.id} className="text-center border-b hover:bg-gray-100 transition-colors">
-                                <td className="px-4 py-3 text-lg">{request.id}</td>
-                                <td className="px-4 py-3 text-lg">{request.sellerName}</td>
-                                <td className="px-4 py-3 text-lg">{request.amount}</td>
-                                <td className={`px-4 py-3 text-lg font-bold ${request.status === 'Pending' ? 'text-yellow-600' : request.status === 'Completed' ? 'text-green-600' : 'text-red-600'}`}>
-                                    {request.status}
-                                </td>
-                                <td className="px-4 py-3 text-lg">{request.requestDate}</td>
-                                <td className="px-4 py-3 text-lg">{request.bankName}</td>
-                                <td className="px-4 py-3 text-lg">{request.bankAccount}</td>
-                                <td className="px-4 py-3 text-lg">{request.reason}</td>
-                                <td className="px-4 py-3">
-                                    <button 
-                                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                                        onClick={() => handleDetailClick(request)}
-                                    >
-                                        Details
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-center mt-6">
-                {pageNumbers.map(number => (
-                    <button 
-                        key={number} 
-                        className={`mx-2 px-4 py-2 border rounded text-lg ${currentPage === number ? 'bg-blue-500 text-white' : 'bg-gray-200'} hover:bg-blue-500 hover:text-white transition-colors`}
-                        onClick={() => setCurrentPage(number)}
-                    >
-                        {number}
-                    </button>
-                ))}
-            </div>
-
-            {/* Modal for withdrawal request details */}
-            {isModalOpen && selectedRequest && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-                    <div className="bg-white rounded-lg p-8 shadow-xl w-full max-w-xl transition-transform transform scale-100 duration-300 ease-in-out">
-                        <h2 className="text-2xl font-semibold mb-4 text-gray-800 text-center border-b-2 border-blue-500 pb-2">Withdrawal Request Details</h2>
-                        <div className="mb-4 space-y-2">
-                            <p className="text-lg text-gray-700"><strong>ID:</strong> {selectedRequest.id}</p>
-                            <p className="text-lg text-gray-700"><strong>Seller Name:</strong> {selectedRequest.sellerName}</p>
-                            <p className="text-lg text-gray-700"><strong>Amount:</strong> {selectedRequest.amount}</p>
-                            <p className="text-lg text-gray-700"><strong>Status:</strong>
-                                <span className={`font-bold ${selectedRequest.status === 'Pending' ? 'text-yellow-600' : selectedRequest.status === 'Completed' ? 'text-green-600' : 'text-red-600'}`}>
-                                    {selectedRequest.status}
-                                </span>
-                            </p>
-                            <p className="text-lg text-gray-700"><strong>Request Date:</strong> {selectedRequest.requestDate}</p>
-                            <p className="text-lg text-gray-700"><strong>Bank Name:</strong> {selectedRequest.bankName}</p>
-                            <p className="text-lg text-gray-700"><strong>Bank Account:</strong> {selectedRequest.bankAccount}</p>
-                            <p className="text-lg text-gray-700"><strong>Reason:</strong> {selectedRequest.reason}</p>
+            <Card className="h-full w-full">
+                <CardHeader floated={false} shadow={false} className="rounded-none">
+                    <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
+                        <div>
+                            <Typography variant="h5" color="blue-gray">
+                                Recent Transactions
+                            </Typography>
+                            <Typography color="gray" className="mt-1 font-normal">
+                                These are details about the last transactions
+                            </Typography>
                         </div>
-                        <div className="flex justify-between mt-6">
-                            <button
-                                className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transition duration-300 ease-in-out hover:bg-green-600"
-                                onClick={handleApprove}
-                            >
-                                Chuyển Tiền
-                            </button>
-                            <button
-                                className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg transition duration-300 ease-in-out hover:bg-red-600"
-                                onClick={handleReject}
-                            >
-                                Từ Chối
-                            </button>
-                        </div>
-                        <div className="flex justify-end mt-4">
-                            <button
-                                className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg transition duration-300 ease-in-out hover:bg-blue-500"
-                                onClick={handleCloseModal}
-                            >
-                                Close
-                            </button>
+                        <div className="flex w-full shrink-0 gap-2 md:w-max">
+                            <div className="w-full md:w-72">
+                                <Input
+                                    label="Search"
+                                    icon={<MagnifyingGlassIcon className="h-5 w-5"/>}
+                                />
+                            </div>
+                            <Button className="flex items-center gap-3" size="sm">
+                                <ArrowDownTrayIcon strokeWidth={2} className="h-4 w-4"/> Download
+                            </Button>
                         </div>
                     </div>
+                </CardHeader>
+                <CardBody className="overflow-scroll px-0">
+                    <table className="w-full min-w-max table-auto text-left">
+                        <thead>
+                        <tr>
+                            {TABLE_HEAD.map((head) => (
+                                <th
+                                    key={head}
+                                    className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+                                >
+                                    <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="font-normal leading-none opacity-70"
+                                    >
+                                        {head}
+                                    </Typography>
+                                </th>
+                            ))}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {TABLE_ROWS.map(
+                            (
+                                {
+                                    img,
+                                    name,
+                                    amount,
+                                    date,
+                                    status,
+                                    account,
+                                    accountNumber,
+                                    reason,
+                                    // expiry,
+                                },
+                                index,
+                            ) => {
+                                const isLast = index === TABLE_ROWS.length - 1;
+                                const classes = isLast
+                                    ? "p-4"
+                                    : "p-4 border-b border-blue-gray-50";
+
+                                return (
+                                    <tr key={name}>
+                                        <td className={classes}>
+                                            <div className="flex items-center gap-3">
+                                                <Avatar
+                                                    src={img}
+                                                    alt={name}
+                                                    size="md"
+                                                    className="border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
+                                                />
+                                                <Typography
+                                                    variant="small"
+                                                    color="blue-gray"
+                                                    className="font-bold"
+                                                >
+                                                    {name}
+                                                </Typography>
+                                            </div>
+                                        </td>
+                                        <td className={classes}>
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-normal"
+                                            >
+                                                {amount}
+                                            </Typography>
+                                        </td>
+                                        <td className={classes}>
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-normal"
+                                            >
+                                                {date}
+                                            </Typography>
+                                        </td>
+                                        <td className={classes}>
+                                            <div className="w-max">
+                                                <Chip
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    value={status}
+                                                    color={
+                                                        status === "paid"
+                                                            ? "green"
+                                                            : status === "pending"
+                                                                ? "amber"
+                                                                : "red"
+                                                    }
+                                                />
+                                            </div>
+                                        </td>
+                                        <td className={classes}>
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-9 w-12 rounded-md border border-blue-gray-50 p-1">
+                                                    <Avatar
+                                                        src={
+                                                            account === "visa"
+                                                                ? "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/visa.png"
+                                                                : "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/mastercard.png"
+                                                        }
+                                                        size="sm"
+                                                        alt={account}
+                                                        variant="square"
+                                                        className="h-full w-full object-contain p-1"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <Typography
+                                                        variant="small"
+                                                        color="blue-gray"
+                                                        className="font-normal capitalize"
+                                                    >
+                                                        {account.split("-").join(" ")}
+                                                        {/*{accountNumber}*/}
+                                                    </Typography>
+                                                    <Typography
+                                                        variant="small"
+                                                        color="blue-gray"
+                                                        className="font-normal opacity-70"
+                                                    >
+                                                        {accountNumber}
+                                                    </Typography>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className={classes}>
+                                            <Typography
+                                                variant="small"
+                                                color="blue-gray"
+                                                className="font-normal truncate"
+                                                style={{
+                                                    maxWidth: '110px',
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis'
+                                                }}
+                                            >
+                                                {reason}
+                                            </Typography>
+                                        </td>
+
+                                        <td className={classes}>
+                                            {/*<Tooltip content="Edit User">*/}
+                                            {/*    <IconButton variant="text">*/}
+                                            {/*    <PencilIcon className="h-4 w-4"/>*/}
+                                            {/*    </IconButton>*/}
+                                            {/*</Tooltip>*/}
+                                            <div className="flex items-center gap-2">
+                                                <Button color="blue" onClick={showDrawer}>Detail</Button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            },
+                        )}
+                        </tbody>
+                    </table>
+                </CardBody>
+                <div className="flex justify-center items-center mt-4">
+                    <Pagination/>
                 </div>
-            )}
+            </Card>
         </div>
     );
 };
