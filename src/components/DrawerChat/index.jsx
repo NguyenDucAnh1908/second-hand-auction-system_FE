@@ -8,9 +8,9 @@ const DrawerChat = ({ open, onClose }) => {
             onClose={onClose}
             open={open}
         >
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
+         <div>
+            
+         </div>
         </Drawer>
     );
 };

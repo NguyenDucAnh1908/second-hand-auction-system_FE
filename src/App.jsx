@@ -70,7 +70,6 @@ function App() {
             <Route path="/dashboard-seller/ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
             <Route path="/dashboard-seller/OrderManagementSeller" index element={<OrderManagementSeller/>}/>
             <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>
-
             {/* test */}
             <Route path="RegisterAuction" index element={<RegisterAuction/>}/>
 

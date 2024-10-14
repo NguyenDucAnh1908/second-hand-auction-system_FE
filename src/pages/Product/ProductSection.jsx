@@ -127,7 +127,7 @@ export default function ProductSection({selectedBrands, onTagClose}) {
 
     return (
         <>
-            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
+            <Modal  open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
                 <form>
                     <div className="mb-4">
                         <Heading
@@ -206,7 +206,7 @@ export default function ProductSection({selectedBrands, onTagClose}) {
                     <div className="mt-4">
                         <button
                             type="submit"
-                            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
+                            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-indigo-200 focus:shadow-outline-indigo active:bg-indigo-200 transition duration-150 ease-in-out"
                         >
                             ĐĂNG KÝ THAM GIA ĐẤU GIÁ
                         </button>
