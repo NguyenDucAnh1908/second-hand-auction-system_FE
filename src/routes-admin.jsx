@@ -15,6 +15,8 @@ import ManageFeedback from "./pages/Admin/ManageFeedback/index.jsx";
 import OrderManagementAdmin from "./pages/Admin/OrderManagement/index.jsx";
 import StoreOrders from "pages/Admin/StoreOrders/index.jsx";
 import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
+import ManagementTransactions from "./pages/Admin/ManagementTransactions/index.jsx";
+import ManagementWindrawOfSeller from "./pages/Admin/ManageWithdraw/index.jsx";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -65,7 +67,7 @@ export const routesAdmin = [
       },
       {
         icon: <UserCircleIcon {...icon} />,
-        name: "Quản Lý Đơn hàng của cửa hàng",
+        name: "Quản Lý Đơn hàng shop",
         path: "/StoreOrders",
         //element: <OrderManagementAdmin />,
         element: <StoreOrders />,
@@ -77,11 +79,24 @@ export const routesAdmin = [
         element: <KiemduyetStaffPage />,
       },
       {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Giao dịch",
+        path: "/managementTransactions",
+        element: <ManagementTransactions />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Đơn rút tiền sellers",
+        path: "/managementWithdrawOfSeller",
+        element: <ManagementWindrawOfSeller />,
+      },
+      {
         icon: <InformationCircleIcon {...icon} />,
         name: "notifications",
         path: "/notifications",
         element: <Notifications />,
       },
+      
     ],
   },
   {

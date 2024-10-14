@@ -1,16 +1,15 @@
 import React from 'react';
-import Header2 from '../../../components/Header2';
 import FooterBK from '../../../components/FooterBK';
-import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
+import Sidebar from '../../../partials/Sidebar';
 
 export default function WithdrawMoney() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Header2 />
+      
       <div className="flex flex-1">
         {/* Sidebar */}
         <div className="w-64">
-          <SiderUserBK />
+         <Sidebar/>
         </div>
         {/* Main Content Area */}
         <div className="flex-1 p-6 bg-gray-50">

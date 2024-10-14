@@ -28,7 +28,7 @@ import RegisterAuction from "./pages/RegisterAuction-Buyer/RegisterAuction.jsx";
 import ForgotPassword from "./pages/ForgotPassword/index.jsx";
 import VerifyAccount from "./pages/Register/VerifyAccount.jsx";
 import WithdrawMoney from "./pages/Seller/WithdrawMoney/index.jsx";
-import ListTransaction from "./pages/ListTransactions/index.jsx";
+import ListTransaction from "./pages/Seller/ListTransactions/index.jsx";
 import SellerDetailPage from "./pages/SellerDetail/index.jsx";
 function App() {
     return (
@@ -42,6 +42,7 @@ function App() {
                 <Route path="Register" index element={<Register/>}/>
                 <Route path="ForgotPassword" index element={<ForgotPassword/>}/>
                 <Route path="VerifyAccount" index element={<VerifyAccount/>}/>
+
                 {/* buyer */}
                 <Route path="HistoryPage" index element={<CustomerTransactionHistoryPagePage/>}/>
                 <Route path="ProfileDetail" index element={<ProfileDetailPage/>}/>
@@ -64,11 +65,11 @@ function App() {
 
             {/* seller */}
             <Route path="/dashboard-seller/*" element={<DashboardSeller />} /> 
-            <Route path="RegisterProduct" index element={<RegisterProductPage/>}/>
-            <Route path="WithdrawMoney" index element={<WithdrawMoney/>}/>
-            <Route path="ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
-            <Route path="OrderManagementSeller" index element={<OrderManagementSeller/>}/>
-            <Route path="ListTransaction" index element={<ListTransaction/>}/>
+            <Route path="/dashboard-seller/RegisterProduct" index element={<RegisterProductPage/>}/>
+            <Route path="/dashboard-seller/WithdrawMoney" index element={<WithdrawMoney/>}/>
+            <Route path="/dashboard-seller/ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
+            <Route path="/dashboard-seller/OrderManagementSeller" index element={<OrderManagementSeller/>}/>
+            <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>
 
             {/* test */}
             <Route path="RegisterAuction" index element={<RegisterAuction/>}/>
