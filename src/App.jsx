@@ -29,6 +29,7 @@ import ForgotPassword from "./pages/ForgotPassword/index.jsx";
 import VerifyAccount from "./pages/Register/VerifyAccount.jsx";
 import WithdrawMoney from "./pages/Seller/WithdrawMoney/index.jsx";
 import ListTransaction from "./pages/ListTransactions/index.jsx";
+import SellerDetailPage from "./pages/SellerDetail/index.jsx";
 function App() {
     return (
         <Routes>
@@ -50,6 +51,7 @@ function App() {
                 <Route path="RegisterKYC" index element={<KNCPage/>}/>
                 <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
                 <Route path="ListOfSellerPage" index element={<ListOfSellerPage/>}/>
+                <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
 
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
