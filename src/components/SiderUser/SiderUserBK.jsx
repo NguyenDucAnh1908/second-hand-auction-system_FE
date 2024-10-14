@@ -114,6 +114,48 @@ export function SiderUserBK() {
                                 <PresentationChartBarIcon className="h-5 w-5" />
                             </ListItemPrefix>
                             <Typography color="blue-gray" className="mr-auto font-normal">
+                                Đấu giá
+                            </Typography>
+                        </AccordionHeader>
+                    </ListItem>
+                    <AccordionBody className="py-1">
+                        <List className="p-0">
+                            <ListItem  onClick={() => handleNavigate('/ListRegisterAuction')}>
+                                <ListItemPrefix>
+                                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                                </ListItemPrefix>
+                               Danh sách đăng ký
+                            </ListItem>
+                            <ListItem>
+                                <ListItemPrefix>
+                                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                                </ListItemPrefix>
+                                Danh sách đang đấu giá
+                            </ListItem>
+                            <ListItem>
+                                <ListItemPrefix>
+                                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                                </ListItemPrefix>
+                                Sản phẩm đã đấu giá
+                            </ListItem>
+                        </List>
+                    </AccordionBody>
+                </Accordion>
+                <Accordion
+                    open={open === 1}
+                    icon={
+                        <ChevronDownIcon
+                            strokeWidth={2.5}
+                            className={`mx-auto h-4 w-4 transition-transform ${open === 1 ? "rotate-180" : ""}`}
+                        />
+                    }
+                >
+                    <ListItem className="p-0" selected={open === 1}>
+                        <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3">
+                            <ListItemPrefix>
+                                <PresentationChartBarIcon className="h-5 w-5" />
+                            </ListItemPrefix>
+                            <Typography color="blue-gray" className="mr-auto font-normal">
                                 Đơn hàng
                             </Typography>
                         </AccordionHeader>
@@ -132,12 +174,7 @@ export function SiderUserBK() {
                                 </ListItemPrefix>
                                 Lịch sử mua hàng
                             </ListItem>
-                            <ListItem>
-                                <ListItemPrefix>
-                                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                                </ListItemPrefix>
-                                Sản phẩm đã đấu giá
-                            </ListItem>
+                           
                         </List>
                     </AccordionBody>
                 </Accordion>
