@@ -1,12 +1,10 @@
-import { Img, SelectBox, Heading, Text, InputDH } from "../../components/index.jsx";
-import { CloseSVG } from "../../components/InputDH/close.jsx";
-import { ReactTable } from "../../components/ReactTable/index.jsx";
-import { createColumnHelper } from "@tanstack/react-table";
-import React, { useState } from 'react';
+import { Img, InputDH } from "../../components/index.jsx";
 import { Button, Card, Typography, Select, Option } from "@material-tailwind/react";
 import { Tag } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
+import React, { useState } from 'react';
+import Modal from "./Modal.jsx";
 
 const TABLE_HEAD = [
     "Số Đăng Ký",
@@ -18,14 +16,13 @@ const TABLE_HEAD = [
     "Tiền cọc",
     "Tùy chỉnh"
 ];
-
 const TABLE_ROWS = [
     {
         number: "#AU-415646",
         product: "Smartphone",
         image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        time: "01 Feb 2024", // Chỉnh lại thời gian đấu giá
-        status: "Success", // Cập nhật trạng thái
+        time: "01 Feb 2024",
+        status: "Success",
         sellerHeader: "Han So Hee",
         totalHeader: "$500",
     },
@@ -43,7 +40,7 @@ const TABLE_ROWS = [
         product: "Tablet",
         image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
         time: "01 Feb 2024",
-        status: "Fail", // Cập nhật trạng thái
+        status: "Fail",
         sellerHeader: "Han So Hee",
         totalHeader: "$300",
     },
@@ -52,14 +49,25 @@ const TABLE_ROWS = [
         product: "Smartwatch",
         image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
         time: "01 Feb 2024",
-        status: "Fail", // Cập nhật trạng thái
+        status: "Fail",
         sellerHeader: "Han So Hee",
         totalHeader: "$200",
     },
 ];
-
 export default function ListRegisterAuctionSection() {
-    const [searchBarValue, setSearchBarValue] = React.useState("");
+    const [searchBarValue, setSearchBarValue] = useState("");
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+
+    const handleDetailClick = (product) => {
+        setSelectedProduct(product);
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalOpen(false);
+        setSelectedProduct(null);
+    };
 
     return (
         <div>
@@ -71,20 +79,13 @@ export default function ListRegisterAuctionSection() {
                             placeholder={`Tìm kiếm theo ID`}
                             value={searchBarValue}
                             onChange={(e) => setSearchBarValue(e.target.value)}
-                            suffix={
-                                searchBarValue?.length > 0 ? (
-                                    <CloseSVG onClick={() => setSearchBarValue("")} height={16} width={18} fillColor="#626974ff" />
-                                ) : (
-                                    <Img src="/images/img_search.svg" alt="Search" className="h-[16px] w-[18px]" />
-                                )
-                            }
                             className="flex h-[40px] w-[20%] items-center justify-center gap-1.5 rounded bg-bg-white px-4 text-[16px] text-blue_gray-600 shadow-xs sm:w-full"
                         />
                         <div className="flex justify-between gap-5 sm:flex-col mt-2">
                             <Select size="lg" label="Chọn Trạng Thái">
                                 <Option>Tất cả</Option>
                                 <Option>Thành công</Option>
-                                <Option>Không thành công</Option>
+                                <Option>Đã hủy</Option>
                             </Select>
                         </div>
                     </div>
@@ -106,79 +107,45 @@ export default function ListRegisterAuctionSection() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {TABLE_ROWS.map(({
-                                    number,
-                                    product,
-                                    image,
-                                    time,
-                                    status,
-                                    sellerHeader,
-                                    totalHeader,
-                                }) => (
-                                    <tr key={number}>
+                                {TABLE_ROWS.map((row) => (
+                                    <tr key={row.number}>
                                         <td className="p-4">
-                                            <Typography
-                                                variant="small"
-                                                color="blue-gray"
-                                                className="font-bold"
-                                            >
-                                                {number}
+                                            <Typography variant="small" color="blue-gray" className="font-bold">
+                                                {row.number}
                                             </Typography>
                                         </td>
                                         <td className="p-4">
-                                            <img
-                                                src={image}
-                                                alt={product}
-                                                className="w-16 h-16 object-cover rounded"
-                                            />
+                                            <img src={row.image} alt={row.product} className="w-16 h-16 object-cover rounded" />
                                         </td>
                                         <td className="p-4">
-                                            <Typography
-                                                variant="small"
-                                                className="font-normal text-gray-600"
-                                            >
-                                                {product}
+                                            <Typography variant="small" className="font-normal text-gray-600">
+                                                {row.product}
                                             </Typography>
                                         </td>
                                         <td className="p-4">
-                                            <Typography
-                                                variant="small"
-                                                className="font-normal text-gray-600"
-                                            >
-                                                {time}
+                                            <Typography variant="small" className="font-normal text-gray-600">
+                                                {row.time}
                                             </Typography>
                                         </td>
                                         <td className="p-4">
-                                            {status === "Success" ? (
-                                                <Tag icon={<CheckCircleOutlined />} color="success">
-                                                    Thành công
-                                                </Tag>
+                                            {row.status === "Success" ? (
+                                                <Tag icon={<CheckCircleOutlined />} color="success">Thành công</Tag>
                                             ) : (
-                                                <Tag icon={<CloseCircleOutlined />} color="error">
-                                                    Không thành công
-                                                </Tag>
+                                                <Tag icon={<CloseCircleOutlined />} color="error">Đã hủy</Tag>
                                             )}
                                         </td>
                                         <td className="p-4">
-                                            <Typography
-                                                variant="small"
-                                                className="font-normal text-gray-600"
-                                            >
-                                                {sellerHeader}
+                                            <Typography variant="small" className="font-normal text-gray-600">
+                                                {row.sellerHeader}
                                             </Typography>
                                         </td>
                                         <td className="p-4">
-                                            <Typography
-                                                variant="small"
-                                                className="font-normal text-gray-600"
-                                            >
-                                                {totalHeader} {/* Tiền cọc */}
+                                            <Typography variant="small" className="font-normal text-gray-600">
+                                                {row.totalHeader}
                                             </Typography>
                                         </td>
                                         <td className="p-4">
-                                            <div className="flex items-center gap-2">
-                                                <Button color="blue">Chi tiết</Button>
-                                            </div>
+                                            <Button color="blue" onClick={() => handleDetailClick(row)}>Chi tiết</Button>
                                         </td>
                                     </tr>
                                 ))}
@@ -190,6 +157,22 @@ export default function ListRegisterAuctionSection() {
                     </div>
                 </div>
             </div>
+
+            {/* Sử dụng modal tùy chỉnh ở đây */}
+            <Modal isOpen={modalOpen} onClose={closeModal}>
+                {selectedProduct && (
+                    <div>
+                        <Typography variant="h5" className="font-bold">{selectedProduct.product}</Typography>
+                        <img src={selectedProduct.image} alt={selectedProduct.product} className="w-[30%] h-48 object-cover rounded mt-4" />
+                        <Typography className="mt-2">Số Đăng Ký: {selectedProduct.number}</Typography>
+                        <Typography className="mt-2">Thời gian đấu giá: {selectedProduct.time}</Typography>
+                        <Typography className="mt-2">Trạng thái: {selectedProduct.status}</Typography>
+                        <Typography className="mt-2">Người bán: {selectedProduct.sellerHeader}</Typography>
+                        <Typography className="mt-2">Tiền cọc: {selectedProduct.totalHeader}</Typography>
+                    </div>
+                )}
+            </Modal>
+
         </div>
     );
 }
