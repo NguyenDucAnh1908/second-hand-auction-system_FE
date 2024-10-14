@@ -25,11 +25,22 @@ import {
     ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 
+import { useNavigate } from "react-router-dom";
+
+
+
 export function SiderUserBK() {
     const [open, setOpen] = React.useState(0);
     const handleOpen = (value) => {
         setOpen(open === value ? 0 : value);
     };
+
+    const navigate = useNavigate(); 
+
+    const handleNavigate = (path) => {
+        navigate(path);
+    };
+
     return (
         <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
             <div className="mb-2 p-4">
@@ -66,7 +77,7 @@ export function SiderUserBK() {
                     </ListItem>
                     <AccordionBody className="py-1">
                         <List className="p-0">
-                            <ListItem>
+                            <ListItem onClick={() => handleNavigate('/ProfileDetail')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
@@ -78,11 +89,54 @@ export function SiderUserBK() {
                                 </ListItemPrefix>
                                 Danh sách yêu thích
                             </ListItem>
-                            <ListItem>
+                            <ListItem  onClick={() => handleNavigate('/Address')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
                                 Quản lý địa chỉ
+                            </ListItem>
+                           
+                        </List>
+                    </AccordionBody>
+                </Accordion>
+                <Accordion
+                    open={open === 1}
+                    icon={
+                        <ChevronDownIcon
+                            strokeWidth={2.5}
+                            className={`mx-auto h-4 w-4 transition-transform ${open === 1 ? "rotate-180" : ""}`}
+                        />
+                    }
+                >
+                    <ListItem className="p-0" selected={open === 1}>
+                        <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3">
+                            <ListItemPrefix>
+                                <PresentationChartBarIcon className="h-5 w-5" />
+                            </ListItemPrefix>
+                            <Typography color="blue-gray" className="mr-auto font-normal">
+                                Đấu giá
+                            </Typography>
+                        </AccordionHeader>
+                    </ListItem>
+                    <AccordionBody className="py-1">
+                        <List className="p-0">
+                            <ListItem  onClick={() => handleNavigate('/ListRegisterAuction')}>
+                                <ListItemPrefix>
+                                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                                </ListItemPrefix>
+                               Danh sách đăng ký
+                            </ListItem>
+                            <ListItem onClick={() => handleNavigate('/AuctionListProcess')}>
+                                <ListItemPrefix>
+                                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                                </ListItemPrefix>
+                                Danh sách đang đấu giá
+                            </ListItem>
+                            <ListItem>
+                                <ListItemPrefix>
+                                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                                </ListItemPrefix>
+                                Sản phẩm đã đấu giá
                             </ListItem>
                         </List>
                     </AccordionBody>
@@ -108,11 +162,11 @@ export function SiderUserBK() {
                     </ListItem>
                     <AccordionBody className="py-1">
                         <List className="p-0">
-                            <ListItem>
+                            <ListItem  onClick={() => handleNavigate('/OrderManagementBuyer')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
-                                Analytics
+                                Danh sách đơn hàng
                             </ListItem>
                             <ListItem>
                                 <ListItemPrefix>
@@ -120,12 +174,7 @@ export function SiderUserBK() {
                                 </ListItemPrefix>
                                 Lịch sử mua hàng
                             </ListItem>
-                            <ListItem>
-                                <ListItemPrefix>
-                                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                                </ListItemPrefix>
-                                Sản phẩm đã đấu giá
-                            </ListItem>
+                           
                         </List>
                     </AccordionBody>
                 </Accordion>
@@ -150,13 +199,13 @@ export function SiderUserBK() {
                     </ListItem>
                     <AccordionBody className="py-1">
                         <List className="p-0">
-                            <ListItem>
+                            <ListItem  onClick={() => handleNavigate('/DepositMoney')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
                                 Nạp tiền
                             </ListItem>
-                            <ListItem>
+                            <ListItem  onClick={() => handleNavigate('/HistoryPage')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>

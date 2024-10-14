@@ -96,7 +96,6 @@ export const routesAdmin = [
         path: "/notifications",
         element: <Notifications />,
       },
-      
     ],
   },
   {

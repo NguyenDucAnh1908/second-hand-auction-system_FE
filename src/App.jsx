@@ -30,6 +30,9 @@ import VerifyAccount from "./pages/Register/VerifyAccount.jsx";
 import WithdrawMoney from "./pages/Seller/WithdrawMoney/index.jsx";
 import ListTransaction from "./pages/Seller/ListTransactions/index.jsx";
 import SellerDetailPage from "./pages/SellerDetail/index.jsx";
+import ListRegisterAuction from "./pages/ListRegisterAuction/index.jsx";
+import AuctionListProcess from "./pages/AuctionListProcess/index.jsx";
+
 function App() {
     return (
         <Routes>
@@ -53,6 +56,9 @@ function App() {
                 <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
                 <Route path="ListOfSellerPage" index element={<ListOfSellerPage/>}/>
                 <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
+                <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
+                <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
+
 
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
