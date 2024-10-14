@@ -1,6 +1,6 @@
 import { CloseSVG } from "../InputDH/close.jsx";
 import { Text, SelectBox, Img, ButtonDH, InputDH } from "./..";
-import React from "react";
+import React, {useState} from "react";
 import NavBarBK from "@/components/NavBarBK/index.jsx";
 import logo from "../../assets/auction-svgrepo-com.svg"
 import {
@@ -13,16 +13,22 @@ import {
   IconButton,
 } from "@material-tailwind/react";
 import { Button } from "antd";
+import {ShopOutlined } from '@ant-design/icons';
+import DrawerChat from "@/components/DrawerChat/index.jsx";
 
 export default function Header2({ ...props }) {
   const [searchBarValue, setSearchBarValue] = React.useState("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  const showDrawer = () => setIsDrawerOpen(true);
+  const closeDrawer = () => setIsDrawerOpen(false);
 
   return (
     <header
       {...props}
       className={`${props.className} flex self-stretch items-center z-[3] relative bg-gradient-to-b from-blue-gray-100 to-blue-gray-700`}
     >
+      <DrawerChat open={isDrawerOpen} onClose={closeDrawer} />
       <div className="w-full">
         <div className="flex flex-col items-center bg-gradient-to-b from-blue-gray-100 to-blue-gray-200 py-2.5">
           <div className="flex flex-col items-center gap-1 self-stretch">
@@ -38,6 +44,7 @@ export default function Header2({ ...props }) {
                 <Img src="images/img_facebook.svg" alt="Facebook Icon" className="h-4 w-4 cursor-pointer hover:opacity-80 transition duration-200 ease-in-out" />
                 <Img src="images/img_twitter.svg" alt="Twitter Icon" className="h-4 w-4 cursor-pointer hover:opacity-80 transition duration-200 ease-in-out" />
                 {/* <Img src="images/img_search.svg" alt="Search Icon" className="h-4 w-4 cursor-pointer hover:opacity-80 transition duration-200 ease-in-out" /> */}
+                {/* Add more icons as needed */}
               </div>
             </div>
 
@@ -81,7 +88,7 @@ export default function Header2({ ...props }) {
               <div className="mr-4 flex w-[32%] items-end justify-center gap-4 md:mr-0 md:w-full sm:flex-col">
                 <div className="flex flex-1 justify-center gap-3.5 sm:self-stretch">
                   <IconButton className="bg-blue-gray-900">
-                    <img src="https://png.pngtree.com/png-vector/20190917/ourlarge/pngtree-store-icon-in-line-style-png-image_1736161.jpg" />
+                    <ShopOutlined style={{ fontSize: '20px' }}/>
                   </IconButton>
                   <Text className="font-semibold text-[14px] leading-[22px] text-gray-900">
                     <span className="text-[13px] font-normal">
@@ -159,7 +166,10 @@ export default function Header2({ ...props }) {
                           />
                         </svg>
 
-                        <Typography variant="small" className="font-medium">
+                        <Typography variant="small"
+                                    className="font-medium"
+                                    onClick={showDrawer}
+                        >
                           Inbox
                         </Typography>
                       </MenuItem>
