@@ -206,8 +206,6 @@ export default function AuctionPage() {
                   ))}
                 </Tabs>
               </div>
-
-              {/*AHIHIHIHIHIHI*/}
             </div>
 
             <Text
