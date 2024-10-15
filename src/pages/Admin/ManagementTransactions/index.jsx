@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import FooterBK from '../../../components/FooterBK';
-import { DocumentIcon } from "@heroicons/react/24/solid";
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import {DocumentIcon} from "@heroicons/react/24/solid";
+import {ArrowDownTrayIcon} from "@heroicons/react/24/outline";
 import {
     Button, Card, IconButton, Typography,
     Dialog,
@@ -9,8 +9,8 @@ import {
     DialogBody,
     DialogFooter,
 } from "@material-tailwind/react";
-import { Tag } from "antd";
-import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import {Tag} from "antd";
+import {CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined} from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
 
 const TABLE_HEAD = [
@@ -92,13 +92,13 @@ export default function ManagementTransactions() {
     const handleOpen = () => setOpen(!open);
 
     return (
-        <div className="container mx-auto py-10">
+        <>
             <Dialog
                 open={open}
                 handler={handleOpen}
                 animate={{
-                    mount: { scale: 1, y: 0 },
-                    unmount: { scale: 0.9, y: -100 },
+                    mount: {scale: 1, y: 0},
+                    unmount: {scale: 0.9, y: -100},
                 }}
             >
                 <DialogHeader>Chi tiết giao dịch</DialogHeader>
@@ -111,7 +111,8 @@ export default function ManagementTransactions() {
                                 <p className="text-base font-semibold text-gray-800"><strong>Order Code:</strong></p>
                                 <p className="text-base font-semibold text-gray-800"><strong>Amount:</strong></p>
                                 <p className="text-base font-semibold text-gray-800"><strong>Amount Paid:</strong></p>
-                                <p className="text-base font-semibold text-gray-800"><strong>Amount Remaining:</strong></p>
+                                <p className="text-base font-semibold text-gray-800"><strong>Amount Remaining:</strong>
+                                </p>
                                 <p className="text-base font-semibold text-gray-800"><strong>Status:</strong></p>
                                 <p className="text-base font-semibold text-gray-800"><strong>Request Date:</strong></p>
                                 <h3 className="font-bold text-lg mt-4 text-gray-900">Transactions:</h3>
@@ -129,12 +130,19 @@ export default function ManagementTransactions() {
                                 <div className="mt-2">
                                     {transaction.transactions.map((trans, index) => (
                                         <div key={index} className="border p-3 rounded-lg mb-2 bg-gray-50 shadow">
-                                            <p className="text-sm font-semibold text-gray-800"><strong>Reference:</strong> {trans.reference}</p>
-                                            <p className="text-sm text-gray-600"><strong>Amount:</strong> {trans.amount.toLocaleString()} VND</p>
-                                            <p className="text-sm text-gray-600"><strong>Account Number:</strong> {trans.accountNumber}</p>
-                                            <p className="text-sm text-gray-600"><strong>Description:</strong> {trans.description}</p>
-                                            <p className="text-sm text-gray-600"><strong>Transaction Date:</strong> {new Date(trans.transactionDateTime).toLocaleString()}</p>
-                                            <p className="text-sm text-gray-600"><strong>Virtual Account Name:</strong> {trans.virtualAccountName || 'N/A'}</p>
+                                            <p className="text-sm font-semibold text-gray-800">
+                                                <strong>Reference:</strong> {trans.reference}</p>
+                                            <p className="text-sm text-gray-600">
+                                                <strong>Amount:</strong> {trans.amount.toLocaleString()} VND</p>
+                                            <p className="text-sm text-gray-600"><strong>Account
+                                                Number:</strong> {trans.accountNumber}</p>
+                                            <p className="text-sm text-gray-600">
+                                                <strong>Description:</strong> {trans.description}</p>
+                                            <p className="text-sm text-gray-600"><strong>Transaction
+                                                Date:</strong> {new Date(trans.transactionDateTime).toLocaleString()}
+                                            </p>
+                                            <p className="text-sm text-gray-600"><strong>Virtual Account
+                                                Name:</strong> {trans.virtualAccountName || 'N/A'}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -153,8 +161,6 @@ export default function ManagementTransactions() {
                 </DialogBody>
 
 
-
-
                 <DialogFooter>
                     <Button
                         variant="text"
@@ -169,11 +175,12 @@ export default function ManagementTransactions() {
                     </Button>
                 </DialogFooter>
             </Dialog>
-            <h1 className="text-3xl font-bold text-center mb-8">Management Transactions</h1>
+            <div className="container mx-auto py-10">
+                <h1 className="text-3xl font-bold text-center mb-8">Management Transactions</h1>
 
-            <Card className="h-full w-full overflow-scroll">
-                <table className="w-full min-w-max table-auto text-left">
-                    <thead>
+                <Card className="h-full w-full overflow-scroll">
+                    <table className="w-full min-w-max table-auto text-left">
+                        <thead>
                         <tr>
                             {TABLE_HEAD.map((head) => (
                                 <th key={head} className="p-4 pt-10">
@@ -187,9 +194,9 @@ export default function ManagementTransactions() {
                                 </th>
                             ))}
                         </tr>
-                    </thead>
-                    <tbody>
-                        {TABLE_ROWS.map(({ number, customer, amount, issued, date, status }) => {
+                        </thead>
+                        <tbody>
+                        {TABLE_ROWS.map(({number, customer, amount, issued, date, status}) => {
                             return (
                                 <tr key={number}>
                                     <td className="p-4">
@@ -235,22 +242,22 @@ export default function ManagementTransactions() {
                                     </td>
                                     <td className="p-4">
                                         {status === "Available" && (
-                                            <Tag icon={<CheckCircleOutlined />} color="success">
+                                            <Tag icon={<CheckCircleOutlined/>} color="success">
                                                 Available
                                             </Tag>
                                         )}
                                         {status === "pending" && (
-                                            <Tag icon={<SyncOutlined spin />} color="processing">
+                                            <Tag icon={<SyncOutlined spin/>} color="processing">
                                                 Pending
                                             </Tag>
                                         )}
                                         {status === "UnAvailable" && (
-                                            <Tag icon={<CloseCircleOutlined />} color="error">
+                                            <Tag icon={<CloseCircleOutlined/>} color="error">
                                                 UnAvailable
                                             </Tag>
                                         )}
                                         {status === "Fail" && (
-                                            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                                            <Tag icon={<ExclamationCircleOutlined/>} color="warning">
                                                 Fail
                                             </Tag>
                                         )}
@@ -265,12 +272,13 @@ export default function ManagementTransactions() {
                                 </tr>
                             );
                         })}
-                    </tbody>
-                </table>
-            </Card>
-            <div className="flex justify-center items-center mt-4">
-                <Pagination />
+                        </tbody>
+                    </table>
+                </Card>
+                <div className="flex justify-center items-center mt-4">
+                    <Pagination/>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
