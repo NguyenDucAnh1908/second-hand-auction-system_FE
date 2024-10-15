@@ -50,7 +50,7 @@ function App() {
                 <Route path="HistoryPage" index element={<CustomerTransactionHistoryPagePage/>}/>
                 <Route path="ProfileDetail" index element={<ProfileDetailPage/>}/>
                 <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
-                <Route path="Address" index element={<AddressPage/>}/>        
+                <Route path="Address" index element={<AddressPage/>}/>
                 <Route path="ListOfBuyerBids" index element={<ListOfBuyerBids/>}/>
                 <Route path="RegisterKYC" index element={<KNCPage/>}/>
                 <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>

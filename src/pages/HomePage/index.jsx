@@ -15,6 +15,7 @@ import React, { Suspense } from "react";
 import ProductDetails31 from "../../components/ProductDetails31/index.jsx";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import { Button, IconButton } from "@material-tailwind/react";
+import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
 
 const fashionItemsList = [
   {
@@ -286,16 +287,20 @@ export default function HomePagePage() {
                       <React.Fragment key={Math.random()}>
                         <div className="flex gap-8 md:flex-col">
                           <div className="flex w-full gap-8 md:flex-col">
-                            <ProductDetails31 className="w-full border border-solid border-gray-200 bg-bg-white" />
+                            {/*<ProductDetails31 className="w-full border border-solid border-gray-200 bg-bg-white" />*/}
+                            <ProductDetails21 className="w-full border border-solid border-gray-200 bg-bg-white" />
                           </div>
                           <div className="flex w-full gap-8 md:flex-col">
-                            <ProductDetails31 className="w-full border border-solid border-gray-200 bg-bg-white" />
+                            {/*<ProductDetails31 className="w-full border border-solid border-gray-200 bg-bg-white" />*/}
+                            <ProductDetails21 className="w-full border border-solid border-gray-200 bg-bg-white" />
                           </div>
                           <div className="flex w-full gap-8 md:flex-col">
-                            <ProductDetails31 className="w-full border border-solid border-gray-200 bg-bg-white" />
+                            {/*<ProductDetails31 className="w-full border border-solid border-gray-200 bg-bg-white" />*/}
+                            <ProductDetails21 className="w-full border border-solid border-gray-200 bg-bg-white" />
                           </div>
                           <div className="flex w-full gap-8 md:flex-col">
-                            <ProductDetails31 className="w-full border border-solid border-gray-200 bg-bg-white" />
+                            {/*<ProductDetails31 className="w-full border border-solid border-gray-200 bg-bg-white" />*/}
+                            <ProductDetails21 className="w-full border border-solid border-gray-200 bg-bg-white" />
                           </div>
                         </div>
                         {/*<div className="flex gap-8 md:flex-col">*/}

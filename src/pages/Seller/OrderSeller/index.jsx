@@ -16,11 +16,7 @@ export default function OrderManagementSeller() {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-
-  
   return (
-
-
     <>
       <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
@@ -71,11 +67,8 @@ export default function OrderManagementSeller() {
                     selectedTabClassName=""
                     selectedTabPanelClassName="tab-panel--selected"
                 >
-
                   <StatusOrderSeller/>
                   <OrderManagementSectionSeller/>
-
-
                 </Tabs>
               </div>
             </Content>

@@ -1,6 +1,7 @@
 import {Text, Heading, RatingBar, Img} from "./..";
 import React from "react";
 import {Button} from "@material-tailwind/react";
+import { Image } from 'antd';
 
 export default function ProductDetails21({
                                              productImage = "images/img_image_30_4.png",
@@ -19,8 +20,8 @@ export default function ProductDetails21({
             className={`${props.className} flex flex-col items-center w-full border-gray-200 border border-solid bg-bg-white rounded-lg overflow-hidden`}
         >
             <div className="relative self-stretch bg-bg-white px-3 py-3 sm:py-5">
-                <Img
-                    src={productImage}
+                <Image
+                    src="https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f"
                     alt="Fashion Image"
                     className="h-[230px] w-[230px] object-cover rounded-lg"
                 />
@@ -30,20 +31,32 @@ export default function ProductDetails21({
             </div>
 
             <div className="mx-3.5 mb-6 flex flex-col items-start gap-2.5 self-stretch">
-                <Text
-                    size="textxs"
-                    as="p"
-                    className="text-[12px] font-normal text-blue_gray-600_01"
+                {/*<Text*/}
+                {/*    size="textxs"*/}
+                {/*    as="p"*/}
+                {/*    className="text-[12px] font-normal text-blue_gray-600_01"*/}
+                {/*>*/}
+                {/*    {productTitle}*/}
+                {/*</Text>*/}
+                <button
+                    className="text-[12px] font-normal text-blue_gray-600_01 hover:text-blue-500 transition duration-300"
                 >
                     {productTitle}
-                </Text>
-                <Heading
-                    size="headingxl"
-                    as="h6"
-                    className="w-full text-[16px] font-semibold leading-[150%] text-blue_gray-900_01"
+                </button>
+
+                {/*<Heading*/}
+                {/*    size="headingxl"*/}
+                {/*    as="h6"*/}
+                {/*    className="w-full text-[16px] font-semibold leading-[150%] text-blue_gray-900_01"*/}
+                {/*>*/}
+                {/*    {productDescription}*/}
+                {/*</Heading>*/}
+                <button
+                    className="w-full text-[16px] font-semibold leading-[150%] text-blue_gray-900_01 hover:text-blue-500 transition duration-300"
                 >
                     {productDescription}
-                </Heading>
+                </button>
+
                 <div className="flex items-start gap-2.5 self-stretch">
                     <div className="flex items-center">
                         <svg
