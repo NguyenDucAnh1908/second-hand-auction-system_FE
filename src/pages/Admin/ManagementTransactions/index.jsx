@@ -41,6 +41,7 @@ const transaction = {
             transactionDateTime: "2024-10-10T10:00:00Z",
             virtualAccountName: "Virtual Account A",
         }
+
     ],
 };
 
@@ -87,17 +88,22 @@ export default function ManagementTransactions() {
         <>
             <Dialog
                 open={open}
-                size="lg" // Increased size to 'lg' for a larger dialog
+                size="md" // Thay đổi kích thước thành md
             >
                 <DialogHeader>Chi tiết giao dịch</DialogHeader>
-                <DialogBody className="p-6 bg-white shadow-lg rounded-lg border border-gray-300"> {/* Increased padding */}
+                <DialogBody className="p-4 bg-white shadow-lg rounded-lg border border-gray-300"> {/* Giảm padding */}
                     <div className="mb-4">
                         <div className="flex flex-wrap mb-2">
                             {/* Left Column for Labels */}
                             <div className="w-1/2 pr-4">
-                                {["ID", "Order Code", "Amount", "Amount Paid", "Amount Remaining", "Status", "Request Date"].map((label, index) => (
-                                    <p key={index} className="text-base font-semibold text-gray-800"><strong>{label}:</strong></p>
-                                ))}
+                                <p className="text-base font-semibold text-gray-800"><strong>ID:</strong></p>
+                                <p className="text-base font-semibold text-gray-800"><strong>Order Code:</strong></p>
+                                <p className="text-base font-semibold text-gray-800"><strong>Amount:</strong></p>
+                                <p className="text-base font-semibold text-gray-800"><strong>Amount Paid:</strong></p>
+                                <p className="text-base font-semibold text-gray-800"><strong>Amount Remaining:</strong>
+                                </p>
+                                <p className="text-base font-semibold text-gray-800"><strong>Status:</strong></p>
+                                <p className="text-base font-semibold text-gray-800"><strong>Request Date:</strong></p>
                                 <h3 className="font-bold text-lg mt-4 text-gray-900">Transactions:</h3>
                             </div>
                             {/* Right Column for Values */}
@@ -112,7 +118,7 @@ export default function ManagementTransactions() {
                                 {/* Transaction Details for each transaction */}
                                 <div className="mt-2">
                                     {transaction.transactions.map((trans, index) => (
-                                        <div key={index} className="border p-4 rounded-lg mb-2 bg-gray-50 shadow"> {/* Increased padding */}
+                                        <div key={index} className="border p-2 rounded-lg mb-2 bg-gray-50 shadow"> {/* Giảm padding cho từng transaction */}
                                             <p className="text-sm font-semibold text-gray-800"><strong>Reference:</strong> {trans.reference}</p>
                                             <p className="text-sm text-gray-600"><strong>Amount:</strong> {trans.amount.toLocaleString()} VND</p>
                                             <p className="text-sm text-gray-600"><strong>Account Number:</strong> {trans.accountNumber}</p>
@@ -122,16 +128,19 @@ export default function ManagementTransactions() {
                                         </div>
                                     ))}
                                 </div>
+
                             </div>
+
                         </div>
                         {/* Money Image placed at the bottom */}
                         <div className="flex justify-center mb-4">
                             <img
                                 src="https://static.vecteezy.com/system/resources/previews/001/923/526/non_2x/stack-bills-with-pile-coins-isolated-icon-free-vector.jpg" // Replace with actual money image URL
                                 alt="Money"
-                                className="w-32 h-32" // Increased image size
+                                className="w-24 h-24" // Kích thước hình ảnh
                             />
                         </div>
+
                     </div>
                 </DialogBody>
                 <DialogFooter>
@@ -143,11 +152,12 @@ export default function ManagementTransactions() {
                     >
                         <span>Cancel</span>
                     </Button>
-                    <Button variant="gradient" color="green" onClick={handleOpen}>
+                    <Button variant="gradient" color="green" onClick={handleOpen}> {/* Sửa thành handleConfirm */}
                         <span>Confirm</span>
                     </Button>
                 </DialogFooter>
             </Dialog>
+
 
             <h1 className="text-3xl font-bold text-center mb-8">Management Transactions</h1>
 
@@ -238,14 +248,8 @@ export default function ManagementTransactions() {
                                     <td className="p-4">
                                         <div className="flex items-center gap-2">
                                             <div className="flex items-center gap-2">
-                                                <IconButton variant="text" color="blue" onClick={handleOpen}>
-                                                    <DocumentIcon className="h-6 w-6" />
-                                                    <span className="ml-2">Detail</span>
-                                                </IconButton>
+                                                <Button color="blue" onClick={handleOpen}>Chi Tiết</Button>
                                             </div>
-                                            <IconButton variant="text" color="blue">
-                                                <ArrowDownTrayIcon className="h-6 w-6" />
-                                            </IconButton>
                                         </div>
                                     </td>
                                 </tr>
@@ -253,9 +257,12 @@ export default function ManagementTransactions() {
                         })}
                     </tbody>
                 </table>
-                <Pagination />
             </Card>
-            <FooterBK />
+            <div className="flex justify-center items-center mt-4">
+                <Pagination />
+            </div>
+       
+            
         </>
     );
 }

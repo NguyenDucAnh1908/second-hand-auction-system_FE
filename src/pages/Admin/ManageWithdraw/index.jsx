@@ -293,7 +293,9 @@ const ManagementWithdrawOfSeller = () => {
                     </table>
                 </CardBody>
             </Card>
-            <Pagination />
+            <div className="flex justify-center items-center mt-4">
+                <Pagination />
+            </div>
         </div>
     );
 };
