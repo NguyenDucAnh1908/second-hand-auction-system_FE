@@ -37,9 +37,9 @@ export default function AuctionListProcess() {
                             margin: '16px 0',
                         }}
                     >
-                        {/* <Breadcrumb.Item>Home</Breadcrumb.Item>
+                         <Breadcrumb.Item>Home</Breadcrumb.Item>
                         <Breadcrumb.Item>List</Breadcrumb.Item>
-                        <Breadcrumb.Item>App</Breadcrumb.Item> */}
+                        <Breadcrumb.Item>App</Breadcrumb.Item>
                     </Breadcrumb>
                     <Layout
                         style={{
@@ -70,14 +70,11 @@ export default function AuctionListProcess() {
                                     selectedTabClassName=""
                                     selectedTabPanelClassName="tab-panel--selected"
                                 >
-
                                     <AuctionListProcessSection />
-
                                 </Tabs>
                             </div>
                         </Content>
                     </Layout>
-
                 </Content>
                 <FooterBK
                     className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />

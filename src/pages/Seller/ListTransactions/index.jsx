@@ -21,6 +21,7 @@ import {
 } from "@material-tailwind/react";
 import Pagination from "@/components/Pagination/index.jsx";
 import Sidebar from '../../../partials/Sidebar';
+import Header from "@/partials/Header.jsx";
 
 
 const { Content, Sider } = Layout;
@@ -30,10 +31,7 @@ export default function ListTransaction() {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-
-
     const TABLE_HEAD = ["Tên", "Số tiền", "Ngày", "Trạng thái", "Loại giao dịch"];
-
     const TABLE_ROWS = [
         {
             img: "https://docs.material-tailwind.com/img/logos/logo-spotify.svg",
@@ -86,13 +84,13 @@ export default function ListTransaction() {
             expiry: "06/2026",
         },
     ];
-
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     return (
         <>
             <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-               
+                <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
                 <Content
                     style={{
                         padding: '0 48px',
@@ -118,14 +116,14 @@ export default function ListTransaction() {
                             flex: 1, // Để Layout chiếm hết không gian còn lại
                         }}
                     >
-                        <Sidebar/>
+
                         <Sider
                             style={{
                                 background: colorBgContainer,
                             }}
                             width={300}
                         >
-                            
+                            <Sidebar/>
                         </Sider>
                         <Content
                             style={{
@@ -300,7 +298,6 @@ export default function ListTransaction() {
                         </Content>
                     </Layout>
                 </Content>
-                {/* <FooterBK  className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" /> */}
                 <FooterBK/>
             </Layout>
         </>

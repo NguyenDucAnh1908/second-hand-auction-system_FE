@@ -6,9 +6,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
 import Banner from '../../../partials/Banner';
-
+import { Breadcrumb, Layout, Menu, theme} from 'antd';
+import FooterBK from "@/components/FooterBK/index.jsx";
+const {Content, Sider} = Layout;
 export default function OrderManagementSeller() {
-
+  const {
+    token: {colorBgContainer, borderRadiusLG},
+  } = theme.useToken();
+  const [isSidebarVisible, setSidebarVisible] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
 
@@ -17,44 +22,67 @@ export default function OrderManagementSeller() {
 
 
     <>
+      <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
+        <Content
+            style={{
+              padding: '0 48px',
+              flex: 1, // Cho phép Content chiếm không gian còn lại
+              display: 'flex', // Đặt display là flex để chứa nội dung
+              flexDirection: 'column', // Hướng theo chiều dọc
+            }}
+        >
+          <Breadcrumb
+              style={{
+                margin: '16px 0',
+              }}
+          >
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>List</Breadcrumb.Item>
+            <Breadcrumb.Item>App</Breadcrumb.Item>
+          </Breadcrumb>
+          <Layout
+              style={{
+                padding: '24px 0',
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+                flex: 1, // Để Layout chiếm hết không gian còn lại
+              }}
+          >
 
-      <div className="flex h-screen overflow-hidden">
-
-        {/* Sidebar */}
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-
-        {/* Content area */}
-        <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-
-          {/*  Site header */}
-          <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-
-          <main className="grow">
-            <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-
-
-              {/* nội dung */}
+            <Sider
+                style={{
+                  background: colorBgContainer,
+                }}
+                width={300}
+            >
+              <Sidebar/>
+            </Sider>
+            <Content
+                style={{
+                  padding: '0 24px',
+                  minHeight: 280,
+                  flex: 1, // Để Content bên trong chiếm hết không gian còn lại
+                }}
+            >
               <div className="w-full ">
                 <Tabs
-                  className="mb-1 flex flex-col gap-12"
-                  selectedTabClassName=""
-                  selectedTabPanelClassName="tab-panel--selected"
+                    className="mb-1 flex flex-col gap-12"
+                    selectedTabClassName=""
+                    selectedTabPanelClassName="tab-panel--selected"
                 >
 
-                  <StatusOrderSeller />
-                  <OrderManagementSectionSeller />
-
+                  <StatusOrderSeller/>
+                  <OrderManagementSectionSeller/>
 
 
                 </Tabs>
               </div>
-            </div>
-          </main>
-          <Banner />
-        </div>
-      </div>
-
-
+            </Content>
+          </Layout>
+        </Content>
+        <FooterBK/>
+      </Layout>
     </>
   );
 }
