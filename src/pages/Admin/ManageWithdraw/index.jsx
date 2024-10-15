@@ -7,18 +7,15 @@ import {
     Card,
     CardHeader,
     Typography,
-    Button,
     CardBody,
     Chip,
-    Drawer,
     Avatar,
     Input,
     Form,
-    Row,
-    Col,
 } from "@material-tailwind/react";
+import { Drawer, Row, Col, Button, Descriptions } from 'antd';
 import Pagination from "@/components/Pagination/index.jsx";
-import { FloatButton } from 'antd';
+import { Link } from 'react-router-dom';
 
 const TABLE_HEAD = ["Name", "Amount", "Date", "Status", "Account", "Reason", "Detail", ""];
 
@@ -76,6 +73,8 @@ const TABLE_ROWS = [
     },
 ];
 
+
+
 const ManagementWithdrawOfSeller = () => {
     const [open, setOpen] = useState(false);
 
@@ -87,91 +86,95 @@ const ManagementWithdrawOfSeller = () => {
         setOpen(false);
     };
 
-    const handleApprove = () => {
-        console.log('Approve Withdrawal');
-        // Handle approve logic
-        onClose();
-    };
+
 
     const handleDecline = () => {
         console.log('Decline Withdrawal');
         // Handle decline logic
         onClose();
     };
-
+    const handleSubmit = () => {
+        console.log('Submit Form');
+        onClose();
+    };
     return (
         <div className="container mx-auto py-10">
-          <div className="container mx-auto py-10">
-    <Drawer placement="right" closable={false} onClose={onClose} maxWidth={1000} open={open}> {/* Increased maxWidth */}
-    <p
-                    className="site-description-item-profile-p"
-                    style={{
-                        marginBottom: 24,
-                    }}
-                >
-                    User Profile
-                </p>
+            <div className="container mx-auto py-10">
+                ;
 
-        <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-300 mb-6">
-            <div className="mb-6"> {/* Increased margin-bottom for better spacing */}
-                <div className="flex justify-between items-center mb-4 flex-nowrap"> {/* Added flex-nowrap */}
-                    <p className="font-medium w-1/3">Name:</p>
-                    <p className="text-gray-600 w-2/3">John Doe</p>
-                </div>
-         
-                <div className="flex justify-between items-center mb-4 flex-nowrap"> {/* Added flex-nowrap */}
-                    <p className="font-medium w-1/3">Amount:</p>
-                    <p className="text-gray-600 w-2/3">$2,500</p>
-                </div>
-                <div className="flex justify-between items-center mb-4 flex-nowrap"> {/* Added flex-nowrap */}
-                    <p className="font-medium w-1/3">Account Number:</p>
-                    <p className="text-gray-600 w-2/3">1234 5678 9012 3456</p>
-                </div>
-                <div className="flex justify-between items-center mb-4 flex-nowrap"> {/* Added flex-nowrap */}
-                    <p className="font-medium w-1/3">Reason:</p>
-                    <p className="text-gray-600 w-2/3">Product Return</p>
-                </div>
-                <div className="flex justify-between items-center mb-4 flex-nowrap"> {/* Added flex-nowrap */}
-                    <p className="font-medium w-1/3">Date:</p>
-                    <p className="text-gray-600 w-2/3">Wed 3:00 PM</p>
-                </div>
-                <div className="flex justify-between items-center mb-4 flex-nowrap"> {/* Added flex-nowrap */}
-                    <p className="font-medium w-1/3">Transaction ID:</p>
-                    <p className="text-gray-600 w-2/3">TRX-123456789</p>
-                </div>
-                <div className="flex justify-between items-center mb-4 flex-nowrap"> {/* Added flex-nowrap */}
-                    <p className="font-medium w-1/3">Payment Method:</p>
-                    <p className="text-gray-600 w-2/3">Credit Card</p>
-                </div>
-                <div className="flex justify-between items-center mb-4 flex-nowrap"> {/* Added flex-nowrap */}
-                    <p className="font-medium w-1/3">Processed By:</p>
-                    <p className="text-gray-600 w-2/3">Admin User</p>
-                </div>
+                <Drawer placement="right" closable={false} onClose={onClose} maxWidth={1400} open={open}>
+                    <p className="text-3xl font-bold mb-10 text-gray-800">
+                        Yêu cầu chi tiết
+                    </p>
+
+                    {/* Descriptions sử dụng Tailwind */}
+                    <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                        <div className="grid grid-cols-2 gap-6">
+                            <div>
+                                <p className="font-bold text-gray-700">Name:</p>
+                                <p className="text-gray-600">John Doe</p>
+                            </div>
+                            <div>
+                                <p className="font-bold text-gray-700">Amount:</p>
+                                <p className="text-gray-600">$2,500</p>
+                            </div>
+                            <div>
+                                <p className="font-bold text-gray-700">Account Number:</p>
+                                <p className="text-gray-600">1234 5678 9012 3456</p>
+                            </div>
+                            <div>
+                                <p className="font-bold text-gray-700">Reason:</p>
+                                <p className="text-gray-600">Product Return</p>
+                            </div>
+                            <div>
+                                <p className="font-bold text-gray-700">Date:</p>
+                                <p className="text-gray-600">Wed 3:00 PM</p>
+                            </div>
+                            <div>
+                                <p className="font-bold text-gray-700">Transaction ID:</p>
+                                <p className="text-gray-600">TRX-123456789</p>
+                            </div>
+                            <div>
+                                <p className="font-bold text-gray-700">Payment Method:</p>
+                                <p className="text-gray-600">Credit Card</p>
+                            </div>
+                            <div>
+                                <p className="font-bold text-gray-700">Processed By:</p>
+                                <p className="text-gray-600">Admin User</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Image Section */}
+                    <div className="flex justify-center mb-8 mt-6">
+                        <img
+                            src="https://static.vecteezy.com/system/resources/previews/001/923/526/non_2x/stack-bills-with-pile-coins-isolated-icon-free-vector.jpg"
+                            alt="Money"
+                            className="w-24 h-24 rounded-lg shadow-md"
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        {/* Decline Button */}
+                        <div className="flex justify-center">
+                            <button className="w-full py-1 text-lg bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all">
+                                Decline
+                            </button>
+                        </div>
+
+                        {/* Transfer Money Button */}
+                        <div className="flex justify-center">
+                            <button className="w-full py-1 text-lg bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all">
+                                <Link to="/dashboard/payments" className="w-full py-1 text-lg bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all text-center block">
+                                    Transfer Money
+                                </Link>
+                            </button>
+                        </div>
+                    </div>
+                </Drawer>
+
+
             </div>
-        </div>
-
-        {/* Image Section */}
-        <div className="flex justify-center mb-6">
-            <img
-                src="https://static.vecteezy.com/system/resources/previews/001/923/526/non_2x/stack-bills-with-pile-coins-isolated-icon-free-vector.jpg" // Replace with actual money image URL
-                alt="Money"
-                className="w-48 h-48" // Increased image size
-            />
-        </div>
-
-        <div className="flex justify-between mt-4">
-            <Button color="red" className="w-full ml-2">
-                Decline
-            </Button>
-        </div>
-
-        <div className="mt-4">
-            <Button color="blue" className="w-full">
-                Transfer Money
-            </Button>
-        </div>
-    </Drawer>
-</div>
 
 
 

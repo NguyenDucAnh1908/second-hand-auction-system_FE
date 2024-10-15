@@ -17,6 +17,7 @@ import StoreOrders from "pages/Admin/StoreOrders/index.jsx";
 import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
 import ManagementTransactions from "./pages/Admin/ManagementTransactions/index.jsx";
 import ManagementWindrawOfSeller from "./pages/Admin/ManageWithdraw/index.jsx";
+import Payment from "./pages/Admin/Payment/index.jsx";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -95,6 +96,12 @@ export const routesAdmin = [
         name: "notifications",
         path: "/notifications",
         element: <Notifications />,
+      },
+      {
+        icon: <InformationCircleIcon {...icon} />,
+        name: "Payments",
+        path: "/payments",
+        element: <Payment />,
       },
     ],
   },

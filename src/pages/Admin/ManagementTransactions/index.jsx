@@ -40,15 +40,8 @@ const transaction = {
             description: "Initial deposit",
             transactionDateTime: "2024-10-10T10:00:00Z",
             virtualAccountName: "Virtual Account A",
-        },
-        {
-            reference: "REF-002",
-            amount: "5,000,000",
-            accountNumber: "ACC-987654321",
-            description: "Second deposit",
-            transactionDateTime: "2024-10-12T10:00:00Z",
-            virtualAccountName: "Virtual Account B",
-        },
+        }
+
     ],
 };
 
@@ -95,16 +88,12 @@ export default function ManagementTransactions() {
         <div className="container mx-auto py-10">
             <Dialog
                 open={open}
-                handler={handleOpen}
-                animate={{
-                    mount: { scale: 1, y: 0 },
-                    unmount: { scale: 0.9, y: -100 },
-                }}
+                size="md" // Thay đổi kích thước thành md
             >
                 <DialogHeader>Chi tiết giao dịch</DialogHeader>
-                <DialogBody className="p-6 bg-white shadow-lg rounded-lg border border-gray-300">
-                    <div className="mb-6">
-                        <div className="flex flex-wrap mb-4">
+                <DialogBody className="p-4 bg-white shadow-lg rounded-lg border border-gray-300"> {/* Giảm padding */}
+                    <div className="mb-4">
+                        <div className="flex flex-wrap mb-2">
                             {/* Left Column for Labels */}
                             <div className="w-1/2 pr-4">
                                 <p className="text-base font-semibold text-gray-800"><strong>ID:</strong></p>
@@ -128,7 +117,7 @@ export default function ManagementTransactions() {
                                 {/* Transaction Details for each transaction */}
                                 <div className="mt-2">
                                     {transaction.transactions.map((trans, index) => (
-                                        <div key={index} className="border p-3 rounded-lg mb-2 bg-gray-50 shadow">
+                                        <div key={index} className="border p-2 rounded-lg mb-2 bg-gray-50 shadow"> {/* Giảm padding cho từng transaction */}
                                             <p className="text-sm font-semibold text-gray-800"><strong>Reference:</strong> {trans.reference}</p>
                                             <p className="text-sm text-gray-600"><strong>Amount:</strong> {trans.amount.toLocaleString()} VND</p>
                                             <p className="text-sm text-gray-600"><strong>Account Number:</strong> {trans.accountNumber}</p>
@@ -138,23 +127,21 @@ export default function ManagementTransactions() {
                                         </div>
                                     ))}
                                 </div>
-                            </div>
-                        </div>
 
-                        {/* Money Image */}
+                            </div>
+
+                        </div>
+                        {/* Money Image placed at the bottom */}
                         <div className="flex justify-center mb-4">
                             <img
                                 src="https://static.vecteezy.com/system/resources/previews/001/923/526/non_2x/stack-bills-with-pile-coins-isolated-icon-free-vector.jpg" // Replace with actual money image URL
                                 alt="Money"
-                                className="w-24 h-24"
+                                className="w-24 h-24" // Kích thước hình ảnh
                             />
                         </div>
+
                     </div>
                 </DialogBody>
-
-
-
-
                 <DialogFooter>
                     <Button
                         variant="text"
@@ -164,11 +151,13 @@ export default function ManagementTransactions() {
                     >
                         <span>Cancel</span>
                     </Button>
-                    <Button variant="gradient" color="green" onClick={handleOpen}>
+                    <Button variant="gradient" color="green" onClick={handleOpen}> {/* Sửa thành handleConfirm */}
                         <span>Confirm</span>
                     </Button>
                 </DialogFooter>
             </Dialog>
+
+
             <h1 className="text-3xl font-bold text-center mb-8">Management Transactions</h1>
 
             <Card className="h-full w-full overflow-scroll">

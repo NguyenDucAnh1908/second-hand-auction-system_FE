@@ -41,7 +41,7 @@ export default function Header2({ ...props }) {
         >
             <DrawerChat open={isDrawerOpen} onClose={closeDrawer} />
             <div className="w-full">
-                <div className="flex flex-col items-center bg-white">
+                <div className="flex flex-col items-center bg-blue-gray-500">
                     <div className="flex flex-col items-center gap-1 self-stretch">
                         <div className="container-sm flex items-start justify-between gap-5 self-stretch md:flex-col md:px-5">
                             {/* Address Section */}
