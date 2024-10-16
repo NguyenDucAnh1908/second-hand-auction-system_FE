@@ -9,11 +9,11 @@ import Banner from '../../../partials/Banner';
 import { Breadcrumb, Layout, Menu, theme} from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
 const {Content, Sider} = Layout;
+
 export default function OrderManagementSeller() {
   const {
     token: {colorBgContainer, borderRadiusLG},
   } = theme.useToken();
-  const [isSidebarVisible, setSidebarVisible] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -67,7 +67,7 @@ export default function OrderManagementSeller() {
                     selectedTabClassName=""
                     selectedTabPanelClassName="tab-panel--selected"
                 >
-                  <StatusOrderSeller/>
+                  {/*<StatusOrderSeller/>*/}
                   <OrderManagementSectionSeller/>
                 </Tabs>
               </div>

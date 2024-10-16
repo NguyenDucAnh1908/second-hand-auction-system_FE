@@ -12,9 +12,6 @@ const { Content, Sider } = Layout;
 
 
 export default function OrderManagementBuyer() {
-
-    const [position, setPosition] = useState("end");
-    const [modal2Open, setModal2Open] = useState(false);
     const {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
