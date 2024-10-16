@@ -59,7 +59,6 @@ function App() {
                 <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
                 <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
 
-
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>

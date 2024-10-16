@@ -132,8 +132,8 @@ export default function ListOfSellerProductPage() {
                                         <div className="flex items-start">
 
                                             <div
-                                                className="h-[1196px] flex-1 self-center rounded-[16px] bg-[url(/images/img_group_46876.png)] bg-cover bg-no-repeat py-[84px] md:h-auto md:py-5">
-                                                <div className="mb-[86px] flex flex-col gap-7">
+                                                className=" flex-1 self-center rounded-[16px] bg-[url(/images/img_group_46876.png)] bg-cover bg-no-repeat pt-[84px] md:h-auto md:py-5">
+                                                <div className=" flex flex-col gap-2">
                                                     <div className="ml-1 flex md:ml-0">
                                                         <Heading
                                                             size="headingxl"
