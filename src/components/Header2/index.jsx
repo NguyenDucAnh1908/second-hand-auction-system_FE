@@ -119,9 +119,11 @@ export default function Header2({ ...props }) {
 
                             <div className="mr-4 flex w-[32%] items-end justify-center gap-4 md:mr-0 md:w-full sm:flex-col">
                                 <div className="flex flex-1 justify-center gap-3.5 sm:self-stretch mb-2">
-                                    <IconButton className="bg-blue-gray-900">
-                                        <ShopOutlined style={{ fontSize: '20px' }} />
-                                    </IconButton>
+                                    <a href="/dashboard-seller">
+                                        <IconButton className="bg-blue-gray-900">
+                                            <ShopOutlined style={{ fontSize: '20px' }} />
+                                        </IconButton>
+                                    </a>
                                     <Text className="font-semibold text-[14px] leading-[22px] text-gray-900">
                                         <span className="text-[13px] font-normal">
                                             Kênh
@@ -157,10 +159,11 @@ export default function Header2({ ...props }) {
                                                         fill="#90A4AE"
                                                     />
                                                 </svg>
-
+                                                <a href="/ProfileDetail">
                                                 <Typography variant="small" className="font-medium">
                                                     My Profile
                                                 </Typography>
+                                                </a>
                                             </MenuItem>
                                             <MenuItem className="flex items-center gap-2">
                                                 <svg

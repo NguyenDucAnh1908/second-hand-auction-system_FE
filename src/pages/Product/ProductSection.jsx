@@ -1,11 +1,11 @@
-import React, {useState, Suspense} from "react";
-import {Text, SelectBox, Img, Heading} from "../../components";
+import React, { useState, Suspense } from "react";
+import { Text, SelectBox, Img, Heading } from "../../components";
 import Pagination from "../../components/Pagination";
 import ProductDetails21 from "../../components/ProductDetails21";
-import {Tag, Modal, Button} from "antd";
-import {CloseCircleOutlined} from "@ant-design/icons";
+import { Tag, Modal, Button } from "antd";
+import { CloseCircleOutlined } from "@ant-design/icons";
 import RegisterAuction from "../RegisterAuction-Buyer/RegisterAuction";
-import {Checkbox, Input} from "@material-tailwind/react";
+import { Checkbox, Input } from "@material-tailwind/react";
 
 
 const fashionItemsGrid = [
@@ -91,12 +91,12 @@ const fashionItemsGrid = [
 ];
 
 const dropDownOptions = [
-    {label: "Option1", value: "option1"},
-    {label: "Option2", value: "option2"},
-    {label: "Option3", value: "option3"},
+    { label: "Option1", value: "option1" },
+    { label: "Option2", value: "option2" },
+    { label: "Option3", value: "option3" },
 ];
 
-export default function ProductSection({selectedBrands, onTagClose}) {
+export default function ProductSection({ selectedBrands, onTagClose }) {
     const [isOpen, setIsOpen] = useState(false); // State cho modal
 
     const handleClose = (brandName) => {
@@ -127,7 +127,7 @@ export default function ProductSection({selectedBrands, onTagClose}) {
 
     return (
         <>
-            <Modal  open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
+            <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
                 <form>
                     <div className="mb-4">
                         <Heading
@@ -198,8 +198,8 @@ export default function ProductSection({selectedBrands, onTagClose}) {
                                 className="h-5 w-5"
                             />
                             <span className="text-sm leading-5 text-gray-700">
-                    Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
-                  </span>
+                                Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
+                            </span>
                         </div>
                     </div>
                     {/* Submit Button */}
@@ -227,13 +227,15 @@ export default function ProductSection({selectedBrands, onTagClose}) {
                         {selectedBrands.map((brand) => (
                             <Tag
                                 key={brand}
-                                closeIcon={<CloseCircleOutlined/>}
+                                closeIcon={<CloseCircleOutlined />}
                                 onClose={() => handleClose(brand)}
                             >
                                 {brand}
                             </Tag>
                         ))}
                     </div>
+
+
                     {/*<select*/}
                     {/*    className="rounded-md border border-solid border-gray-200 text-blue_gray-900_01"*/}
                     {/*    defaultValue=""*/}
@@ -246,20 +248,22 @@ export default function ProductSection({selectedBrands, onTagClose}) {
                     {/*</select>*/}
                 </div>
 
-                <div
-                    className="mx-7 mt-5 grid grid-cols-4 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
-                    <Suspense fallback={<div>Loading feed...</div>}>
-                        {fashionItemsGrid.map((item, index) => (
-                            <div key={"itemsGrid" + index}
-                            >
-                                <ProductDetails21 {...item} onBidClick={showModal}/>
-                            </div>
-                        ))}
-                    </Suspense>
-                </div>
+                <a href="/auction">
+                    <div
+                        className="mx-7 mt-5 grid grid-cols-4 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
+                        <Suspense fallback={<div>Loading feed...</div>}>
+                            {fashionItemsGrid.map((item, index) => (
+                                <div key={"itemsGrid" + index}
+                                >
+                                    <ProductDetails21 {...item} onBidClick={showModal} />
+                                </div>
+                            ))}
+                        </Suspense>
+                    </div>
+                </a>
 
                 <div className="my-10">
-                    <Pagination/>
+                    <Pagination />
                 </div>
             </div>
         </>
