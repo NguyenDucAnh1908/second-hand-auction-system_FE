@@ -137,15 +137,15 @@ function NavList() {
   return (
     <List className="mb-6 mt-4 p-0 lg:mb-0 lg:mt-0 lg:flex-row lg:p-1">
       {[
-        { title: "Trang chủ", icon: <HomeIcon className="nav-icon" /> },
-        { title: "Sản phẩm", icon: <ShoppingCartIcon className="nav-icon" /> },
-        { title: "Liên hệ", icon: <PhoneIcon className="nav-icon" /> },
-        { title: "Bài viết", icon: <DocumentIcon className="nav-icon" /> },
-        { title: "Chính sách", icon: <InformationCircleIcon className="nav-icon" /> },
+        { title: "Trang chủ", icon: <HomeIcon className="nav-icon" />, href: "/" },
+        { title: "Sản phẩm", icon: <ShoppingCartIcon className="nav-icon" />, href: "/product" },
+        { title: "Liên hệ", icon: <PhoneIcon className="nav-icon" />, href: "/contact" },
+        { title: "Bài viết", icon: <DocumentIcon className="nav-icon" />, href: "/articles" },
+        { title: "Chính sách", icon: <InformationCircleIcon className="nav-icon" />, href: "/policy" },
       ].map((item, index) => (
         <Typography
           as="a"
-          href="#"
+          href={item.href} 
           variant="small"
           color="blue-gray"
           className="font-medium nav-item"

@@ -160,7 +160,7 @@ export default function ListOfSellerProductPage() {
                                                                     />
                                                                 ) : (
                                                                     <Img
-                                                                        src="images/img_search.svg"
+                                                                        src="/images/img_search.svg"
                                                                         alt="Search"
                                                                         className="h-[18px] w-[18px]"
                                                                     />
