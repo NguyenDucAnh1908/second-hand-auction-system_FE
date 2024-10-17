@@ -152,7 +152,6 @@ export default function LoginSection() {
                     />
                     <p>Login with Google</p>
                   </ButtonDH>
-
                 </div>
               </div>
             </div>
