@@ -1,12 +1,15 @@
 import React from "react";
-//import {FormAddAddress} from "../pages/Address/FormAddAddress.jsx";
-
+import { Button, Result } from 'antd';
 
 const NotFound = () => {
   return (
     <div>
-      <h1>Oops! We ran out of code</h1>
-        {/*<FormAddAddress/>*/}
+        <Result
+            status="404"
+            title="404"
+            subTitle="Sorry, the page you visited does not exist."
+            extra={<Button type="primary">Back Home</Button>}
+        />
     </div>
   );
 };

@@ -33,6 +33,7 @@ import SellerDetailPage from "./pages/SellerDetail/index.jsx";
 import ListRegisterAuction from "./pages/ListRegisterAuction/index.jsx";
 import AuctionListProcess from "./pages/AuctionListProcess/index.jsx";
 import RequireAuth from "@/routers/RequireAuth.jsx";
+import Unauthorized from "pages/Unauthorized.jsx";
 
 function App() {
     return (
@@ -47,23 +48,12 @@ function App() {
                 <Route path="ForgotPassword" index element={<ForgotPassword/>}/>
                 <Route path="VerifyAccount" index element={<VerifyAccount/>}/>
 
-                {/* buyer */}
-                <Route path="HistoryPage" index element={<CustomerTransactionHistoryPagePage/>}/>
-                <Route path="ProfileDetail" index element={<ProfileDetailPage/>}/>
-                <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
-                <Route path="Address" index element={<AddressPage/>}/>
-                <Route path="ListOfBuyerBids" index element={<ListOfBuyerBids/>}/>
-                <Route path="RegisterKYC" index element={<KNCPage/>}/>
-                <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
-                <Route path="ListOfSellerPage" index element={<ListOfSellerPage/>}/>
-                <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
-                <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
-                <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
 
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>
                 <Route path="NotFound" index element={<NotFound/>}/>
+                <Route path="Unauthorized" index element={<Unauthorized/>}/>
 
                 {/*ADMIN*/}
                 <Route element={<RequireAuth allowedRoles={["ADMIN"]}/>}>
@@ -82,22 +72,22 @@ function App() {
                     <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>
                 </Route>
 
-                {/*STAFF*/}
-                <Route element={<RequireAuth allowedRoles={["STAFF"]} />}>
-                    <Route path="dashboard-seller" element={<DashboardSeller />} />
-                    <Route path="dashboard-seller/RegisterProduct" element={<RegisterProductPage />} />
-                    <Route path="dashboard-seller/WithdrawMoney" element={<WithdrawMoney />} />
-                    <Route path="dashboard-seller/ListOfSellerProduct" element={<ListOfSellerProductPage />} />
-                    <Route path="dashboard-seller/OrderManagementSeller" element={<OrderManagementSeller />} />
-                    <Route path="dashboard-seller/ListTransaction" element={<ListTransaction />} />
+                {/*BUYER*/}
+                <Route element={<RequireAuth allowedRoles={["BUYER"]} />}>
+                    <Route path="HistoryPage" index element={<CustomerTransactionHistoryPagePage/>}/>
+                    <Route path="ProfileDetail" index element={<ProfileDetailPage/>}/>
+                    <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
+                    <Route path="Address" index element={<AddressPage/>}/>
+                    <Route path="ListOfBuyerBids" index element={<ListOfBuyerBids/>}/>
+                    <Route path="RegisterKYC" index element={<KNCPage/>}/>
+                    <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
+                    <Route path="ListOfSellerPage" index element={<ListOfSellerPage/>}/>
+                    <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
+                    <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
+                    <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
                 </Route>
                 {/*<Route element={<RequireAuth allowedRoles={["STAFF", "ADMIN"]}/>}>*/}
-                {/*    <Route path="/dashboard-seller/*" element={<DashboardSeller/>}/>*/}
-                {/*    <Route path="/dashboard-seller/RegisterProduct" index element={<RegisterProductPage/>}/>*/}
-                {/*    <Route path="/dashboard-seller/WithdrawMoney" index element={<WithdrawMoney/>}/>*/}
-                {/*    <Route path="/dashboard-seller/ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>*/}
-                {/*    <Route path="/dashboard-seller/OrderManagementSeller" index element={<OrderManagementSeller/>}/>*/}
-                {/*    <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>*/}
+
                 {/*</Route>*/}
             </Route>
             <Route path="RegisterAuction" index element={<RegisterAuction/>}/>
