@@ -4,21 +4,22 @@ import RegisterSection from "./RegisterSection";
 import React, {useState, useEffect, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
-import {useRegisterUserMutation} from "../../services/auth.service";
+import {useRegisterUserMutation, useVerifyUserMutation} from "../../services/auth.service";
 import {setCredentials} from "@/redux/auth/authSlice.js";
 import {toast} from 'react-toastify'
 import Toast from "@/components/Toast/index.jsx";
 
 export default function RegisterPage() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [fullName, setFullName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [otp, setOtp] = useState("");
     const userRef = useRef();
     const errRef = useRef();
-    const dispatch = useDispatch();
-    const [registerUser, {isLoading}] = useRegisterUserMutation();
-
+    const [registerUser, { isLoading: isLoadingRegister }] = useRegisterUserMutation();
+    const [verifyUser, { isLoading: isLoadingVerify }] = useVerifyUserMutation();
 
     useEffect(() => {
         if (userRef.current) {
@@ -33,25 +34,32 @@ export default function RegisterPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Gọi API đăng ký và lấy dữ liệu trả về
             const userData = await registerUser({
                 email, password, fullName, phoneNumber
             }).unwrap();
-            console.log("Register dât: ",userData.message)
+            console.log("Register data: ", userData.message)
             toast.success(userData.message)
-            //alert(userData.message || "User registered successfully");
         } catch (err) {
-            // Kiểm tra nếu API trả về lỗi với trường 'message'
-            const errorMessage = err?.data?.message || "Registration failed";
+            const errorMessage = err?.data?.message;
             toast.error(errorMessage);
-            //alert(errorMessage);
-            // Đưa focus vào element thông báo lỗi
             errRef.current.focus();
         }
     };
-
+    const handleVerify = async () => {
+        try {
+            const response = await verifyUser({ email: email, otp: otp }).unwrap();
+            console.log(response);
+            toast.success(response.message)
+            setTimeout(() => {
+                navigate("/login");
+            }, 2000);
+        } catch (error) {
+            const errorMessage = error?.data?.message;
+            console.error("Verification failed:", error);
+            toast.error(errorMessage);
+        }
+    };
     return (
-
         <>
             <Toast/>
             <Helmet>
@@ -63,8 +71,6 @@ export default function RegisterPage() {
             </Helmet>
             <div
                 className="flex w-full flex-col gap-[100px] bg-gradient-to-b from-blue-gray-900 to-blue-black-900 text-white md:gap-[75px] sm:gap-[50px]"> {/* Gradient background */}
-                {/* register section */}
-
                 <RegisterSection
                     email={email}
                     setEmail={setEmail}
@@ -74,10 +80,13 @@ export default function RegisterPage() {
                     setFullName={setFullName}
                     phoneNumber={phoneNumber}
                     setPhoneNumber={setPhoneNumber}
+                    setOtp={setOtp}
                     handleSubmit={handleSubmit}
-                    isLoading={isLoading}
+                    isLoadingRegister={isLoadingRegister}
+                    isLoadingVerify={isLoadingVerify}
+                    handleVerify={handleVerify}
+                    otp={otp}
                 />
-
             </div>
         </>
     );
