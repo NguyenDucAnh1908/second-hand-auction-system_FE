@@ -12,8 +12,9 @@ import {
     Avatar,
     Input,
     Form,
+    Button
 } from "@material-tailwind/react";
-import { Drawer, Row, Col, Button, Descriptions } from 'antd';
+import { Drawer, Row, Col, Descriptions, Badge, Space } from 'antd';
 import Pagination from "@/components/Pagination/index.jsx";
 import { Link } from 'react-router-dom';
 
@@ -74,103 +75,190 @@ const TABLE_ROWS = [
 ];
 
 
+const items = [
+    {
+        key: '1',
+        label: 'Họ và Tên',
+        children: 'Nguyễn Văn A',
+        span: 3,
+        labelStyle: { fontWeight: 'bold' }, // In đậm label
+    },
+    {
+        key: '2',
+        label: 'Số Tài Khoản Ngân Hàng',
+        children: '123456789 - Vietcombank',
+        span: 3,
+        labelStyle: { fontWeight: 'bold' },
+    },
+    {
+        key: '3',
+        label: 'Số Tiền Rút',
+        children: '10,000,000 VND',
+        labelStyle: { fontWeight: 'bold' },
+    },
+    {
+        key: '4',
+        label: 'Phí Giao Dịch',
+        children: '50,000 VND',
+        span: 2,
+        labelStyle: { fontWeight: 'bold' },
+    },
+    {
+        key: '5',
+        label: 'Ngày Yêu Cầu',
+        children: '14/10/2024',
+        labelStyle: { fontWeight: 'bold' },
+    },
+    {
+        key: '6',
+        label: 'Tình Trạng',
+        children: <Badge status="processing" text="Đang xử lý" />,
+        span: 3,
+        labelStyle: { fontWeight: 'bold' },
+    },
+    {
+        key: '7',
+        label: 'Email',
+        children: 'nguyenvana@example.com',
+        labelStyle: { fontWeight: 'bold' },
+    },
+    {
+        key: '8',
+        label: 'Số Điện Thoại',
+        children: '+84 123 456 789',
+        span: 2,
+        labelStyle: { fontWeight: 'bold' },
+    },
+    {
+        key: '9',
+        label: 'Ghi Chú',
+        children: '3D fonts are now seen more and more in our daily life. They are frequently seen especially in titles, slogans, posters, etc. For example, the title text for the famous movies Indiana Jones and Superman were both designed in a 3d style. 3D fonts can be used for making posters, CD covers, flyers, brochures that are calling for additional attention.',
+        span: 5,
+        labelStyle: { fontWeight: 'bold' },
+    },
+];
+const DescriptionItem = ({ title, content }) => (
+    <div className="site-description-item-profile-wrapper">
+        <p className="site-description-item-profile-p-label">{title}:</p>
+        {content}
+    </div>
+);
 
 const ManagementWithdrawOfSeller = () => {
     const [open, setOpen] = useState(false);
-
     const showDrawer = () => {
         setOpen(true);
     };
-
     const onClose = () => {
         setOpen(false);
     };
 
 
-
-    const handleDecline = () => {
-        console.log('Decline Withdrawal');
-        // Handle decline logic
-        onClose();
-    };
-    const handleSubmit = () => {
-        console.log('Submit Form');
-        onClose();
-    };
     return (
         <div className="container mx-auto py-10">
             <div className="container mx-auto py-10">
-                ;
-
-                <Drawer placement="right" closable={false} onClose={onClose} maxWidth={1400} open={open}>
-                    <p className="text-3xl font-bold mb-10 text-gray-800">
-                        Yêu cầu chi tiết
-                    </p>
-
-                    {/* Descriptions sử dụng Tailwind */}
-                    <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-                        <div className="grid grid-cols-2 gap-6">
-                            <div>
-                                <p className="font-bold text-gray-700">Name:</p>
-                                <p className="text-gray-600">John Doe</p>
-                            </div>
-                            <div>
-                                <p className="font-bold text-gray-700">Amount:</p>
-                                <p className="text-gray-600">$2,500</p>
-                            </div>
-                            <div>
-                                <p className="font-bold text-gray-700">Account Number:</p>
-                                <p className="text-gray-600">1234 5678 9012 3456</p>
-                            </div>
-                            <div>
-                                <p className="font-bold text-gray-700">Reason:</p>
-                                <p className="text-gray-600">Product Return</p>
-                            </div>
-                            <div>
-                                <p className="font-bold text-gray-700">Date:</p>
-                                <p className="text-gray-600">Wed 3:00 PM</p>
-                            </div>
-                            <div>
-                                <p className="font-bold text-gray-700">Transaction ID:</p>
-                                <p className="text-gray-600">TRX-123456789</p>
-                            </div>
-                            <div>
-                                <p className="font-bold text-gray-700">Payment Method:</p>
-                                <p className="text-gray-600">Credit Card</p>
-                            </div>
-                            <div>
-                                <p className="font-bold text-gray-700">Processed By:</p>
-                                <p className="text-gray-600">Admin User</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Image Section */}
-                    <div className="flex justify-center mb-8 mt-6">
-                        <img
-                            src="https://static.vecteezy.com/system/resources/previews/001/923/526/non_2x/stack-bills-with-pile-coins-isolated-icon-free-vector.jpg"
-                            alt="Money"
-                            className="w-24 h-24 rounded-lg shadow-md"
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        {/* Decline Button */}
-                        <div className="flex justify-center">
-                            <button className="w-full py-1 text-lg bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all">
-                                Decline
-                            </button>
-                        </div>
-
-                        {/* Transfer Money Button */}
-                        <div className="flex justify-center">
-                            <button className="w-full py-1 text-lg bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all">
-                                <Link to="/dashboard/payments" className="w-full py-1 text-lg bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all text-center block">
-                                    Transfer Money
-                                </Link>
-                            </button>
-                        </div>
-                    </div>
+                <Drawer width={1100} placement="right" closable={false} onClose={onClose} open={open}>
+                    <Descriptions
+                        title="Yêu Cầu Rút Tiền"
+                        bordered items={items}
+                        extra={ <Space>
+                            <Button color="red" danger>
+                                Hủy Yêu Cầu
+                            </Button>
+                            <Button color="green">
+                                Xác Nhận
+                            </Button>
+                        </Space>}
+                    />
+                    {/*<p*/}
+                    {/*    className="site-description-item-profile-p"*/}
+                    {/*    style={{*/}
+                    {/*        marginBottom: 24,*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    User Profile*/}
+                    {/*</p>*/}
+                    {/*<p className="site-description-item-profile-p">Personal</p>*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Full Name" content="Lily" />*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Account" content="AntDesign@example.com" />*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="City" content="HangZhou" />*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Country" content="China🇨🇳" />*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Birthday" content="February 2,1900" />*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Website" content="-" />*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={24}>*/}
+                    {/*        <DescriptionItem*/}
+                    {/*            title="Message"*/}
+                    {/*            content="Make things as simple as possible but no simpler."*/}
+                    {/*        />*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*<Divider />*/}
+                    {/*<p className="site-description-item-profile-p">Company</p>*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Position" content="Programmer" />*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Responsibilities" content="Coding" />*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Department" content="XTech" />*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Supervisor" content={<a>Lin</a>} />*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={24}>*/}
+                    {/*        <DescriptionItem*/}
+                    {/*            title="Skills"*/}
+                    {/*            content="C / C + +, data structures, software engineering, operating systems, computer networks, databases, compiler theory, computer architecture, Microcomputer Principle and Interface Technology, Computer English, Java, ASP, etc."*/}
+                    {/*        />*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*<Divider />*/}
+                    {/*<p className="site-description-item-profile-p">Contacts</p>*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Email" content="AntDesign@example.com" />*/}
+                    {/*    </Col>*/}
+                    {/*    <Col span={12}>*/}
+                    {/*        <DescriptionItem title="Phone Number" content="+86 181 0000 0000" />*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*<Row>*/}
+                    {/*    <Col span={24}>*/}
+                    {/*        <DescriptionItem*/}
+                    {/*            title="Github"*/}
+                    {/*            content={*/}
+                    {/*                <a href="http://github.com/ant-design/ant-design/">*/}
+                    {/*                    github.com/ant-design/ant-design/*/}
+                    {/*                </a>*/}
+                    {/*            }*/}
+                    {/*        />*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
                 </Drawer>
 
 
@@ -197,7 +285,7 @@ const ManagementWithdrawOfSeller = () => {
                                     icon={<MagnifyingGlassIcon className="h-5 w-5" />}
                                 />
                             </div>
-                            <Button className="flex items-center gap-3" size="sm">
+                            <Button variant="gradient" className="flex items-center gap-3" size="sm">
                                 <ArrowDownTrayIcon strokeWidth={2} className="h-4 w-4" /> Download
                             </Button>
                         </div>
@@ -281,7 +369,7 @@ const ManagementWithdrawOfSeller = () => {
                                                 </Typography>
                                             </td>
                                             <td className={classes}>
-                                                <Button onClick={showDrawer} variant="outlined" color="blue-gray" size="sm">
+                                                <Button  onClick={showDrawer} variant="gradient" color="blue-gray" size="sm">
                                                     Details
                                                 </Button>
                                             </td>
