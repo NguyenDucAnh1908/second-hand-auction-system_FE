@@ -32,6 +32,7 @@ import ListTransaction from "./pages/Seller/ListTransactions/index.jsx";
 import SellerDetailPage from "./pages/SellerDetail/index.jsx";
 import ListRegisterAuction from "./pages/ListRegisterAuction/index.jsx";
 import AuctionListProcess from "./pages/AuctionListProcess/index.jsx";
+import RequireAuth from "@/routers/RequireAuth.jsx";
 
 function App() {
     return (
@@ -63,19 +64,42 @@ function App() {
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>
                 <Route path="NotFound" index element={<NotFound/>}/>
-            </Route>
-            <Route path="/dashboard/*" element={<Dashboard/>}/>
-            <Route path="/auth/*" element={<Auth/>}/>
-            <Route path="*" element={<Navigate to="/dashboard/home" replace/>}/>
 
-            {/* seller */}
-            <Route path="/dashboard-seller/*" element={<DashboardSeller />} /> 
-            <Route path="/dashboard-seller/RegisterProduct" index element={<RegisterProductPage/>}/>
-            <Route path="/dashboard-seller/WithdrawMoney" index element={<WithdrawMoney/>}/>
-            <Route path="/dashboard-seller/ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
-            <Route path="/dashboard-seller/OrderManagementSeller" index element={<OrderManagementSeller/>}/>
-            <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>
-            {/* test */}
+                {/*ADMIN*/}
+                <Route element={<RequireAuth allowedRoles={["ADMIN"]}/>}>
+                    <Route path="/dashboard/*" element={<Dashboard/>}/>
+                    <Route path="/auth/*" element={<Auth/>}/>
+                    <Route path="/dashboard/*" element={<Navigate to="/dashboard/home" replace/>}/>
+                </Route>
+
+                {/* seller */}
+                <Route element={<RequireAuth allowedRoles={["SELLER"]}/>}>
+                    <Route path="/dashboard-seller/*" element={<DashboardSeller/>}/>
+                    <Route path="/dashboard-seller/RegisterProduct" index element={<RegisterProductPage/>}/>
+                    <Route path="/dashboard-seller/WithdrawMoney" index element={<WithdrawMoney/>}/>
+                    <Route path="/dashboard-seller/ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
+                    <Route path="/dashboard-seller/OrderManagementSeller" index element={<OrderManagementSeller/>}/>
+                    <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>
+                </Route>
+
+                {/*STAFF*/}
+                <Route element={<RequireAuth allowedRoles={["STAFF"]} />}>
+                    <Route path="dashboard-seller" element={<DashboardSeller />} />
+                    <Route path="dashboard-seller/RegisterProduct" element={<RegisterProductPage />} />
+                    <Route path="dashboard-seller/WithdrawMoney" element={<WithdrawMoney />} />
+                    <Route path="dashboard-seller/ListOfSellerProduct" element={<ListOfSellerProductPage />} />
+                    <Route path="dashboard-seller/OrderManagementSeller" element={<OrderManagementSeller />} />
+                    <Route path="dashboard-seller/ListTransaction" element={<ListTransaction />} />
+                </Route>
+                {/*<Route element={<RequireAuth allowedRoles={["STAFF", "ADMIN"]}/>}>*/}
+                {/*    <Route path="/dashboard-seller/*" element={<DashboardSeller/>}/>*/}
+                {/*    <Route path="/dashboard-seller/RegisterProduct" index element={<RegisterProductPage/>}/>*/}
+                {/*    <Route path="/dashboard-seller/WithdrawMoney" index element={<WithdrawMoney/>}/>*/}
+                {/*    <Route path="/dashboard-seller/ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>*/}
+                {/*    <Route path="/dashboard-seller/OrderManagementSeller" index element={<OrderManagementSeller/>}/>*/}
+                {/*    <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>*/}
+                {/*</Route>*/}
+            </Route>
             <Route path="RegisterAuction" index element={<RegisterAuction/>}/>
 
         </Routes>
