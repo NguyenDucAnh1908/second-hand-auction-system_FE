@@ -9,6 +9,7 @@ import {
     selectCurrentUser,
     selectIsLoggedIn,
     logOut,
+    selectCurrentUserAPI,
     selectCurrentRole,
 } from "../../redux/auth/authSlice";
 import {
@@ -53,6 +54,7 @@ export default function Header2({...props}) {
         navigate("/login");
     };
     const user = useSelector(selectCurrentUser);
+    const userAPI = useSelector(selectCurrentUserAPI);
     const isLoggin = useSelector(selectIsLoggedIn);
     return (
         <header
@@ -167,7 +169,7 @@ export default function Header2({...props}) {
                                                         variant="circular"
                                                         alt="tania andrew"
                                                         className="cursor-pointer rounded-full object-cover"
-                                                        src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+                                                        src={userAPI.avatar}
                                                     />
                                                 </MenuHandler>
                                                 <MenuList>
@@ -279,10 +281,10 @@ export default function Header2({...props}) {
                                             <Text
                                                 className="font-bevietnampro text-[14px] font-bold leading-[22px] text-blue_gray-900_01">
                                         <span className="text-[13px] font-normal">
-                                            {user}
+                                            {userAPI.fullName}
                                             <br/>
                                         </span>
-                                                <span className="text-[10px] font-medium">{user}</span>
+                                                <span className="text-[10px] font-medium">{userAPI.role}</span>
                                             </Text>
                                         </>
                                     ) : (

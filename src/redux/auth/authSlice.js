@@ -37,6 +37,9 @@ export default authSlice.reducer;
 export const selectCurrentUser = (state) =>
   state.auth.user?.fullName || "Guest";
 
+export const selectCurrentUserAPI = (state) =>
+    state.auth.user || "Guest";
+
 export const selectCurrentToken = (state) => state.auth.token;
 //export const selectCurrentRole = (state) => state.auth.user.role;
 export const selectCurrentRole = (state) => state.auth?.user?.role || null;
