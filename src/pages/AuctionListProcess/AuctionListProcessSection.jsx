@@ -1,10 +1,9 @@
-import { Img, InputDH } from "../../components/index.jsx";
-import { Button, Card, Typography, Select, Option } from "@material-tailwind/react";
-import { Tag } from "antd";
+import {Img, InputDH} from "../../components/index.jsx";
+import {Button, Card, Typography, Select, Option} from "@material-tailwind/react";
+import {Badge, Descriptions, Tag, Modal} from "antd";
 import Pagination from "@/components/Pagination/index.jsx";
-import React, { useState, useEffect } from 'react';
-import Modal from "./Modal.jsx";
-import { SyncOutlined } from "@ant-design/icons";
+import React, {useState, useEffect} from 'react';
+import {SyncOutlined} from "@ant-design/icons";
 
 // Các trường tiêu đề cho bảng
 const TABLE_HEAD = [
@@ -58,19 +57,19 @@ const TABLE_ROWS = [
     },
 ];
 
+
 export default function AuctionListProcessSection() {
     const [searchBarValue, setSearchBarValue] = useState("");
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState(null);
 
-    const handleDetailClick = (product) => {
-        setSelectedProduct(product);
-        setModalOpen(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const showModal = () => {
+        setIsModalOpen(true);
     };
-
-    const closeModal = () => {
-        setModalOpen(false);
-        setSelectedProduct(null);
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
     };
 
     const [remainingTime, setRemainingTime] = useState({});
@@ -105,7 +104,58 @@ export default function AuctionListProcessSection() {
 
         return () => clearInterval(intervalId);
     }, []);
-
+    const items = [
+        {
+            key: '1',
+            label: 'Sản Phẩm',
+            children: "Tablet",
+            span: 2,
+        },
+        {
+            key: '2',
+            label: 'Hình Ảnh',
+            children: (
+                <img
+                    src="https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f"
+                    alt="Tablet"
+                    className="w-[30%] h-48 object-cover rounded"
+                />
+            ),
+            span: 3,
+        },
+        {
+            key: '3',
+            label: 'Số Đăng Ký',
+            children: "#AU-415648",
+        },
+        {
+            key: '4',
+            label: 'Thời Gian Đấu Giá',
+            children: new Date("2024-11-01T12:00:00").toLocaleString(),
+            span: 2,
+        },
+        {
+            key: '5',
+            label: 'Trạng Thái',
+            children: <Badge status="processing" text="Đang đấu giá"/>,
+            span: 3,
+        },
+        {
+            key: '6',
+            label: 'Người Bán',
+            children: "Han So Hee",
+        },
+        {
+            key: '7',
+            label: 'Tiền Cọc',
+            children: 500,
+        },
+        {
+            key: '7',
+            label: 'Tiền Cọc',
+            children: 100,
+        },
+    ];
     return (
         <div>
             <div className="flex w-full flex-col items-center">
@@ -127,85 +177,76 @@ export default function AuctionListProcessSection() {
                     <Card className="h-full w-full overflow-auto">
                         <table className="w-full min-w-max table-auto text-left">
                             <thead>
-                                <tr>
-                                    {TABLE_HEAD.map((head) => (
-                                        <th key={head} className="p-4 pt-10">
-                                            <Typography
-                                                variant="small"
-                                                color="blue-gray"
-                                                className="font-bold leading-none"
-                                            >
-                                                {head}
-                                            </Typography>
-                                        </th>
-                                    ))}
-                                </tr>
+                            <tr>
+                                {TABLE_HEAD.map((head) => (
+                                    <th key={head} className="p-4 pt-10">
+                                        <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-bold leading-none"
+                                        >
+                                            {head}
+                                        </Typography>
+                                    </th>
+                                ))}
+                            </tr>
                             </thead>
                             <tbody>
-                                {TABLE_ROWS.map((row) => (
-                                    <tr key={row.number}>
-                                        <td className="p-4">
-                                            <Typography variant="small" color="blue-gray" className="font-bold">
-                                                {row.number}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <img src={row.image} alt={row.product} className="w-16 h-16 object-cover rounded" />
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" className="font-normal text-gray-600">
-                                                {row.product}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" className="font-normal text-gray-600">
-                                                {remainingTime[row.number] || "Đang cập nhật..."} {/* Hiển thị thời gian còn lại */}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Tag icon={<SyncOutlined spin />} color="processing">
-                                                {row.status}
-                                            </Tag>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" className="font-normal text-gray-600">
-                                                ${row.currentPrice}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography
-                                                variant="small"
-                                                className={`font-normal ${row.yourPrice >= row.currentPrice ? 'text-green-500' : 'text-red-500'}`}
-                                            >
-                                                ${row.yourPrice}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Button color="blue" onClick={() => handleDetailClick(row)}>Chi tiết</Button>
-                                        </td>
-                                    </tr>
-                                ))}
+                            {TABLE_ROWS.map((row) => (
+                                <tr key={row.number}>
+                                    <td className="p-4">
+                                        <Typography variant="small" color="blue-gray" className="font-bold">
+                                            {row.number}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <img src={row.image} alt={row.product}
+                                             className="w-16 h-16 object-cover rounded"/>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography variant="small" className="font-normal text-gray-600">
+                                            {row.product}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography variant="small" className="font-normal text-gray-600">
+                                            {remainingTime[row.number] || "Đang cập nhật..."} {/* Hiển thị thời gian còn lại */}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Tag icon={<SyncOutlined spin/>} color="processing">
+                                            {row.status}
+                                        </Tag>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography variant="small" className="font-normal text-gray-600">
+                                            ${row.currentPrice}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography
+                                            variant="small"
+                                            className={`font-normal ${row.yourPrice >= row.currentPrice ? 'text-green-500' : 'text-red-500'}`}
+                                        >
+                                            ${row.yourPrice}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Button color="blue" onClick={showModal}>Chi tiết</Button>
+                                    </td>
+                                </tr>
+                            ))}
                             </tbody>
                         </table>
                     </Card>
                     <div className="flex justify-center items-center mt-4">
-                        <Pagination />
+                        <Pagination/>
                     </div>
                 </div>
             </div>
-
-            {/* Modal để hiển thị thông tin chi tiết sản phẩm */}
-            <Modal isOpen={modalOpen} onClose={closeModal}>
-                {selectedProduct && (
-                    <div>
-                        <Typography variant="h5" className="font-bold">{selectedProduct.product}</Typography>
-                        <img src={selectedProduct.image} alt={selectedProduct.product} className="w-[30%] h-48 object-cover rounded mt-4" />
-                        <Typography className="mt-2">Số Đăng Ký: {selectedProduct.number}</Typography>
-                        <Typography className="mt-2">Thời gian đấu giá còn lại: {calculateRemainingTime(selectedProduct.endTime)}</Typography> {/* Sửa lại cách gọi hàm */}
-                        <Typography className="mt-2">Giá Hiện Tại: ${selectedProduct.currentPrice}</Typography>
-                        <Typography className="mt-2">Giá của bạn: ${selectedProduct.yourPrice}</Typography>
-                    </div>
-                )}
+            <Modal footer={null} width={1000} title="Auction Process Detail" open={isModalOpen} onOk={handleOk}
+                   onCancel={handleCancel}>
+                <Descriptions title="Infomation Info" layout="vertical" bordered items={items}/>
             </Modal>
         </div>
     );

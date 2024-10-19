@@ -1,10 +1,9 @@
 import { Img, InputDH } from "../../components/index.jsx";
 import { Button, Card, Typography, Select, Option } from "@material-tailwind/react";
-import { Tag } from "antd";
+import { Tag, Badge, Descriptions, Modal } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
 import React, { useState } from 'react';
-import Modal from "./Modal.jsx";
 
 const TABLE_HEAD = [
     "Số Đăng Ký",
@@ -54,20 +53,68 @@ const TABLE_ROWS = [
         totalHeader: "$200",
     },
 ];
+
 export default function ListRegisterAuctionSection() {
     const [searchBarValue, setSearchBarValue] = useState("");
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState(null);
-
-    const handleDetailClick = (product) => {
-        setSelectedProduct(product);
-        setModalOpen(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
     };
 
-    const closeModal = () => {
-        setModalOpen(false);
-        setSelectedProduct(null);
-    };
+    const items = [
+        {
+            key: '1',
+            label: 'Sản Phẩm',
+            children: "Tablet",
+            span: 2,
+        },
+        {
+            key: '2',
+            label: 'Hình Ảnh',
+            children: (
+                <img
+                    src="https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f"
+                    alt="Tablet"
+                    className="w-[30%] h-48 object-cover rounded"
+                />
+            ),
+            span: 3,
+        },
+        {
+            key: '3',
+            label: 'Số Đăng Ký',
+            children: "#AU-415649",
+        },
+        {
+            key: '4',
+            label: 'Thời Gian Đấu Giá',
+            children: "01 Feb 2024",
+            span: 2,
+        },
+        {
+            key: '5',
+            label: 'Trạng Thái',
+            children: <Badge status="processing" text="Fail" />,
+            span: 3,
+        },
+        {
+            key: '6',
+            label: 'Người Bán',
+            children: "Han So Hee",
+        },
+        {
+            key: '7',
+            label: 'Tiền Cọc',
+            children: "$200",
+        },
+    ];
+
 
     return (
         <div>
@@ -145,7 +192,7 @@ export default function ListRegisterAuctionSection() {
                                             </Typography>
                                         </td>
                                         <td className="p-4">
-                                            <Button color="blue" onClick={() => handleDetailClick(row)}>Chi tiết</Button>
+                                            <Button color="blue" onClick={showModal}>Chi tiết</Button>
                                         </td>
                                     </tr>
                                 ))}
@@ -157,22 +204,9 @@ export default function ListRegisterAuctionSection() {
                     </div>
                 </div>
             </div>
-
-            {/* Sử dụng modal tùy chỉnh ở đây */}
-            <Modal isOpen={modalOpen} onClose={closeModal}>
-                {selectedProduct && (
-                    <div>
-                        <Typography variant="h5" className="font-bold">{selectedProduct.product}</Typography>
-                        <img src={selectedProduct.image} alt={selectedProduct.product} className="w-[30%] h-48 object-cover rounded mt-4" />
-                        <Typography className="mt-2">Số Đăng Ký: {selectedProduct.number}</Typography>
-                        <Typography className="mt-2">Thời gian đấu giá: {selectedProduct.time}</Typography>
-                        <Typography className="mt-2">Trạng thái: {selectedProduct.status}</Typography>
-                        <Typography className="mt-2">Người bán: {selectedProduct.sellerHeader}</Typography>
-                        <Typography className="mt-2">Tiền cọc: {selectedProduct.totalHeader}</Typography>
-                    </div>
-                )}
+            <Modal  footer={null}  width={1000} title="Register Auction Detail" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <Descriptions title="Infomation Info" layout="vertical" bordered items={items} />
             </Modal>
-
         </div>
     );
 }
