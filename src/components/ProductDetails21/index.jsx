@@ -1,14 +1,27 @@
 import {Text, Heading, RatingBar, Img} from "./..";
 import React from "react";
 import {Button} from "@material-tailwind/react";
-import {Image} from 'antd';
+import {Image, Statistic, Col, Row} from 'antd';
 
 export default function ProductDetails21({product}) {
-    const auctionStartTime = product.auction?.start_time || null;
+    const auctionEndDate = product.auction?.endDate || null;
     const auctionEndTime = product.auction?.end_time || null;
-    const auctionTimeLeft = auctionStartTime && auctionEndTime
-        ? calculateAuctionEndTime(auctionStartTime, auctionEndTime)
-        : "Thông tin không có sẵn"; // "Information not available"
+
+    let deadline = null;
+    if (auctionEndDate && auctionEndTime) {
+        try {
+            const dateTimeString = `${auctionEndDate}T${auctionEndTime}`;
+            deadline = new Date(dateTimeString).getTime();
+
+            if (isNaN(deadline)) {
+                console.error("Invalid Date Format!");
+            }
+        } catch (error) {
+            console.error("Error parsing date:", error);
+        }
+    }
+
+    const {Countdown} = Statistic;
     return (
         <div
 
@@ -21,7 +34,8 @@ export default function ProductDetails21({product}) {
                     className="h-[230px] w-[230px] object-cover rounded-lg"
                 />
                 <div className="absolute top-2 right-2 bg-pink-400 text-white text-sm px-2 py-1 rounded">
-                    Auction ends in {auctionEndTime}
+                    {/*Auction ends in {auctionEndTime}*/}
+                    <Countdown title="Auction ends in" value={deadline} format="D Ngay H gio m phut s giay"/>
                 </div>
             </div>
 
