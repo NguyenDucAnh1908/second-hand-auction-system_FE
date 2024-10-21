@@ -1,23 +1,19 @@
 import {Text, Heading, RatingBar, Img} from "./..";
 import React from "react";
 import {Button} from "@material-tailwind/react";
-import { Image } from 'antd';
+import {Image} from 'antd';
 
-export default function ProductDetails21({
-                                             productImage = "images/img_image_30_4.png",
-                                             productTitle = "Thời trang",
-                                             productDescription = "Áo Hoodie Nike dành cho mùa đông lạnh",
-                                             reviewCount = "3,014 đánh giá",
-                                             salePrice,
-                                             originalPrice = "328.000đ",
-                                             auctionEndTime = "23h:03m:33s",
-                                             onBidClick,
-                                             ...props
-                                         }) {
+export default function ProductDetails21({product}) {
+    const auctionStartTime = product.auction?.start_time || null;
+    const auctionEndTime = product.auction?.end_time || null;
+    // Calculate auction remaining time if both times are available
+    const auctionTimeLeft = auctionStartTime && auctionEndTime
+        ? calculateAuctionEndTime(auctionStartTime, auctionEndTime)
+        : "Thông tin không có sẵn"; // "Information not available"
     return (
         <div
-            {...props}
-            className={`${props.className} flex flex-col items-center w-full border-gray-200 border border-solid bg-bg-white rounded-lg overflow-hidden`}
+
+            className={`flex flex-col items-center w-full border-gray-200 border border-solid bg-bg-white rounded-lg overflow-hidden`}
         >
             <div className="relative self-stretch bg-bg-white px-3 py-3 sm:py-5">
                 <Image
@@ -41,7 +37,7 @@ export default function ProductDetails21({
                 <button
                     className="text-[12px] font-normal text-blue_gray-600_01 hover:text-blue-500 transition duration-300"
                 >
-                    {productTitle}
+                    {product.scId.sub_category}
                 </button>
 
                 {/*<Heading*/}
@@ -54,7 +50,7 @@ export default function ProductDetails21({
                 <button
                     className="w-full text-[16px] font-semibold leading-[150%] text-blue_gray-900_01 hover:text-blue-500 transition duration-300"
                 >
-                    {productDescription}
+                    {product.itemName}
                 </button>
 
                 <div className="flex items-start gap-2.5 self-stretch">
@@ -87,7 +83,7 @@ export default function ProductDetails21({
                         as="h6"
                         className="flex text-[18px] font-semibold text-blue_gray-900_01"
                     >
-                        <span>278.000</span>
+                        <span>{product.auction?.start_price}</span>
                         <a href="#" className="inline underline">
                             đ
                         </a>
@@ -97,11 +93,25 @@ export default function ProductDetails21({
                     ripple={false}
                     fullWidth={true}
                     className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
-                    onClick={onBidClick}
+                    // onClick={onBidClick}
                 >
                     Tham gia đấu giá
                 </Button>
             </div>
         </div>
     );
+}
+
+function calculateAuctionEndTime(startDate, endDate) {
+    const now = new Date();
+    const end = new Date(endDate);
+    const remainingTime = end - now;
+
+    if (remainingTime < 0) return "Đã kết thúc"; // If auction ended
+
+    const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+    return `${hours}h:${minutes}m:${seconds}s`; // Return remaining time
 }

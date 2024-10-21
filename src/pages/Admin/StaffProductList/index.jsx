@@ -1,16 +1,14 @@
-import { Helmet } from "react-helmet";
-import { Heading, ButtonDH, Text, Img, InputDH } from "../../../components";
-import { CloseSVG } from "../../../components/InputDH/close.jsx";
-import { ReactTable1 } from "../../../components/ReactTable1";
-import { createColumnHelper } from "@tanstack/react-table";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import {Helmet} from "react-helmet";
+import {Img, InputDH} from "../../../components";
+import {CloseSVG} from "../../../components/InputDH/close.jsx";
+import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {Button, Card, IconButton, Typography} from "@material-tailwind/react";
 import {Tag} from "antd";
 import {CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined} from "@ant-design/icons";
-import {DocumentIcon} from "@heroicons/react/24/solid/index.js";
-import {ArrowDownTrayIcon} from "@heroicons/react/24/outline/index.js";
 import Pagination from "@/components/Pagination/index.jsx";
+import {useSelector, useDispatch} from "react-redux";
+import {useGetItemsQuery} from "../../../services/item.service";
 
 const TABLE_HEAD = [
     "Number",
@@ -22,48 +20,30 @@ const TABLE_HEAD = [
     "Tùy chỉnh"
 ];
 
-const TABLE_ROWS = [
-    {
-        number: "#MS-415646",
-        product: "Smartphone",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        time: "31 Jan 2024",
-        status: "Available",
-        sellerHeader: "han so hee",
-    },
-    {
-        number: "#MS-415647",
-        product: "Laptop",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        time: "24 Jan 2024",
-        status: "pending",
-        sellerHeader: "han so hee",
-    },
-    {
-        number: "#MS-415648",
-        product: "Tablet",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        time: "12 Jan 2024",
-        status: "UnAvailable",
-        sellerHeader: "han so hee",
-    },
-    {
-        number: "#MS-415649",
-        product: "Smartwatch",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        time: "10 Jan 2024",
-        status: "Fail",
-        sellerHeader: "han so hee",
-    },
-];
 
 export default function StaffProductListPage() {
 
-    const [searchBarValue, setSearchBarValue] = React.useState("");
+    const [searchBarValue, setSearchBarValue] = useState("");
+    const [page, setPage] = useState(1);
 
+    const {data = {}, isLoading, isError, error} = useGetItemsQuery({
+        page: page - 1, // API thường dùng chỉ số 0-based
+        limit: 10
+    });
+    const TABLE_ROWS = data.items?.map((item) => ({
+        number: item.itemId,
+        product: item.itemName,
+        image: item.thumbnail || "https://via.placeholder.com/150",
+        time: "31 Jan 2024",
+        status: item.itemStatus,
+        sellerHeader: "han so hee" || "Unknown Seller",
+    })) || [];
+
+    if (isLoading) return <div>Loading...</div>;
+    if (isError) return <div>Error: {error?.message || "API request failed."}</div>;
     return (
         <>
-           
+
             <div className="flex w-full flex-col items-start justify-center gap-10 bg-bg-white   pr-14 md:p-5">
                 <InputDH
                     name="Search Box"
@@ -72,21 +52,15 @@ export default function StaffProductListPage() {
                     onChange={(e) => setSearchBarValue(e.target.value)}
                     suffix={
                         searchBarValue?.length > 0 ? (
-                            <CloseSVG onClick={() => setSearchBarValue("")} height={18} width={18} fillColor="#626974ff" />
+                            <CloseSVG onClick={() => setSearchBarValue("")} height={18} width={18}
+                                      fillColor="#626974ff"/>
                         ) : (
-                            <Img src="/images/img_search.svg" alt="Search" className="h-[18px] w-[18px]" />
+                            <Img src="/images/img_search.svg" alt="Search" className="h-[18px] w-[18px]"/>
                         )
                     }
                     className=" flex h-[40px] w-[24%] items-center justify-center gap-4 rounded bg-bg-white px-4 text-[16px] text-blue_gray-600 shadow-xs md:ml-0"
                 />
                 <div className="w-[92%] md:w-full">
-                    {/*<ReactTable1*/}
-                    {/*    size="xs"*/}
-                    {/*    className="table-auto"*/}
-                    {/*    columns={tableColumns}*/}
-                    {/*    data={tableData}*/}
-                    {/*    defaultPageSize={6}*/}
-                    {/*/>*/}
                     <Card className="h-full w-full overflow-scroll">
                         <table className="w-full min-w-max table-auto text-left">
                             <thead>
@@ -148,10 +122,10 @@ export default function StaffProductListPage() {
                                             </Typography>
                                         </td>
                                         <td className="p-4">
-                                            {status === "Available" && (
+                                            {status === "ACCEPTED" && (
                                                 <Tag icon={<CheckCircleOutlined/>}
                                                      color="success">
-                                                    Available
+                                                    {status}
                                                 </Tag>
                                             )}
                                             {status === "pending" && (
@@ -199,7 +173,11 @@ export default function StaffProductListPage() {
                         </table>
                     </Card>
                     <div className="flex justify-center items-center mt-4">
-                        <Pagination/>
+                        <Pagination
+                            currentPage={page}
+                            totalPages={data.totalPages || 1}
+                            onPageChange={setPage}
+                        />
                     </div>
                 </div>
             </div>
