@@ -1,8 +1,6 @@
-//import 'slick-carousel/slick/slick.css';
-//import 'slick-carousel/slick/slick-theme.css';
-import { ButtonDH, Img, Heading } from "../../components";
+import {ButtonDH, Img, Heading} from "../../components";
 import ProductDetails4 from "../../components/ProductDetails4";
-import React, {useState, Component }from "react";
+import React, {useState, Component} from "react";
 import ProductDetails31 from "../../components/ProductDetails31/index.jsx";
 import {IconButton} from "@material-tailwind/react";
 import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
@@ -14,8 +12,6 @@ export default function FeaturedProducts() {
     const {data = {}, isLoading, isError, error} = useGetFeatureItemsQuery();
     if (isLoading) return <p>Đang tải dữ liệu...</p>;
     if (isError) return <p>Có lỗi xảy ra khi tải dữ liệu: {error.message}</p>;
-    // Cấu hình cho slider (react-slick)
-    console.log("DATA: ", data)
     const sliderSettings = {
         className: "center",
         centerMode: true,
@@ -28,15 +24,15 @@ export default function FeaturedProducts() {
         responsive: [
             {
                 breakpoint: 1024, // Trên màn hình lớn
-                settings: { slidesToShow: 3, centerPadding: "50px" },
+                settings: {slidesToShow: 3, centerPadding: "50px"},
             },
             {
                 breakpoint: 768, // Trên màn hình trung bình
-                settings: { slidesToShow: 2, centerPadding: "30px" },
+                settings: {slidesToShow: 2, centerPadding: "30px"},
             },
             {
                 breakpoint: 480, // Trên màn hình nhỏ
-                settings: { slidesToShow: 1, centerPadding: "10px" },
+                settings: {slidesToShow: 1, centerPadding: "10px"},
             },
         ],
     };

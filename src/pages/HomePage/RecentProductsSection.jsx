@@ -15,7 +15,6 @@ export default function RecentProductsSection() {
     if (isLoading) return <p>Đang tải dữ liệu...</p>;
     if (isError) return <p>Có lỗi xảy ra khi tải dữ liệu: {error.message}</p>;
     // Cấu hình cho slider (react-slick)
-    console.log("DATA: ", data)
     const sliderSettings = {
         className: "center",
         centerMode: true,
