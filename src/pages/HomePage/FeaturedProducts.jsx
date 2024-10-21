@@ -9,7 +9,7 @@ import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
 import {useGetFeatureItemsQuery} from "../../services/item.service";
 import Slider from 'react-slick';
 
-export default function RecentProductsSection() {
+export default function FeaturedProducts() {
     const sliderRef = React.useRef(null);
     const {data = {}, isLoading, isError, error} = useGetFeatureItemsQuery();
     if (isLoading) return <p>Đang tải dữ liệu...</p>;
@@ -49,7 +49,7 @@ export default function RecentProductsSection() {
                 as="h2"
                 className="self-center text-[28px] mb-5 font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
             >
-                Sản phẩm gần đây
+                Sản phẩm nối bật
             </Heading>
             <Slider {...sliderSettings} ref={sliderRef}>
                 {data.map((item) => (

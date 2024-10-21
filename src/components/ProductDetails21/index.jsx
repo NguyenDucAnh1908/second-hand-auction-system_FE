@@ -6,7 +6,6 @@ import {Image} from 'antd';
 export default function ProductDetails21({product}) {
     const auctionStartTime = product.auction?.start_time || null;
     const auctionEndTime = product.auction?.end_time || null;
-    // Calculate auction remaining time if both times are available
     const auctionTimeLeft = auctionStartTime && auctionEndTime
         ? calculateAuctionEndTime(auctionStartTime, auctionEndTime)
         : "Thông tin không có sẵn"; // "Information not available"
@@ -27,26 +26,11 @@ export default function ProductDetails21({product}) {
             </div>
 
             <div className="mx-3.5 mb-6 flex flex-col items-start gap-2.5 self-stretch">
-                {/*<Text*/}
-                {/*    size="textxs"*/}
-                {/*    as="p"*/}
-                {/*    className="text-[12px] font-normal text-blue_gray-600_01"*/}
-                {/*>*/}
-                {/*    {productTitle}*/}
-                {/*</Text>*/}
                 <button
                     className="text-[12px] font-normal text-blue_gray-600_01 hover:text-blue-500 transition duration-300"
                 >
                     {product.scId.sub_category}
                 </button>
-
-                {/*<Heading*/}
-                {/*    size="headingxl"*/}
-                {/*    as="h6"*/}
-                {/*    className="w-full text-[16px] font-semibold leading-[150%] text-blue_gray-900_01"*/}
-                {/*>*/}
-                {/*    {productDescription}*/}
-                {/*</Heading>*/}
                 <button
                     className="w-full text-[16px] font-semibold leading-[150%] text-blue_gray-900_01 hover:text-blue-500 transition duration-300"
                 >

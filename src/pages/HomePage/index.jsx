@@ -16,6 +16,7 @@ import ProductDetails31 from "../../components/ProductDetails31/index.jsx";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import {Button, IconButton} from "@material-tailwind/react";
 import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
+import FeaturedProducts from "pages/HomePage/FeaturedProducts.jsx";
 
 
 const fashionItemsList = [
@@ -250,14 +251,22 @@ export default function HomePagePage() {
 
 
                     {/* trending products section */}
-                    <TrendingProductsSection/>
+                    <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
+                        <div className="mr-3.5 md:mr-0">
+                            <TrendingProductsSection/>
+                        </div>
+                    </div>
 
                     {/* featured products section */}
-                    <FeaturedProductsSection/>
+                    <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
+                        <div className="mr-3.5 md:mr-0">
+                            <FeaturedProductsSection/>
+                        </div>
+                    </div>
                     <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
 
                         <div className="mr-3.5 md:mr-0">
-                            <RecentProductsSection />
+                            <FeaturedProducts/>
                             <div className="mt-[116px] flex flex-col items-start gap-[30px]">
                                 <Heading
                                     size="text7xl"
@@ -267,7 +276,8 @@ export default function HomePagePage() {
                                     Các sản phẩm mới
                                 </Heading>
                                 <div className="mr-4 flex gap-[26px] self-stretch md:mr-0 md:flex-col">
-                                    <div className="relative h-[390px] w-[42%] rounded-md bg-gray-100_01 md:w-full">
+                                    <div
+                                        className="relative h-[390px] w-[42%] rounded-md bg-gray-100_01 md:w-full">
                                         <Img
                                             src="https://cdn.pixabay.com/photo/2016/01/09/18/27/camera-1130731_1280.jpg"
                                             alt="Mens Clothing Image"
@@ -304,7 +314,8 @@ export default function HomePagePage() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="ml-[26px] flex flex-1 gap-3 md:ml-0 md:flex-col md:self-stretch">
+                                    <div
+                                        className="ml-[26px] flex flex-1 gap-3 md:ml-0 md:flex-col md:self-stretch">
                                         <Suspense fallback={<div>Loading feed...</div>}>
                                             {fashionItemsList.map((d, index) => (
                                                 <ProductDetails
@@ -325,8 +336,10 @@ export default function HomePagePage() {
                                 >
                                     Các sản phẩm đang đấu giá
                                 </Heading>
-                                <div className="mr-2.5 flex items-center gap-5 self-stretch md:mr-0 md:flex-col">
-                                    <div className="relative h-[390px] w-[42%] rounded-md bg-gray-100_01 md:w-full">
+                                <div
+                                    className="mr-2.5 flex items-center gap-5 self-stretch md:mr-0 md:flex-col">
+                                    <div
+                                        className="relative h-[390px] w-[42%] rounded-md bg-gray-100_01 md:w-full">
                                         <Img
                                             src="images/img_men_s_clothing_234x450.png"
                                             alt="Auction Clothing Image"
@@ -380,14 +393,26 @@ export default function HomePagePage() {
                     </div>
 
                     {/* recent products section */}
-                    <RecentProductsSection/>
+                    <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
+                        <div className="mr-3.5 md:mr-0">
+                            <RecentProductsSection/>
+                        </div>
+                    </div>
 
                     {/* trusted brands section */}
-                    <RecentProductsSection/>
-                    {/*<TrustedBrandsSection />*/}
+                    <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
+                        <div className="mr-3.5 md:mr-0">
+                            <RecentProductsSection/>
+                            {/*<TrustedBrandsSection />*/}
+                        </div>
+                    </div>
 
                     {/* fashion promotion section */}
-                    <FeaturedProductsSection/>
+                    <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
+                        <div className="mr-3.5 md:mr-0">
+                            <FeaturedProductsSection/>
+                        </div>
+                    </div>
                     {/*<FashionPromotionSection />*/}
                     <div className="mt-[19px] self-stretch">
                         {/*<Footer5 className="mt-[34px] h-[410px] bg-[url(/public/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />*/}
