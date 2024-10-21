@@ -34,6 +34,7 @@ import ListRegisterAuction from "./pages/ListRegisterAuction/index.jsx";
 import AuctionListProcess from "./pages/AuctionListProcess/index.jsx";
 import RequireAuth from "@/routers/RequireAuth.jsx";
 import Unauthorized from "pages/Unauthorized.jsx";
+import PaymentSuccess from "./pages/Payment/PaymentSuccess.jsx";
 
 import AddressForm from "./pages/AddressFormTest.jsx";
 
@@ -49,7 +50,7 @@ function App() {
                 <Route path="Register" index element={<Register/>}/>
                 <Route path="ForgotPassword" index element={<ForgotPassword/>}/>
                 <Route path="VerifyAccount" index element={<VerifyAccount/>}/>
-
+                <Route path="PaymentSuccess" index element={<PaymentSuccess/>}/>
 
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>

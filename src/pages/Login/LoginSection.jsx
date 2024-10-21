@@ -31,7 +31,7 @@ export default function LoginSection() {
         <Img
           src="https://c.pxhere.com/photos/94/8d/objects_equipment_assortment_neat_organized_desk_stuff_computer-1076276.jpg!d"
           alt="Promo Image"
-          className="h-[77vh] w-[50%] rounded-[20px] object-cover md:w-full" // Change h-[800px] to h-[100vh] for full height
+          className="h-[100%] w-[50%] rounded-[20px] object-cover md:w-full" // Change h-[800px] to h-[100vh] for full height
         />
 
         {/* Right side: Blurred Login form */}
