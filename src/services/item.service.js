@@ -21,8 +21,29 @@ export const itemApiSlice = apiSlice.injectEndpoints({
         getFeatureItems: builder.query({
             query: () => "item/top-10-featured-item",
             transformResponse: (response) => response.data,
+        }),
+
+        getItemsFilter: builder.query({
+            query: (filters) => ({
+                url: "item",
+                params: {
+                    keyword: filters.keyword || "",
+                    page: filters.page || 0,
+                    limit: filters.limit || 8,
+                    minPrice: filters.min || 0,
+                    maxPrice: filters.max || 1600000,
+                    scIds: filters.scIds?.join(",") || "",
+                }
+            }),
+            transformResponse: (response) => {
+                return {
+                    item: response.data.data || [],
+                    totalPages: response.data.totalPages || 0,
+                    totalProducts: response.data.totalProducts || 0,
+                };
+            },
         })
     }),
 });
 
-export const {useGetItemsQuery, useGetFeatureItemsQuery} = itemApiSlice;
+export const {useGetItemsQuery, useGetFeatureItemsQuery, useGetItemsFilterQuery} = itemApiSlice;

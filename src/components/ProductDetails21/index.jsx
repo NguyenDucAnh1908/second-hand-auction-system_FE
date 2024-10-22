@@ -27,17 +27,41 @@ export default function ProductDetails21({product}) {
 
             className={`flex flex-col items-center w-full border-gray-200 border border-solid bg-bg-white rounded-lg overflow-hidden`}
         >
+            {/*<div className="relative self-stretch bg-bg-white px-3 py-3 sm:py-5">*/}
+            {/*    <Image*/}
+            {/*        //src="https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f"*/}
+            {/*        src={product.thumbnail}*/}
+            {/*        alt="Fashion Image"*/}
+            {/*        className="h-[230px] w-[230px] object-cover rounded-lg"*/}
+            {/*    />*/}
+            {/*    <div className="absolute top-2 right-2 bg-pink-400 text-white text-sm px-2 py-1 rounded">*/}
+            {/*        /!*Auction ends in {auctionEndTime}*!/*/}
+            {/*        <Countdown title="Auction ends in" value={deadline} format="D Ngay H gio m phut s giay"/>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
+
             <div className="relative self-stretch bg-bg-white px-3 py-3 sm:py-5">
-                <Image
-                    src="https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f"
-                    alt="Fashion Image"
-                    className="h-[230px] w-[230px] object-cover rounded-lg"
-                />
-                <div className="absolute top-2 right-2 bg-pink-400 text-white text-sm px-2 py-1 rounded">
-                    {/*Auction ends in {auctionEndTime}*/}
-                    <Countdown title="Auction ends in" value={deadline} format="D Ngay H gio m phut s giay"/>
+                <div className="w-[230px] h-[300px]">
+                    <Image
+                        src={product.thumbnail} // Link ảnh từ product data
+                        alt="Fashion Image"
+                        className="w-full h-full object-cover rounded-lg"
+                    />
                 </div>
+                {/*<div className="absolute top-2 right-2 bg-pink-400 text-white text-sm px-2 py-1 rounded">*/}
+                {/*    <Countdown title="Auction ends in" value={deadline} format="D Ngày H giờ m phút s giây"/>*/}
+                {/*</div>*/}
+                <div className="absolute top-2 right-2 bg-pink-300 bg-opacity-70 text-white px-1.5 py-0.5 rounded-md ">
+                    <Countdown
+                        title="Auction ends in"
+                        value={deadline}
+                        format="D Ngày H giờ m phút s giây"
+                        valueStyle={{fontWeight: 'normal', fontSize: '15px'}}
+                    />
+                </div>
+
             </div>
+
 
             <div className="mx-3.5 mb-6 flex flex-col items-start gap-2.5 self-stretch">
                 <button

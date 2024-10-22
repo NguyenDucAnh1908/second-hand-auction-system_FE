@@ -1,6 +1,6 @@
 import {CloseSVG} from "../InputDH/close.jsx";
 import {Text, SelectBox, Img, ButtonDH, InputDH} from "./..";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import NavBarBK from "@/components/NavBarBK/index.jsx";
 import {useSelector, useDispatch} from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -25,25 +25,20 @@ import {AudioOutlined} from '@ant-design/icons';
 import {Space} from 'antd';
 import {ShopOutlined} from '@ant-design/icons';
 import DrawerChat from "@/components/DrawerChat/index.jsx";
-
-const suffix = (
-    <AudioOutlined
-        style={{
-            fontSize: 16,
-            color: '#1677ff',
-        }}
-    />
-);
+import {useGetItemsFilterQuery} from "@/services/item.service.js";
+import {setFilters} from "@/redux/item/itemSlice.js";
 
 export default function Header2({...props}) {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [searchBarValue, setSearchBarValue] = React.useState("");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [showResults, setShowResults] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [email, setEmail] = React.useState("");
 
     const showDrawer = () => setIsDrawerOpen(true);
     const closeDrawer = () => setIsDrawerOpen(false);
-    const [email, setEmail] = React.useState("");
     const onChange = ({target}) => setEmail(target.value);
     const handleLogout = () => {
         dispatch(logOut());
@@ -56,6 +51,54 @@ export default function Header2({...props}) {
     const user = useSelector(selectCurrentUser);
     const userAPI = useSelector(selectCurrentUserAPI);
     const isLoggin = useSelector(selectIsLoggedIn);
+
+    const filters = useSelector(
+        (state) =>
+            state.item || {keyword: "", min: 0, max: 1600000000, scIds: []}
+    );
+    const {
+        data: dataItems, error: errorItem,
+        isLoading: loadingItem,
+        isSuccess: isSuccessItem,
+        isFetching : isFetchingItem,
+    } = useGetItemsFilterQuery(filters);
+
+    useEffect(() => {
+        if (searchQuery.trim()) {
+            setShowResults(true);
+            dispatch(setFilters({ keyword: searchQuery }));
+        } else {
+            setShowResults(false); // Ẩn kết quả khi ô tìm kiếm trống
+        }
+    }, [searchQuery, dispatch]);
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        navigate("/product");
+    };
+    const handleSeeMore = () => {
+        navigate("/product");
+    };
+
+    const displayedItems = dataItems?.item.slice(0, 5);
+
+    // const handleSearchChange = (e) => {
+    //     setSearchQuery(e.target.value);
+    // };
+    //
+    // const handleSearchSubmit = (e) => {
+    //     e.preventDefault();
+    //     setShowResults(true);
+    //     dispatch(setFilters({ keyword: searchQuery }));
+    //     navigate("/product");
+    // };
+
+    console.log("Search Query:", searchQuery);
+    console.log("Items fetched:", dataItems);
     return (
         <header
             {...props}
@@ -111,6 +154,8 @@ export default function Header2({...props}) {
                                         labelProps={{
                                             className: "before:content-none after:content-none",
                                         }}
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
                                     />
                                     <div className="!absolute left-3 top-[13px]">
                                         <svg
@@ -137,11 +182,46 @@ export default function Header2({...props}) {
                                 <Button
                                     size="md"
                                     className="mt bg-gray-800 bg-opacity-30 border border-gray-500 text-white rounded-lg px-4 py-2 transition duration-300 ease-in-out transform hover:bg-gray-500 hover:scale-105"
+                                    onClick={handleSearchSubmit}
                                 >
                                     Search
                                 </Button>
+                                {/* Kết quả tìm kiếm */}
+                                {showResults && (
+                                    <div className="mt-4">
+                                        {isFetchingItem && <p>Loading...</p>}
+                                        {!isFetchingItem && dataItems?.item.length === 0 && <p>No products found.</p>}
+                                        {!isFetchingItem && dataItems?.item.length > 0 && (
+                                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                                                {displayedItems?.map((item) => (
+                                                    <div
+                                                        key={item.itemId}
+                                                        className="flex flex-col items-center p-4 border rounded-md shadow-md"
+                                                    >
+                                                        <img
+                                                            src={item.thumbnail}
+                                                            alt={item.itemName}
+                                                            className="w-32 h-32 object-cover"
+                                                        />
+                                                        <p className="mt-2 text-lg font-medium">{item.itemName}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
 
+                                        {/* Nút Xem thêm */}
+                                        {!isFetchingItem && dataItems?.item.length > 5 && (
+                                            <button
+                                                onClick={handleSeeMore}
+                                                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                            >
+                                                Xem thêm
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
                             </div>
+
 
                             <div
                                 className="mr-4 flex w-[32%] items-end justify-center gap-4 md:mr-0 md:w-full sm:flex-col">

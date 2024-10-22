@@ -1,11 +1,14 @@
-import React, { useState, Suspense } from "react";
-import { Text, SelectBox, Img, Heading } from "../../components";
+import React, {useState, Suspense, useEffect} from "react";
+import {Text, SelectBox, Img, Heading} from "../../components";
 import Pagination from "../../components/Pagination";
 import ProductDetails21 from "../../components/ProductDetails21";
-import { Tag, Modal, Button } from "antd";
-import { CloseCircleOutlined } from "@ant-design/icons";
+import {Tag, Modal, Button} from "antd";
+import {CloseCircleOutlined} from "@ant-design/icons";
 import RegisterAuction from "../RegisterAuction-Buyer/RegisterAuction";
-import { Checkbox, Input } from "@material-tailwind/react";
+import {Checkbox, Input} from "@material-tailwind/react";
+import {useDispatch, useSelector} from "react-redux";
+import {useGetFeatureItemsQuery, useGetItemsFilterQuery} from "../../services/item.service"
+import {setFilters} from "@/redux/item/itemSlice.js";
 
 
 const fashionItemsGrid = [
@@ -90,26 +93,29 @@ const fashionItemsGrid = [
     // ... (other items remain unchanged)
 ];
 
-const dropDownOptions = [
-    { label: "Option1", value: "option1" },
-    { label: "Option2", value: "option2" },
-    { label: "Option3", value: "option3" },
-];
 
-export default function ProductSection({ selectedBrands, onTagClose }) {
-    const [isOpen, setIsOpen] = useState(false); // State cho modal
+export default function ProductSection({selectedBrands, onTagClose}) {
+    const dispatch = useDispatch();
+    const filters = useSelector(
+        (state) =>
+            state.item || {keyword: "", min: 0, max: 1600000000, scIds: []}
+    );
+    const {data, error,
+        isLoading,
+        isFetching,
+        isSuccess} = useGetItemsFilterQuery(filters);
+    if (error) return <p>Error: {error.message}</p>;
+    console.log("DATA ITEM: ", data)
 
+    const handleFilterChange = (newFilters) => {
+        const updatedFilters = { ...filters, ...newFilters };
+        dispatch(setFilters(updatedFilters));
+    };
     const handleClose = (brandName) => {
         onTagClose(brandName);
     };
+    // console.log("DATA ITEM: ", data)
 
-    const openModal = () => {
-        setIsOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsOpen(false);
-    };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -227,7 +233,7 @@ export default function ProductSection({ selectedBrands, onTagClose }) {
                         {selectedBrands.map((brand) => (
                             <Tag
                                 key={brand}
-                                closeIcon={<CloseCircleOutlined />}
+                                closeIcon={<CloseCircleOutlined/>}
                                 onClose={() => handleClose(brand)}
                             >
                                 {brand}
@@ -251,19 +257,24 @@ export default function ProductSection({ selectedBrands, onTagClose }) {
                 <a href="/auction">
                     <div
                         className="mx-7 mt-5 grid grid-cols-4 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
-                        <Suspense fallback={<div>Loading feed...</div>}>
-                            {fashionItemsGrid.map((item, index) => (
-                                <div key={"itemsGrid" + index}
-                                >
-                                    <ProductDetails21 {...item} onBidClick={showModal} />
-                                </div>
-                            ))}
-                        </Suspense>
+
+                        {/*<Suspense fallback={<div>Loading feed...</div>}>*/}
+                        {/*{data.item && data.item.length > 0 ? (*/}
+                        {/*    data.item.map((item, index) => (*/}
+                        {/*        <div key={`itemsGrid-${index}`}>*/}
+                        {/*            <ProductDetails21 product={item} onBidClick={showModal}/>*/}
+                        {/*        </div>*/}
+                        {/*    ))*/}
+                        {/*) : (*/}
+                        {/*    <div>No items found.</div> // Thông báo khi không có sản phẩm*/}
+                        {/*)}*/}
+
+                        {/*</Suspense>*/}
                     </div>
                 </a>
 
                 <div className="my-10">
-                    <Pagination />
+                    <Pagination/>
                 </div>
             </div>
         </>
