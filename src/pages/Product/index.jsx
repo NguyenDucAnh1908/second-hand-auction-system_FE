@@ -497,7 +497,7 @@ export default function ProductPage() {
                                             {/*</select>*/}
                                         </div>
 
-                                        <a href="/auction">
+                                        <a>
                                             <div
                                                 className="mx-7 mt-5 grid grid-cols-4 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
                                                 {data?.item && data.item.length > 0 ? (

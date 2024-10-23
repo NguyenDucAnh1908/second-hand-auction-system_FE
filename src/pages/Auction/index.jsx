@@ -15,7 +15,7 @@ import UserProfile from "../../components/UserProfile";
 import UserStatistics from "../../components/UserStatistics";
 import AuctionSection from "./AuctionSection";
 import RecommendedProductsSection from "./RecommendedProductsSection";
-import React, { Suspense, useState } from "react";
+import React, {Suspense, useEffect, useState} from "react";
 import { Avatar } from "antd";
 import { AntDesignOutlined } from "@ant-design/icons";
 import {
@@ -28,90 +28,81 @@ import {
 } from "react-accessible-accordion";
 import { Flex, Rate, Typography, Tabs } from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
+import {useGetItemDetailQuery} from "@/services/item.service.js";
+import { useParams } from "react-router-dom";
 
-// const accordionData = [
-//   {
-//     detailsTitle: "Thông Tin Chi Tiết",
-//   },
-//   {
-//     detailsTitle: "Về Người Bán",
-//   },
-//   {
-//     detailsTitle: "Chính Sách Mua Hàng",
-//   },
-//   {
-//     detailsTitle: "Câu Hỏi Và Trả Lời",
-//   },
-// ];
 
-const accordionData = [
-  {
-    detailsTitle: "Thông tin sản phẩm",
-    content: (
-      <>
-        <Heading
-          as="h6"
-          className="text-[16px] font-medium text-blue_gray-900_01"
-        >
-          Đặc điểm
-        </Heading>
-        <div className="flex items-start self-stretch md:flex-col">
-          <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
-          <Heading
-            as="p"
-            className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
-          >
-            <>
-              Thiết kế dáng rộng có phần vai trễ xuống mang lại vẻ ngoài và cảm
-              giác thoải mái.
-              <br />
-              Chất liệu cotton dày dặn có độ rủ cứng giúp outfits của bạn trông
-              bắt mắt và đặc biệt hơn.
-              <br />
-              Logo thêu phía trước tạo điểm nhấn tinh tế.
-              <br />
-              Kiểu dáng loose fit.
-              <br />
-              Sản phẩm có thể giặt máy.
-              <br />
-              Chất liệu: 100% cotton.
-            </>
-          </Heading>
-        </div>
-      </>
-    ),
-  },
-  {
-    detailsTitle: "Chính sách đổi trả",
-    content: (
-      <p>
-        Chính sách đổi trả trong vòng 30 ngày với điều kiện sản phẩm chưa qua sử
-        dụng và còn nguyên tem mác.
-      </p>
-    ),
-  },
-  {
-    detailsTitle: "Hướng dẫn bảo quản",
-    content: (
-      <p>
-        Giặt máy ở nhiệt độ thấp, không dùng chất tẩy, phơi ở nơi thoáng mát,
-        tránh ánh nắng trực tiếp.
-      </p>
-    ),
-  },
-];
+
 
 export default function AuctionPage() {
   const [sliderState, setSliderState] = React.useState(0);
   const sliderRef = React.useRef(null);
   const [expanded, setExpanded] = useState(false);
   const [activeTabKey, setActiveTabKey] = useState("1");
+  const { id } = useParams();
+  const { data, error, isLoading, isSuccess } = useGetItemDetailQuery({ id });
   const handleToggle = () => {
     setExpanded((prev) => !prev);
   };
   const onChange = (key) => {
     setActiveTabKey(key);
   };
+
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading item details.</p>;
+  const accordionData = [
+    {
+      detailsTitle: "Thông tin sản phẩm",
+      content: (
+          <>
+            <Heading
+                as="h6"
+                className="text-[16px] font-medium text-blue_gray-900_01"
+            >
+              Đặc điểm
+            </Heading>
+            <div className="flex items-start self-stretch md:flex-col">
+              <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
+              <Heading
+                  as="p"
+                  className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
+              >
+                <>
+                  {data.itemDescription}
+                  <br />
+                  {data.itemDescription}
+                  <br />
+                  {data.itemDescription}
+                  <br />
+                  {data.itemDescription}
+                  <br />
+                  {data.itemDescription}
+                  <br />
+                  {data.itemDescription}
+                </>
+              </Heading>
+            </div>
+          </>
+      ),
+    },
+    {
+      detailsTitle: "Chính sách đổi trả",
+      content: (
+          <p>
+            {data.itemDescription}
+          </p>
+      ),
+    },
+    {
+      detailsTitle: "Hướng dẫn bảo quản",
+      content: (
+          <p>
+            {data.itemDescription}
+          </p>
+      ),
+    },
+  ];
   return (
     <>
       <Helmet>
@@ -125,9 +116,10 @@ export default function AuctionPage() {
         <Header2 />
 
         {/* auction section */}
-        <AuctionSection />
+        <AuctionSection dataItem={data} isSuccessItemDt={isSuccess} />
         <div className="container-xs mt-[70px] flex flex-col gap-[10px] md:gap-[85px] md:px-5 sm:gap-[57px]">
           <div className="ml-1 mr-2.5 flex flex-col items-start md:mx-0">
+            {isSuccess && data && (
             <div className="flex flex-col gap-4 self-stretch px-2.5">
               <div className="flex flex-col items-start gap-3.5">
                 <Heading
@@ -147,11 +139,7 @@ export default function AuctionPage() {
                     }}
                     className="w-[72%] text-[16px] font-normal leading-7 text-blue_gray-600_01 md:w-full"
                   >
-                    Cho dù bạn mặc nó sau khi tập gym hay chuẩn bị bắt đầu ngày
-                    mới, chiếc áo phông này đang gọi tên bạn. Được thiết kế cho
-                    phong cách thoải mái và dễ dàng, thể hiện trọn vẹn niềm tự
-                    hào của bạn. Kết hợp với mọi món đồ trong tủ quần áo của bạn
-                    - cảm giác thể thao cổ điển phù hợp với mọi kiểu dáng.
+                    {data.itemDescription}
                   </Typography.Paragraph>
 
                   <div className="mb-2 flex items-center">
@@ -173,11 +161,11 @@ export default function AuctionPage() {
                       </Heading>
                     )}
 
-                    <img
-                      src="images/img_vector_19b269_1.svg"
-                      alt="Vector Image"
-                      className="mb-1 h-[5px] self-end"
-                    />
+                    {/*<img*/}
+                    {/*  src="images/img_vector_19b269_1.svg"*/}
+                    {/*  alt="Vector Image"*/}
+                    {/*  className="mb-1 h-[5px] self-end"*/}
+                    {/*/>*/}
                   </div>
                 </div>
               </div>
@@ -207,7 +195,8 @@ export default function AuctionPage() {
                 </Tabs>
               </div>
             </div>
-
+            )}
+            {/*end info item*/}
             <Text
               size="text5xl"
               as="p"

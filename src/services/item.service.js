@@ -42,8 +42,13 @@ export const itemApiSlice = apiSlice.injectEndpoints({
                     totalProducts: response.data.totalProducts || 0,
                 };
             },
-        })
+        }),
+
+        getItemDetail: builder.query({
+            query: ({ id }) => `/item/detail/${encodeURIComponent(id)}`,
+            transformResponse: (response) => response.data,
+        }),
     }),
 });
 
-export const {useGetItemsQuery, useGetFeatureItemsQuery, useGetItemsFilterQuery} = itemApiSlice;
+export const {useGetItemsQuery, useGetFeatureItemsQuery, useGetItemsFilterQuery, useGetItemDetailQuery} = itemApiSlice;

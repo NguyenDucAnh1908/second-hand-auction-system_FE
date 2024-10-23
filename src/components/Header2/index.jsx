@@ -49,6 +49,9 @@ export default function Header2({...props}) {
     const navigateLogin = () => {
         navigate("/login");
     };
+    const handleNavigateToAuction = (auctionId) => {
+        navigate(`/Auction/${auctionId}`); // Điều hướng tới Auction với id
+    };
     const user = useSelector(selectCurrentUser);
     const userAPI = useSelector(selectCurrentUserAPI);
     const isLoggin = useSelector(selectIsLoggedIn);
@@ -99,9 +102,6 @@ export default function Header2({...props}) {
     };
 
     const displayedItems = dataItems?.item.slice(0, 5);
-
-    console.log("Search Query:", searchQuery);
-    console.log("Items fetched:", dataItems);
     return (
         <header
             {...props}
@@ -178,9 +178,10 @@ export default function Header2({...props}) {
                                             {!isFetchingItem && dataItems?.item.length > 0 && (
                                                 <div className="grid grid-cols-1 gap-2">
                                                     {displayedItems?.map((item) => (
-                                                        <div
+                                                        <button
                                                             key={item.itemId}
                                                             className="flex items-center p-2 border rounded-md shadow-sm"
+                                                            onClick={() => handleNavigateToAuction(item.itemId)}
                                                         >
                                                             <img
                                                                 src={item.thumbnail}
@@ -188,7 +189,7 @@ export default function Header2({...props}) {
                                                                 className="w-16 h-16 object-cover rounded-md"
                                                             />
                                                             <p className="ml-4 text-sm font-medium">{item.itemName}</p>
-                                                        </div>
+                                                        </button>
                                                     ))}
                                                 </div>
                                             )}

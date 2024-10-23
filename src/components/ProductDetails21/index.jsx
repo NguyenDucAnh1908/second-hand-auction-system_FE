@@ -2,11 +2,15 @@ import {Text, Heading, RatingBar, Img} from "./..";
 import React from "react";
 import {Button} from "@material-tailwind/react";
 import {Image, Statistic, Col, Row} from 'antd';
+import { useNavigate } from "react-router-dom";
 
 export default function ProductDetails21({product}) {
+    const navigate = useNavigate();
     const auctionEndDate = product.auction?.endDate || null;
     const auctionEndTime = product.auction?.end_time || null;
-
+    const handleNavigateToAuction = (auctionId) => {
+        navigate(`/Auction/${auctionId}`); // Điều hướng tới Auction với id
+    };
     let deadline = null;
     if (auctionEndDate && auctionEndTime) {
         try {
@@ -71,6 +75,7 @@ export default function ProductDetails21({product}) {
                 </button>
                 <button
                     className="w-full text-[16px] font-semibold leading-[150%] text-blue_gray-900_01 hover:text-blue-500 transition duration-300"
+                    onClick={() => handleNavigateToAuction(product.itemId)}
                 >
                     {product.itemName}
                 </button>
