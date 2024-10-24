@@ -37,7 +37,7 @@ export default function RegisterPage() {
             const userData = await registerUser({
                 email, password, fullName, phoneNumber
             }).unwrap();
-            console.log("Register data: ", userData.message)
+            //console.log("Register data: ", userData.message)
             toast.success(userData.message)
         } catch (err) {
             const errorMessage = err?.data?.message;

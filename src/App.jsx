@@ -37,6 +37,8 @@ import Unauthorized from "pages/Unauthorized.jsx";
 import PaymentSuccess from "./pages/Payment/PaymentSuccess.jsx";
 
 import AddressForm from "./pages/AddressFormTest.jsx";
+import SuccessfullyPayment from "pages/ResultPage/SuccessfullyPayment.jsx";
+import FailPayment from "pages/ResultPage/FailPayment.jsx";
 
 function App() {
     return (
@@ -57,6 +59,9 @@ function App() {
                 <Route path="Test" index element={<TestAPI/>}/>
                 <Route path="NotFound" index element={<NotFound/>}/>
                 <Route path="Unauthorized" index element={<Unauthorized/>}/>
+                <Route path="SuccessfullyPayment" index element={<SuccessfullyPayment/>}/>
+                <Route path="FailPayment" index element={<FailPayment/>}/>
+
 
                 {/*ADMIN*/}
                 <Route element={<RequireAuth allowedRoles={["ADMIN"]}/>}>
