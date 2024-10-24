@@ -1,9 +1,10 @@
-import { Img, InputDH } from "../../components/index.jsx";
-import { Button, Card, Typography, Select, Option } from "@material-tailwind/react";
-import { Tag, Badge, Descriptions, Modal } from "antd";
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import {Img, InputDH} from "../../components/index.jsx";
+import {Button, Card, Typography, Select, Option} from "@material-tailwind/react";
+import {Tag, Badge, Descriptions, Modal} from "antd";
+import {CheckCircleOutlined, CloseCircleOutlined} from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+import {useGetAuctionRegisterQuery, useGetAuctionRegisterDetailQuery} from "@/services/auctionRegistrations.service.js";
 
 const TABLE_HEAD = [
     "Số Đăng Ký",
@@ -15,49 +16,44 @@ const TABLE_HEAD = [
     "Tiền cọc",
     "Tùy chỉnh"
 ];
-const TABLE_ROWS = [
-    {
-        number: "#AU-415646",
-        product: "Smartphone",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        time: "01 Feb 2024",
-        status: "Success",
-        sellerHeader: "Han So Hee",
-        totalHeader: "$500",
-    },
-    {
-        number: "#AU-415647",
-        product: "Laptop",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        time: "01 Feb 2024",
-        status: "Success",
-        sellerHeader: "Han So Hee",
-        totalHeader: "$1000",
-    },
-    {
-        number: "#AU-415648",
-        product: "Tablet",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        time: "01 Feb 2024",
-        status: "Fail",
-        sellerHeader: "Han So Hee",
-        totalHeader: "$300",
-    },
-    {
-        number: "#AU-415649",
-        product: "Smartwatch",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        time: "01 Feb 2024",
-        status: "Fail",
-        sellerHeader: "Han So Hee",
-        totalHeader: "$200",
-    },
-];
+
 
 export default function ListRegisterAuctionSection() {
     const [searchBarValue, setSearchBarValue] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const showModal = () => {
+    const [page, setPage] = useState(1);
+    const [selectedArId, setSelectedArId] = useState(null);
+    const {
+        data = {},
+        isLoading: isLoadingAutionRegister,
+        isError: isErrorAutionRegister,
+        error: errorAutionRegister
+    } = useGetAuctionRegisterQuery({
+        page: page - 1,
+        limit: 10
+    });
+
+    // const {
+    //     data: dataAutionRegisterDetail,
+    //     isLoading: isLoadingAutionRegisterDetail,
+    //     isError: isErrorAutionRegisterDetail,
+    //     error: errorAutionRegisterDetail
+    // } = useGetAuctionRegisterDetailQuery();
+    const {
+        data: dataAuctionRegisterDetail,
+        isLoading: isLoadingAuctionRegisterDetail,
+        isError: isErrorAuctionRegisterDetail,
+        error: errorAuctionRegisterDetail,
+    } = useGetAuctionRegisterDetailQuery(selectedArId ? { id: selectedArId } : null, {
+        skip: !selectedArId, // Bỏ qua query nếu không có selectedArId
+    });
+
+    console.log("DATA: ", dataAuctionRegisterDetail)
+    // const showModal = () => {
+    //     setIsModalOpen(true);
+    // };
+    const showModal = (ar_id) => {
+        setSelectedArId(ar_id); // Lưu ar_id đã chọn
         setIsModalOpen(true);
     };
     const handleOk = () => {
@@ -67,11 +63,24 @@ export default function ListRegisterAuctionSection() {
         setIsModalOpen(false);
     };
 
-    const items = [
+    const TABLE_ROWS = data.items?.map((item) => ({
+        number: `#AU-${item.ar_id}`, // Mã số đấu giá
+        product: item.auctionItem.itemName, // Tên sản phẩm
+        image: item.auctionItem.thumbnail, // Hình ảnh sản phẩm
+        time: item.auctionItem.auction.startDate, // Ngày bắt đầu đấu giá
+        status: item.auctionItem.auction.status, // Trạng thái đấu giá
+        sellerHeader: item.auctionItem.auction.created_by, // Người bán
+        totalHeader: `$${(item.auctionItem.auction.start_price)}`,
+        action: <Button color="blue" onClick={() => showModal(item.ar_id)}>Chi tiết</Button>,
+        //.toFixed(2)<Button color="blue" onClick={showModal((record.ar_id)}>Chi tiết</Button>
+    })) || [];
+
+
+    const items = dataAuctionRegisterDetail ? [
         {
             key: '1',
             label: 'Sản Phẩm',
-            children: "Tablet",
+            children: dataAuctionRegisterDetail?.auctionItem?.itemName,
             span: 2,
         },
         {
@@ -79,8 +88,8 @@ export default function ListRegisterAuctionSection() {
             label: 'Hình Ảnh',
             children: (
                 <img
-                    src="https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f"
-                    alt="Tablet"
+                    src={dataAuctionRegisterDetail?.auctionItem?.thumbnail}
+                    alt="Product"
                     className="w-[30%] h-48 object-cover rounded"
                 />
             ),
@@ -89,32 +98,31 @@ export default function ListRegisterAuctionSection() {
         {
             key: '3',
             label: 'Số Đăng Ký',
-            children: "#AU-415649",
+            children: `#AU-${dataAuctionRegisterDetail?.ar_id}`,
         },
         {
             key: '4',
             label: 'Thời Gian Đấu Giá',
-            children: "01 Feb 2024",
+            children: dataAuctionRegisterDetail?.auctionItem?.auction?.startDate,
             span: 2,
         },
         {
             key: '5',
             label: 'Trạng Thái',
-            children: <Badge status="processing" text="Fail" />,
+            children: <Badge status="processing" text={dataAuctionRegisterDetail?.registration} />,
             span: 3,
         },
         {
             key: '6',
             label: 'Người Bán',
-            children: "Han So Hee",
+            children: dataAuctionRegisterDetail?.auctionItem?.auction?.created_by,
         },
         {
             key: '7',
             label: 'Tiền Cọc',
-            children: "$200",
+            children: `$${dataAuctionRegisterDetail?.deposite_amount}`,
         },
-    ];
-
+    ] : [];
 
     return (
         <div>
@@ -137,8 +145,13 @@ export default function ListRegisterAuctionSection() {
                         </div>
                     </div>
                     <Card className="h-full w-full overflow-auto">
-                        <table className="w-full min-w-max table-auto text-left">
-                            <thead>
+                        {isLoadingAutionRegister ? (
+                            <p>Loading...</p>
+                        ) : isErrorAutionRegister ? (
+                            <p>Error: {errorAutionRegister?.message || "Failed to load data"}</p>
+                        ) : (
+                            <table className="w-full min-w-max table-auto text-left">
+                                <thead>
                                 <tr>
                                     {TABLE_HEAD.map((head) => (
                                         <th key={head} className="p-4 pt-10">
@@ -152,8 +165,8 @@ export default function ListRegisterAuctionSection() {
                                         </th>
                                     ))}
                                 </tr>
-                            </thead>
-                            <tbody>
+                                </thead>
+                                <tbody>
                                 {TABLE_ROWS.map((row) => (
                                     <tr key={row.number}>
                                         <td className="p-4">
@@ -162,7 +175,8 @@ export default function ListRegisterAuctionSection() {
                                             </Typography>
                                         </td>
                                         <td className="p-4">
-                                            <img src={row.image} alt={row.product} className="w-16 h-16 object-cover rounded" />
+                                            <img src={row.image} alt={row.product}
+                                                 className="w-16 h-16 object-cover rounded"/>
                                         </td>
                                         <td className="p-4">
                                             <Typography variant="small" className="font-normal text-gray-600">
@@ -176,9 +190,9 @@ export default function ListRegisterAuctionSection() {
                                         </td>
                                         <td className="p-4">
                                             {row.status === "Success" ? (
-                                                <Tag icon={<CheckCircleOutlined />} color="success">Thành công</Tag>
+                                                <Tag icon={<CheckCircleOutlined/>} color="success">Thành công</Tag>
                                             ) : (
-                                                <Tag icon={<CloseCircleOutlined />} color="error">Đã hủy</Tag>
+                                                <Tag icon={<CloseCircleOutlined/>} color="error">Đã hủy</Tag>
                                             )}
                                         </td>
                                         <td className="p-4">
@@ -192,20 +206,30 @@ export default function ListRegisterAuctionSection() {
                                             </Typography>
                                         </td>
                                         <td className="p-4">
-                                            <Button color="blue" onClick={showModal}>Chi tiết</Button>
+                                            {/*<Button color="blue" onClick={showModal}>Chi tiết</Button>*/}
+                                            {row.action}
                                         </td>
                                     </tr>
                                 ))}
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        )}
                     </Card>
                     <div className="flex justify-center items-center mt-4">
-                        <Pagination />
+                        <Pagination currentPage={page}
+                                    totalPages={data.totalPages || 1}
+                                    onPageChange={setPage}
+                        />
                     </div>
                 </div>
             </div>
-            <Modal  footer={null}  width={1000} title="Register Auction Detail" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <Descriptions title="Infomation Info" layout="vertical" bordered items={items} />
+            <Modal footer={null} width={1000} title="Register Auction Detail" open={isModalOpen} onOk={handleOk}
+                   onCancel={handleCancel}>
+                {isLoadingAuctionRegisterDetail ? (
+                    <p>Loading details...</p>
+                ) : (
+                    <Descriptions title="Infomation Info" layout="vertical" bordered items={items}/>
+                )}
             </Modal>
         </div>
     );

@@ -15,6 +15,15 @@ export default function ListRegisterAuction() {
 
     const [position, setPosition] = useState("end");
     const [modal2Open, setModal2Open] = useState(false);
+    // const apiData = dataApi?.items?.map((item) => ({
+    //     key: item.ar_id,
+    //     id: item.ar_id,
+    //     time: new Date(item.created_at).toLocaleString(), // Chuyển thời gian sang định dạng dễ đọc
+    //     transactionType: item.transactionType || "N/A", // Kiểu giao dịch
+    //     method: item.method || "N/A", // Ngân hàng hoặc phương thức thanh toán
+    //     status: item.status || "Pending", // Trạng thái giao dịch
+    //     amount: item.amount || 0, // Số tiền giao dịch
+    // })) || [];
     const {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();

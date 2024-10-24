@@ -93,10 +93,7 @@ function App() {
                     <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
                     <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
                     <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
-
-
                     <Route path="AddressForm" index element={<AddressForm/>}/>
-
                 </Route>
                 {/*<Route element={<RequireAuth allowedRoles={["STAFF", "ADMIN"]}/>}>*/}
 
