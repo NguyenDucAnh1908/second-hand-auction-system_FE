@@ -1,15 +1,16 @@
 
-import {InputDH, Img, Heading, ButtonDH} from "../../components";
-import {CloseSVG} from "../../components/InputDH/close.jsx";
+import { InputDH, Img, Heading, ButtonDH } from "../../components";
+import { CloseSVG } from "../../components/InputDH/close.jsx";
 import Header2 from "../../components/Header2";
-import React, {Suspense, useState} from "react";
-import {Button, Modal, message, Popconfirm, Radio, Layout, Breadcrumb, Menu, theme} from "antd";
+import React, { Suspense, useState } from "react";
+import { Button, Modal, message, Popconfirm, Radio, Layout, Breadcrumb, Menu, theme } from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {FormAddAddress} from "./FormAddAddress.jsx";
-import {FormUpdateAddress} from "./FormUpdateAddress.jsx";
-import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
+import { FormAddAddress } from "./FormAddAddress.jsx";
+import { FormUpdateAddress } from "./FormUpdateAddress.jsx";
+import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
+import { useAddress } from "./hook/useAddress.js";
 
-const {Content, Sider} = Layout;
+const { Content, Sider } = Layout;
 const addressList = [
     {
         userImage: "images/img_contrast.svg",
@@ -18,8 +19,8 @@ const addressList = [
             <>
                 {" "}
                 90/2/2 đường 11
-                <br/> Linh xuân
-                <br/> Thành phố Thủ Đức
+                <br /> Linh xuân
+                <br /> Thành phố Thủ Đức
             </>
         ),
         editButtonLabel: "Sửa",
@@ -32,8 +33,8 @@ const addressList = [
             <>
                 {" "}
                 90/2/2 đường 11
-                <br/> Linh xuân
-                <br/> Thành phố Thủ Đức
+                <br /> Linh xuân
+                <br /> Thành phố Thủ Đức
             </>
         ),
         editButtonLabel: "Sửa",
@@ -46,8 +47,8 @@ const addressList = [
             <>
                 {" "}
                 90/2/2 đường 11
-                <br/> Linh xuân
-                <br/> Thành phố Thủ Đức
+                <br /> Linh xuân
+                <br /> Thành phố Thủ Đức
             </>
         ),
         editButtonLabel: "Sửa",
@@ -57,7 +58,7 @@ const addressList = [
 
 export default function AddressPage() {
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const [searchBarValue1, setSearchBarValue1] = React.useState("");
     const [open, setOpen] = useState(false);
@@ -65,6 +66,8 @@ export default function AddressPage() {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState("Content of the modal");
     const [selectedAddress, setSelectedAddress] = useState(null);
+    const { addAddress } = useAddress();
+
     const showModal = () => {
         setOpen(true);
     };
@@ -111,20 +114,30 @@ export default function AddressPage() {
         console.log(e);
         message.error("Click on No");
     };
+
+    //api
+    const handleFormSubmit = async (formData) => {
+        const result = await addAddress(formData);
+        if (result.success) {
+            message.success("Địa chỉ đã được thêm thành công!");
+            handleCancel();
+        } else {
+            message.error(`Lỗi: ${result.error}`);
+        }
+    };
+
     return (
         <>
             {/*New Address*/}
             <Modal
-                title="New Address"
-                open={open}
-                onOk={handleOk}
-                confirmLoading={confirmLoading}
-                onCancel={handleCancel}
-                okText="Lưu địa chỉ" // Tùy chỉnh chữ cho nút OK
-                cancelText="Hủy" // Tùy chỉnh chữ cho nút Cancel
-            >
-                <FormAddAddress/>
-            </Modal>
+                    title="Thêm Địa Chỉ Mới"
+                    open={open}
+                    onCancel={handleCancel}
+                    footer={null}
+                >
+                    <FormAddAddress onClose={handleCancel} onSubmit={handleFormSubmit} />
+                </Modal>
+
             {/*Update Address*/}
             <Modal
                 title="Update Address"
@@ -133,7 +146,7 @@ export default function AddressPage() {
                 confirmLoading={confirmLoading}
                 onCancel={handleCancelUpdateAddress}
             >
-                <FormUpdateAddress/>
+                <FormUpdateAddress />
             </Modal>
             {/*<Helmet>*/}
             {/*  <title>Manage Your Address Book - Update Shipping Information</title>*/}
@@ -142,8 +155,8 @@ export default function AddressPage() {
             {/*    content="Easily add, edit, or delete shipping addresses in your EZShop account. Ensure your delivery details are up-to-date for a seamless shopping experience."*/}
             {/*  />*/}
             {/*</Helmet>*/}
-            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-                <Header2/>
+            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <Header2 />
                 <Content
                     style={{
                         padding: '0 48px',
@@ -175,7 +188,7 @@ export default function AddressPage() {
                             }}
                             width={300}
                         >
-                            <SiderUserBK/>
+                            <SiderUserBK />
                         </Sider>
                         <Content
                             style={{
@@ -304,7 +317,7 @@ export default function AddressPage() {
                                                 ))}
                                             </Suspense>
                                         </div>
-                                        <div className="relative mt-[-2px] h-px bg-gray-100"/>
+                                        <div className="relative mt-[-2px] h-px bg-gray-100" />
                                     </div>
                                 </div>
                             </div>
@@ -312,7 +325,7 @@ export default function AddressPage() {
                     </Layout>
                 </Content>
                 <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
+                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
             </Layout>
 
 

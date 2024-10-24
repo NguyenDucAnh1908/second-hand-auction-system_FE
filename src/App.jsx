@@ -36,7 +36,6 @@ import RequireAuth from "@/routers/RequireAuth.jsx";
 import Unauthorized from "pages/Unauthorized.jsx";
 import PaymentSuccess from "./pages/Payment/PaymentSuccess.jsx";
 
-import AddressForm from "./pages/AddressFormTest.jsx";
 import SuccessfullyPayment from "pages/ResultPage/SuccessfullyPayment.jsx";
 import FailPayment from "pages/ResultPage/FailPayment.jsx";
 
@@ -93,7 +92,6 @@ function App() {
                     <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
                     <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
                     <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
-                    <Route path="AddressForm" index element={<AddressForm/>}/>
                 </Route>
                 {/*<Route element={<RequireAuth allowedRoles={["STAFF", "ADMIN"]}/>}>*/}
 
