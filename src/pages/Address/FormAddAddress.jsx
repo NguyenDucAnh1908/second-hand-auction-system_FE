@@ -115,8 +115,8 @@ export function FormAddAddress({ onClose, onSubmit }) {
             province_name: provinces.find(province => province.ProvinceID === selectedProvinceId)?.ProvinceName || '',
             street_address: formData.street_address,
             ward_code: selectedWardId || null,
-            ward_name: wards.find(ward => ward.WardID === selectedWardId)?.WardName || null,
-            userId: 3 // ID người dùng
+            ward_name: wards.find(ward => ward.WardID === selectedWardId)?.WardName || null
+          
         };
 
         // Gọi hàm onSubmit từ props để gửi dữ liệu

@@ -7,7 +7,7 @@ export const useAddress = () => {
         try {
             const processedAddressData = {
                 ...addressData,
-                userId: 3, 
+                userId: 1, 
             };
             await createAddress(processedAddressData).unwrap();
             return { success: true };

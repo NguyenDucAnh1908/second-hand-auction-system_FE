@@ -9,6 +9,8 @@ import { FormAddAddress } from "./FormAddAddress.jsx";
 import { FormUpdateAddress } from "./FormUpdateAddress.jsx";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { useAddress } from "./hook/useAddress.js";
+import { useFetchUserAddresses } from "./hook/useFetchUserAddresses";
+
 
 const { Content, Sider } = Layout;
 const addressList = [
@@ -67,6 +69,9 @@ export default function AddressPage() {
     const [modalText, setModalText] = useState("Content of the modal");
     const [selectedAddress, setSelectedAddress] = useState(null);
     const { addAddress } = useAddress();
+    const { addresses, error, isLoading } = useFetchUserAddresses();
+    if (isLoading) return <div>Loading addresses...</div>;
+    if (error) return <div>Error loading addresses.</div>;
 
     const showModal = () => {
         setOpen(true);
@@ -126,17 +131,18 @@ export default function AddressPage() {
         }
     };
 
+
     return (
         <>
             {/*New Address*/}
             <Modal
-                    title="Thêm Địa Chỉ Mới"
-                    open={open}
-                    onCancel={handleCancel}
-                    footer={null}
-                >
-                    <FormAddAddress onClose={handleCancel} onSubmit={handleFormSubmit} />
-                </Modal>
+                title="Thêm Địa Chỉ Mới"
+                open={open}
+                onCancel={handleCancel}
+                footer={null}
+            >
+                <FormAddAddress onClose={handleCancel} onSubmit={handleFormSubmit} />
+            </Modal>
 
             {/*Update Address*/}
             <Modal
@@ -148,13 +154,7 @@ export default function AddressPage() {
             >
                 <FormUpdateAddress />
             </Modal>
-            {/*<Helmet>*/}
-            {/*  <title>Manage Your Address Book - Update Shipping Information</title>*/}
-            {/*  <meta*/}
-            {/*    name="description"*/}
-            {/*    content="Easily add, edit, or delete shipping addresses in your EZShop account. Ensure your delivery details are up-to-date for a seamless shopping experience."*/}
-            {/*  />*/}
-            {/*</Helmet>*/}
+
             <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
                 <Header2 />
                 <Content
@@ -197,77 +197,70 @@ export default function AddressPage() {
                                 flex: 1, // Để Content bên trong chiếm hết không gian còn lại
                             }}
                         >
-                            <div className="relative h-[904px] flex-1 ">
-                                <div
-                                    className="absolute bottom-0 left-0 right-0 top-0 my-auto  flex h-max flex-1 rounded-[16px] bg-gray-100 px-[22px] py-2.5 md:mx-0 sm:px-5">
-                                    <Heading
-                                        size="text3xl"
-                                        as="h1"
-                                        className="mb-[846px] text-[28px] font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
-                                    >
-                                        Quản Lý Địa Chỉ
-                                    </Heading>
-                                </div>
-                                <div
-                                    className="absolute bottom-[130px] left-0 right-0 m-auto flex flex-1 flex-col gap-10 rounded-[14px] bg-bg-white px-3.5 py-[26px] shadow-sm sm:py-5">
-                                    <div className="ml-3 flex items-center justify-between gap-5 md:ml-0 md:flex-col">
-                                        <InputDH
-                                            shape="round"
-                                            name="Search Field"
-                                            placeholder={`Tìm kiếm`}
-                                            value={searchBarValue1}
-                                            onChange={(e) => setSearchBarValue1(e.target.value)}
-                                            suffix={
-                                                searchBarValue1?.length > 0 ? (
-                                                    <CloseSVG
-                                                        onClick={() => setSearchBarValue1("")}
-                                                        height={18}
-                                                        width={26}
-                                                        fillColor="#041e42ff"
-                                                    />
-                                                ) : (
-                                                    <Img
-                                                        src="images/img_search.svg"
-                                                        alt="Search 1"
-                                                        className="h-[18px] w-[26px]"
-                                                    />
-                                                )
-                                            }
-                                            className="w-[58%] gap-4 rounded-md border px-3.5 md:w-full"
-                                        />
-                                        {/*<button type="button"*/}
-                                        {/*        className="min-w-[172px] bg-red-300 rounded-md border border-solid border-green-a700 px-[33px] font-medium text-sm py-2.5 text-center me-2 mb-2 hover:bg-red-400 hover:border-green-500 focus:ring-4 focus:outline-none focus:ring-green-300">*/}
-                                        {/*    Thêm địa chỉ*/}
-                                        {/*</button>*/}
-                                        <Button
-                                            type="primary"
-                                            onClick={showModal}
-                                            className="text-gray-900 bg-[#F7BE38] hover:bg-[#F7BE38]/90 focus:ring-4 focus:outline-none focus:ring-[#F7BE38]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#F7BE38]/50 me-2 mb-2"
-                                        >
-                                            <svg
-                                                className="w-6 h-6 text-gray-800 dark:text-white me-2"
-                                                aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z"
-                                                    clipRule="evenodd"
+                            <div className="relative flex flex-col h-full"> {/* Thay đổi layout thành flex column */}
+                                <Heading
+                                    size="text3xl"
+                                    as="h1"
+                                    className="text-[28px] font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px] "
+                                >
+                                    Quản Lý Địa Chỉ
+                                </Heading>
+                                <div className="mb-4 mt-[20px] flex items-center justify-between">
+                                    <InputDH
+                                        shape="round"
+                                        name="Search Field"
+                                        placeholder={`Tìm kiếm`}
+                                        value={searchBarValue1}
+                                        onChange={(e) => setSearchBarValue1(e.target.value)}
+                                        suffix={
+                                            searchBarValue1?.length > 0 ? (
+                                                <CloseSVG
+                                                    onClick={() => setSearchBarValue1("")}
+                                                    height={18}
+                                                    width={26}
+                                                    fillColor="#041e42ff"
                                                 />
-                                            </svg>
-                                            Thêm Địa Chỉ
-                                        </Button>
-                                    </div>
+                                            ) : (
+                                                <Img
+                                                    src="images/img_search.svg"
+                                                    alt="Search 1"
+                                                    className="h-[18px] w-[26px]"
+                                                />
+                                            )
+                                        }
+                                        className="w-[58%] gap-4 rounded-md border px-3.5 md:w-full"
+                                    />
+                                    <Button
+                                        type="primary"
+                                        onClick={showModal}
+                                        className="ml-2 text-gray-900 bg-[#F7BE38] hover:bg-[#F7BE38]/90 focus:ring-4 focus:outline-none focus:ring-[#F7BE38]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#F7BE38]/50"
+                                    >
+                                        <svg
+                                            className="w-6 h-6 text-gray-800 dark:text-white me-2"
+                                            aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a1 1 0 1 0 0 2v1a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm3 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm-1 7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3 1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1Z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                        Thêm Địa Chỉ
+                                    </Button>
+                                </div>
 
-                                    <div className="mx-3 mb-[418px] md:mx-0">
+
+                                <div className="flex flex-1 overflow-y-auto"> {/* Thêm overflow để cuộn nếu cần */}
+                                    <div className="mx-3 mb-[418px] md:mx-0 flex-1"> {/* Đảm bảo container địa chỉ chiếm không gian còn lại */}
                                         <div className="relative z-[2] mr-5 flex flex-wrap gap-6 md:mr-0">
                                             <Suspense fallback={<div>Loading feed...</div>}>
-                                                {addressList.map((d, index) => (
+                                                {addresses.map((d, index) => (
                                                     <div
-                                                        className="bg-white hover:bg-green-400 transition-colors duration-300 rounded-lg shadow-md border border-gray-300 p-5 flex-1 min-w-[250px] max-w-[300px] flex flex-col" // Màu nền ban đầu là trắng, đổi sang xanh lá khi hover
-                                                        key={"addressesList" + index}
+                                                        className="bg-white hover:bg-green-400 transition-colors duration-300 rounded-lg shadow-md border border-gray-300 p-5 flex-1 min-w-[250px] max-w-[300px] flex flex-col"
+                                                        key={`addressesList${index}`}
                                                     >
                                                         <div className="flex items-center">
                                                             <Popconfirm
@@ -284,14 +277,13 @@ export default function AddressPage() {
                                                                     onChange={() => handleRadioChange(index)}
                                                                 />
                                                             </Popconfirm>
-                                                            <label
-                                                                htmlFor={`addressRadio${index}`}
-                                                                className="font-semibold"
-                                                            >
-                                                                {d.userTitle}
-                                                            </label>
                                                         </div>
-                                                        <div className="text-gray-600">{d.userAddress}</div>
+                                                        <div className="text-gray-600">
+                                                            {d.street_address} {/* Địa chỉ đường */}
+                                                        </div>
+                                                        <div className="text-gray-600">
+                                                            {d.ward_name}, {d.distric_name}, {d.province_name} {/* Tên xã, huyện, tỉnh */}
+                                                        </div>
                                                         <div className="flex justify-between mt-2">
                                                             <Button
                                                                 type="primary"
@@ -309,7 +301,7 @@ export default function AddressPage() {
                                                                 cancelText="No"
                                                             >
                                                                 <button className="text-red-500">
-                                                                    {d.deleteButtonLabel}
+                                                                    Delete
                                                                 </button>
                                                             </Popconfirm>
                                                         </div>
@@ -321,6 +313,12 @@ export default function AddressPage() {
                                     </div>
                                 </div>
                             </div>
+
+
+
+
+
+
                         </Content>
                     </Layout>
                 </Content>
