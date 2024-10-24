@@ -32,26 +32,15 @@ export default function ListRegisterAuctionSection() {
         page: page - 1,
         limit: 10
     });
-
-    // const {
-    //     data: dataAutionRegisterDetail,
-    //     isLoading: isLoadingAutionRegisterDetail,
-    //     isError: isErrorAutionRegisterDetail,
-    //     error: errorAutionRegisterDetail
-    // } = useGetAuctionRegisterDetailQuery();
     const {
         data: dataAuctionRegisterDetail,
         isLoading: isLoadingAuctionRegisterDetail,
         isError: isErrorAuctionRegisterDetail,
         error: errorAuctionRegisterDetail,
-    } = useGetAuctionRegisterDetailQuery(selectedArId ? { id: selectedArId } : null, {
-        skip: !selectedArId, // Bỏ qua query nếu không có selectedArId
+    } = useGetAuctionRegisterDetailQuery(selectedArId ? {id: selectedArId} : null, {
+        skip: !selectedArId,
     });
 
-    console.log("DATA: ", dataAuctionRegisterDetail)
-    // const showModal = () => {
-    //     setIsModalOpen(true);
-    // };
     const showModal = (ar_id) => {
         setSelectedArId(ar_id); // Lưu ar_id đã chọn
         setIsModalOpen(true);
@@ -64,12 +53,12 @@ export default function ListRegisterAuctionSection() {
     };
 
     const TABLE_ROWS = data.items?.map((item) => ({
-        number: `#AU-${item.ar_id}`, // Mã số đấu giá
-        product: item.auctionItem.itemName, // Tên sản phẩm
-        image: item.auctionItem.thumbnail, // Hình ảnh sản phẩm
-        time: item.auctionItem.auction.startDate, // Ngày bắt đầu đấu giá
-        status: item.auctionItem.auction.status, // Trạng thái đấu giá
-        sellerHeader: item.auctionItem.auction.created_by, // Người bán
+        number: `#AU-${item.ar_id}`,
+        product: item.auctionItem.itemName,
+        image: item.auctionItem.thumbnail,
+        time: item.auctionItem.auction.startDate,
+        status: item.auctionItem.auction.status,
+        sellerHeader: item.auctionItem.auction.created_by,
         totalHeader: `$${(item.auctionItem.auction.start_price)}`,
         action: <Button color="blue" onClick={() => showModal(item.ar_id)}>Chi tiết</Button>,
         //.toFixed(2)<Button color="blue" onClick={showModal((record.ar_id)}>Chi tiết</Button>
@@ -109,7 +98,7 @@ export default function ListRegisterAuctionSection() {
         {
             key: '5',
             label: 'Trạng Thái',
-            children: <Badge status="processing" text={dataAuctionRegisterDetail?.registration} />,
+            children: <Badge status="processing" text={dataAuctionRegisterDetail?.registration}/>,
             span: 3,
         },
         {
@@ -123,7 +112,10 @@ export default function ListRegisterAuctionSection() {
             children: `$${dataAuctionRegisterDetail?.deposite_amount}`,
         },
     ] : [];
-
+    // if (isLoading) return <div>Loading...</div>;
+    if (isErrorAutionRegister) return <div>Error: {isErrorAutionRegister?.message || "API request failed."}</div>;
+    // if (isLoading) return <div>Loading...</div>;
+    if (isErrorAuctionRegisterDetail) return <div>Error: {isErrorAuctionRegisterDetail?.message || "API request failed."}</div>;
     return (
         <div>
             <div className="flex w-full flex-col items-center">
