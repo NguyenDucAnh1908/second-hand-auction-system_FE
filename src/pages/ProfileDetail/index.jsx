@@ -3,170 +3,190 @@ import {
 } from "../../components";
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK";
-import React, {useState} from "react";
-import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
-import {EditOutlined} from "@ant-design/icons";
-import {Breadcrumb, Button, Layout, Modal, theme} from "antd";
-import {Navigate} from "react-router-dom";
+import React, { useState } from "react";
+import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
+import { EditOutlined, UploadOutlined, LockOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Layout, Modal, Form, Input, Upload, theme, message } from "antd";
+import { useGetUserByIdQuery, useChangePasswordMutation } from "../../services/user.service";
 
-const {Content, Sider} = Layout;
+const { Content, Sider } = Layout;
 
 export default function ProfileDetailPage() {
-    const [position, setPosition] = useState("end");
     const [modal2Open, setModal2Open] = useState(false);
+    const [modalPasswordOpen, setModalPasswordOpen] = useState(false);
+    const [form] = Form.useForm();
+    const [passwordForm] = Form.useForm();
+    const [changePassword, { isLoading }] = useChangePasswordMutation();
+
+    const user = localStorage.getItem('user');
+    const userObject = JSON.parse(user);
+    const { data: user1, error, isLoading: isUserLoading } = useGetUserByIdQuery(userObject.id);
+
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+
+    const handleUpdateUser = async (values) => {
+        console.log(values);
+    };
+
+    const handleUpdatePassword = async (values) => {
+        const { currentPassword, newPassword, confirmPassword } = values;
+    
+        if (newPassword !== confirmPassword) {
+            message.error('New passwords do not match!');
+            return;
+        }
+    
+        try {
+            await changePassword({
+                password: currentPassword,
+                newPassword,
+                confirmPassword,
+            }).unwrap();
+            
+            message.success('Password changed successfully!');
+            setModalPasswordOpen(false);
+            passwordForm.resetFields();
+        } catch (error) {
+            console.error('Change password error:', error); 
+    
+            if (error.data && error.data.message) {
+                message.error(error.data.message); 
+            } else {
+                message.error('Failed to change password'); 
+            }
+        }
+    };
+
+    const normFile = (e) => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e && e.fileList;
+    };
+
     return (
         <>
             <Modal
-                title="Vertically centered modal dialog"
+                title="Update Profile"
                 centered
                 open={modal2Open}
-                onOk={() => setModal2Open(false)}
+                onOk={() => {
+                    form.submit();
+                }}
                 onCancel={() => setModal2Open(false)}
             >
-                <form className="max-w-md mx-auto">
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="email"
-                            name="floating_email"
-                            id="floating_email"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            required
-                        />
-                        <label
-                            htmlFor="floating_email"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            Email address
-                        </label>
-                    </div>
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="password"
-                            name="floating_password"
-                            id="floating_password"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            required
-                        />
-                        <label
-                            htmlFor="floating_password"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            Password
-                        </label>
-                    </div>
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="password"
-                            name="repeat_password"
-                            id="floating_repeat_password"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            required
-                        />
-                        <label
-                            htmlFor="floating_repeat_password"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            Confirm password
-                        </label>
-                    </div>
-                    <div className="grid md:grid-cols-2 md:gap-6">
-                        <div className="relative z-0 w-full mb-5 group">
-                            <input
-                                type="text"
-                                name="floating_first_name"
-                                id="floating_first_name"
-                                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                placeholder=" "
-                                required
-                            />
-                            <label
-                                htmlFor="floating_first_name"
-                                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                            >
-                                First name
-                            </label>
-                        </div>
-                        <div className="relative z-0 w-full mb-5 group">
-                            <input
-                                type="text"
-                                name="floating_last_name"
-                                id="floating_last_name"
-                                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                placeholder=" "
-                                required
-                            />
-                            <label
-                                htmlFor="floating_last_name"
-                                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                            >
-                                Last name
-                            </label>
-                        </div>
-                    </div>
-                    <div className="grid md:grid-cols-2 md:gap-6">
-                        <div className="relative z-0 w-full mb-5 group">
-                            <input
-                                type="tel"
-                                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                                name="floating_phone"
-                                id="floating_phone"
-                                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                placeholder=" "
-                                required
-                            />
-                            <label
-                                htmlFor="floating_phone"
-                                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                            >
-                                Phone number (123-456-7890)
-                            </label>
-                        </div>
-                        <div className="relative z-0 w-full mb-5 group">
-                            <input
-                                type="text"
-                                name="floating_company"
-                                id="floating_company"
-                                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                                placeholder=" "
-                                required
-                            />
-                            <label
-                                htmlFor="floating_company"
-                                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                            >
-                                Company (Ex. Google)
-                            </label>
-                        </div>
-                    </div>
-                    <button
-                        type="submit"
-                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={handleUpdateUser}
+                    initialValues={{
+                        fullName: user1?.fullName || '',
+                        email: user1?.email || '',
+                    }}
+                >
+                    <Form.Item
+                        label="Full Name"
+                        name="fullName"
+                        rules={[{ required: true, message: 'Please input your full name!' }]}
                     >
-                        Submit
-                    </button>
-                </form>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[{ required: true, message: 'Please input your email!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="Avatar"
+                        name="avatar"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        extra="Select an image file to upload."
+                    >
+                        <Upload
+                            name="avatar"
+                            action="/upload.do"
+                            listType="picture"
+                            beforeUpload={(file) => {
+                                return true; // Allow the upload to proceed
+                            }}
+                        >
+                            <Button icon={<UploadOutlined />}>Upload Avatar</Button>
+                        </Upload>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Update
+                        </Button>
+                    </Form.Item>
+                </Form>
             </Modal>
-            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-                <Header2/>
+
+            <Modal
+                title="Update Password"
+                centered
+                open={modalPasswordOpen}
+                onOk={() => {
+                    passwordForm.submit();
+                }}
+                onCancel={() => setModalPasswordOpen(false)}
+                confirmLoading={isLoading} // Show loading indicator
+            >
+                <Form
+                    form={passwordForm}
+                    layout="vertical"
+                    onFinish={handleUpdatePassword}
+                >
+                    <Form.Item
+                        label="Current Password"
+                        name="currentPassword"
+                        rules={[{ required: true, message: 'Please input your current password!' }]}
+                    >
+                        <Input.Password prefix={<LockOutlined />} />
+                    </Form.Item>
+                    <Form.Item
+                        label="New Password"
+                        name="newPassword"
+                        rules={[{ required: true, message: 'Please input your new password!' }]}
+                    >
+                        <Input.Password prefix={<LockOutlined />} />
+                    </Form.Item>
+                    <Form.Item
+                        label="Confirm New Password"
+                        name="confirmPassword"
+                        dependencies={['newPassword']}
+                        rules={[
+                            { required: true, message: 'Please confirm your new password!' },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (!value || getFieldValue('newPassword') === value) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                                },
+                            }),
+                        ]}
+                    >
+                        <Input.Password prefix={<LockOutlined />} />
+                    </Form.Item>
+                </Form>
+            </Modal>
+
+            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <Header2 />
                 <Content
                     style={{
                         padding: '0 48px',
-                        flex: 1, // Cho phép Content chiếm không gian còn lại
-                        display: 'flex', // Đặt display là flex để chứa nội dung
-                        flexDirection: 'column', // Hướng theo chiều dọc
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
                     }}
                 >
-                    <Breadcrumb
-                        style={{
-                            margin: '16px 0',
-                        }}
-                    >
+                    <Breadcrumb style={{ margin: '16px 0' }}>
                         <Breadcrumb.Item>Home</Breadcrumb.Item>
                         <Breadcrumb.Item>List</Breadcrumb.Item>
                         <Breadcrumb.Item>App</Breadcrumb.Item>
@@ -176,72 +196,53 @@ export default function ProfileDetailPage() {
                             padding: '24px 0',
                             background: colorBgContainer,
                             borderRadius: borderRadiusLG,
-                            flex: 1, // Để Layout chiếm hết không gian còn lại
+                            flex: 1,
                         }}
                     >
-                        <Sider
-                            style={{
-                                background: colorBgContainer,
-                            }}
-                            width={300}
-                        >
-                            <SiderUserBK/>
+                        <Sider style={{ background: colorBgContainer }} width={300}>
+                            <SiderUserBK />
                         </Sider>
                         <Content
                             style={{
                                 padding: '0 24px',
                                 minHeight: 280,
-                                flex: 1, // Để Content bên trong chiếm hết không gian còn lại
+                                flex: 1,
                             }}
                         >
                             <div className="flex flex-col gap-4">
-
                                 <Heading
                                     size="text3xl"
                                     as="h1"
-                                    className=" text-[28px] font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
+                                    className="text-[28px] font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
                                 >
                                     Thông tin tài khoản
                                 </Heading>
                                 <div>
-
                                     <div className="bg-white overflow-hidden shadow rounded-lg border">
-                                        <div
-                                            style={{display: "flex", justifyContent: "flex-end"}}
-                                        >
+                                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
                                             <Button
-                                                icon={<EditOutlined/>}
+                                                icon={<EditOutlined />}
                                                 type="text"
-                                                iconPosition={position}
                                                 onClick={() => setModal2Open(true)}
+                                            ></Button>
+                                            <Button
+                                                icon={<LockOutlined />}
+                                                type="text"
+                                                onClick={() => setModalPasswordOpen(true)}
                                             ></Button>
                                         </div>
                                         <div className="text-center my-4">
                                             <img
                                                 className="h-32 w-32 rounded-full border-4 border-white dark:border-gray-800 mx-auto my-4"
-                                                src="https://randomuser.me/api/portraits/men/29.jpg"
-                                                alt=""
+                                                src={user1?.avatar}
+                                                alt={user1?.fullName}
                                             />
                                             <div className="py-2">
                                                 <h3 className="font-bold text-2xl text-gray-800 dark:text-white mb-1">
-                                                    Ronald Potter
+                                                    {user1?.fullName}
                                                 </h3>
-                                                <div
-                                                    className="inline-flex text-gray-700 dark:text-gray-300 items-center">
-                                                    <svg
-                                                        className="h-5 w-5 text-gray-400 dark:text-gray-600 mr-1"
-                                                        fill="currentColor"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24"
-                                                        width="24"
-                                                        height="24"
-                                                    >
-                                                        <path
-                                                            className=""
-                                                            d="M5.64 16.36a9 9 0 1 1 12.72 0l-5.65 5.66a1 1 0 0 1-1.42 0l-5.65-5.66zm11.31-1.41a7 7 0 1 0-9.9 0L12 19.9l4.95-4.95zM12 14a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"
-                                                        />
-                                                    </svg>
-                                                    Glendale, BF
+                                                <div className="inline-flex text-gray-700 dark:text-gray-300 items-center">
+                                                    {user1?.location}
                                                 </div>
                                             </div>
                                         </div>
@@ -252,35 +253,22 @@ export default function ProfileDetailPage() {
                                                         Full name
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                        John Doe
+                                                        {user1?.fullName}
                                                     </dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="text-sm font-medium text-gray-500">
-                                                        Email address
-                                                    </dt>
+                                                    <dt className="text-sm font-medium text-gray-500">Email</dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                        johndoe@example.com
+                                                        {user1?.email}
                                                     </dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="text-sm font-medium text-gray-500">
-                                                        Phone number
-                                                    </dt>
+                                                    <dt className="text-sm font-medium text-gray-500">Role</dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                        (123) 456-7890
+                                                        {user1?.role}
                                                     </dd>
                                                 </div>
-                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="text-sm font-medium text-gray-500">
-                                                        Address
-                                                    </dt>
-                                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                        123 Main St
-                                                        <br/>
-                                                        Anytown, USA 12345
-                                                    </dd>
-                                                </div>
+                                                
                                             </dl>
                                         </div>
                                     </div>
@@ -289,8 +277,7 @@ export default function ProfileDetailPage() {
                         </Content>
                     </Layout>
                 </Content>
-                <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
+                <FooterBK />
             </Layout>
         </>
     );
