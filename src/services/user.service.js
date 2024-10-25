@@ -23,10 +23,10 @@ export const userApiSlice = apiSlice.injectEndpoints({
     }),
 
     changePassword: builder.mutation({
-      query: (changePasswordData) => ({
+      query: (credentials) => ({
         url: "/user/changePassword",
         method: "PATCH",
-        body: changePasswordData, 
+        body: {...credentials},
       }),
     }),
 

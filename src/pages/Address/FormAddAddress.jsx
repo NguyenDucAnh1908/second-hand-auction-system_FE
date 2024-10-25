@@ -31,7 +31,6 @@ export function FormAddAddress({ onClose, onSubmit }) {
                 message.error("Có lỗi xảy ra khi lấy dữ liệu tỉnh.");
             }
         };
-
         fetchProvinces();
     }, []);
 

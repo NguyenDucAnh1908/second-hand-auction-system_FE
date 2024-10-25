@@ -3,11 +3,12 @@ import {
 } from "../../components";
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK";
-import React, { useState } from "react";
+import React, {useRef, useState} from "react";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { EditOutlined, UploadOutlined, LockOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Layout, Modal, Form, Input, Upload, theme, message } from "antd";
 import { useGetUserByIdQuery, useChangePasswordMutation } from "../../services/user.service";
+import {toast} from "react-toastify";
 
 const { Content, Sider } = Layout;
 
@@ -16,7 +17,10 @@ export default function ProfileDetailPage() {
     const [modalPasswordOpen, setModalPasswordOpen] = useState(false);
     const [form] = Form.useForm();
     const [passwordForm] = Form.useForm();
-    const [changePassword, { isLoading }] = useChangePasswordMutation();
+    const userRef = useRef();
+    const errRef = useRef();
+    // const [changePassword, { isLoading: isLoadingchangePassword }] = useChangePasswordMutation();
+    const [changePassword, { isLoading: isLoadingChangePassword }] = useChangePasswordMutation();
 
     const user = localStorage.getItem('user');
     const userObject = JSON.parse(user);
@@ -31,33 +35,48 @@ export default function ProfileDetailPage() {
     };
 
     const handleUpdatePassword = async (values) => {
-        const { currentPassword, newPassword, confirmPassword } = values;
-    
+        const { password, newPassword, confirmPassword } = values;
+
+        // Kiểm tra nếu mật khẩu mới không khớp
         if (newPassword !== confirmPassword) {
-            message.error('New passwords do not match!');
+            message.error("New passwords do not match!");
             return;
         }
-    
+
         try {
-            await changePassword({
-                password: currentPassword,
+            // Gọi API changePassword
+            const response = await changePassword({
+                password,
                 newPassword,
                 confirmPassword,
             }).unwrap();
-            
-            message.success('Password changed successfully!');
+
+            // Hiển thị thông báo thành công
+            message.success(response.message || "Password changed successfully!");
             setModalPasswordOpen(false);
             passwordForm.resetFields();
-        } catch (error) {
-            console.error('Change password error:', error); 
-    
-            if (error.data && error.data.message) {
-                message.error(error.data.message); 
-            } else {
-                message.error('Failed to change password'); 
-            }
+        } catch (err) {
+            console.error("Change password error:", err);
+
+            const errorMessage = err?.data?.message || "Failed to change password";
+            message.error(errorMessage);
+            errRef.current?.focus();
         }
     };
+    // const handleUpdatePassword = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         const updatePassword = await changePassword({
+    //             currentPassword, newPassword, confirmPassword
+    //         }).unwrap();
+    //         //console.log("Register data: ", userData.message)
+    //         toast.success(updatePassword.message)
+    //     } catch (err) {
+    //         const errorMessage = err?.data?.message;
+    //         toast.error(errorMessage);
+    //         errRef.current.focus();
+    //     }
+    // };
 
     const normFile = (e) => {
         if (Array.isArray(e)) {
@@ -130,20 +149,18 @@ export default function ProfileDetailPage() {
                 title="Update Password"
                 centered
                 open={modalPasswordOpen}
-                onOk={() => {
-                    passwordForm.submit();
-                }}
+                onOk={() => passwordForm.submit()} // Kích hoạt submit form
                 onCancel={() => setModalPasswordOpen(false)}
-                confirmLoading={isLoading} // Show loading indicator
+                confirmLoading={isLoadingChangePassword} // Hiển thị loading khi đang gửi yêu cầu
             >
                 <Form
                     form={passwordForm}
                     layout="vertical"
-                    onFinish={handleUpdatePassword}
+                    onFinish={handleUpdatePassword} // Gọi API khi form submit thành công
                 >
                     <Form.Item
-                        label="Current Password"
-                        name="currentPassword"
+                        label="Password"
+                        name="password"
                         rules={[{ required: true, message: 'Please input your current password!' }]}
                     >
                         <Input.Password prefix={<LockOutlined />} />
@@ -175,6 +192,56 @@ export default function ProfileDetailPage() {
                     </Form.Item>
                 </Form>
             </Modal>
+
+            {/*<Modal*/}
+            {/*    title="Update Password"*/}
+            {/*    centered*/}
+            {/*    open={modalPasswordOpen}*/}
+            {/*    onOk={() => {*/}
+            {/*        passwordForm.submit();*/}
+            {/*    }}*/}
+            {/*    onCancel={() => setModalPasswordOpen(false)}*/}
+            {/*    confirmLoading={isLoading} // Show loading indicator*/}
+            {/*>*/}
+            {/*    <Form*/}
+            {/*        form={passwordForm}*/}
+            {/*        layout="vertical"*/}
+            {/*        onFinish={handleUpdatePassword}*/}
+            {/*    >*/}
+            {/*        <Form.Item*/}
+            {/*            label="Current Password"*/}
+            {/*            name="currentPassword"*/}
+            {/*            rules={[{ required: true, message: 'Please input your current password!' }]}*/}
+            {/*        >*/}
+            {/*            <Input.Password prefix={<LockOutlined />} />*/}
+            {/*        </Form.Item>*/}
+            {/*        <Form.Item*/}
+            {/*            label="New Password"*/}
+            {/*            name="newPassword"*/}
+            {/*            rules={[{ required: true, message: 'Please input your new password!' }]}*/}
+            {/*        >*/}
+            {/*            <Input.Password prefix={<LockOutlined />} />*/}
+            {/*        </Form.Item>*/}
+            {/*        <Form.Item*/}
+            {/*            label="Confirm New Password"*/}
+            {/*            name="confirmPassword"*/}
+            {/*            dependencies={['newPassword']}*/}
+            {/*            rules={[*/}
+            {/*                { required: true, message: 'Please confirm your new password!' },*/}
+            {/*                ({ getFieldValue }) => ({*/}
+            {/*                    validator(_, value) {*/}
+            {/*                        if (!value || getFieldValue('newPassword') === value) {*/}
+            {/*                            return Promise.resolve();*/}
+            {/*                        }*/}
+            {/*                        return Promise.reject(new Error('The two passwords that you entered do not match!'));*/}
+            {/*                    },*/}
+            {/*                }),*/}
+            {/*            ]}*/}
+            {/*        >*/}
+            {/*            <Input.Password prefix={<LockOutlined />} />*/}
+            {/*        </Form.Item>*/}
+            {/*    </Form>*/}
+            {/*</Modal>*/}
 
             <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
                 <Header2 />
