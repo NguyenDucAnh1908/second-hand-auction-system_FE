@@ -1,5 +1,4 @@
 import { Card, Input, Button, Typography, Select, message, Spin } from "@material-tailwind/react";
-import { Form } from "antd";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -10,8 +9,8 @@ export function FormAddAddress({ onClose, onSubmit }) {
     const [selectedProvinceId, setSelectedProvinceId] = useState(null);
     const [selectedDistrictId, setSelectedDistrictId] = useState(null);
     const [selectedWardId, setSelectedWardId] = useState(null);
-    const [form] = Form.useForm();
-    const [loading, setLoading] = useState(false); // Thêm loading state
+    const [loading, setLoading] = useState(false);
+    const [streetAddress, setStreetAddress] = useState(""); // State for street address
 
     useEffect(() => {
         const fetchProvinces = async () => {
@@ -40,8 +39,7 @@ export function FormAddAddress({ onClose, onSubmit }) {
         setWards([]);
         setSelectedDistrictId(null);
         setSelectedWardId(null);
-
-        setLoading(true); // Bắt đầu tải dữ liệu
+        setLoading(true);
 
         try {
             const response = await axios.get(`https://online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id=${value}`, {
@@ -59,16 +57,15 @@ export function FormAddAddress({ onClose, onSubmit }) {
             console.error("Error fetching districts:", error);
             message.error("Có lỗi xảy ra khi lấy dữ liệu huyện.");
         } finally {
-            setLoading(false); // Kết thúc tải dữ liệu
+            setLoading(false);
         }
     };
 
     const handleDistrictChange = async (value) => {
         setSelectedDistrictId(value);
-        setWards([]); // Đặt lại wards
-        setSelectedWardId(null); // Đặt lại ward khi district thay đổi
-
-        setLoading(true); // Bắt đầu tải dữ liệu
+        setWards([]);
+        setSelectedWardId(null);
+        setLoading(true);
 
         try {
             const response = await axios.get(`https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${value}`, {
@@ -78,12 +75,11 @@ export function FormAddAddress({ onClose, onSubmit }) {
             });
 
             if (response.data.code === 200) {
-                // Chỉ lấy dữ liệu cần thiết và đặt vào trạng thái
                 const formattedWards = response.data.data.map((ward) => ({
-                    WardID: ward.WardCode, // Lưu WardCode
-                    WardName: ward.WardName // Lưu WardName
+                    WardID: ward.WardCode,
+                    WardName: ward.WardName
                 }));
-                setWards(formattedWards); // Cập nhật state wards
+                setWards(formattedWards);
             } else {
                 message.error(response.data.message);
             }
@@ -91,76 +87,78 @@ export function FormAddAddress({ onClose, onSubmit }) {
             console.error("Error fetching wards:", error);
             message.error("Có lỗi xảy ra khi lấy dữ liệu xã.");
         } finally {
-            setLoading(false); // Kết thúc tải dữ liệu
+            setLoading(false);
         }
     };
 
-
     const handleWardChange = (value) => {
         setSelectedWardId(value);
-        form.setFieldsValue({ ward: value }); // Đặt giá trị trong form
     };
 
-
-    const handleFormSubmit = async (formData) => {
+    const handleFormSubmit = async () => {
         const addressData = {
             district_code: selectedDistrictId,
             district_name: districts.find(district => district.DistrictID === selectedDistrictId)?.DistrictName || '',
-            address_name: formData.street_address,
+            address_name: streetAddress, // Use streetAddress state
             default_address: "string",
             last_name: "string",
             phone_number: "string",
             province: selectedProvinceId,
             province_name: provinces.find(province => province.ProvinceID === selectedProvinceId)?.ProvinceName || '',
-            street_address: formData.street_address,
+            street_address: streetAddress,
             ward_code: selectedWardId || null,
             ward_name: wards.find(ward => ward.WardID === selectedWardId)?.WardName || null
-          
         };
 
-        // Gọi hàm onSubmit từ props để gửi dữ liệu
+        // Call onSubmit prop to send data
         await onSubmit(addressData);
     };
 
     return (
-        <Form form={form} onFinish={handleFormSubmit} layout="horizontal">
-            <Form.Item name="street_address" label="Địa chỉ" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-                <Input placeholder="Nhập địa chỉ" />
-            </Form.Item>
-            <Form.Item name="province" label="Tỉnh" rules={[{ required: true }]} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-                <Select onChange={handleProvinceChange} placeholder="Chọn tỉnh" loading={loading}>
+        <Card>
+            <div className="mb-4">
+                <label>Địa chỉ</label>
+                <Input
+                    placeholder="Nhập địa chỉ"
+                    value={streetAddress}
+                    onChange={(e) => setStreetAddress(e.target.value)} // Update street address state
+                />
+            </div>
+            <div className="mb-4">
+                <label>Tỉnh</label>
+                <Select onChange={handleProvinceChange} placeholder="Chọn tỉnh" loading={loading} showSearch>
                     {provinces.map((province) => (
                         <Select.Option key={province.ProvinceID} value={province.ProvinceID}>
                             {province.ProvinceName}
                         </Select.Option>
                     ))}
                 </Select>
-            </Form.Item>
-            <Form.Item name="district" label="Huyện" rules={[{ required: true }]} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-                <Select onChange={handleDistrictChange} placeholder="Chọn huyện" loading={loading}>
+            </div>
+            <div className="mb-4">
+                <label>Huyện</label>
+                <Select onChange={handleDistrictChange} placeholder="Chọn huyện" loading={loading} disabled={!selectedProvinceId} showSearch>
                     {districts.map((district) => (
                         <Select.Option key={district.DistrictID} value={district.DistrictID}>
                             {district.DistrictName}
                         </Select.Option>
                     ))}
                 </Select>
-            </Form.Item>
-            <Form.Item name="ward" label="Xã" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-                <Select onChange={handleWardChange} placeholder="Chọn xã" loading={loading}>
+            </div>
+            <div className="mb-4">
+                <label>Xã</label>
+                <Select onChange={handleWardChange} placeholder="Chọn xã" loading={loading} disabled={!selectedDistrictId} showSearch>
                     {wards.map((ward) => (
                         <Select.Option key={ward.WardID} value={ward.WardID}>
                             {ward.WardName}
                         </Select.Option>
                     ))}
                 </Select>
-            </Form.Item>
-    
-            <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
-                <Button type="primary" htmlType="submit">
+            </div>
+            <div className="mb-4">
+                <Button type="primary" onClick={handleFormSubmit}>
                     Thêm địa chỉ
                 </Button>
-            </Form.Item>
-        </Form>
+            </div>
+        </Card>
     );
-    
 }

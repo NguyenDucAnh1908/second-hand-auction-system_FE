@@ -13,50 +13,7 @@ import { useFetchUserAddresses } from "./hook/useFetchUserAddresses";
 
 
 const { Content, Sider } = Layout;
-const addressList = [
-    {
-        userImage: "images/img_contrast.svg",
-        userTitle: "Home",
-        userAddress: (
-            <>
-                {" "}
-                90/2/2 đường 11
-                <br /> Linh xuân
-                <br /> Thành phố Thủ Đức
-            </>
-        ),
-        editButtonLabel: "Sửa",
-        deleteButtonLabel: "Xóa",
-    },
-    {
-        userImage: "images/img_contrast.svg",
-        userTitle: "Home",
-        userAddress: (
-            <>
-                {" "}
-                90/2/2 đường 11
-                <br /> Linh xuân
-                <br /> Thành phố Thủ Đức
-            </>
-        ),
-        editButtonLabel: "Sửa",
-        deleteButtonLabel: "Xóa",
-    },
-    {
-        userImage: "images/img_contrast.svg",
-        userTitle: "Home",
-        userAddress: (
-            <>
-                {" "}
-                90/2/2 đường 11
-                <br /> Linh xuân
-                <br /> Thành phố Thủ Đức
-            </>
-        ),
-        editButtonLabel: "Sửa",
-        deleteButtonLabel: "Xóa",
-    },
-];
+
 
 export default function AddressPage() {
     const {
@@ -69,9 +26,9 @@ export default function AddressPage() {
     const [modalText, setModalText] = useState("Content of the modal");
     const [selectedAddress, setSelectedAddress] = useState(null);
     const { addAddress } = useAddress();
-    const { addresses, error, isLoading } = useFetchUserAddresses();
-    if (isLoading) return <div>Loading addresses...</div>;
-    if (error) return <div>Error loading addresses.</div>;
+    const { addresses } = useFetchUserAddresses();
+
+
 
     const showModal = () => {
         setOpen(true);
@@ -125,6 +82,7 @@ export default function AddressPage() {
         const result = await addAddress(formData);
         if (result.success) {
             message.success("Địa chỉ đã được thêm thành công!");
+
             handleCancel();
         } else {
             message.error(`Lỗi: ${result.error}`);
@@ -279,10 +237,13 @@ export default function AddressPage() {
                                                             </Popconfirm>
                                                         </div>
                                                         <div className="text-gray-600">
-                                                            {d.street_address} {/* Địa chỉ đường */}
+                                                            {d.street_address}
                                                         </div>
                                                         <div className="text-gray-600">
-                                                            {d.ward_name}, {d.distric_name}, {d.province_name} {/* Tên xã, huyện, tỉnh */}
+                                                            {d.ward_name}
+                                                        </div>
+                                                        <div className="text-gray-600">
+                                                            {d.district_name}, {d.province_name}
                                                         </div>
                                                         <div className="flex justify-between mt-2">
                                                             <Button
