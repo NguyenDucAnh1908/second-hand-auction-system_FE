@@ -45,10 +45,39 @@ export const itemApiSlice = apiSlice.injectEndpoints({
         }),
 
         getItemDetail: builder.query({
-            query: ({ id }) => `/item/detail/${encodeURIComponent(id)}`,
+            query: ({id}) => `/item/detail/${encodeURIComponent(id)}`,
+            transformResponse: (response) => response.data,
+        }),
+
+        getAuctionProcessItem: builder.query({
+            query: (paging) => ({
+                url: "item/auction-process/user",
+                params: {
+                    page: paging.page || 0,
+                    limit: paging.limit || 10,
+                },
+            }),
+            transformResponse: (response) => {
+                return {
+                    items: response.data.data || [],
+                    totalPages: response.data.totalPages || 0,
+                    totalProducts: response.data.totalElements || 0,
+                };
+            },
+        }),
+
+        getAuctionProcessDetail: builder.query({
+            query: ({id}) => `/item/auction-process/${encodeURIComponent(id)}`,
             transformResponse: (response) => response.data,
         }),
     }),
 });
 
-export const {useGetItemsQuery, useGetFeatureItemsQuery, useGetItemsFilterQuery, useGetItemDetailQuery} = itemApiSlice;
+export const {
+    useGetItemsQuery,
+    useGetFeatureItemsQuery,
+    useGetItemsFilterQuery,
+    useGetItemDetailQuery,
+    useGetAuctionProcessItemQuery,
+    useGetAuctionProcessDetailQuery,
+} = itemApiSlice;

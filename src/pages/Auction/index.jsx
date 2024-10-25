@@ -18,14 +18,6 @@ import RecommendedProductsSection from "./RecommendedProductsSection";
 import React, {Suspense, useEffect, useState} from "react";
 import { Avatar } from "antd";
 import { AntDesignOutlined } from "@ant-design/icons";
-import {
-  AccordionItemPanel,
-  AccordionItemHeading,
-  AccordionItemButton,
-  AccordionItemState,
-  Accordion,
-  AccordionItem,
-} from "react-accessible-accordion";
 import { Flex, Rate, Typography, Tabs } from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import {useGetItemDetailQuery} from "@/services/item.service.js";

@@ -30,6 +30,7 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
             console.error("Error parsing date:", error);
         }
     }
+    // *
     const {Countdown} = Statistic;
     const showModal = () => {
         setIsModalOpen(true);

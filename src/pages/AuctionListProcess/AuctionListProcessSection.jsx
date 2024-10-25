@@ -1,11 +1,11 @@
 import {Img, InputDH} from "../../components/index.jsx";
 import {Button, Card, Typography, Select, Option} from "@material-tailwind/react";
-import {Badge, Descriptions, Tag, Modal} from "antd";
+import {Badge, Descriptions, Tag, Modal, Statistic} from "antd";
 import Pagination from "@/components/Pagination/index.jsx";
 import React, {useState, useEffect} from 'react';
 import {SyncOutlined} from "@ant-design/icons";
+import {useGetAuctionProcessItemQuery, useGetAuctionProcessDetailQuery} from "@/services/item.service.js";
 
-// Các trường tiêu đề cho bảng
 const TABLE_HEAD = [
     "Số Đăng Ký",
     "Hình ảnh",
@@ -13,102 +13,77 @@ const TABLE_HEAD = [
     "Thời gian còn lại",
     "Trạng thái",
     "Giá Hiện Tại",
-    "Giá của bạn", // Thêm cột "Giá của bạn"
+    "Giá của bạn",
     "Tùy chỉnh"
 ];
 
-// Dữ liệu mẫu cho các sản phẩm đang đấu giá
-const TABLE_ROWS = [
-    {
-        number: "#AU-415646",
-        product: "Smartphone",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        endTime: new Date("2024-11-01T10:00:00"), // Thời gian kết thúc đấu giá
-        status: "Đang đấu giá",
-        currentPrice: 500,
-        yourPrice: 500,
-    },
-    {
-        number: "#AU-415647",
-        product: "Laptop",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        endTime: new Date("2024-11-01T11:00:00"),
-        status: "Đang đấu giá",
-        currentPrice: 1000,
-        yourPrice: 1000,
-    },
-    {
-        number: "#AU-415648",
-        product: "Tablet",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        endTime: new Date("2024-11-01T12:00:00"),
-        status: "Đang đấu giá",
-        currentPrice: 300,
-        yourPrice: 250,
-    },
-    {
-        number: "#AU-415649",
-        product: "Smartwatch",
-        image: "https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f",
-        endTime: new Date("2024-11-01T13:00:00"),
-        status: "Đang đấu giá",
-        currentPrice: 200,
-        yourPrice: 100,
-    },
-];
-
-
 export default function AuctionListProcessSection() {
     const [searchBarValue, setSearchBarValue] = useState("");
-
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
+    const [page, setPage] = useState(1);
+    const {Countdown} = Statistic;
+    const [selectedArId, setSelectedArId] = useState(null);
 
-    const [remainingTime, setRemainingTime] = useState({});
+    const {
+        data: dataAuctionProcess,
+        isLoading: isLoadingAuctionProcess,
+        isError: isErrorAuctionProcess,
+        error: errorAuctionProcess
+    } = useGetAuctionProcessItemQuery({
+        page: page - 1, // API thường dùng chỉ số 0-based
+        limit: 10
+    });
+    const {
+        data: dataAuctionProcessDetail,
+        isLoading: isLoadingAuctionProcessDetail,
+        isError: isErrorAuctionProcessDetail,
+        error: errorAuctionProcessDetail,
+    } = useGetAuctionProcessDetailQuery(selectedArId ? {id: selectedArId} : null, {
+        skip: !selectedArId,
+    });
 
-    const calculateRemainingTime = (endTime) => {
-        const now = new Date();
-        const timeDiff = new Date(endTime) - now;
+    console.log("DATA: ", dataAuctionProcessDetail);
 
-        if (timeDiff <= 0) {
-            return "Đã kết thúc"; // Nếu thời gian còn lại <= 0
+    const auctionItems = dataAuctionProcess?.items || [];
+
+    const TABLE_ROWS = auctionItems.map((item) => {
+        const {auction, itemName, thumbnail, itemId} = item;
+        const {auction_id, endDate, end_time, status, start_price} = auction || {};
+
+        let deadline = null;
+        if (endDate && end_time) {
+            const dateTimeString = `${endDate}T${end_time}`;
+            deadline = new Date(dateTimeString).getTime();
+            if (isNaN(deadline)) {
+                console.error("Invalid Date Format!");
+            }
         }
 
-        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-        return `${days} ngày ${hours} giờ ${minutes} phút ${seconds} giây`;
-    };
-
-    useEffect(() => {
-        const updateRemainingTime = () => {
-            const newRemainingTime = TABLE_ROWS.reduce((acc, row) => {
-                acc[row.number] = calculateRemainingTime(row.endTime);
-                return acc;
-            }, {});
-            setRemainingTime(newRemainingTime);
+        return {
+            number: `#AU-${auction_id}`,
+            product: itemName || "Không xác định",
+            image: thumbnail,
+            endTime: deadline ? (
+                <Countdown
+                    value={deadline}
+                    format="D Ngày H giờ m phút s giây"
+                    valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "green"}}
+                />
+            ) : (
+                "Không xác định"
+            ),
+            status: status === "PENDING" ? "Đang đấu giá" : "Đã kết thúc",
+            currentPrice: start_price,
+            yourPrice: start_price,
+            action: <Button color="blue" onClick={() => showModal(itemId)}>Chi tiết</Button>,
         };
+    });
+    const items = dataAuctionProcessDetail ? [
 
-        updateRemainingTime();
-        const intervalId = setInterval(updateRemainingTime, 1000);
-
-        return () => clearInterval(intervalId);
-    }, []);
-    const items = [
         {
             key: '1',
             label: 'Sản Phẩm',
-            children: "Tablet",
+            children: dataAuctionProcessDetail?.itemName || "Không xác định",
             span: 2,
         },
         {
@@ -116,8 +91,8 @@ export default function AuctionListProcessSection() {
             label: 'Hình Ảnh',
             children: (
                 <img
-                    src="https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f"
-                    alt="Tablet"
+                    src={dataAuctionProcessDetail?.thumbnail}
+                    alt="Product"
                     className="w-[30%] h-48 object-cover rounded"
                 />
             ),
@@ -126,36 +101,49 @@ export default function AuctionListProcessSection() {
         {
             key: '3',
             label: 'Số Đăng Ký',
-            children: "#AU-415648",
+            children: `#AU-${dataAuctionProcessDetail?.itemId}`,
         },
         {
             key: '4',
             label: 'Thời Gian Đấu Giá',
-            children: new Date("2024-11-01T12:00:00").toLocaleString(),
+            children: (dataAuctionProcessDetail?.auction?.endDate && dataAuctionProcessDetail?.auction?.end_time) ? (
+                <Countdown
+                    value={new Date(`${dataAuctionProcessDetail.auction?.endDate}T${dataAuctionProcessDetail.auction?.end_time}`).getTime()}
+                    format="D Ngày H giờ m phút s giây"
+                    valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "green"}}
+                />
+            ) : (
+                "Không xác định"
+            ),
             span: 2,
         },
         {
             key: '5',
             label: 'Trạng Thái',
-            children: <Badge status="processing" text="Đang đấu giá"/>,
+            children: <Badge status="processing" text={dataAuctionProcessDetail?.auction?.status || "Chưa đăng ký"}/>,
             span: 3,
         },
         {
             key: '6',
             label: 'Người Bán',
-            children: "Han So Hee",
+            children: dataAuctionProcessDetail?.auction?.created_by || "Chưa có người bán",
         },
         {
             key: '7',
             label: 'Tiền Cọc',
-            children: 500,
+            children: `$${dataAuctionProcessDetail?.auction?.start_price || "0"}`,
         },
-        {
-            key: '7',
-            label: 'Tiền Cọc',
-            children: 100,
-        },
-    ];
+    ] : [];
+
+
+    const showModal = (itemId) => {
+        setSelectedArId(itemId);
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => setIsModalOpen(false);
+    const handleCancel = () => setIsModalOpen(false);
+
     return (
         <div>
             <div className="flex w-full flex-col items-center">
@@ -210,7 +198,7 @@ export default function AuctionListProcessSection() {
                                     </td>
                                     <td className="p-4">
                                         <Typography variant="small" className="font-normal text-gray-600">
-                                            {remainingTime[row.number] || "Đang cập nhật..."} {/* Hiển thị thời gian còn lại */}
+                                            {row.endTime} {/* Hiển thị thời gian còn lại */}
                                         </Typography>
                                     </td>
                                     <td className="p-4">
@@ -232,7 +220,7 @@ export default function AuctionListProcessSection() {
                                         </Typography>
                                     </td>
                                     <td className="p-4">
-                                        <Button color="blue" onClick={showModal}>Chi tiết</Button>
+                                        {row.action}
                                     </td>
                                 </tr>
                             ))}
@@ -240,7 +228,11 @@ export default function AuctionListProcessSection() {
                         </table>
                     </Card>
                     <div className="flex justify-center items-center mt-4">
-                        <Pagination/>
+                        <Pagination
+                            currentPage={page}
+                            totalPages={dataAuctionProcess?.totalPages || 1}
+                            onPageChange={setPage}
+                        />
                     </div>
                 </div>
             </div>
