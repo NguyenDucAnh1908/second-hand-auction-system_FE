@@ -208,20 +208,6 @@ export default function ProductPage() {
                                                 }
                                             >
                                                 <div className="flex flex-col">
-                                                    {/*{category.subCategory.map((sub) => (*/}
-                                                    {/*    <div*/}
-                                                    {/*        key={sub.sc_id}*/}
-                                                    {/*        className="flex items-center gap-2 w-[50%]"*/}
-                                                    {/*    >*/}
-                                                    {/*      <Checkbox*/}
-                                                    {/*          checked={selectedBrands.includes(sub.sc_id)}*/}
-                                                    {/*          onChange={(e) =>*/}
-                                                    {/*              handleBrandChange(sub.sc_id, e.target.checked)*/}
-                                                    {/*          }*/}
-                                                    {/*      />*/}
-                                                    {/*      <span>{sub.sub_category}</span>*/}
-                                                    {/*    </div>*/}
-                                                    {/*))}*/}
                                                     {category.subCategory.map((sub) => (
                                                         <div
                                                             key={sub.sc_id}

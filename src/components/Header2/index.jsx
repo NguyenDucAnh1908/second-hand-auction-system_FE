@@ -4,7 +4,6 @@ import React, {useEffect, useRef, useState} from "react";
 import NavBarBK from "@/components/NavBarBK/index.jsx";
 import {useSelector, useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-
 import {
     selectCurrentUser,
     selectIsLoggedIn,
@@ -37,6 +36,7 @@ export default function Header2({...props}) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [email, setEmail] = React.useState("");
+
 
     const showDrawer = () => setIsDrawerOpen(true);
     const closeDrawer = () => setIsDrawerOpen(false);

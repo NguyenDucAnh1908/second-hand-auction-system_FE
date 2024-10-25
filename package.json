@@ -21,6 +21,7 @@
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "chartjs-adapter-moment": "^1.0.1",
+    "firebase": "^11.0.1",
     "flatpickr": "^4.6.13",
     "framer-motion": "^11.9.0",
     "postcss": "^8.4.47",
@@ -45,7 +46,8 @@
     "react-tabs": "^6.0.2",
     "react-toastify": "^10.0.6",
     "styled-components": "^6.1.13",
-    "tailwindcss": "^3.4.11"
+    "tailwindcss": "^3.4.11",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

@@ -7,7 +7,8 @@ import React, {useRef, useState} from "react";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { EditOutlined, UploadOutlined, LockOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Layout, Modal, Form, Input, Upload, theme, message } from "antd";
-import { useGetUserByIdQuery, useChangePasswordMutation } from "../../services/user.service";
+import { useGetUserByIdQuery, useChangePasswordMutation, useUpdateUserMutation } from "../../services/user.service";
+import useHookUploadImage from "../../hooks/useHookUploadImage.js";
 import {toast} from "react-toastify";
 
 const { Content, Sider } = Layout;
@@ -19,25 +20,52 @@ export default function ProfileDetailPage() {
     const [passwordForm] = Form.useForm();
     const userRef = useRef();
     const errRef = useRef();
+    const { UploadImage } = useHookUploadImage();
     // const [changePassword, { isLoading: isLoadingchangePassword }] = useChangePasswordMutation();
     const [changePassword, { isLoading: isLoadingChangePassword }] = useChangePasswordMutation();
+    const [updateUser, { isLoading: isLoadingupdateUser }] = useUpdateUserMutation();
 
-    const user = localStorage.getItem('user');
-    const userObject = JSON.parse(user);
-    const { data: user1, error, isLoading: isUserLoading } = useGetUserByIdQuery(userObject.id);
-
+    const { data: user1, error, isLoading: isUserLoading } = useGetUserByIdQuery();
+    console.log("DATA", user1)
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
     const handleUpdateUser = async (values) => {
-        console.log(values);
+        const { fullName, phoneNumber, avatar } = values; // Đảm bảo rằng avatar được lấy từ form
+
+        try {
+            let avatarUrl = ""; // Khởi tạo biến avatarUrl
+
+            // Nếu có file avatar, upload và lấy URL
+            if (avatar && avatar.length > 0) {
+                const file = avatar[0].originFileObj;
+                avatarUrl = await UploadImage(file);
+            }
+
+            // Gọi API updateUser với body yêu cầu
+            const response = await updateUser({
+                fullName,
+                phoneNumber,
+                avatarUrl: avatarUrl || user1?.avatarUrl,
+            }).unwrap();
+
+            // Hiển thị thông báo thành công
+            message.success(response.message || "User updated successfully!");
+            setModalPasswordOpen(false);
+            form.resetFields();
+        } catch (err) {
+            console.error("Update user error:", err);
+
+            const errorMessage = err?.data?.message || "Failed to update user";
+            message.error(errorMessage);
+            errRef.current?.focus();
+        }
     };
 
     const handleUpdatePassword = async (values) => {
         const { password, newPassword, confirmPassword } = values;
 
-        // Kiểm tra nếu mật khẩu mới không khớp
         if (newPassword !== confirmPassword) {
             message.error("New passwords do not match!");
             return;
@@ -63,20 +91,6 @@ export default function ProfileDetailPage() {
             errRef.current?.focus();
         }
     };
-    // const handleUpdatePassword = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         const updatePassword = await changePassword({
-    //             currentPassword, newPassword, confirmPassword
-    //         }).unwrap();
-    //         //console.log("Register data: ", userData.message)
-    //         toast.success(updatePassword.message)
-    //     } catch (err) {
-    //         const errorMessage = err?.data?.message;
-    //         toast.error(errorMessage);
-    //         errRef.current.focus();
-    //     }
-    // };
 
     const normFile = (e) => {
         if (Array.isArray(e)) {
@@ -128,10 +142,13 @@ export default function ProfileDetailPage() {
                     >
                         <Upload
                             name="avatar"
-                            action="/upload.do"
                             listType="picture"
                             beforeUpload={(file) => {
-                                return true; // Allow the upload to proceed
+                                const isImage = file.type.startsWith('image/');
+                                if (!isImage) {
+                                    message.error('You can only upload image files!');
+                                }
+                                return isImage; // Cho phép upload nếu là file hình
                             }}
                         >
                             <Button icon={<UploadOutlined />}>Upload Avatar</Button>
@@ -192,57 +209,6 @@ export default function ProfileDetailPage() {
                     </Form.Item>
                 </Form>
             </Modal>
-
-            {/*<Modal*/}
-            {/*    title="Update Password"*/}
-            {/*    centered*/}
-            {/*    open={modalPasswordOpen}*/}
-            {/*    onOk={() => {*/}
-            {/*        passwordForm.submit();*/}
-            {/*    }}*/}
-            {/*    onCancel={() => setModalPasswordOpen(false)}*/}
-            {/*    confirmLoading={isLoading} // Show loading indicator*/}
-            {/*>*/}
-            {/*    <Form*/}
-            {/*        form={passwordForm}*/}
-            {/*        layout="vertical"*/}
-            {/*        onFinish={handleUpdatePassword}*/}
-            {/*    >*/}
-            {/*        <Form.Item*/}
-            {/*            label="Current Password"*/}
-            {/*            name="currentPassword"*/}
-            {/*            rules={[{ required: true, message: 'Please input your current password!' }]}*/}
-            {/*        >*/}
-            {/*            <Input.Password prefix={<LockOutlined />} />*/}
-            {/*        </Form.Item>*/}
-            {/*        <Form.Item*/}
-            {/*            label="New Password"*/}
-            {/*            name="newPassword"*/}
-            {/*            rules={[{ required: true, message: 'Please input your new password!' }]}*/}
-            {/*        >*/}
-            {/*            <Input.Password prefix={<LockOutlined />} />*/}
-            {/*        </Form.Item>*/}
-            {/*        <Form.Item*/}
-            {/*            label="Confirm New Password"*/}
-            {/*            name="confirmPassword"*/}
-            {/*            dependencies={['newPassword']}*/}
-            {/*            rules={[*/}
-            {/*                { required: true, message: 'Please confirm your new password!' },*/}
-            {/*                ({ getFieldValue }) => ({*/}
-            {/*                    validator(_, value) {*/}
-            {/*                        if (!value || getFieldValue('newPassword') === value) {*/}
-            {/*                            return Promise.resolve();*/}
-            {/*                        }*/}
-            {/*                        return Promise.reject(new Error('The two passwords that you entered do not match!'));*/}
-            {/*                    },*/}
-            {/*                }),*/}
-            {/*            ]}*/}
-            {/*        >*/}
-            {/*            <Input.Password prefix={<LockOutlined />} />*/}
-            {/*        </Form.Item>*/}
-            {/*    </Form>*/}
-            {/*</Modal>*/}
-
             <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
                 <Header2 />
                 <Content
@@ -335,7 +301,7 @@ export default function ProfileDetailPage() {
                                                         {user1?.role}
                                                     </dd>
                                                 </div>
-                                                
+
                                             </dl>
                                         </div>
                                     </div>
