@@ -1,4 +1,3 @@
-import {CloseSVG} from "../InputDH/close.jsx";
 import {Text, SelectBox, Img, ButtonDH, InputDH} from "./..";
 import React, {useEffect, useRef, useState} from "react";
 import NavBarBK from "@/components/NavBarBK/index.jsx";
@@ -26,6 +25,9 @@ import {ShopOutlined} from '@ant-design/icons';
 import DrawerChat from "@/components/DrawerChat/index.jsx";
 import {useGetItemsFilterQuery} from "@/services/item.service.js";
 import {setFilters} from "@/redux/item/itemSlice.js";
+import { useGetUserByIdQuery} from "../../services/user.service";
+import { setUser, setLoading, setError } from "../../redux/user/userSlice";
+
 
 export default function Header2({...props}) {
     const [searchBarValue, setSearchBarValue] = React.useState("");
@@ -36,26 +38,15 @@ export default function Header2({...props}) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [email, setEmail] = React.useState("");
-
-
-    const showDrawer = () => setIsDrawerOpen(true);
-    const closeDrawer = () => setIsDrawerOpen(false);
-    const onChange = ({target}) => setEmail(target.value);
-    const handleLogout = () => {
-        dispatch(logOut());
-        navigate("/login");
-    };
-
-    const navigateLogin = () => {
-        navigate("/login");
-    };
-    const handleNavigateToAuction = (auctionId) => {
-        navigate(`/Auction/${auctionId}`); // Điều hướng tới Auction với id
-    };
     const user = useSelector(selectCurrentUser);
     const userAPI = useSelector(selectCurrentUserAPI);
     const isLoggin = useSelector(selectIsLoggedIn);
 
+    const showDrawer = () => setIsDrawerOpen(true);
+    const closeDrawer = () => setIsDrawerOpen(false);
+    const onChange = ({target}) => setEmail(target.value);
+    const { data: userHeader, error, isLoading: isUserLoading, refetch  } = useGetUserByIdQuery();
+// console.log("userHeader ", userHeader)
     const filters = useSelector(
         (state) =>
             state.item || {keyword: "", min: 0, max: 1600000000, scIds: []}
@@ -90,6 +81,17 @@ export default function Header2({...props}) {
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
+    };
+    const handleLogout = () => {
+        dispatch(logOut());
+        navigate("/login");
+    };
+
+    const navigateLogin = () => {
+        navigate("/login");
+    };
+    const handleNavigateToAuction = (auctionId) => {
+        navigate(`/Auction/${auctionId}`); // Điều hướng tới Auction với id
     };
 
     const handleSearchSubmit = (e) => {
@@ -263,7 +265,7 @@ export default function Header2({...props}) {
                                                         variant="circular"
                                                         alt="tania andrew"
                                                         className="cursor-pointer rounded-full object-cover"
-                                                        src={userAPI.avatar}
+                                                        src={userHeader?.avatar}
                                                     />
                                                 </MenuHandler>
                                                 <MenuList>
@@ -376,10 +378,11 @@ export default function Header2({...props}) {
                                             <Text
                                                 className="font-bevietnampro text-[14px] font-bold leading-[22px] text-blue_gray-900_01">
                                         <span className="text-[13px] font-normal">
-                                            {userAPI.fullName}
+                                            {/*{userAPI.fullName}*/}
+                                            {userHeader?.fullName}
                                             <br/>
                                         </span>
-                                                <span className="text-[10px] font-medium">{userAPI.role}</span>
+                                                <span className="text-[10px] font-medium">{userHeader?.role}</span>
                                             </Text>
                                         </>
                                     ) : (

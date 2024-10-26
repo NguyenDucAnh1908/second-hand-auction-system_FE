@@ -3,12 +3,14 @@ import {
 } from "../../components";
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { EditOutlined, UploadOutlined, LockOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Layout, Modal, Form, Input, Upload, theme, message } from "antd";
+import {Breadcrumb, Button, Layout, Modal, Form, Input, Upload, theme, message, Spin} from "antd";
 import { useGetUserByIdQuery, useChangePasswordMutation, useUpdateUserMutation } from "../../services/user.service";
 import useHookUploadImage from "../../hooks/useHookUploadImage.js";
+import { setUser, setLoading, setError } from "../../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 import {toast} from "react-toastify";
 
 const { Content, Sider } = Layout;
@@ -21,47 +23,107 @@ export default function ProfileDetailPage() {
     const userRef = useRef();
     const errRef = useRef();
     const { UploadImage } = useHookUploadImage();
+    const dispatch = useDispatch();
+    const { user, loading } = useSelector((state) => state.user);
     // const [changePassword, { isLoading: isLoadingchangePassword }] = useChangePasswordMutation();
     const [changePassword, { isLoading: isLoadingChangePassword }] = useChangePasswordMutation();
     const [updateUser, { isLoading: isLoadingupdateUser }] = useUpdateUserMutation();
 
-    const { data: user1, error, isLoading: isUserLoading } = useGetUserByIdQuery();
-    console.log("DATA", user1)
+    const { data: user1, error, isLoading: isUserLoading, refetch  } = useGetUserByIdQuery();
+    // console.log("DATA", user1)
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-
+    useEffect(() => {
+        if (user) {
+            form.setFieldsValue({
+                fullName: user.fullName,
+                phoneNumber: user.phoneNumber,
+            });
+        }
+    }, [user, form]);
+    // const handleUpdateUser = async (values) => {
+    //     const { fullName, phoneNumber, avatar } = values; // Đảm bảo rằng avatar được lấy từ form
+    //
+    //     try {
+    //         let avatarUrl = ""; // Khởi tạo biến avatarUrl
+    //
+    //         // Nếu có file avatar, upload và lấy URL
+    //         if (avatar && avatar.length > 0) {
+    //             const file = avatar[0].originFileObj;
+    //             avatarUrl = await UploadImage(file);
+    //         }
+    //
+    //         // Gọi API updateUser với body yêu cầu
+    //         const response = await updateUser({
+    //             fullName,
+    //             phoneNumber,
+    //             avatarUrl: avatarUrl || user1?.avatarUrl,
+    //         }).unwrap();
+    //
+    //         // Hiển thị thông báo thành công
+    //         message.success(response.message || "User updated successfully!");
+    //         setModalPasswordOpen(false);
+    //         form.resetFields();
+    //     } catch (err) {
+    //         console.error("Update user error:", err);
+    //
+    //         const errorMessage = err?.data?.message || "Failed to update user";
+    //         message.error(errorMessage);
+    //         errRef.current?.focus();
+    //     }
+    // };
     const handleUpdateUser = async (values) => {
-        const { fullName, phoneNumber, avatar } = values; // Đảm bảo rằng avatar được lấy từ form
+        const { fullName, phoneNumber, avatar } = values; // Lấy thông tin từ form
 
         try {
+            dispatch(setLoading(true));
             let avatarUrl = ""; // Khởi tạo biến avatarUrl
 
             // Nếu có file avatar, upload và lấy URL
             if (avatar && avatar.length > 0) {
-                const file = avatar[0].originFileObj;
-                avatarUrl = await UploadImage(file);
+                const file = avatar[0].originFileObj; // Lấy file từ avatar
+                avatarUrl = await UploadImage(file); // Upload hình ảnh và lấy URL
             }
 
             // Gọi API updateUser với body yêu cầu
             const response = await updateUser({
                 fullName,
                 phoneNumber,
-                avatarUrl: avatarUrl || user1?.avatarUrl,
+                avatarUrl: avatarUrl || user1?.avatarUrl, // Sử dụng avatarUrl vừa upload hoặc giữ nguyên avatar cũ
             }).unwrap();
+
+            // Cập nhật Redux state với thông tin mới
+            dispatch(setUser(response.data));
 
             // Hiển thị thông báo thành công
             message.success(response.message || "User updated successfully!");
-            setModalPasswordOpen(false);
-            form.resetFields();
-        } catch (err) {
-            console.error("Update user error:", err);
-
-            const errorMessage = err?.data?.message || "Failed to update user";
-            message.error(errorMessage);
-            errRef.current?.focus();
+            setModal2Open(false);
+            refetch(); // Gọi lại API để lấy thông tin mới nhất
+        } catch (error) {
+            dispatch(setError(error));
+            message.error("Failed to update user.");
+        } finally {
+            dispatch(setLoading(false));
         }
     };
+
+    // const handleUpdateUser = async (values) => {
+    //     try {
+    //         dispatch(setLoading(true));
+    //         const response = await updateUser(values).unwrap();
+    //         dispatch(setUser(response.data)); // Cập nhật Redux state với thông tin mới
+    //         console.log("CHECK prodetail user: ", response.data)
+    //         message.success("User updated successfully!");
+    //         setModal2Open(false);
+    //         refetch();
+    //     } catch (error) {
+    //         dispatch(setError(error));
+    //         message.error("Failed to update user.");
+    //     } finally {
+    //         dispatch(setLoading(false));
+    //     }
+    // };
 
     const handleUpdatePassword = async (values) => {
         const { password, newPassword, confirmPassword } = values;
@@ -108,58 +170,69 @@ export default function ProfileDetailPage() {
                 onOk={() => {
                     form.submit();
                 }}
+                okText="Update"
                 onCancel={() => setModal2Open(false)}
             >
-                <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={handleUpdateUser}
-                    initialValues={{
-                        fullName: user1?.fullName || '',
-                        email: user1?.email || '',
-                    }}
-                >
-                    <Form.Item
-                        label="Full Name"
-                        name="fullName"
-                        rules={[{ required: true, message: 'Please input your full name!' }]}
+                {/* Sử dụng Spin để hiển thị loading cho toàn bộ form */}
+                <Spin spinning={isLoadingupdateUser} tip="Updating...">
+                    <Form
+                        form={form}
+                        layout="vertical"
+                        onFinish={handleUpdateUser}
+                        initialValues={{
+                            fullName: user1?.fullName || '',
+                            phoneNumber: user1?.phoneNumber || '',
+                        }}
                     >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[{ required: true, message: 'Please input your email!' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Avatar"
-                        name="avatar"
-                        valuePropName="fileList"
-                        getValueFromEvent={normFile}
-                        extra="Select an image file to upload."
-                    >
-                        <Upload
-                            name="avatar"
-                            listType="picture"
-                            beforeUpload={(file) => {
-                                const isImage = file.type.startsWith('image/');
-                                if (!isImage) {
-                                    message.error('You can only upload image files!');
-                                }
-                                return isImage; // Cho phép upload nếu là file hình
-                            }}
+                        <Form.Item
+                            label="Full Name"
+                            name="fullName"
+                            rules={[{ required: true, message: 'Please input your full name!' }]}
                         >
-                            <Button icon={<UploadOutlined />}>Upload Avatar</Button>
-                        </Upload>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                            Update
-                        </Button>
-                    </Form.Item>
-                </Form>
+                            <Input />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Phone Number"
+                            name="phoneNumber"
+                            rules={[{ required: true, message: 'Please input your Phone Number!' }]}
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Avatar"
+                            name="avatar"
+                            valuePropName="fileList"
+                            getValueFromEvent={normFile}
+                            extra="Select an image file to upload."
+                        >
+                            <Upload
+                                name="avatar"
+                                listType="picture"
+                                beforeUpload={(file) => {
+                                    const isImage = file.type.startsWith('image/');
+                                    if (!isImage) {
+                                        message.error('You can only upload image files!');
+                                    }
+                                    return isImage;
+                                }}
+                            >
+                                <Button icon={<UploadOutlined />}>Upload Avatar</Button>
+                            </Upload>
+                        </Form.Item>
+
+                        {/*<Form.Item>*/}
+                        {/*    <Button*/}
+                        {/*        type="primary"*/}
+                        {/*        htmlType="submit"*/}
+                        {/*        disabled={isLoadingupdateUser} // Vô hiệu hóa nút khi đang cập nhật*/}
+                        {/*    >*/}
+                        {/*        Update*/}
+                        {/*    </Button>*/}
+                        {/*</Form.Item>*/}
+                    </Form>
+                </Spin>
             </Modal>
 
             <Modal
@@ -301,6 +374,12 @@ export default function ProfileDetailPage() {
                                                         {user1?.role}
                                                     </dd>
                                                 </div>
+                                                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                    <dt className="text-sm font-medium text-gray-500">Phone number</dt>
+                                                    <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                        {user1?.phoneNumber}
+                                                    </dd>
+                                                </div>
 
                                             </dl>
                                         </div>
@@ -310,7 +389,7 @@ export default function ProfileDetailPage() {
                         </Content>
                     </Layout>
                 </Content>
-                <FooterBK />
+                <FooterBK/>
             </Layout>
         </>
     );

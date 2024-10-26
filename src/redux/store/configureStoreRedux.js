@@ -5,6 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 import authReducer, { setCredentials } from "../auth/authSlice";
 import itemReducer from "../item/itemSlice";
+import userReducer from "../user/userSlice";
 //import { getDefaults } from "react-i18next";
 
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     [apiSlice.reducerPath]: apiSlice.reducer,
     auth: authReducer,
     item: itemReducer,
+    user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
