@@ -131,7 +131,7 @@ export function SiderUserBK() {
                                 </ListItemPrefix>
                                 Danh sách đang đấu giá
                             </ListItem>
-                            <ListItem>
+                            <ListItem onClick={() => handleNavigate('/AuctionListCompleted')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5"/>
                                 </ListItemPrefix>

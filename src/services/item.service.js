@@ -70,6 +70,23 @@ export const itemApiSlice = apiSlice.injectEndpoints({
             query: ({id}) => `/item/auction-process/${encodeURIComponent(id)}`,
             transformResponse: (response) => response.data,
         }),
+
+        getAuctionCompletedItem: builder.query({
+            query: (paging) => ({
+                url: "item/auction-completed/user",
+                params: {
+                    page: paging.page || 0,
+                    limit: paging.limit || 10,
+                },
+            }),
+            transformResponse: (response) => {
+                return {
+                    totalPages: response.data.totalPages || 0,
+                    items: response.data.items || [],
+                    totalProducts: response.data.totalElements || 0,
+                };
+            },
+        }),
     }),
 });
 
@@ -80,4 +97,5 @@ export const {
     useGetItemDetailQuery,
     useGetAuctionProcessItemQuery,
     useGetAuctionProcessDetailQuery,
+    useGetAuctionCompletedItemQuery,
 } = itemApiSlice;

@@ -4,7 +4,7 @@ export const transactionWalletApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getTransactionWallet: builder.query({
             query: (paging) => ({
-                url: "transactionWallet/get-transaction",
+                url: "transactionWallet/get-transaction-wallet",
                 params: {
                     page: paging.page || 0,
                     limit: paging.limit || 10,
