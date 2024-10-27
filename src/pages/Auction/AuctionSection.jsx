@@ -1,22 +1,25 @@
 import {Text, Img, Heading, ButtonDH} from "../../components";
 import UserProfileImage from "../../components/UserProfileImage";
 import React, {Suspense, useState} from "react";
-import {Modal, Statistic} from "antd";
+import {Checkbox, message, Modal, Statistic} from "antd";
 import {Rate} from "antd";
 import BidForm from "../../components/BidForm";
 import ImageGallery from "react-image-gallery";
 import 'react-image-gallery/styles/css/image-gallery.css';
-//import "./index.css"
-const thumbnailList = [
-    {userImage: "images/img_image_75.png"},
-    {userImage: "images/img_image_75.png"},
-    {userImage: "images/img_image_75.png"},
-];
+import {useSelector} from "react-redux";
+import {selectIsLoggedIn} from "@/redux/auth/authSlice.js";
+import {useNavigate} from "react-router-dom";
+import {useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery} from "@/services/auctionRegistrations.service.js";
+import {Button} from "@material-tailwind/react";
 
 export default function AuctionSection({dataItem, isSuccessItemDt}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedAuctionId, setSelectedAuctionId] = useState(dataItem.auction.auction_id);
+    const isLoggedIn = useSelector(selectIsLoggedIn);
+    const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
     const auctionEndTime = dataItem.auction?.end_time || null;
+    console.log("AUCTION DETAIL: ", dataItem)
     let deadline = null;
     if (auctionEndDate && auctionEndTime) {
         try {
@@ -30,10 +33,38 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
             console.error("Error parsing date:", error);
         }
     }
+    const {
+        data: checkRegister,
+        isLoading: isLoadingCheckRegister,
+        isError: isErrorCheckRegister,
+        error: errorCheckRegister
+    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? {auctionId: selectedAuctionId} : null, {
+        skip: !selectedAuctionId,
+    });
+    const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.registration_status === "CONFIRMED"
     // *
+    const [AuctionRegister, {isLoading: isLoadingAuctionRegister, error}] = useAuctionRegisterMutation();
+    const handleSubmitAuctionRegister = async (e) => {
+        e.preventDefault();
+
+        try {
+            const auctionData = {
+                auction_id: product.itemId, // Giả sử product.itemId là auction_id
+            };
+            const response = await AuctionRegister(auctionData).unwrap();
+            message.success(response.message || "Register auction successfully!");
+        } catch (error) {
+            message.error("Failed to register auction.");
+        }
+    };
     const {Countdown} = Statistic;
     const showModal = () => {
-        setIsModalOpen(true);
+        if (!isLoggedIn) {
+            message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
+            navigate("/login");
+        } else {
+            setIsModalOpen(true);
+        }
     };
     const handleOk = () => {
         setIsModalOpen(false);
@@ -60,32 +91,66 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
         thumbnail: img.image,
         // description: img.description,
     })) || [];
-    // const images = [
-    //     {
-    //         original: '',
-    //         thumbnail: '',
-    //         description: '',
-    //     }
-    // ];
-
     return (
         <>
-
+            {/*<Modal*/}
+            {/*    title="Đặt Giá Thầu"*/}
+            {/*    open={isModalOpen}*/}
+            {/*    onCancel={handleCancel} // Vẫn giữ onCancel để đóng modal khi người dùng nhấn ra ngoài modal*/}
+            {/*    centered*/}
+            {/*    bodyStyle={{*/}
+            {/*        display: "flex",*/}
+            {/*        justifyContent: "center",*/}
+            {/*        alignItems: "center",*/}
+            {/*    }}*/}
+            {/*    footer={null} // Xóa các nút OK và Cancel*/}
+            {/*>*/}
+            {/*    <div style={{width: "100%", textAlign: "center"}}>*/}
+            {/*        <BidForm/>*/}
+            {/*    </div>*/}
+            {/*</Modal>*/}
             <Modal
-                title="Đặt Giá Thầu"
+                title={isRegistered ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
                 open={isModalOpen}
-                onCancel={handleCancel} // Vẫn giữ onCancel để đóng modal khi người dùng nhấn ra ngoài modal
+                onCancel={handleCancel}
                 centered
-                bodyStyle={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-                footer={null} // Xóa các nút OK và Cancel
+                footer={null}
             >
-                <div style={{width: "100%", textAlign: "center"}}>
-                    <BidForm/>
-                </div>
+                {isRegistered ? (
+                    <div style={{ width: "100%", textAlign: "center" }}>
+                        <BidForm />
+                    </div>
+                ) : (
+                    <form>
+                        <div className="mt-4">
+                            <div className="flex items-center gap-2">
+                                <Checkbox
+                                    id="agreement"
+                                    className="h-5 w-5"
+                                />
+                                <span className="text-sm leading-5 text-gray-700">
+                                    Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
+                                </span>
+                            </div>
+                        </div>
+                        {/* Submit Button */}
+                        <div className="mt-4">
+                            <button
+                                type="submit"
+                                className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-indigo-200 focus:shadow-outline-indigo active:bg-indigo-200 transition duration-150 ease-in-out"
+                                onClick={handleSubmitAuctionRegister} // Define this function to handle registration
+                            >
+                                ĐĂNG KÝ THAM GIA ĐẤU GIÁ
+                            </button>
+                            <Button
+                                onClick={handleCancel}
+                                className="mt-4 w-full text-gray-600 hover:text-gray-800"
+                            >
+                                Đóng
+                            </Button>
+                        </div>
+                    </form>
+                )}
             </Modal>
 
             <Modal
@@ -238,7 +303,7 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
                                 size="xl"
                                 className="self-stretch rounded-[26px] border border-solid border-green-700 px-[33px] !text-gray-100_01 sm:px-5 transition-colors duration-300 hover:bg-green-500 hover:text-white"
                             >
-                                Đặt giá thầu
+                                {isRegistered ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
                             </ButtonDH>
 
                         </div>

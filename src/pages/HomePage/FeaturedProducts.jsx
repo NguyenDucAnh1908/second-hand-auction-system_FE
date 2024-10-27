@@ -10,6 +10,8 @@ import Slider from 'react-slick';
 export default function FeaturedProducts() {
     const sliderRef = React.useRef(null);
     const {data = {}, isLoading, isError, error} = useGetFeatureItemsQuery();
+
+    // console.log("checkRegister ", checkRegister)
     if (isLoading) return <p>Đang tải dữ liệu...</p>;
     if (isError) return <p>Có lỗi xảy ra khi tải dữ liệu: {error.message}</p>;
     const sliderSettings = {

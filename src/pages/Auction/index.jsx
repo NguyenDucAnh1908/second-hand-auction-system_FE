@@ -23,9 +23,6 @@ import FooterBK from "../../components/FooterBK/index.jsx";
 import {useGetItemDetailQuery} from "@/services/item.service.js";
 import { useParams } from "react-router-dom";
 
-
-
-
 export default function AuctionPage() {
   const [sliderState, setSliderState] = React.useState(0);
   const sliderRef = React.useRef(null);

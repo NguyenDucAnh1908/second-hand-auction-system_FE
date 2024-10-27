@@ -1,16 +1,23 @@
 import {Text, Heading, RatingBar, Img} from "./..";
 import React, {useState} from "react";
 import {Button, Input} from "@material-tailwind/react";
-import {Image, Statistic, Col, Row, Checkbox, Modal} from 'antd';
+import {Image, Statistic, Col, Row, Checkbox, Modal, message} from 'antd';
 import {useNavigate} from "react-router-dom";
+import {useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery} from "@/services/auctionRegistrations.service.js";
+import {selectIsLoggedIn} from "../../redux/auth/authSlice";
+import {setCredentials} from "@/redux/auth/authSlice.js";
+import {setError, setLoading} from "@/redux/user/userSlice.js";
+import {useSelector} from "react-redux";
 
 export default function ProductDetails21({product}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedAuctionId, setSelectedAuctionId] = useState(product.itemId);
     const navigate = useNavigate();
+    const isLoggedIn = useSelector(selectIsLoggedIn);
     const auctionEndDate = product.auction?.endDate || null;
     const auctionEndTime = product.auction?.end_time || null;
     const handleNavigateToAuction = (auctionId) => {
-        navigate(`/Auction/${auctionId}`); // Điều hướng tới Auction với id
+        navigate(`/Auction/${auctionId}`);
     };
     let deadline = null;
     if (auctionEndDate && auctionEndTime) {
@@ -25,10 +32,40 @@ export default function ProductDetails21({product}) {
             console.error("Error parsing date:", error);
         }
     }
+    const {
+        data: checkRegister,
+        isLoading: isLoadingCheckRegister,
+        isError: isErrorCheckRegister,
+        error: errorCheckRegister
+    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? {auctionId: selectedAuctionId} : null, {
+        skip: !selectedAuctionId,
+    });
 
+    const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.registration_status === "CONFIRMED"
+    // console.log("checkRegister", checkRegister)
+    const [AuctionRegister, {isLoading: isLoadingAuctionRegister, error}] = useAuctionRegisterMutation();
+    const handleSubmitAuctionRegister = async (e) => {
+        e.preventDefault();
+
+        try {
+            const auctionData = {
+                auction_id: product.itemId, // Giả sử product.itemId là auction_id
+            };
+            const response = await AuctionRegister(auctionData).unwrap();
+            navigate(`/Auction/${product.itemId}`);
+            message.success(response.message || "Register auction successfully!");
+        } catch (error) {
+            message.error("Failed to register auction.");
+        }
+    };
     const {Countdown} = Statistic;
     const showModal = () => {
-        setIsModalOpen(true);
+        if (!isLoggedIn) {
+            message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
+            navigate("/login");
+        } else {
+            setIsModalOpen(true);
+        }
     };
 
     const handleOk = () => {
@@ -42,71 +79,6 @@ export default function ProductDetails21({product}) {
         <>
             <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
                 <form>
-                    <div className="mb-4">
-                        <Heading
-                            size="headinglg"
-                            as="h1"
-                            className="text-xl font-semibold text-gray-900 text-center"
-                        >
-                            Đăng ký tham gia đấu giá
-                        </Heading>
-                    </div>
-                    <div>
-                        <label htmlFor="deposit"
-                               className="block text-sm font-medium text-gray-700">
-                            Tiền cọc
-                        </label>
-                        <div className="mt-1">
-                            <Input
-                                id="deposit"
-                                name="deposit"
-                                type="text"
-                                placeholder="Nhập số tiền cọc"
-                                required
-                                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm"
-                            />
-                        </div>
-                    </div>
-                    <div className="mt-4">
-                        <label htmlFor="content"
-                               className="block text-sm font-medium text-gray-700">
-                            Nội dung
-                        </label>
-                        <div className="mt-1">
-                            <Input
-                                id="content"
-                                name="content"
-                                type="text"
-                                placeholder="Nội dung đấu giá"
-                                // value={formData.content}
-                                // onChange={handleChange}
-                                required
-                                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Total Amount Field */}
-                    <div className="mt-4">
-                        <label htmlFor="total"
-                               className="block text-sm font-medium text-gray-700">
-                            Tổng tiền
-                        </label>
-                        <div className="mt-1">
-                            <Input
-                                id="total"
-                                name="total"
-                                type="text"
-                                placeholder="Nhập tổng tiền"
-                                // value={formData.total}
-                                // onChange={handleChange}
-                                required
-                                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Agreement Checkbox */}
                     <div className="mt-4">
                         <div className="flex items-center gap-2">
                             <Checkbox
@@ -123,6 +95,7 @@ export default function ProductDetails21({product}) {
                         <button
                             type="submit"
                             className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-indigo-200 focus:shadow-outline-indigo active:bg-indigo-200 transition duration-150 ease-in-out"
+                            onClick={handleSubmitAuctionRegister}
                         >
                             ĐĂNG KÝ THAM GIA ĐẤU GIÁ
                         </button>
@@ -135,24 +108,10 @@ export default function ProductDetails21({product}) {
                     </div>
                 </form>
             </Modal>
-
             <div
 
                 className={`flex flex-col items-center w-full border-gray-200 border border-solid bg-bg-white rounded-lg overflow-hidden`}
             >
-                {/*<div className="relative self-stretch bg-bg-white px-3 py-3 sm:py-5">*/}
-                {/*    <Image*/}
-                {/*        //src="https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f"*/}
-                {/*        src={product.thumbnail}*/}
-                {/*        alt="Fashion Image"*/}
-                {/*        className="h-[230px] w-[230px] object-cover rounded-lg"*/}
-                {/*    />*/}
-                {/*    <div className="absolute top-2 right-2 bg-pink-400 text-white text-sm px-2 py-1 rounded">*/}
-                {/*        /!*Auction ends in {auctionEndTime}*!/*/}
-                {/*        <Countdown title="Auction ends in" value={deadline} format="D Ngay H gio m phut s giay"/>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-
                 <div className="relative self-stretch bg-bg-white px-3 py-3 sm:py-5">
                     <div className="w-[230px] h-[300px]">
                         <Image
@@ -161,9 +120,6 @@ export default function ProductDetails21({product}) {
                             className="w-full h-full object-cover rounded-lg"
                         />
                     </div>
-                    {/*<div className="absolute top-2 right-2 bg-pink-400 text-white text-sm px-2 py-1 rounded">*/}
-                    {/*    <Countdown title="Auction ends in" value={deadline} format="D Ngày H giờ m phút s giây"/>*/}
-                    {/*</div>*/}
                     <div
                         className="absolute top-2 right-2 bg-pink-300 bg-opacity-70 text-white px-1.5 py-0.5 rounded-md ">
                         <Countdown
@@ -226,31 +182,27 @@ export default function ProductDetails21({product}) {
                             </a>
                         </Heading>
                     </div>
-                    <Button
-                        ripple={false}
-                        fullWidth={true}
-                        className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
-                        // onClick={onBidClick}
-                        onClick={showModal}
-                    >
-                        Tham gia đấu giá
-                    </Button>
+                    {isRegistered ? (
+                        <Button
+                            ripple={false}
+                            fullWidth
+                            className="bg-gray-500 text-white"
+                            disabled
+                        >
+                            Đã tham gia đấu giá
+                        </Button>
+                    ) : (
+                        <Button
+                            ripple={false}
+                            fullWidth
+                            className="bg-blue-gray-900/10 text-blue-gray-900 hover:scale-105"
+                            onClick={showModal}
+                        >
+                            Tham gia đấu giá
+                        </Button>
+                    )}
                 </div>
             </div>
         </>
     );
-}
-
-function calculateAuctionEndTime(startDate, endDate) {
-    const now = new Date();
-    const end = new Date(endDate);
-    const remainingTime = end - now;
-
-    if (remainingTime < 0) return "Đã kết thúc"; // If auction ended
-
-    const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-
-    return `${hours}h:${minutes}m:${seconds}s`; // Return remaining time
 }

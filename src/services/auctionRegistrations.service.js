@@ -19,10 +19,28 @@ export const auctionRegistrationsApiSlice = apiSlice.injectEndpoints({
             },
         }),
         getAuctionRegisterDetail: builder.query({
-            query: ({ id }) => `/auction-register/detail/${encodeURIComponent(id)}`,
+            query: ({id}) => `/auction-register/detail/${encodeURIComponent(id)}`,
             transformResponse: (response) => response.data,
+        }),
+
+        getCheckAuctionRegister: builder.query({
+            query: ({auctionId}) => `/auction-register/check-registration/${encodeURIComponent(auctionId)}`,
+            transformResponse: (response) => response.data,
+        }),
+
+        auctionRegister: builder.mutation({
+            query: (credentials) => ({
+                url: "/auction-register",
+                method: "POST",
+                body: {...credentials},
+            }),
         }),
     }),
 });
 
-export const {useGetAuctionRegisterQuery, useGetAuctionRegisterDetailQuery} = auctionRegistrationsApiSlice;
+export const {
+    useGetAuctionRegisterQuery,
+    useGetAuctionRegisterDetailQuery,
+    useGetCheckAuctionRegisterQuery,
+    useAuctionRegisterMutation
+} = auctionRegistrationsApiSlice;
