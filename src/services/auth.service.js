@@ -23,7 +23,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 url: `/auth/verify?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`,
                 method: "POST",
             }),
-        })
+        }),
+
+        forgotPasswordUser: builder.mutation({
+            query: ({email}) => ({
+                url: `/user/forgot-password?email=${encodeURIComponent(email)}`,
+                method: "PUT",
+            }),
+        }),
     }),
 });
 
@@ -31,4 +38,5 @@ export const {
     useLoginMutation,
     useRegisterUserMutation,
     useVerifyUserMutation,
+    useForgotPasswordUserMutation,
 } = authApiSlice;
