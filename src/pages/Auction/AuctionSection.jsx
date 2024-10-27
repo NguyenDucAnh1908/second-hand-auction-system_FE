@@ -19,7 +19,7 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
     const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
     const auctionEndTime = dataItem.auction?.end_time || null;
-    console.log("AUCTION DETAIL: ", dataItem)
+    //console.log("AUCTION DETAIL: ", dataItem)
     let deadline = null;
     if (auctionEndDate && auctionEndTime) {
         try {

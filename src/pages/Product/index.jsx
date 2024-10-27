@@ -15,7 +15,20 @@ import FooterBK from "../../components/FooterBK";
 import Header2 from "../../components/Header2";
 import ProductSection from "./ProductSection";
 import React, {useState} from "react";
-import {Collapse, Checkbox, Slider, InputNumber, Breadcrumb, Layout, theme, Modal, Button, Tag} from "antd";
+import {
+    Collapse,
+    Checkbox,
+    Slider,
+    InputNumber,
+    Breadcrumb,
+    Layout,
+    theme,
+    Modal,
+    Button,
+    Tag,
+    Spin,
+    Empty
+} from "antd";
 import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
 import {Input} from "@material-tailwind/react";
 import {CloseCircleOutlined} from "@ant-design/icons";
@@ -51,7 +64,7 @@ export default function ProductPage() {
     } = useGetItemsFilterQuery(filters);
 
     const handleFilterChange = (newFilters) => {
-        const updatedFilters = { ...filters, ...newFilters };
+        const updatedFilters = {...filters, ...newFilters};
         if (newFilters.page !== undefined) {
             updatedFilters.page = newFilters.page - 1;
         }
@@ -65,26 +78,26 @@ export default function ProductPage() {
         isFetching,
         isSuccess,
     } = useGetCategoriesQuery();
-    if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
+    // if (isLoading) return <p>Loading...</p>;
+    // if (error) return <p>Error: {error.message}</p>;
 
     const onSliderChange = (value) => {
         setPriceRange(value);
-        handleFilterChange({ min: value[0], max: value[1] });
+        handleFilterChange({min: value[0], max: value[1]});
     };
 
     // Hàm thay đổi giá trị đầu vào cho giá thấp
     const onLowPriceChange = (value) => {
         const newRange = [value, priceRange[1]];
         setPriceRange(newRange);
-        handleFilterChange({ min: value });
+        handleFilterChange({min: value});
     };
 
     // Hàm thay đổi giá trị đầu vào cho giá cao
     const onHighPriceChange = (value) => {
         const newRange = [priceRange[0], value];
         setPriceRange(newRange);
-        handleFilterChange({ max: value });
+        handleFilterChange({max: value});
     };
 
     // const onSliderChange = (value) => {
@@ -197,35 +210,41 @@ export default function ProductPage() {
                                 </div>
 
                                 <div className="w-full overflow-y-auto max-h-[400px]">
-                                    <Collapse defaultActiveKey={["1"]} ghost>
-                                        {categories.map((category) => (
-                                            <Panel
-                                                key={category.categoryId}
-                                                header={
-                                                    <h2 className="text-lg font-semibold">
-                                                        {category.categoryName}
-                                                    </h2>
-                                                }
-                                            >
-                                                <div className="flex flex-col">
-                                                    {category.subCategory.map((sub) => (
-                                                        <div
-                                                            key={sub.sc_id}
-                                                            className="flex items-center gap-2 w-[50%]"
-                                                        >
-                                                            <Checkbox
-                                                                checked={selectedSubCategoryIds.includes(sub.sc_id)}
-                                                                onChange={(e) =>
-                                                                    handleBrandChange(sub.sc_id, e.target.checked)
-                                                                }
-                                                            />
-                                                            <span>{sub.sub_category}</span>
+                                    {error ? (
+                                        <Empty description={`Error: ${error.message || "Failed to load categories."}`}/>
+                                    ) : (
+                                        <Spin spinning={isLoading} tip="Loading...">
+                                            <Collapse defaultActiveKey={["1"]} ghost>
+                                                {categories.map((category) => (
+                                                    <Panel
+                                                        key={category.categoryId}
+                                                        header={
+                                                            <h2 className="text-lg font-semibold">
+                                                                {category.categoryName}
+                                                            </h2>
+                                                        }
+                                                    >
+                                                        <div className="flex flex-col">
+                                                            {category.subCategory.map((sub) => (
+                                                                <div
+                                                                    key={sub.sc_id}
+                                                                    className="flex items-center gap-2 w-[50%]"
+                                                                >
+                                                                    <Checkbox
+                                                                        checked={selectedSubCategoryIds.includes(sub.sc_id)}
+                                                                        onChange={(e) =>
+                                                                            handleBrandChange(sub.sc_id, e.target.checked)
+                                                                        }
+                                                                    />
+                                                                    <span>{sub.sub_category}</span>
+                                                                </div>
+                                                            ))}
                                                         </div>
-                                                    ))}
-                                                </div>
-                                            </Panel>
-                                        ))}
-                                    </Collapse>
+                                                    </Panel>
+                                                ))}
+                                            </Collapse>
+                                        </Spin>
+                                    )}
                                 </div>
                                 <div className="h-px w-[72%] bg-gray-200"/>
 
@@ -482,28 +501,31 @@ export default function ProductPage() {
                                             {/*    <option value="high-to-low">Giá cao đến thấp</option>*/}
                                             {/*</select>*/}
                                         </div>
-
-                                        <a>
-                                            <div
-                                                className="mx-7 mt-5 grid grid-cols-4 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
-                                                {data?.item && data.item.length > 0 ? (
-                                                    data.item.map((item, index) => (
-                                                        <div key={`itemsGrid-${index}`}>
-                                                            <ProductDetails21 product={item} onBidClick={showModal}/>
-                                                        </div>
-                                                    ))
-                                                ) : (
-                                                    <div>No items found.</div> // Thông báo khi không có sản phẩm
-                                                )}
-                                            </div>
-                                        </a>
-
-
+                                        {errorItem ? (
+                                            <Empty
+                                                description={`Error: ${errorItem.message || "Failed to load categories."}`}/>
+                                        ) : (
+                                            <Spin spinning={loadingItem} tip="Loading...">
+                                                <div
+                                                    className="mx-7 mt-5 grid grid-cols-4 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
+                                                    {data?.item && data.item.length > 0 ? (
+                                                        data.item.map((item, index) => (
+                                                            <div key={`itemsGrid-${index}`}>
+                                                                <ProductDetails21 product={item}
+                                                                                  onBidClick={showModal}/>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <Empty description="items" />
+                                                    )}
+                                                </div>
+                                            </Spin>
+                                        )}
                                         <div className="my-10">
                                             <Pagination
                                                 currentPage={filters.page + 1}
                                                 totalPages={data ? data.totalPages : 1}
-                                                onPageChange={(page) => handleFilterChange({ page })}
+                                                onPageChange={(page) => handleFilterChange({page})}
                                             />
                                         </div>
                                     </div>

@@ -5,15 +5,16 @@ import ProductDetails31 from "../../components/ProductDetails31/index.jsx";
 import {IconButton} from "@material-tailwind/react";
 import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
 import {useGetFeatureItemsQuery} from "../../services/item.service";
+//import {useGetCheckAuctionRegisterQuery} from "../../services/auctionRegistrations.service";
 import Slider from 'react-slick';
+import {Spin} from "antd";
 
 export default function FeaturedProducts() {
     const sliderRef = React.useRef(null);
-    const {data = {}, isLoading, isError, error} = useGetFeatureItemsQuery();
+    const { data = [], isLoading, isError, error } = useGetFeatureItemsQuery();
 
-    // console.log("checkRegister ", checkRegister)
-    if (isLoading) return <p>Đang tải dữ liệu...</p>;
     if (isError) return <p>Có lỗi xảy ra khi tải dữ liệu: {error.message}</p>;
+
     const sliderSettings = {
         className: "center",
         centerMode: true,
@@ -25,23 +26,23 @@ export default function FeaturedProducts() {
         autoplaySpeed: 3000,
         responsive: [
             {
-                breakpoint: 1024, // Trên màn hình lớn
-                settings: {slidesToShow: 3, centerPadding: "50px"},
+                breakpoint: 1024,
+                settings: { slidesToShow: 3, centerPadding: "50px" },
             },
             {
-                breakpoint: 768, // Trên màn hình trung bình
-                settings: {slidesToShow: 2, centerPadding: "30px"},
+                breakpoint: 768,
+                settings: { slidesToShow: 2, centerPadding: "30px" },
             },
             {
-                breakpoint: 480, // Trên màn hình nhỏ
-                settings: {slidesToShow: 1, centerPadding: "10px"},
+                breakpoint: 480,
+                settings: { slidesToShow: 1, centerPadding: "10px" },
             },
         ],
     };
 
     return (
         <div className="w-full overflow-hidden">
-            {/* Slider ngang */}
+            {/* Tiêu đề slider */}
             <Heading
                 size="text7xl"
                 as="h2"
@@ -49,16 +50,20 @@ export default function FeaturedProducts() {
             >
                 Sản phẩm nối bật
             </Heading>
-            <Slider {...sliderSettings} ref={sliderRef}>
-                {data.map((item) => (
-                    <div key={item.id} className="px-2">
-                        <ProductDetails21
-                            product={item}
-                            className="border border-gray-200 bg-white p-3 rounded-lg"
-                        />
-                    </div>
-                ))}
-            </Slider>
+
+            <Spin spinning={isLoading} tip="Đang tải...">
+                <Slider {...sliderSettings} ref={sliderRef}>
+                    {data.map((item) => (
+                        <div key={item.id} className="px-2">
+                            <ProductDetails21
+                                product={item}
+                                className="border border-gray-200 bg-white p-3 rounded-lg"
+                            />
+                        </div>
+                    ))}
+                </Slider>
+            </Spin>
         </div>
     );
 }
+
