@@ -13,11 +13,47 @@ export const addressApiSlice = apiSlice.injectEndpoints({
 
     // API lấy tất cả địa chỉ theo userId
     getUserAddress: builder.query({
-      query: (userId) => `/address/user/${userId}`, // Mặc định là GET
+      query: (userId) => `/address/user`, // Mặc định là GET
     }),
+
+
+    //Delete
+    deleteAddress: builder.mutation({
+      query: (addressId) => ({
+        url: `/address/${addressId}`,
+        method: "DELETE",
+      }),
+    }),
+
+
+    // API cập nhật địa chỉ
+    updateAddress: builder.mutation({
+      query: ({ addressId, addressData }) => ({
+        url: `/address/${addressId}`,
+        method: "PUT",
+        body: addressData,
+      }),
+    }),
+
+
+    // Assuming this is in your apiSlice file
+    setStatus: builder.mutation({
+      query: (addressId) => ({
+        url: `/address/${addressId}/status`,
+        method: "PATCH", // Use PATCH method
+      }),
+    }),
+
+
+
   }),
 });
 
 // Xuất các hook
-export const { useCreateAddressMutation } = addressApiSlice;
+export const { useCreateAddressMutation,
+  useDeleteAddressMutation,
+  useUpdateAddressMutation,
+  useSetStatusMutation }
+  = addressApiSlice;
+
 export const { useGetUserAddressQuery } = addressApiSlice;

@@ -1,4 +1,3 @@
-
 import { InputDH, Img, Heading, ButtonDH } from "../../components";
 import { CloseSVG } from "../../components/InputDH/close.jsx";
 import Header2 from "../../components/Header2";
@@ -10,6 +9,8 @@ import { FormUpdateAddress } from "./FormUpdateAddress.jsx";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { useAddress } from "./hook/useAddress.js";
 import { useFetchUserAddresses } from "./hook/useFetchUserAddresses";
+import { useDeleteAddressMutation, useSetStatusMutation } from "../../services/address.service.js";
+import axios from 'axios';
 
 
 const { Content, Sider } = Layout;
@@ -27,6 +28,7 @@ export default function AddressPage() {
     const [selectedAddress, setSelectedAddress] = useState(null);
     const { addAddress } = useAddress();
     const { addresses } = useFetchUserAddresses();
+    const [setStatus] = useSetStatusMutation();
 
 
 
@@ -88,6 +90,32 @@ export default function AddressPage() {
             message.error(`Lỗi: ${result.error}`);
         }
     };
+    const [deleteAddress] = useDeleteAddressMutation();
+
+    const handleDeleteAddress = async (addressId) => {
+        try {
+            await deleteAddress(addressId).unwrap();
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to delete address: ', error);
+        }
+    };
+
+
+
+    const handleStatusChange = async (addressId) => {
+        console.log("Updating status for addressId: ", addressId); // Log giá trị addressId
+        try {
+            await setStatus(addressId).unwrap(); // Gọi hàm setStatus với addressId
+            message.success("Trạng thái đã được cập nhật thành công!");
+        } catch (error) {
+            message.error("Cập nhật trạng thái không thành công!");
+            console.error("Error updating status: ", error);
+        }
+    };
+
+
+
 
 
     return (
@@ -217,58 +245,50 @@ export default function AddressPage() {
                                             <Suspense fallback={<div>Loading feed...</div>}>
                                                 {addresses.map((d, index) => (
                                                     <div
-                                                        className="bg-white hover:bg-green-400 transition-colors duration-300 rounded-lg shadow-md border border-gray-300 p-5 flex-1 min-w-[250px] max-w-[300px] flex flex-col"
+                                                        className={`${d.status ? "bg-green-200" : "bg-white"
+                                                            } hover:bg-green-400 transition-colors duration-300 rounded-lg shadow-md border border-gray-300 p-5 flex-1 min-w-[250px] max-w-[300px] flex flex-col relative`}
                                                         key={`addressesList${index}`}
                                                     >
+                                                        {d.status && (
+                                                            <div className="absolute top-2 right-2 text-sm text-green-800 font-semibold">
+                                                                Địa chỉ mặc định
+                                                            </div>
+                                                        )}
                                                         <div className="flex items-center">
                                                             <Popconfirm
-                                                                title="Delete the task"
-                                                                description="Are you sure to delete this task?"
-                                                                onConfirm={confirm}
-                                                                onCancel={cancel}
-                                                                okText="Yes"
-                                                                cancelText="No"
+                                                                title="Chọn địa chỉ mặc định?"
+                                                                onConfirm={() => handleStatusChange(d.addressId)}
+                                                                onCancel={() => message.info("Hủy bỏ")}
+                                                                okText="Chọn"
+                                                                cancelText="Không"
                                                             >
-                                                                <Radio
-                                                                    value={index}
-                                                                    checked={selectedAddress === index}
-                                                                    onChange={() => handleRadioChange(index)}
-                                                                />
+                                                                <Radio checked={d.status} />
                                                             </Popconfirm>
                                                         </div>
                                                         <div className="text-gray-600">
-                                                            {d.street_address}
-                                                        </div>
-                                                        <div className="text-gray-600">
-                                                            {d.ward_name}
+                                                            {d.street_address}, {d.ward_name}
                                                         </div>
                                                         <div className="text-gray-600">
                                                             {d.district_name}, {d.province_name}
                                                         </div>
                                                         <div className="flex justify-between mt-2">
-                                                            <Button
-                                                                type="primary"
-                                                                onClick={showUpdateAddress}
-                                                                className="text-white-a700_4c-500"
-                                                            >
-                                                                Update
-                                                            </Button>
                                                             <Popconfirm
-                                                                title="Delete the task"
-                                                                description="Are you sure to delete this task?"
-                                                                onConfirm={confirm}
+                                                                title="Xóa địa chỉ?"
+                                                                description="Bạn có chắc chắn xóa địa chỉ này?"
+                                                                onConfirm={() => handleDeleteAddress(d.addressId)}
                                                                 onCancel={cancel}
-                                                                okText="Yes"
-                                                                cancelText="No"
+                                                                okText="Xóa"
+                                                                cancelText="Không"
                                                             >
                                                                 <button className="text-red-500">
-                                                                    Delete
+                                                                    Xóa địa chỉ
                                                                 </button>
                                                             </Popconfirm>
                                                         </div>
                                                     </div>
                                                 ))}
                                             </Suspense>
+
                                         </div>
                                         <div className="relative mt-[-2px] h-px bg-gray-100" />
                                     </div>
