@@ -196,14 +196,14 @@ export default function ProductInfo1() {
         >
             <div
                 className="mx-7 mt-5 grid grid-cols-4 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
-                <Suspense fallback={<div>Loading feed...</div>}>
-                    {fashionItemsGrid.map((item, index) => (
-                        <div key={"itemsGrid" + index}
-                        >
-                            <ProductDetails21 {...item} />
-                        </div>
-                    ))}
-                </Suspense>
+                {/*<Suspense fallback={<div>Loading feed...</div>}>*/}
+                {/*    {fashionItemsGrid.map((item, index) => (*/}
+                {/*        <div key={"itemsGrid" + index}*/}
+                {/*        >*/}
+                {/*            <ProductDetails21 {...item} />*/}
+                {/*        </div>*/}
+                {/*    ))}*/}
+                {/*</Suspense>*/}
             </div>
             <div className="flex justify-center items-center mt-4">
                 <Pagination/>
