@@ -6,8 +6,8 @@ export const useAddress = () => {
     const addAddress = async (addressData) => {
         try {
             const processedAddressData = {
-                ...addressData,
-                userId: 1, 
+                ...addressData
+              
             };
             await createAddress(processedAddressData).unwrap();
             return { success: true };
@@ -17,9 +17,11 @@ export const useAddress = () => {
         }
     };
 
+    const errorMessage = isError ? "Đã đạt tối đa 6 đia chỉ" : "";
+
     return {
         addAddress,
         isLoading,
-        isError,
+        isError: errorMessage,
     };
 };
