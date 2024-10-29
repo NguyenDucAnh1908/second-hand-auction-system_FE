@@ -1,4 +1,5 @@
-import { TextArea, Heading, Button, CheckBox } from "../../components";
+import { Button } from "@material-tailwind/react";
+import { TextArea, Heading,  CheckBox } from "../../components";
 import React from "react";
 
 export default function VerificationSection() {
@@ -20,6 +21,7 @@ export default function VerificationSection() {
                 name="ID Checkbox"
                 label="Xác minh giấy tờ tùy thân hợp lệ."
                 id="IDCheckbox"
+                
                 className="gap-3 text-[25px] text-black-900"
               />
               <CheckBox

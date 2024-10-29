@@ -18,6 +18,7 @@ import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
 import ManagementTransactions from "./pages/Admin/ManagementTransactions/index.jsx";
 import ManagementWindrawOfSeller from "./pages/Admin/ManageWithdraw/index.jsx";
 import Payment from "./pages/Admin/Payment/index.jsx";
+import ManageKYC from "./pages/Admin/ManageKYC/index.jsx";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -76,7 +77,7 @@ export const routesAdmin = [
       {
         icon: <TableCellsIcon {...icon} />,
         name: "Duyệt KYC Staffnpm",
-        path: "/KiemduyetStaffPage",
+        path: "/KiemduyetStaffPage/:id",
         element: <KiemduyetStaffPage />,
       },
       {
@@ -90,6 +91,11 @@ export const routesAdmin = [
         name: "Đơn rút tiền sellers",
         path: "/managementWithdrawOfSeller",
         element: <ManagementWindrawOfSeller />,
+      },   {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Danh sach KYC",
+        path: "/managementKYC",
+        element: <ManageKYC />,
       },
       {
         icon: <InformationCircleIcon {...icon} />,

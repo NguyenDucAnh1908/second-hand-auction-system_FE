@@ -1,4 +1,4 @@
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import {
     ButtonDH,
     Img,
@@ -15,21 +15,21 @@ import UserProfile from "../../components/UserProfile";
 import UserStatistics from "../../components/UserStatistics";
 import AuctionSection from "./AuctionSection";
 import RecommendedProductsSection from "./RecommendedProductsSection";
-import React, {Suspense, useEffect, useState} from "react";
-import {Avatar, Empty, Spin} from "antd";
-import {AntDesignOutlined} from "@ant-design/icons";
-import {Flex, Rate, Typography, Tabs} from "antd";
+import React, { Suspense, useEffect, useState } from "react";
+import { Avatar, Empty, Spin } from "antd";
+import { AntDesignOutlined } from "@ant-design/icons";
+import { Flex, Rate, Typography, Tabs } from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {useGetItemDetailQuery} from "@/services/item.service.js";
-import {useParams} from "react-router-dom";
+import { useGetItemDetailQuery } from "@/services/item.service.js";
+import { useParams } from "react-router-dom";
 
 export default function AuctionPage() {
     const [sliderState, setSliderState] = React.useState(0);
     const sliderRef = React.useRef(null);
     const [expanded, setExpanded] = useState(false);
     const [activeTabKey, setActiveTabKey] = useState("1");
-    const {id} = useParams();
-    const {data, error, isLoading, isSuccess} = useGetItemDetailQuery({id});
+    const { id } = useParams();
+    const { data, error, isLoading, isSuccess } = useGetItemDetailQuery({ id });
     const handleToggle = () => {
         setExpanded((prev) => !prev);
     };
@@ -53,22 +53,22 @@ export default function AuctionPage() {
                         Đặc điểm
                     </Heading>
                     <div className="flex items-start self-stretch md:flex-col">
-                        <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01"/>
+                        <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
                         <Heading
                             as="p"
                             className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
                         >
                             <>
                                 {data?.itemDescription}
-                                <br/>
+                                <br />
                                 {data?.itemDescription}
-                                <br/>
+                                <br />
                                 {data?.itemDescription}
-                                <br/>
+                                <br />
                                 {data?.itemDescription}
-                                <br/>
+                                <br />
                                 {data?.itemDescription}
-                                <br/>
+                                <br />
                                 {data?.itemDescription}
                             </>
                         </Heading>
@@ -103,12 +103,12 @@ export default function AuctionPage() {
                 />
             </Helmet>
             <div className="flex w-full flex-col items-center bg-bg-white">
-                <Header2/>
+                <Header2 />
 
                 {/* auction section */}
                 <Spin spinning={isLoading} tip="Đang tải...">
                     {isSuccess && data && (
-                        <AuctionSection dataItem={data} isSuccessItemDt={isSuccess}/>
+                        <AuctionSection dataItem={data} isSuccessItemDt={isSuccess} />
                     )}
                 </Spin>
 
@@ -166,20 +166,19 @@ export default function AuctionPage() {
                                         </div>
                                     </div>
                                     <div className="flex flex-col items-start gap-6">
-                                        <div className="h-px w-[72%] bg-gray-200"/>
+                                        <div className="h-px w-[72%] bg-gray-200" />
                                         <Tabs onChange={onChange} type="card" activeKey={activeTabKey}>
                                             {accordionData.map((d, i) => (
                                                 <Tabs.TabPane
                                                     tab={
                                                         <span
-                                                            className={`text-[20px] font-medium ${
-                                                                activeTabKey === String(i + 1)
+                                                            className={`text-[20px] font-medium ${activeTabKey === String(i + 1)
                                                                     ? "text-green-500"
                                                                     : "text-blue_gray-900_01"
-                                                            }`}
+                                                                }`}
                                                         >
-                          {d.detailsTitle}
-                        </span>
+                                                            {d.detailsTitle}
+                                                        </span>
                                                     }
                                                     key={String(i + 1)}
                                                 >
@@ -203,7 +202,7 @@ export default function AuctionPage() {
                         </Text>
                         <div className="flex items-center my-8 gap-6">
                             <Avatar
-                                size={{xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100}}
+                                size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
                                 src="https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/459935214_566819402437595_6740881433351511181_n.jpg?alt=media&token=18035951-3053-46e8-b754-7936dc90e266"
                             />
                             <div className="font-semibold text-2xl dark:text-white">
@@ -230,7 +229,7 @@ export default function AuctionPage() {
                                     viewBox="0 0 20 20"
                                 >
                                     <path
-                                        d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+                                        d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
                                 </svg>
                                 Visit store
                             </button>
@@ -269,9 +268,9 @@ export default function AuctionPage() {
                                     viewBox="0 0 20 20"
                                 >
                                     <path
-                                        d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
+                                        d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z" />
                                     <path
-                                        d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                                        d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
                                 </svg>
                                 Save seller
                             </button>
@@ -291,7 +290,7 @@ export default function AuctionPage() {
                                         </Heading>
                                         <div className="flex w-[64%] flex-col items-start gap-3.5">
                                             <Flex gap="middle">
-                                                <Rate disabled defaultValue={2}/>
+                                                <Rate disabled defaultValue={2} />
                                                 {/*<span>allowClear: true</span>*/}
                                             </Flex>
                                             <Text
@@ -320,13 +319,13 @@ export default function AuctionPage() {
                                                 {/* Giảm khoảng cách ngang */}
                                                 <div
                                                     className="h-5 bg-yellow-300 rounded"
-                                                    style={{width: "70%"}}
+                                                    style={{ width: "70%" }}
                                                 ></div>
                                             </div>
                                             <span
                                                 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                        70%
-                      </span>
+                                                70%
+                                            </span>
                                         </div>
                                         <div className="flex items-center mt-4">
                                             <a
@@ -340,13 +339,13 @@ export default function AuctionPage() {
                                                 {/* Giảm khoảng cách ngang */}
                                                 <div
                                                     className="h-5 bg-yellow-300 rounded"
-                                                    style={{width: "17%"}}
+                                                    style={{ width: "17%" }}
                                                 ></div>
                                             </div>
                                             <span
                                                 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                        17%
-                      </span>
+                                                17%
+                                            </span>
                                         </div>
 
                                         <div className="flex items-center mt-4">
@@ -359,13 +358,13 @@ export default function AuctionPage() {
                                             <div className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
                                                 <div
                                                     className="h-5 bg-yellow-300 rounded"
-                                                    style={{width: "8%"}}
+                                                    style={{ width: "8%" }}
                                                 ></div>
                                             </div>
                                             <span
                                                 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                        8%
-                      </span>
+                                                8%
+                                            </span>
                                         </div>
 
                                         <div className="flex items-center mt-4">
@@ -378,13 +377,13 @@ export default function AuctionPage() {
                                             <div className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
                                                 <div
                                                     className="h-5 bg-yellow-300 rounded"
-                                                    style={{width: "4%"}}
+                                                    style={{ width: "4%" }}
                                                 ></div>
                                             </div>
                                             <span
                                                 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                        4%
-                      </span>
+                                                4%
+                                            </span>
                                         </div>
 
                                         <div className="flex items-center mt-4">
@@ -397,13 +396,13 @@ export default function AuctionPage() {
                                             <div className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
                                                 <div
                                                     className="h-5 bg-yellow-300 rounded"
-                                                    style={{width: "1%"}}
+                                                    style={{ width: "1%" }}
                                                 ></div>
                                             </div>
                                             <span
                                                 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                        1%
-                      </span>
+                                                1%
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -422,7 +421,7 @@ export default function AuctionPage() {
                                             size="text2xl"
                                             as="p"
                                             className="text-[18px] font-medium leading-[22px] text-blue_gray-900_01"
-                                            style={{margin: 0, padding: 0}}
+                                            style={{ margin: 0, padding: 0 }}
                                         >
                                             39 Đánh giá sản phẩm người bán
                                         </Heading>
@@ -455,7 +454,7 @@ export default function AuctionPage() {
                                                     viewBox="0 0 22 20"
                                                 >
                                                     <path
-                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
                                                 </svg>
                                                 <svg
                                                     className="w-4 h-4 text-yellow-300"
@@ -465,7 +464,7 @@ export default function AuctionPage() {
                                                     viewBox="0 0 22 20"
                                                 >
                                                     <path
-                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
                                                 </svg>
                                                 <svg
                                                     className="w-4 h-4 text-yellow-300"
@@ -475,7 +474,7 @@ export default function AuctionPage() {
                                                     viewBox="0 0 22 20"
                                                 >
                                                     <path
-                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
                                                 </svg>
                                                 <svg
                                                     className="w-4 h-4 text-yellow-300"
@@ -485,7 +484,7 @@ export default function AuctionPage() {
                                                     viewBox="0 0 22 20"
                                                 >
                                                     <path
-                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
                                                 </svg>
                                                 <svg
                                                     className="w-4 h-4 text-gray-300 dark:text-gray-500"
@@ -495,7 +494,7 @@ export default function AuctionPage() {
                                                     viewBox="0 0 22 20"
                                                 >
                                                     <path
-                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
                                                 </svg>
                                                 <h3 className="ms-2 text-sm font-semibold text-gray-900 dark:text-white">
                                                     Thinking to buy another one!
@@ -580,11 +579,11 @@ export default function AuctionPage() {
                     </div>
                 </div>
                 {/*here*/}
-                <RecommendedProductsSection/>
+                <RecommendedProductsSection />
                 {/* recommended products section */}
-                <RecommendedProductsSection/>
+                <RecommendedProductsSection />
                 <div className="mt-[50px] self-stretch">
-                    <FooterBK/>
+                    <FooterBK />
                 </div>
             </div>
         </>
