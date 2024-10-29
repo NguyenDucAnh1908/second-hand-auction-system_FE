@@ -1,7 +1,7 @@
 import { Heading, InputDH, Img } from "../../../components";
 import React from "react";
 import { Typography, Avatar } from "@material-tailwind/react";
-import { Carousel } from 'antd';
+import {Carousel, Descriptions} from 'antd';
 // const contentStyle = {
 //     margin: 0,
 //     height: '160px',
@@ -20,6 +20,83 @@ const contentStyle = {
 };
 
 export default function ProductReviewSection() {
+    const items = [
+        {
+            key: '1',
+            label: <span style={{ fontWeight: 'bold', fontSize: '18px' }}>Tên sản phẩm</span>,
+            children: <span style={{ fontSize: '16px' }}>Sản phẩm A</span>,
+            span: 4,
+        },
+        {
+            key: '2',
+            label: <span style={{ fontWeight: 'bold', fontSize: '18px' }}>Sub category</span>,
+            children: <span style={{ fontSize: '16px' }}>Danh mục A</span>,
+            span: 2,
+        },
+        {
+            key: '3',
+            label: <span style={{ fontWeight: 'bold', fontSize: '18px' }}>ItemStatus</span>,
+            children: <span style={{ fontSize: '16px' }}>Còn hàng</span>,
+            span: 2,
+        },
+        {
+            key: '4',
+            label: <span style={{ fontWeight: 'bold', fontSize: '18px' }}>Item Description</span>,
+            children: <span style={{ fontSize: '16px' }}>Chi tiết mô tả</span>,
+            span: 4,
+        }
+    ];
+
+    const itemDescription = [
+        {
+            key: '4',
+            label: 'Phần trăm',
+            children: 'N/A',
+            span: 2,
+        },
+        {
+            key: '5',
+            label: 'Loại',
+            children: 'N/A',
+            span: 2,
+        },
+        {
+            key: '6',
+            label: 'Màu sắc',
+            children:  'N/A',
+            span: 2,
+        },
+        {
+            key: '7',
+            label: 'Trọng lượng',
+            children:  'N/A',
+            span: 2,
+        },
+        {
+            key: '8',
+            label: 'Kích thước',
+            children:'N/A',
+            span: 2,
+        },
+        {
+            key: '9',
+            label: 'Xuất xứ',
+            children:  'N/A',
+            span: 2,
+        },
+        {
+            key: '10',
+            label: 'Ngày sản xuất',
+            children: 'N/A',
+            span: 2,
+        },
+        {
+            key: '11',
+            label: 'Chất liệu',
+            children: 'N/A',
+            span: 2,
+        }
+    ];
     return (
         <>
             {/* Product Review Section */}
@@ -35,72 +112,14 @@ export default function ProductReviewSection() {
                     </Heading>
 
                     {/* Main Content Section */}
-                    <div className="flex w-full gap-[34px] md:flex-col">
+                    <div className="flex items-center w-full gap-[34px] md:flex-col">
                         {/* Left Side - Product Info */}
                         <div className="flex-1 bg-blue-200 rounded-[20px] p-6 flex flex-col gap-4">
-                            <Heading size="textxs" as="h2" className="text-[15px] font-medium text-black-900">
-                                Tiêu đề: Giường ngủ cũ 2025
-                            </Heading>
-                            <Heading size="textmd" as="h3" className="text-[18px] font-medium text-black-900">
-                                Tên sản phẩm: GIƯỜNG NGỦ
-                            </Heading>
-                            <Heading as="h4" className="text-[20px] font-medium text-black-900">
-                                Tên thương hiệu: VUA NỆM
-                            </Heading>
+                            <Descriptions title={<div className="w-full text-center">Item infomation</div>} layout="vertical" items={items}/>
+                            <Descriptions title={<div className="w-full text-center">Item Description</div>} items={itemDescription} className="mt-4"/>
 
-
-                            <Heading size="texts" as="h5" className="text-[16px] font-medium leading-7 text-black-900">
-                                Mô tả: Giường ngủ cũ thường mang nét hoài niệm và dấu ấn thời gian, với khung gỗ hoặc
-                                kim loại đã có dấu hiệu mài mòn. Những vết trầy xước nhỏ tạo nên vẻ đẹp cổ điển và gợi
-                                nhớ về những kỷ niệm xưa cũ.
-                            </Heading>
-
-                            {/* Category Input */}
-                            <div className="flex flex-col items-start">
-                                <Heading size="texts" as="h6" className="font-medium text-blue_gray-900">
-                                    Danh mục
-                                </Heading>
-                                <Typography variant="h5">Material Tailwind</Typography>
-                                {/*<InputDH*/}
-                                {/*    shape="round"*/}
-                                {/*    name="Category Edit"*/}
-                                {/*    placeholder="Nội thất"*/}
-                                {/*    className="rounded-md border px-0"*/}
-                                {/*/>*/}
-                                <Heading size="texts" as="p" className="mt-4 text-[16px] font-medium text-black-900">
-                                    Tình trạng: Đã qua sử dụng 1 lần
-                                </Heading>
-                            </div>
-                            <div className="flex items-center self-stretch bg-white-a700 px-11 md:flex-col md:px-5">
-                                {/* Product Details */}
-
-
-                            </div>
                         </div>
 
-                        {/* Right Side - Product Images */}
-                        {/*<div className="flex flex-1 flex-col gap-[18px]">*/}
-                        {/*    /!* Main Image *!/*/}
-                        {/*    <div className="h-[390px] bg-cover bg-no-repeat">*/}
-                        {/*        <Img*/}
-                        {/*            src="/images/img_giuong.png"*/}
-                        {/*            alt="Main Product Image"*/}
-                        {/*            className="h-[390px] w-full object-cover"*/}
-                        {/*        />*/}
-                        {/*    </div>*/}
-
-                        {/*    /!* Thumbnails *!/*/}
-                        {/*    <div className="flex gap-[18px] justify-between">*/}
-                        {/*        {[...Array(3)].map((_, index) => (*/}
-                        {/*            <Img*/}
-                        {/*                key={"thumbnailList" + index}*/}
-                        {/*                src="/images/img_giuong_detail.png"*/}
-                        {/*                alt="Thumbnail Image"*/}
-                        {/*                className="h-[56px] w-[30%] object-contain"*/}
-                        {/*            />*/}
-                        {/*        ))}*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
                         <div style={{width: '50%', margin: '0 auto'}}> {/* Điều chỉnh chiều rộng Carousel */}
                             <Carousel arrows infinite={false}>
                                 <div>
