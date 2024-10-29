@@ -191,6 +191,40 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
         }
     }, [data, apiError, isLoading, hasChecked]);
 
+
+
+    //api registration
+
+    const handleSubmitAuctionRegisterChanh = async (e) => {
+        e.preventDefault();
+    
+        // Kiểm tra người dùng đã đăng nhập
+        if (!isLoggedIn) {
+            message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
+            navigate("/login");
+            return;
+        }
+    
+        try {
+            // Tạo body cho yêu cầu API
+            const auctionData = {
+                auction_id: dataItem.auction.auction_id, 
+            };
+    
+            // Gọi API để đăng ký tham gia đấu giá
+            const response = await AuctionRegister(auctionData).unwrap();
+            
+            // Hiển thị thông báo thành công
+            message.success(response.message || "Đăng ký tham gia đấu giá thành công!");
+            // Đóng modal sau khi đăng ký thành công
+            setIsModalOpen(false);
+        } catch (error) {
+            // Hiển thị thông báo lỗi nếu có
+            message.error(error.data?.message || "Đăng ký tham gia đấu giá thất bại.");
+        }
+    };
+    
+
     return (
         <>
             {/*<Modal*/}
@@ -221,7 +255,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             <BidForm dataItem={dataItem} /> 
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmitAuctionRegister}> {/* Xử lý sự kiện submit ở đây */}
+                    <form onSubmit={handleSubmitAuctionRegisterChanh}> {/* Xử lý sự kiện submit ở đây */}
                         <div className="mt-4">
                             <div className="flex items-center gap-2">
                                 <Checkbox
