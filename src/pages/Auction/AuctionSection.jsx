@@ -1,18 +1,18 @@
-import {Text, Img, Heading, ButtonDH} from "../../components";
+import { Text, Img, Heading, ButtonDH } from "../../components";
 import UserProfileImage from "../../components/UserProfileImage";
-import React, {Suspense, useState} from "react";
-import {Checkbox, message, Modal, Statistic} from "antd";
-import {Rate} from "antd";
+import React, { Suspense,useEffect, useState } from "react";
+import { Checkbox, message, Modal, Statistic } from "antd";
+import { Rate } from "antd";
 import BidForm from "../../components/BidForm";
 import ImageGallery from "react-image-gallery";
 import 'react-image-gallery/styles/css/image-gallery.css';
-import {useSelector} from "react-redux";
-import {selectIsLoggedIn} from "@/redux/auth/authSlice.js";
-import {useNavigate} from "react-router-dom";
-import {useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery} from "@/services/auctionRegistrations.service.js";
-import {Button} from "@material-tailwind/react";
+import { useSelector } from "react-redux";
+import { selectIsLoggedIn } from "@/redux/auth/authSlice.js";
+import { useNavigate } from "react-router-dom";
+import { useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery, useCheckUserInAuctionQuery } from "@/services/auctionRegistrations.service.js";
+import { Button } from "@material-tailwind/react";
 
-export default function AuctionSection({dataItem, isSuccessItemDt}) {
+export default function AuctionSection({ dataItem, isSuccessItemDt }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAuctionId, setSelectedAuctionId] = useState(dataItem.auction.auction_id);
     const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -20,6 +20,9 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
     const auctionEndDate = dataItem.auction?.endDate || null;
     const auctionEndTime = dataItem.auction?.end_time || null;
     //console.log("AUCTION DETAIL: ", dataItem)
+
+
+
     let deadline = null;
     if (auctionEndDate && auctionEndTime) {
         try {
@@ -38,12 +41,12 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
         isLoading: isLoadingCheckRegister,
         isError: isErrorCheckRegister,
         error: errorCheckRegister
-    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? {auctionId: selectedAuctionId} : null, {
+    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? { auctionId: selectedAuctionId } : null, {
         skip: !selectedAuctionId,
     });
     const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.registration_status === "CONFIRMED"
     // *
-    const [AuctionRegister, {isLoading: isLoadingAuctionRegister, error}] = useAuctionRegisterMutation();
+    const [AuctionRegister, { isLoading: isLoadingAuctionRegister, error }] = useAuctionRegisterMutation();
     const handleSubmitAuctionRegister = async (e) => {
         e.preventDefault();
 
@@ -57,7 +60,7 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
             message.error("Failed to register auction.");
         }
     };
-    const {Countdown} = Statistic;
+    const { Countdown } = Statistic;
     const showModal = () => {
         if (!isLoggedIn) {
             message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
@@ -91,6 +94,41 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
         thumbnail: img.image,
         // description: img.description,
     })) || [];
+
+
+
+
+
+    //check registration
+    const [auctionId123] = useState(dataItem.auction.auction_id); 
+    const [shouldCheck, setShouldCheck] = useState(false);
+    const [hasChecked, setHasChecked] = useState(false); 
+    // Gọi API khi component được mount
+    useEffect(() => {
+        setShouldCheck(true);
+    }, []); // Chỉ chạy một lần khi component được mount
+
+    const { data, error: apiError, isLoading } = useCheckUserInAuctionQuery(
+        shouldCheck ? auctionId123 : null, 
+        { skip: !shouldCheck } 
+    );
+    
+    if (isLoading) return <div>Loading...</div>;
+    if (apiError) { 
+        message.error(`Kiểm tra đăng ký không thành công: ${apiError.message}`);
+    }
+    if (data) {
+        if (data.exists) {
+            message.success(`Bạn đã đăng ký cho phiên đấu giá này! (User ID: ${data.userId}) (check: ${data.exists})`);
+        } else {
+            message.error(`Bạn chưa đăng ký cho phiên đấu giá này! (User ID: ${data.userId}) (check: ${data.exists})`);
+        }
+    }
+    //End check
+    
+
+
+
     return (
         <>
             {/*<Modal*/}
@@ -192,9 +230,9 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
                                 >
                                     Nike
                                 </Heading>
-                                <div className="ml-2.5 h-[20px] w-px bg-gray-200"/>
+                                <div className="ml-2.5 h-[20px] w-px bg-gray-200" />
                                 <div className="flex flex-1 items-start gap-2.5 px-2.5">
-                                    <Rate disabled defaultValue={2}/>
+                                    <Rate disabled defaultValue={2} />
                                     <Text
                                         as="p"
                                         className="self-center text-[14px] font-normal text-blue_gray-900_01"
@@ -210,7 +248,7 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
                             >
                                 {dataItem.itemName}{" "}
                             </Heading>
-                            <div className="h-px bg-gray-200"/>
+                            <div className="h-px bg-gray-200" />
                         </div>
                         <Heading
                             size="text3xl"
@@ -272,7 +310,7 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
                             <Countdown
                                 value={deadline}
                                 format="D Ngày H giờ m phút s giây"
-                                valueStyle={{fontWeight: 'bolder', fontSize: '15px', color:"green"}}
+                                valueStyle={{ fontWeight: 'bolder', fontSize: '15px', color: "green" }}
                             />
                         </Text>
 
@@ -372,7 +410,7 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
                                             viewBox="0 0 20 20"
                                         >
                                             <path
-                                                d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+                                                d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
                                         </svg>
                                         Profile
                                     </button>
@@ -411,9 +449,9 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
                                             viewBox="0 0 20 20"
                                         >
                                             <path
-                                                d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
+                                                d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z" />
                                             <path
-                                                d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                                                d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
                                         </svg>
                                         Downloads
                                     </button>
@@ -426,3 +464,33 @@ export default function AuctionSection({dataItem, isSuccessItemDt}) {
         </>
     );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

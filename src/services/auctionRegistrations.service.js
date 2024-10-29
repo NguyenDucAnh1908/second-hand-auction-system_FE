@@ -35,6 +35,17 @@ export const auctionRegistrationsApiSlice = apiSlice.injectEndpoints({
                 body: {...credentials},
             }),
         }),
+
+
+        // Thêm endpoint kiểm tra người dùng trong phiên đấu giá
+        checkUserInAuction: builder.query({
+            query: (auctionId) => `/auction-register/checkUser/${auctionId}`,
+            method: "GET",
+        }),
+
+    
+
+       
     }),
 });
 
@@ -42,5 +53,6 @@ export const {
     useGetAuctionRegisterQuery,
     useGetAuctionRegisterDetailQuery,
     useGetCheckAuctionRegisterQuery,
-    useAuctionRegisterMutation
+    useAuctionRegisterMutation,
+    useCheckUserInAuctionQuery
 } = auctionRegistrationsApiSlice;
