@@ -1,6 +1,6 @@
 import { Text, Img, Heading, ButtonDH } from "../../components";
 import UserProfileImage from "../../components/UserProfileImage";
-import React, { Suspense,useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Checkbox, message, Modal, Statistic } from "antd";
 import { Rate } from "antd";
 import BidForm from "../../components/BidForm";
@@ -19,23 +19,77 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
     const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
     const auctionEndTime = dataItem.auction?.end_time || null;
-    //console.log("AUCTION DETAIL: ", dataItem)
+    const auctionStartDate = dataItem.auction?.startDate || null;
+    const auctionStartTime = dataItem.auction?.start_time || null;
 
 
 
-    let deadline = null;
-    if (auctionEndDate && auctionEndTime) {
-        try {
-            const dateTimeString = `${auctionEndDate}T${auctionEndTime}`;
-            deadline = new Date(dateTimeString).getTime();
-
-            if (isNaN(deadline)) {
-                console.error("Invalid Date Format!");
-            }
-        } catch (error) {
-            console.error("Error parsing date:", error);
+    //check các trường hợp date 
+    const getDeadline = (date, time) => {
+        if (date && time) {
+            const dateTimeString = `${date}T${time}`;
+            const deadline = new Date(dateTimeString).getTime();
+            return isNaN(deadline) ? null : deadline;
         }
-    }
+        return null;
+    };
+    
+    const auctionStartDeadline = getDeadline(auctionStartDate, auctionStartTime);
+    const auctionEndDeadline = getDeadline(auctionEndDate, auctionEndTime);
+    
+    // State for managing countdown display
+    const [auctionStatus, setAuctionStatus] = useState("");
+
+    const formatDate = (timestamp) => {
+        return new Date(timestamp).toLocaleString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    };
+    
+    // Determine auction status based on current time and deadlines
+    useEffect(() => {
+        const updateAuctionStatus = () => {
+            const now = Date.now();
+            
+            if (auctionStartDeadline && now < auctionStartDeadline) {
+                setAuctionStatus(`Phiên đấu giá bắt đầu vào ${formatDate(auctionStartDeadline)}`);
+            } else if (auctionStartDeadline && now >= auctionStartDeadline && auctionEndDeadline && now < auctionEndDeadline) {
+                setAuctionStatus("Auction is Live!");
+            } else if (auctionEndDeadline && now >= auctionEndDeadline) {
+                setAuctionStatus(`Phiên Đấu Giá Đã Kết Thúc${formatDate(auctionEndDeadline)}.`);
+            } else {
+                setAuctionStatus("Invalid Auction Dates.");
+            }
+        };
+    
+        updateAuctionStatus();
+    const timer = setInterval(updateAuctionStatus, 1000); // Update every second
+
+    return () => clearInterval(timer); // Cleanup on unmount
+}, [auctionStartDeadline, auctionEndDeadline]);
+    
+    // Render countdown timer only if auction is live
+    const renderCountdown = () => {
+        if (auctionStatus === "Auction is Live!" && auctionEndDeadline) {
+            return (
+                <Countdown
+                    title="Đang diễn ra"
+                    value={auctionEndDeadline}
+                    onFinish={() => setAuctionStatus("Phiên Đấu Giá Đã Kết Thúc")}
+                    format="D Ngày H giờ m phút s giây"
+                    valueStyle={{ fontWeight: 'bolder', fontSize: '15px', color: "green" }}
+                />
+            );
+        }
+        return <Text>{auctionStatus}</Text>;
+    };
+    //end check date
+
+
     const {
         data: checkRegister,
         isLoading: isLoadingCheckRegister,
@@ -100,21 +154,21 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
 
 
     //check registration
-    const [auctionId123] = useState(dataItem.auction.auction_id); 
+    const [auctionId123] = useState(dataItem.auction.auction_id);
     const [shouldCheck, setShouldCheck] = useState(false);
-    const [hasChecked, setHasChecked] = useState(false); 
+    const [hasChecked, setHasChecked] = useState(false);
     // Gọi API khi component được mount
     useEffect(() => {
         setShouldCheck(true);
     }, []); // Chỉ chạy một lần khi component được mount
 
     const { data, error: apiError, isLoading } = useCheckUserInAuctionQuery(
-        shouldCheck ? auctionId123 : null, 
-        { skip: !shouldCheck } 
+        shouldCheck ? auctionId123 : null,
+        { skip: !shouldCheck }
     );
-    
+
     if (isLoading) return <div>Loading...</div>;
-    if (apiError) { 
+    if (apiError) {
         message.error(`Kiểm tra đăng ký không thành công: ${apiError.message}`);
     }
     if (data) {
@@ -125,7 +179,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
         }
     }
     //End check
-    
+
 
 
 
@@ -306,13 +360,10 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             as="p"
                             className="mt-[22px] text-[11px] font-normal text-gray-900_01 self-stretch"
                         >
-                            <span className="font-bold">Thời gian phiên đấu giá:</span>{" "}
-                            <Countdown
-                                value={deadline}
-                                format="D Ngày H giờ m phút s giây"
-                                valueStyle={{ fontWeight: 'bolder', fontSize: '15px', color: "green" }}
-                            />
+                             {renderCountdown()}
+                           
                         </Text>
+
 
                         {/*<Text*/}
                         {/*    size="textmd"*/}
