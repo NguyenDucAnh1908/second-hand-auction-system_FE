@@ -33,10 +33,10 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
         }
         return null;
     };
-    
+
     const auctionStartDeadline = getDeadline(auctionStartDate, auctionStartTime);
     const auctionEndDeadline = getDeadline(auctionEndDate, auctionEndTime);
-    
+
     // State for managing countdown display
     const [auctionStatus, setAuctionStatus] = useState("");
 
@@ -49,12 +49,12 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
             minute: "2-digit",
         });
     };
-    
+
     // Determine auction status based on current time and deadlines
     useEffect(() => {
         const updateAuctionStatus = () => {
             const now = Date.now();
-            
+
             if (auctionStartDeadline && now < auctionStartDeadline) {
                 setAuctionStatus(`Phiên đấu giá bắt đầu vào ${formatDate(auctionStartDeadline)}`);
             } else if (auctionStartDeadline && now >= auctionStartDeadline && auctionEndDeadline && now < auctionEndDeadline) {
@@ -65,13 +65,13 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                 setAuctionStatus("Invalid Auction Dates.");
             }
         };
-    
-        updateAuctionStatus();
-    const timer = setInterval(updateAuctionStatus, 1000); // Update every second
 
-    return () => clearInterval(timer); // Cleanup on unmount
-}, [auctionStartDeadline, auctionEndDeadline]);
-    
+        updateAuctionStatus();
+        const timer = setInterval(updateAuctionStatus, 1000); // Update every second
+
+        return () => clearInterval(timer); // Cleanup on unmount
+    }, [auctionStartDeadline, auctionEndDeadline]);
+
     // Render countdown timer only if auction is live
     const renderCountdown = () => {
         if (auctionStatus === "Auction is Live!" && auctionEndDeadline) {
@@ -153,10 +153,13 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
 
 
 
-    //check registration
+
+    // Check registration
     const [auctionId123] = useState(dataItem.auction.auction_id);
     const [shouldCheck, setShouldCheck] = useState(false);
     const [hasChecked, setHasChecked] = useState(false);
+    const [isRegisteredCheck, setIsRegisteredCheck] = useState(false); // Trạng thái đăng ký
+
     // Gọi API khi component được mount
     useEffect(() => {
         setShouldCheck(true);
@@ -167,21 +170,26 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
         { skip: !shouldCheck }
     );
 
-    if (isLoading) return <div>Loading...</div>;
-    if (apiError) {
-        message.error(`Kiểm tra đăng ký không thành công: ${apiError.message}`);
-    }
-    if (data) {
-        if (data.exists) {
-            message.success(`Bạn đã đăng ký cho phiên đấu giá này! (User ID: ${data.userId}) (check: ${data.exists})`);
-        } else {
-            message.error(`Bạn chưa đăng ký cho phiên đấu giá này! (User ID: ${data.userId}) (check: ${data.exists})`);
+    // Chỉ hiển thị thông báo khi có dữ liệu hoặc lỗi và chưa thông báo lần nào
+    useEffect(() => {
+        if (!hasChecked) {
+            if (isLoading) return;
+
+            if (apiError) {
+                message.error(`Kiểm tra đăng ký không thành công: ${apiError.message}`);
+                setHasChecked(true); // Đặt cờ sau khi hiển thị thông báo lỗi
+            } else if (data) {
+                if (data.exists) {
+                    setIsRegisteredCheck(true);  // Cập nhật trạng thái đã đăng ký
+                    message.success(`Bạn đã đăng ký cho phiên đấu giá này! (User ID: ${data.userId})`);
+                } else {
+                    setIsRegisteredCheck(false); // Cập nhật trạng thái chưa đăng ký
+                    message.error(`Bạn chưa đăng ký cho phiên đấu giá này! (User ID: ${data.userId})`);
+                }
+                setHasChecked(true); // Đặt cờ sau khi hiển thị thông báo thành công
+            }
         }
-    }
-    //End check
-
-
-
+    }, [data, apiError, isLoading, hasChecked]);
 
     return (
         <>
@@ -202,23 +210,24 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
             {/*    </div>*/}
             {/*</Modal>*/}
             <Modal
-                title={isRegistered ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
+                title={isRegisteredCheck ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
                 open={isModalOpen}
                 onCancel={handleCancel}
                 centered
                 footer={null}
             >
-                {isRegistered ? (
+                {isRegisteredCheck ? (
                     <div style={{ width: "100%", textAlign: "center" }}>
-                        <BidForm />
+                            <BidForm dataItem={dataItem} /> 
                     </div>
                 ) : (
-                    <form>
+                    <form onSubmit={handleSubmitAuctionRegister}> {/* Xử lý sự kiện submit ở đây */}
                         <div className="mt-4">
                             <div className="flex items-center gap-2">
                                 <Checkbox
                                     id="agreement"
                                     className="h-5 w-5"
+                                    required // Yêu cầu checkbox này phải được chọn trước khi gửi
                                 />
                                 <span className="text-sm leading-5 text-gray-700">
                                     Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
@@ -230,7 +239,6 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             <button
                                 type="submit"
                                 className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-indigo-200 focus:shadow-outline-indigo active:bg-indigo-200 transition duration-150 ease-in-out"
-                                onClick={handleSubmitAuctionRegister} // Define this function to handle registration
                             >
                                 ĐĂNG KÝ THAM GIA ĐẤU GIÁ
                             </button>
@@ -360,8 +368,8 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             as="p"
                             className="mt-[22px] text-[11px] font-normal text-gray-900_01 self-stretch"
                         >
-                             {renderCountdown()}
-                           
+                            {renderCountdown()}
+
                         </Text>
 
 
@@ -392,7 +400,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                                 size="xl"
                                 className="self-stretch rounded-[26px] border border-solid border-green-700 px-[33px] !text-gray-100_01 sm:px-5 transition-colors duration-300 hover:bg-green-500 hover:text-white"
                             >
-                                {isRegistered ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
+                                {isRegisteredCheck ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
                             </ButtonDH>
 
                         </div>
