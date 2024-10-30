@@ -13,7 +13,7 @@ export const kycApiSlice = apiSlice.injectEndpoints({
                 },
             }),
             transformResponse: (response) => {
-                console.log(response.data); 
+                console.log(response.data);
 
                 return {
                     data: response.data || [],
@@ -25,31 +25,31 @@ export const kycApiSlice = apiSlice.injectEndpoints({
 
         getKYCById: builder.query({
             query: (id) => ({
-                url: `/kyc/${id}`, 
+                url: `/kyc/${id}`,
             }),
             transformResponse: (response) => {
-                console.log(response); 
-                return response || {}; 
+                console.log(response);
+                return response || {};
             },
         }),
 
         updateKyc: builder.mutation({
-            query: ({ kycId, verifiedBy, reason }) => {
-                const body = {
-                    verifiedBy,
-                    reason,
-                    status: 'PENDING',
-                };
-                console.log('Đang gửi cập nhật KYC:', body); 
-                return {
-                    url: `/kyc/${kycId}`,
-                    method: 'PUT',
-                    body,
-                };
-            },
+            query: ({ kycId, kycData }) => ({
+                url: `/kyc/${kycId}`,
+                method: "PUT",
+                body: kycData,
+            }),
         }),
+
+        createKyc: builder.mutation({
+            query: (kycData) => ({
+                url: "/kyc",
+                method: "POST",
+                body: kycData,
+            }),
+        })
     }),
 });
 
 // Xuất hook cho component
-export const { useGetKYCItemsQuery, useGetKYCByIdQuery, useUpdateKycMutation } = kycApiSlice;
+export const { useGetKYCItemsQuery, useGetKYCByIdQuery, useUpdateKycMutation, useCreateKycMutation } = kycApiSlice;
