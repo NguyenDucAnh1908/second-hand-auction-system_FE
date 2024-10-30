@@ -127,7 +127,6 @@ export default function ProfileDetailPage() {
 
     const handleUpdatePassword = async (values) => {
         const { password, newPassword, confirmPassword } = values;
-
         if (newPassword !== confirmPassword) {
             message.error("New passwords do not match!");
             return;

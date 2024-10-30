@@ -40,7 +40,6 @@ export const routesAdmin = [
         path: "/profile",
         element: <Profile />,
       },
-
       {
         icon: <UserCircleIcon {...icon} />,
         name: "Danh sách sản phẩm",

@@ -39,8 +39,6 @@ import SuccessfullyPayment from "pages/ResultPage/SuccessfullyPayment.jsx";
 import FailPayment from "pages/ResultPage/FailPayment.jsx";
 import AuctionListCompleted from "pages/AuctionListCompleted/index.jsx";
 
-
-
 function App() {
     return (
         <Routes>
