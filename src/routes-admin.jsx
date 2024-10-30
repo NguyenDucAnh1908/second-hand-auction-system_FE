@@ -75,8 +75,7 @@ export const routesAdmin = [
         element: <StoreOrders />,
       },
       {
-        icon: <TableCellsIcon {...icon} />,
-        name: "Duyệt KYC Staffnpm",
+       
         path: "/KiemduyetStaffPage/:id",
         element: <KiemduyetStaffPage />,
       },

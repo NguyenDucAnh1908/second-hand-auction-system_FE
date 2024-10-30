@@ -5,7 +5,7 @@ import React, {useState} from "react";
 import {TabPanel, TabList, Tab, Tabs} from "react-tabs";
 import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
 import {PlusOutlined} from '@ant-design/icons';
-
+import { useCreateKycMutation } from "../../services/kyc.service.js";
 import {Breadcrumb, Button, Layout, Steps, theme , Image, Upload} from 'antd';
 
 const getBase64 = (file) =>
