@@ -13,11 +13,14 @@ import {
     InputDH,
     TextArea,
 } from "../../../components";
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import {Select, Option} from "@material-tailwind/react";
 import {UploadOutlined, PlusOutlined} from '@ant-design/icons';
 import {Button, message, Upload, InputNumber, Image, Breadcrumb, Layout, Menu, theme} from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
+import {useRegisterItemMutation} from "@/services/item.service.js";
+import {toast} from "react-toastify";
+import useHookUploadImage from "@/hooks/useHookUploadImage.js";
 
 const {Content, Sider} = Layout;
 
@@ -54,7 +57,6 @@ function RegisterProductPage() {
     const [manufactureDate, setManufactureDate] = useState(null);
     const [value, setValue] = React.useState(0);
     const [valueInput, setValueInput] = useState('');
-
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState([
@@ -65,6 +67,37 @@ function RegisterProductPage() {
             url: 'https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/Screenshot%202024-10-07%20092226.png?alt=media&token=e8c98fb0-f818-4e76-9c00-aa48f948cc8f',
         }
     ]);
+    const [itemName, setItemName] = useState("");
+    const [itemDescription, setItemDescription] = useState("");
+    const [itemCondition, setItemCondition] = useState("AVAILABLE");
+    const [brandName, setBrandName] = useState("");
+    const [imgItem, setImgItem] = useState([]);
+    const [itemSpecific, setItemSpecific] = useState({
+        color: '',
+        weight: 0,
+        percent: 0,
+        original: '',
+        dimension: '',
+        manufacture_date: null,
+        material: '',
+    });
+
+    // const [itemSpecific, setItemSpecific] = useState({
+    //     percent: 10000,
+    //     type: "",
+    //     color: "",
+    //     weight: 0,
+    //     dimension: "",
+    //     original: "",
+    //     manufacture_date: "",
+    //     material: "",
+    // });
+    const [scId, setScId] = useState(0);
+    const [auctionType, setAuctionType] = useState(0);
+    const userRef = useRef();
+    const errRef = useRef();
+    const {UploadImage} = useHookUploadImage();
+    const [registerItem, {isLoading: isLoadingItem}] = useRegisterItemMutation();
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
@@ -91,6 +124,78 @@ function RegisterProductPage() {
             </div>
         </button>
     );
+    const handleImgUpload = () => {
+        const images = fileList.map(file => ({image_url: file.url}));
+        setImgItem(images);
+    };
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         const userData = await registerItem({
+    //             itemName, itemDescription, itemCondition, brandName, imgItem, itemSpecific, scId, auctionType
+    //         }).unwrap();
+    //         //console.log("Register data: ", userData.message)
+    //         toast.success(userData.message)
+    //     } catch (err) {
+    //         const errorMessage = err?.data?.message;
+    //         toast.error(errorMessage);
+    //         errRef.current.focus();
+    //     }
+    // };
+    const handleItemSpecificChange = (field, value) => {
+        setItemSpecific((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const userData = await registerItem({
+                itemName,
+                itemDescription,
+                itemCondition,
+                brandName,
+                imgItem,
+                itemSpecific, // Include itemSpecific here
+                scId,
+                auctionType,
+            }).unwrap();
+
+            toast.success(userData.message);
+        } catch (err) {
+            const errorMessage = err?.data?.message || 'An error occurred';
+            toast.error(errorMessage);
+            errRef.current.focus();
+        }
+    };
+
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     handleImgUpload();  // Ensure images are prepared
+    //
+    //     const payload = {
+    //         item_name: itemName,
+    //         item_description: itemDescription,
+    //         item_condition: itemCondition,
+    //         brand_name: brandName,
+    //         img_item: imgItem,
+    //         item_specific: {...itemSpecific, manufacture_date: manufactureDate},
+    //         sc_id: scId,
+    //         auction_type: auctionType,
+    //     };
+    //
+    //     try {
+    //         const userData = await registerItem(payload).unwrap();
+    //         toast.success(userData.message);
+    //     } catch (err) {
+    //         const errorMessage = err?.data?.message || 'Error registering item';
+    //         toast.error(errorMessage);
+    //         errRef.current.focus();
+    //     }
+    // };
     return (
         <>
             <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
@@ -180,6 +285,9 @@ function RegisterProductPage() {
                                                                 name="Product Name Field"
                                                                 placeholder={`Tên sản phẩm sản phẩm`}
                                                                 className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                                type="text"
+                                                                value={itemName}
+                                                                onChange={(e) => setItemName(e.target.value)}
                                                             />
                                                         </div>
                                                         <div
@@ -195,6 +303,9 @@ function RegisterProductPage() {
                                                                 name="Brand Name Field"
                                                                 placeholder={`Tiêu đề thương hiệu`}
                                                                 className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                                type="text"
+                                                                value={brandName}
+                                                                onChange={(e) => setBrandName(e.target.value)}
                                                             />
                                                         </div>
                                                         <div
@@ -210,6 +321,8 @@ function RegisterProductPage() {
                                                                 name="Description Area"
                                                                 placeholder={`Mô tả`}
                                                                 className="w-[88%] rounded-md !border !border-gray-200 px-5 font-jost leading-[10px] text-blue_gray-600"
+                                                                value={itemDescription}
+                                                                onChange={(e) => setItemDescription(e.target.value)}
                                                             />
                                                         </div>
                                                     </div>
@@ -357,6 +470,42 @@ function RegisterProductPage() {
                                                                 name="Color Field"
                                                                 placeholder={`Màu sắc sản phẩm`}
                                                                 className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                                value={itemSpecific.color}
+                                                                onChange={(e) => handleItemSpecificChange('color', e.target.value)}
+                                                            />
+                                                        </div>
+                                                        <div
+                                                            className="flex flex-col items-start justify-center gap-1.5">
+                                                            <Heading
+                                                                as="p"
+                                                                className="font-jost text-[16px] font-medium text-blue_gray-900"
+                                                            >
+                                                                Kích thước
+                                                            </Heading>
+                                                            <InputDH
+                                                                shape="round"
+                                                                name="Color Field"
+                                                                placeholder={`Kích thước sản phẩm`}
+                                                                className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                                value={itemSpecific.dimension}
+                                                                onChange={(e) => handleItemSpecificChange('dimension', e.target.value)}
+                                                            />
+                                                        </div>
+                                                        <div
+                                                            className="flex flex-col items-start justify-center gap-1.5">
+                                                            <Heading
+                                                                as="p"
+                                                                className="font-jost text-[16px] font-medium text-blue_gray-900"
+                                                            >
+                                                                type
+                                                            </Heading>
+                                                            <InputDH
+                                                                shape="round"
+                                                                name="Color Field"
+                                                                placeholder={`type sản phẩm`}
+                                                                className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                                value={itemSpecific.type}
+                                                                onChange={(e) => handleItemSpecificChange('type', e.target.value)}
                                                             />
                                                         </div>
                                                         <div className="flex flex-col items-start justify-center gap-1">
@@ -371,6 +520,8 @@ function RegisterProductPage() {
                                                                 name="Weight Field"
                                                                 placeholder={`Khối lượng sản phẩm`}
                                                                 className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                                value={itemSpecific.weight}
+                                                                onChange={(e) => handleItemSpecificChange('weight', parseFloat(e.target.value))}
                                                             />
                                                         </div>
                                                         <div
@@ -379,15 +530,68 @@ function RegisterProductPage() {
                                                                 as="p"
                                                                 className="font-jost text-[16px] font-medium text-blue_gray-900"
                                                             >
-                                                                Phần trăm
+                                                                original
                                                             </Heading>
                                                             <InputDH
                                                                 shape="round"
-                                                                name="Percentage Field"
-                                                                placeholder={`Phần trăm giá trị sản phẩm`}
+                                                                name="Color Field"
+                                                                placeholder={`original sản phẩm`}
                                                                 className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                                value={itemSpecific.original}
+                                                                onChange={(e) => handleItemSpecificChange('original', e.target.value)}
                                                             />
                                                         </div>
+                                                        <div
+                                                            className="flex flex-col items-start justify-center gap-1.5">
+                                                            <Heading
+                                                                as="p"
+                                                                className="font-jost text-[16px] font-medium text-blue_gray-900"
+                                                            >
+                                                                material
+                                                            </Heading>
+                                                            <InputDH
+                                                                shape="round"
+                                                                name="Color Field"
+                                                                placeholder={`material sản phẩm`}
+                                                                className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                                value={itemSpecific.material}
+                                                                onChange={(e) => handleItemSpecificChange('material', e.target.value)}
+                                                            />
+                                                        </div>
+                                                        {/*<div*/}
+                                                        {/*    className="flex flex-col items-start justify-center gap-1.5">*/}
+                                                        {/*    <Heading*/}
+                                                        {/*        as="p"*/}
+                                                        {/*        className="font-jost text-[16px] font-medium text-blue_gray-900"*/}
+                                                        {/*    >*/}
+                                                        {/*        manufacture_date*/}
+                                                        {/*    </Heading>*/}
+                                                        {/*    <DatePicker*/}
+                                                        {/*        selected={itemSpecific.manufacture_date}*/}
+                                                        {/*        onChange={(date) => handleItemSpecificChange('manufacture_date', date)}*/}
+                                                        {/*        placeholderText="Chọn ngày sản xuất"*/}
+                                                        {/*        className="gap-4 self-stretch rounded-md border border-solid border-gray-200 px-3 font-jost w-full"*/}
+                                                        {/*        dateFormat="dd/MM/yyyy"*/}
+                                                        {/*        popperPlacement="bottom"*/}
+                                                        {/*        isClearable*/}
+                                                        {/*        showMonthYearDropdown/>*/}
+                                                        {/*</div>*/}
+
+                                                        {/*<div*/}
+                                                        {/*    className="flex flex-col items-start justify-center gap-1.5">*/}
+                                                        {/*    <Heading*/}
+                                                        {/*        as="p"*/}
+                                                        {/*        className="font-jost text-[16px] font-medium text-blue_gray-900"*/}
+                                                        {/*    >*/}
+                                                        {/*        Phần trăm*/}
+                                                        {/*    </Heading>*/}
+                                                        {/*    <InputDH*/}
+                                                        {/*        shape="round"*/}
+                                                        {/*        name="Percentage Field"*/}
+                                                        {/*        placeholder={`Phần trăm giá trị sản phẩm`}*/}
+                                                        {/*        className="w-[88%] rounded-md border px-3.5 font-jost"*/}
+                                                        {/*    />*/}
+                                                        {/*</div>*/}
                                                     </div>
                                                     <div className="flex w-full flex-col items-end gap-5">
                                                         <div
@@ -408,6 +612,17 @@ function RegisterProductPage() {
                                                             />
 
                                                         </div>
+                                                        {/*<div*/}
+                                                        {/*    className="flex w-[86%] flex-col items-start justify-center gap-1 md:w-full">*/}
+                                                        {/*    <Heading*/}
+                                                        {/*        as="p"*/}
+                                                        {/*        className="font-jost text-[16px] font-medium text-blue_gray-900"*/}
+                                                        {/*    >*/}
+                                                        {/*        Giá trị định giá*/}
+                                                        {/*    </Heading>*/}
+                                                        {/*    <InputNumber min={1} addonBefore="+" addonAfter="VND"*/}
+                                                        {/*                 defaultValue={100}/>*/}
+                                                        {/*</div>*/}
                                                         <div
                                                             className="flex w-[86%] flex-col items-start justify-center gap-1 md:w-full">
                                                             <Heading
@@ -416,9 +631,16 @@ function RegisterProductPage() {
                                                             >
                                                                 Giá trị định giá
                                                             </Heading>
-                                                            <InputNumber min={1} addonBefore="+" addonAfter="VND"
-                                                                         defaultValue={100}/>
+                                                            <InputNumber
+                                                                min={1}
+                                                                addonBefore="+"
+                                                                addonAfter="%"
+                                                                value={itemSpecific.percent} // Bind value to percent
+                                                                onChange={(value) => handleItemSpecificChange('percent', value)} // Handle change
+                                                                className="w-full"
+                                                            />
                                                         </div>
+
                                                         <div
                                                             className="flex flex-col w-[88%] items-start justify-center gap-1 md:w-full mt-5">
                                                             <Heading
@@ -428,14 +650,23 @@ function RegisterProductPage() {
                                                                 Ngày sản xuất
                                                             </Heading>
                                                             <div className="w-full">
+                                                                {/*<DatePicker*/}
+                                                                {/*    selected={manufactureDate} // Sử dụng state manufactureDate*/}
+                                                                {/*    onChange={(date) => setManufactureDate(date)} // Cập nhật state khi chọn ngày*/}
+                                                                {/*    placeholderText="Chọn ngày sản xuất" // Placeholder*/}
+                                                                {/*    className="gap-4 self-stretch rounded-md border border-solid border-gray-200 px-3 font-jost w-full"*/}
+                                                                {/*    dateFormat="dd/MM/yyyy" // Định dạng ngày*/}
+                                                                {/*    popperPlacement="bottom" // Đặt vị trí của popper (lịch) nếu cần*/}
+                                                                {/*    isClearable // Cho phép xóa ngày đã chọn*/}
+                                                                {/*/>*/}
                                                                 <DatePicker
-                                                                    selected={manufactureDate} // Sử dụng state manufactureDate
-                                                                    onChange={(date) => setManufactureDate(date)} // Cập nhật state khi chọn ngày
-                                                                    placeholderText="Chọn ngày sản xuất" // Placeholder
+                                                                    selected={itemSpecific.manufacture_date}
+                                                                    onChange={(date) => handleItemSpecificChange('manufacture_date', date)}
+                                                                    placeholderText="Chọn ngày sản xuất"
                                                                     className="gap-4 self-stretch rounded-md border border-solid border-gray-200 px-3 font-jost w-full"
-                                                                    dateFormat="dd/MM/yyyy" // Định dạng ngày
-                                                                    popperPlacement="bottom" // Đặt vị trí của popper (lịch) nếu cần
-                                                                    isClearable // Cho phép xóa ngày đã chọn
+                                                                    dateFormat="dd/MM/yyyy"
+                                                                    popperPlacement="bottom"
+                                                                    isClearable
                                                                 />
                                                             </div>
                                                         </div>
@@ -520,7 +751,6 @@ function RegisterProductPage() {
                                                         Hủy bỏ
                                                     </ButtonDH>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>

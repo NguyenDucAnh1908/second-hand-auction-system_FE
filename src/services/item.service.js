@@ -87,6 +87,14 @@ export const itemApiSlice = apiSlice.injectEndpoints({
                 };
             },
         }),
+
+        registerItem: builder.mutation({
+            query: (credentials) => ({
+                url: "/item",
+                method: "POST",
+                body: {...credentials},
+            }),
+        }),
     }),
 });
 
@@ -98,4 +106,5 @@ export const {
     useGetAuctionProcessItemQuery,
     useGetAuctionProcessDetailQuery,
     useGetAuctionCompletedItemQuery,
+    useRegisterItemMutation,
 } = itemApiSlice;
