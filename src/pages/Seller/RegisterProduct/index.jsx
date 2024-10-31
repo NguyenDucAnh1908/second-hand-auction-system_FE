@@ -13,14 +13,16 @@ import {
     InputDH,
     TextArea,
 } from "../../../components";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Select, Option} from "@material-tailwind/react";
 import {UploadOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, message, Upload, InputNumber, Image, Breadcrumb, Layout, Menu, theme} from 'antd';
+import {Button, message, Upload, InputNumber, Image, Breadcrumb, Layout, Menu, theme, Spin} from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
 import {useRegisterItemMutation} from "@/services/item.service.js";
 import {toast} from "react-toastify";
 import useHookUploadImage from "@/hooks/useHookUploadImage.js";
+import {useGetAuctionTypeQuery} from "@/services/auctionType.service.js";
+import {useGetCategoriesQuery} from "@/services/category.service.js";
 
 const {Content, Sider} = Layout;
 
@@ -81,22 +83,25 @@ function RegisterProductPage() {
         manufacture_date: null,
         material: '',
     });
-
-    // const [itemSpecific, setItemSpecific] = useState({
-    //     percent: 10000,
-    //     type: "",
-    //     color: "",
-    //     weight: 0,
-    //     dimension: "",
-    //     original: "",
-    //     manufacture_date: "",
-    //     material: "",
-    // });
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedSubCategory, setSelectedSubCategory] = useState(null);
     const [scId, setScId] = useState(0);
-    const [auctionType, setAuctionType] = useState(0);
+    const [auctionType, setAuctionType] = useState(null);
     const userRef = useRef();
     const errRef = useRef();
     const {UploadImage} = useHookUploadImage();
+    const {
+        data: auctionTypes,
+        error: errorAuctionType,
+        isLoading: isloadingAuctionType,
+    } = useGetAuctionTypeQuery()
+    console.log("DATA AUCTION TYPE: ", auctionTypes)
+    const {
+        data: categories,
+        error: errorCategories,
+        isLoading: isloadingCategories,
+    } = useGetCategoriesQuery();
+    console.log("DATA CATEGORIES: ", categories)
     const [registerItem, {isLoading: isLoadingItem}] = useRegisterItemMutation();
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
@@ -128,20 +133,6 @@ function RegisterProductPage() {
         const images = fileList.map(file => ({image_url: file.url}));
         setImgItem(images);
     };
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         const userData = await registerItem({
-    //             itemName, itemDescription, itemCondition, brandName, imgItem, itemSpecific, scId, auctionType
-    //         }).unwrap();
-    //         //console.log("Register data: ", userData.message)
-    //         toast.success(userData.message)
-    //     } catch (err) {
-    //         const errorMessage = err?.data?.message;
-    //         toast.error(errorMessage);
-    //         errRef.current.focus();
-    //     }
-    // };
     const handleItemSpecificChange = (field, value) => {
         setItemSpecific((prev) => ({
             ...prev,
@@ -170,8 +161,20 @@ function RegisterProductPage() {
             errRef.current.focus();
         }
     };
+    useEffect(() => {
+        console.log("Selected Category: ", selectedCategory);
+    }, [selectedCategory]);
 
+    useEffect(() => {
+        if (selectedCategory) {
+            setSelectedSubCategory(null); // Reset subcategory khi thay đổi category
+        }
+    }, [selectedCategory]);
 
+    // Lọc subcategories dựa trên selectedCategory
+    const filteredSubCategories = categories?.find(
+        (category) => category.categoryId === selectedCategory
+    )?.subCategory || [];
     // const handleSubmit = async (e) => {
     //     e.preventDefault();
     //     handleImgUpload();  // Ensure images are prepared
@@ -386,38 +389,133 @@ function RegisterProductPage() {
                                                         <div className="mt-[2px] flex flex-col gap-3 self-stretch ">
                                                             <div
                                                                 className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">
-                                                                <Heading
-                                                                    as="p"
-                                                                    className="font-jost text-[16px] font-medium "
-                                                                >
-                                                                    Danh mục
+                                                                <Heading as="p"
+                                                                         className="font-jost text-[16px] font-medium">
+                                                                    Auction type
                                                                 </Heading>
                                                                 <div className="w-72 mt-4">
-                                                                    <Select label="Danh mục">
-                                                                        <Option>Material Tailwind HTML</Option>
-                                                                        <Option>Material Tailwind React</Option>
-                                                                        <Option>Material Tailwind Vue</Option>
-                                                                        <Option>Material Tailwind Angular</Option>
-                                                                        <Option>Material Tailwind Svelte</Option>
+                                                                    <Select
+                                                                        label="Auction type"
+                                                                        value={auctionType}
+                                                                        onChange={(value) => setAuctionType(value)}
+                                                                    >
+                                                                        {isloadingAuctionType ? (
+                                                                            <Option disabled>
+                                                                                <Spin/> {/* Spinner shown while loading */}
+                                                                            </Option>
+                                                                        ) : errorAuctionType ? (
+                                                                            <Option disabled>Error loading
+                                                                                types</Option>
+                                                                        ) : (
+                                                                            auctionTypes?.map((type) => (
+                                                                                <Option key={type.act_id}
+                                                                                        value={type.act_id}>
+                                                                                    {type.auction_typeName}
+                                                                                </Option>
+                                                                            ))
+                                                                        )}
                                                                     </Select>
                                                                 </div>
                                                             </div>
-                                                            <div
-                                                                className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">
-                                                                <Heading
-                                                                    as="p"
-                                                                    className="font-jost text-[16px] font-medium "
-                                                                >
-                                                                    Danh mục phụ
-                                                                </Heading>
-                                                                <div className="w-72 mt-4">
-                                                                    <Select label="Danh mục phụ">
-                                                                        <Option>Material Tailwind HTML</Option>
-                                                                        <Option>Material Tailwind React</Option>
-                                                                        <Option>Material Tailwind Vue</Option>
-                                                                        <Option>Material Tailwind Angular</Option>
-                                                                        <Option>Material Tailwind Svelte</Option>
-                                                                    </Select>
+
+                                                            {/*<div*/}
+                                                            {/*    className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">*/}
+                                                            {/*    <Heading*/}
+                                                            {/*        as="p"*/}
+                                                            {/*        className="font-jost text-[16px] font-medium "*/}
+                                                            {/*    >*/}
+                                                            {/*        Danh mục*/}
+                                                            {/*    </Heading>*/}
+                                                            {/*    <div className="w-72 mt-4">*/}
+                                                            {/*        <Select label="Danh mục">*/}
+                                                            {/*            <Option>Material Tailwind HTML</Option>*/}
+                                                            {/*            <Option>Material Tailwind React</Option>*/}
+                                                            {/*            <Option>Material Tailwind Vue</Option>*/}
+                                                            {/*            <Option>Material Tailwind Angular</Option>*/}
+                                                            {/*            <Option>Material Tailwind Svelte</Option>*/}
+                                                            {/*        </Select>*/}
+                                                            {/*    </div>*/}
+                                                            {/*</div>*/}
+                                                            {/*<div*/}
+                                                            {/*    className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">*/}
+                                                            {/*    <Heading*/}
+                                                            {/*        as="p"*/}
+                                                            {/*        className="font-jost text-[16px] font-medium "*/}
+                                                            {/*    >*/}
+                                                            {/*        Danh mục phụ*/}
+                                                            {/*    </Heading>*/}
+                                                            {/*    <div className="w-72 mt-4">*/}
+                                                            {/*        <Select label="Danh mục phụ">*/}
+                                                            {/*            <Option>Material Tailwind HTML</Option>*/}
+                                                            {/*            <Option>Material Tailwind React</Option>*/}
+                                                            {/*            <Option>Material Tailwind Vue</Option>*/}
+                                                            {/*            <Option>Material Tailwind Angular</Option>*/}
+                                                            {/*            <Option>Material Tailwind Svelte</Option>*/}
+                                                            {/*        </Select>*/}
+                                                            {/*    </div>*/}
+                                                            {/*</div>*/}
+                                                            <div className="flex flex-col gap-6">
+                                                                {/* Danh mục chọn */}
+                                                                <div
+                                                                    className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">
+                                                                    <Heading as="p"
+                                                                             className="font-jost text-[16px] font-medium">
+                                                                        Danh mục
+                                                                    </Heading>
+                                                                    <div className="w-72 mt-4">
+                                                                        <Select
+                                                                            value={selectedCategory || undefined} // Gán giá trị mặc định nếu có
+                                                                            onChange={(value) => {
+                                                                                setSelectedCategory(value);
+                                                                                setSelectedSubCategory(null); // Đặt lại danh mục phụ khi thay đổi danh mục
+                                                                            }}
+                                                                            placeholder="Chọn danh mục"
+                                                                            loading={isloadingCategories}
+                                                                            style={{width: "100%"}}
+                                                                        >
+                                                                            {isloadingCategories ? (
+                                                                                <Option disabled>
+                                                                                    <Spin/>
+                                                                                </Option>
+                                                                            ) : errorCategories ? (
+                                                                                <Option disabled>Error loading
+                                                                                    categories</Option>
+                                                                            ) : (
+                                                                                categories?.map((category) => (
+                                                                                    <Option key={category.categoryId}
+                                                                                            value={category.categoryId}>
+                                                                                        {category.categoryName}
+                                                                                    </Option>
+                                                                                ))
+                                                                            )}
+                                                                        </Select>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div
+                                                                    className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">
+                                                                    <Heading as="p"
+                                                                             className="font-jost text-[16px] font-medium">
+                                                                        Danh mục phụ
+                                                                    </Heading>
+                                                                    <div className="w-72 mt-4">
+                                                                        <Select
+                                                                            value={selectedSubCategory || undefined} // Gán giá trị mặc định nếu có
+                                                                            onChange={(value) => {
+                                                                                setSelectedSubCategory(value);
+                                                                            }}
+                                                                            placeholder="Chọn danh mục phụ"
+                                                                            disabled={!selectedCategory} // Vô hiệu hóa nếu không có danh mục nào được chọn
+                                                                            style={{width: "100%"}}
+                                                                        >
+                                                                            {filteredSubCategories.map((subCategory) => (
+                                                                                <Option key={subCategory.sc_id}
+                                                                                        value={subCategory.sc_id}>
+                                                                                    {subCategory.sub_category}
+                                                                                </Option>
+                                                                            ))}
+                                                                        </Select>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div

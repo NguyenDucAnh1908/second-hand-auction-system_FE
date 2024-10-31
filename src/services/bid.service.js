@@ -18,5 +18,4 @@ export const bidApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useCreateBidMutation
-   
   } = bidApiSlice;
