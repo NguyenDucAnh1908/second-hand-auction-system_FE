@@ -13,10 +13,22 @@ export const bidApiSlice = apiSlice.injectEndpoints({
     }),
 
 
-}),
+    getAllBids: builder.query({
+      query: ({ auctionId, page }) =>
+        `/bids/history-bid/${auctionId}?page=${page}`,
+    }),
+
+    getWinBid: builder.query({
+      query: (auctionId) =>
+        `/bids/find-winner/${auctionId}`,
+    }),
+
+
+  }),
 });
 
 export const {
-    useCreateBidMutation
-   
-  } = bidApiSlice;
+  useCreateBidMutation,
+  useGetAllBidsQuery,
+  useGetWinBidQuery
+} = bidApiSlice;
