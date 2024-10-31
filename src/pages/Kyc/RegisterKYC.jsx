@@ -6,7 +6,8 @@ import { TabPanel, TabList, Tab, Tabs } from "react-tabs";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { PlusOutlined } from '@ant-design/icons';
 import { useCreateKycMutation } from "../../services/kyc.service.js";
-import { Breadcrumb, Button, Layout, Steps, theme, Image, Upload } from 'antd';
+import { Breadcrumb, Button, Layout, Steps, theme, Image, Upload, DatePicker } from 'antd';
+import useHookUploadImage from "../../hooks/useHookUploadImage.js";
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -16,6 +17,7 @@ const getBase64 = (file) =>
         reader.onerror = (error) => reject(error);
     });
 const { Content, Sider } = Layout;
+const { UploadImage } = useHookUploadImage();
 
 export default function KNCPage() {
     const {
@@ -24,8 +26,10 @@ export default function KNCPage() {
     const [currentStep, setCurrentStep] = useState(0);
     const { token } = theme.useToken();
     const [fileList, setFileList] = useState([]);
-    
+
     const [current, setCurrent] = useState(0);
+
+
 
 
     const [kycData, setKycData] = useState({
@@ -46,6 +50,9 @@ export default function KNCPage() {
         dob: '',
         phoneNumber: '',
         age: '',
+        cccdNumber: '',
+        frontDocumentUrl: '',
+        backDocumentUrl: ''
     });
     const validateFields = () => {
         let newErrors = {};
@@ -85,7 +92,7 @@ export default function KNCPage() {
             alert('Có lỗi xảy ra khi gửi dữ liệu KYC. Vui lòng thử lại.');
         }
     };
-    
+
     const next = () => {
         if (current === 0) {
             // Validate the fields before moving to the next step
@@ -101,12 +108,12 @@ export default function KNCPage() {
             }
         }
     };
-    
-    
-    
+
+
+
     // Trong render, thêm vào button hoặc form
- 
-    
+
+
 
     const prev = () => {
         if (current > 0) {
@@ -134,81 +141,119 @@ export default function KNCPage() {
         setPreviewOpen(true);
     };
     const handleChangeImage = async ({ fileList: newFileList }) => {
+        // Limit to 2 images
+        if (newFileList.length > 2) {
+            message.error("Bạn chỉ có thể tải lên tối đa 2 ảnh!");
+            return;
+        }
+    
+        // Set the new file list
         setFileList(newFileList);
-
-        // Only set the URLs if two files are uploaded
-        if (newFileList.length === 2) {
-            const frontDocumentUrl = newFileList[0].url; // Assuming this is the front document
-            const backDocumentUrl = newFileList[1].url;  // Assuming this is the back document
-
+    
+        // Prepare an array to hold the URLs of uploaded images
+        const uploadedUrls = [];
+    
+        // Upload images using the UploadImage function from the hook
+        for (const file of newFileList) {
+            // Ensure the file is an actual file object
+            const fileToUpload = file.originFileObj || file; // Fallback if originFileObj is not available
+            if (fileToUpload) {
+                try {
+                    const result = await UploadImage(fileToUpload);
+                    uploadedUrls.push(result); // Store the uploaded URL
+                    console.log("Upload successful:", result);
+                } catch (error) {
+                    message.error(`Tải lên ảnh ${file.name} thất bại: ${error.message}`);
+                }
+            } else {
+                console.error("File object not valid:", file);
+            }
+        }
+    
+        // Check and update kycData only if both images are uploaded
+        if (uploadedUrls.length === 2) {
+            const frontDocumentUrl = uploadedUrls[0];
+            const backDocumentUrl = uploadedUrls[1];
+    
             setKycData((prevKycData) => ({
                 ...prevKycData,
                 frontDocumentUrl,
                 backDocumentUrl,
             }));
+    
+            console.log("Front Document URL:", frontDocumentUrl);
+            console.log("Back Document URL:", backDocumentUrl);
+        } else {
+            console.warn("Not enough images uploaded. Uploaded URLs:", uploadedUrls);
         }
     };
-    const validate = () => {
-        const newErrors = {};
+    
+    
 
-        // Validate Full Name
-        if (!kycData.fullName) newErrors.fullName = 'Họ tên đầy đủ là bắt buộc';
+    // const validate = () => {
+    //     const newErrors = {};
 
-        // Validate Email
-        if (!kycData.email) {
-            newErrors.email = 'Email là bắt buộc';
-        } else if (!/\S+@\S+\.\S+/.test(kycData.email)) {
-            newErrors.email = 'Email không hợp lệ';
-        }
+    //     // Validate Full Name
+    //     if (!kycData.fullName) newErrors.fullName = 'Họ tên đầy đủ là bắt buộc';
 
-        // Validate Date of Birth
-        if (!kycData.dob) newErrors.dob = 'Ngày sinh là bắt buộc';
+    //     // Validate Email
+    //     if (!kycData.email) {
+    //         newErrors.email = 'Email là bắt buộc';
+    //     } else if (!/\S+@\S+\.\S+/.test(kycData.email)) {
+    //         newErrors.email = 'Email không hợp lệ';
+    //     }
 
-        // Validate Phone Number
-        if (!kycData.phoneNumber) {
-            newErrors.phoneNumber = 'Số điện thoại là bắt buộc';
-        } else if (!/^\d{10}$/.test(kycData.phoneNumber.replace(/\D/g, ''))) {
-            newErrors.phoneNumber = 'Số điện thoại không hợp lệ';
-        }
+    //     // Validate Date of Birth
+    //     if (!kycData.dob) newErrors.dob = 'Ngày sinh là bắt buộc';
 
-        // Validate Gender
-        if (!kycData.gender) newErrors.gender = 'Giới tính là bắt buộc';
+    //     // Validate Phone Number
+    //     if (!kycData.phoneNumber) {
+    //         newErrors.phoneNumber = 'Số điện thoại là bắt buộc';
+    //     } else if (!/^\d{10}$/.test(kycData.phoneNumber.replace(/\D/g, ''))) {
+    //         newErrors.phoneNumber = 'Số điện thoại không hợp lệ';
+    //     }
 
-        // Validate Age
-        if (!kycData.age) {
-            newErrors.age = 'Tuổi là bắt buộc';
-        } else if (isNaN(kycData.age) || kycData.age <= 0) {
-            newErrors.age = 'Tuổi phải là số dương';
-        }
+    //     // Validate Gender
+    //     if (!kycData.gender) newErrors.gender = 'Giới tính là bắt buộc';
 
-        let valid = true;
-      
+    //     // Validate Age
+    //     if (!kycData.age) {
+    //         newErrors.age = 'Tuổi là bắt buộc';
+    //     } else if (isNaN(kycData.age) || kycData.age <= 0) {
+    //         newErrors.age = 'Tuổi phải là số dương';
+    //     }
 
-        // Các kiểm tra trước đó
-        // ...
-
-        // Kiểm tra CCCD/Hộ chiếu
-        if (!kycData.cccdNumber) {
-            newErrors.cccdNumber = 'Số CCCD/Hộ chiếu là bắt buộc';
-            valid = false;
-        } else {
-            newErrors.cccdNumber = ''; // Reset lỗi
-        }
-
-        // Kiểm tra ảnh tải lên
-        if (fileList.length === 0) {
-            newErrors.imageUpload = 'Vui lòng tải lên ảnh CCCD/Hộ chiếu.';
-            valid = false;
-        } else {
-            newErrors.imageUpload = ''; // Reset lỗi
-        }
+    //     let valid = true;
 
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0; // Return true if no errors
+
+    //     // Kiểm tra CCCD/Hộ chiếu
+    //     if (!kycData.cccdNumber) {
+    //         newErrors.cccdNumber = 'Số CCCD/Hộ chiếu là bắt buộc';
+    //         valid = false;
+    //     } else {
+    //         newErrors.cccdNumber = ''; // Reset lỗi
+    //     }
+
+    //     // Kiểm tra ảnh tải lên
+    //     if (fileList.length === 0) {
+    //         newErrors.imageUpload = 'Vui lòng tải lên ảnh CCCD/Hộ chiếu.';
+    //         valid = false;
+    //     } else {
+    //         newErrors.imageUpload = ''; // Reset lỗi
+    //     }
+
+
+    //     setErrors(newErrors);
+    //     return Object.keys(newErrors).length === 0; // Return true if no errors
+    // };
+
+    const handleDateChange = (date) => {
+        setKycData({
+            ...kycData,
+            dob: date ? date.format("YYYY-MM-DD") : null // Chuyển đổi ngày sang định dạng YYYY-MM-DD
+        });
     };
-
-
 
     const uploadButton = (
         <div>
@@ -257,19 +302,17 @@ export default function KNCPage() {
                         {/* Date of Birth Field */}
                         <div className="flex flex-col gap-1.5">
                             <Heading as="h3" className="text-[16px] font-medium text-blue_gray-900_01 text-left">
-                                Ngày sinh
+                                Email
                             </Heading>
-                            <InputDH
-                                shape="round"
-                                placeholder="2002-08-01"
-                                value={kycData.dob}
-                                onChange={(e) => setKycData({ ...kycData, dob: e.target.value })}
-                                className="self-stretch rounded-md border border-gray-200 px-4 py-2"
+                            <DatePicker
+                                style={{ width: '100%' }}
+                                placeholder="Chọn ngày sinh"
+                                format="YYYY-MM-DD" // Định dạng ngày
+                                onChange={handleDateChange} // Gọi hàm cập nhật khi chọn ngày
                             />
-                            {errors.dob && <p className="text-red-600">{errors.dob}</p>} {/* Thông báo lỗi */}
+                            {errors.email && <p className="text-red-600 ml-0">{errors.dob}</p>} {/* Thông báo lỗi */}
 
                         </div>
-
                         {/* Phone Number Field */}
                         <div className="flex flex-col gap-1.5">
                             <Heading as="h3" className="text-[16px] font-medium text-blue_gray-900_01 text-left">
@@ -357,33 +400,33 @@ export default function KNCPage() {
 
                         {/* Upload CCCD/Hộ chiếu Image */}
                         <div className="flex flex-col gap-4 items-center justify-center p-4 bg-gray-50 rounded-lg shadow-lg">
-                            <Heading as="h3" className="text-lg font-semibold text-blue-gray-900 mb-4">
-                                Tải lên ảnh CCCD/Hộ chiếu
-                            </Heading>
+                            <h3 className="text-lg font-semibold text-blue-gray-900 mb-4">Tải lên ảnh CCCD/Hộ chiếu</h3>
                             <Upload
-                                action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                                 listType="picture-card"
                                 onPreview={handlePreview}
                                 onChange={handleChangeImage}
+                                fileList={fileList}
+                                beforeUpload={() => false} // Prevent automatic upload
                             >
-                                {fileList.length < 2 ? uploadButton : null}
+                                {fileList.length < 2 ? (
+                                    <div>
+                                        <UploadOutlined />
+                                        <div style={{ marginTop: 8 }}>Chọn ảnh</div>
+                                    </div>
+                                ) : null}
                             </Upload>
                             {previewImage && (
                                 <Image
-                                    wrapperStyle={{ display: 'none' }}
                                     preview={{
                                         visible: previewOpen,
                                         onVisibleChange: (visible) => setPreviewOpen(visible),
-                                        afterOpenChange: (visible) => !visible && setPreviewImage(''),
                                     }}
                                     src={previewImage}
                                 />
                             )}
-                            {errors.imageUpload && <p className="text-red-500 text-sm">{errors.imageUpload}</p>} {/* Hiển thị lỗi ảnh */}
 
-                            {fileList.length === 0 && (
-                                <p className="text-red-500">Vui lòng tải lên ảnh CCCD/Hộ chiếu.</p>
-                            )}
+
+                            {fileList.length === 0 && <p className="text-red-500">Vui lòng tải lên ảnh CCCD/Hộ chiếu.</p>}
                         </div>
 
                     </div>

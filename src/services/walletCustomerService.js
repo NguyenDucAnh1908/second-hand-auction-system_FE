@@ -26,7 +26,6 @@ export const walletCustomerApiSlice = apiSlice.injectEndpoints({
         }),
 
         getTransactionWalletByUser: builder.query({
-            // Use template literals correctly
             query: ({ transactionCode }) => `/walletCustomer/${transactionCode}`,
             transformResponse: (response) => {
                 console.log("API Response:", response); // Log to verify structure

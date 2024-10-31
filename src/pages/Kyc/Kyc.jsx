@@ -171,16 +171,39 @@ const GenderRow = ({ gender }) => (
 
 const DocumentImages = ({ frontUrl, backUrl }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Field label="Hình ảnh mặt trước" value={frontUrl} type="text" />
-        <Field label="Hình ảnh mặt sau" value={backUrl} type="text" />
+        <div className="field">
+            <label className="block text-sm font-medium text-gray-700">Hình ảnh mặt trước</label>
+            {frontUrl ? (
+                <img src={frontUrl} alt="Hình ảnh mặt trước" className="mt-2 w-full h-auto object-cover" />
+            ) : (
+                <p className="mt-2 text-gray-500">Không có hình ảnh mặt trước</p>
+            )}
+        </div>
+        <div className="field">
+            <label className="block text-sm font-medium text-gray-700">Hình ảnh mặt sau</label>
+            {backUrl ? (
+                <img src={backUrl} alt="Hình ảnh mặt sau" className="mt-2 w-full h-auto object-cover" />
+            ) : (
+                <p className="mt-2 text-gray-500">Không có hình ảnh mặt sau</p>
+            )}
+        </div>
     </div>
 );
 
 const AddressSection = ({ address }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Field label="Thành Phố/Tỉnh thành" value={address?.province_name || 'N/A'} type="text" />
-        <Field label="Quận/Huyện" value={address?.district_name || 'N/A'} type="text" />
-        <Field label="Phường/Xã" value={address?.ward_name || 'N/A'} type="text" />
-        <Field label="Địa chỉ" value={address?.address_name || 'N/A'} type="text" />
+        {address ? (
+            <>
+                <Field label="Thành Phố/Tỉnh thành" value={address.province_name || 'N/A'} type="text" />
+                <Field label="Quận/Huyện" value={address.district_name || 'N/A'} type="text" />
+                <Field label="Phường/Xã" value={address.ward_name || 'N/A'} type="text" />
+                <Field label="Địa chỉ" value={address.address_name || 'N/A'} type="text" />
+            </>
+        ) : (
+            <div className="col-span-2">
+                <p className="text-gray-500">Chưa có thông tin địa chỉ</p>
+            </div>
+        )}
     </div>
 );
+

@@ -63,7 +63,7 @@ export default function ListRegisterAuctionSection() {
         action: <Button color="blue" onClick={() => showModal(item.ar_id)}>Chi tiết</Button>,
         //.toFixed(2)<Button color="blue" onClick={showModal((record.ar_id)}>Chi tiết</Button>
     })) || [];
-
+    console.log("data",data);
 
     const items = dataAuctionRegisterDetail ? [
         {
@@ -98,7 +98,7 @@ export default function ListRegisterAuctionSection() {
         {
             key: '5',
             label: 'Trạng Thái',
-            children: <Badge status="processing" text={dataAuctionRegisterDetail?.registration}/>,
+            children: <Badge status="processing" text={dataAuctionRegisterDetail?.status}/>,
             span: 3,
         },
         {
@@ -181,8 +181,8 @@ export default function ListRegisterAuctionSection() {
                                             </Typography>
                                         </td>
                                         <td className="p-4">
-                                            {row.status === "Success" ? (
-                                                <Tag icon={<CheckCircleOutlined/>} color="success">Thành công</Tag>
+                                            {row.status === "OPEN" ? (
+                                                <Tag icon={<CheckCircleOutlined/>} color="success">Đã đăng kí</Tag>
                                             ) : (
                                                 <Tag icon={<CloseCircleOutlined/>} color="error">Đã hủy</Tag>
                                             )}

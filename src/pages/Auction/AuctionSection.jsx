@@ -151,6 +151,14 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
         // description: img.description,
     })) || [];
 
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(price);
+    };
 
 
 
@@ -178,15 +186,15 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
             if (isLoading) return;
 
             if (apiError) {
-                message.error(`Kiểm tra đăng ký không thành công: ${apiError.message}`);
+                // message.error(`Kiểm tra đăng ký không thành công: ${apiError.message}`);
                 setHasChecked(true); // Đặt cờ sau khi hiển thị thông báo lỗi
             } else if (data) {
                 if (data.exists) {
                     setIsRegisteredCheck(true);  // Cập nhật trạng thái đã đăng ký
-                    message.success(`Bạn đã đăng ký cho phiên đấu giá này! (User ID: ${data.userId})`);
+                    // message.success(`Bạn đã đăng ký cho phiên đấu giá này! (User ID: ${data.userId})`);
                 } else {
                     setIsRegisteredCheck(false); // Cập nhật trạng thái chưa đăng ký
-                    message.error(`Bạn chưa đăng ký cho phiên đấu giá này! (User ID: ${data.userId})`);
+                    // message.error(`Bạn chưa đăng ký cho phiên đấu giá này! (User ID: ${data.userId})`);
                 }
                 setHasChecked(true); // Đặt cờ sau khi hiển thị thông báo thành công
             }
@@ -354,10 +362,8 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             className="ml-1.5 mt-[26px] flex self-start font-bevietnampro text-[20px] font-medium text-blue_gray-900_01 md:ml-0"
                         >
                             <span className="font-bold">Giá khởi điểm:</span>
-                            <span>&nbsp;{dataItem.auction.start_price}</span>
-                            <a href="#" className="inline underline">
-                                đ
-                            </a>
+                            <span>&nbsp;{formatPrice(dataItem.auction.start_price)}</span>
+                           
                         </Heading>
                         <Heading
                             size="text3xl"
@@ -372,10 +378,8 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             }}
                         >
                             <span className="font-bold">Giá đấu hiện tại:</span>
-                            <span>&nbsp;{winningBid?.data?.bidAmount || "Chưa có giá đấu"}</span>
-                            <a href="#" className="inline underline">
-                                đ
-                            </a>
+                            <span>&nbsp;{winningBid?.data?.bidAmount ? formatPrice(winningBid.data.bidAmount) : "Chưa có giá đấu"}</span>
+                       
                         </Heading>
 
                         {/*<div className="mx-1.5 mt-4 flex flex-col items-start gap-3 self-stretch md:mx-0">*/}
@@ -489,7 +493,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             </Text>
                             <div className="mr-[25px] flex items-center bg-bg-white md:mr-0 ">
                                 <div
-                                    className="inline-flex flex items-center space-x-2 rounded-md shadow-sm" 
+                                    className="inline-flex flex items-center space-x-2 rounded-md shadow-sm"
                                     role="group"
                                 >
                                     <button
