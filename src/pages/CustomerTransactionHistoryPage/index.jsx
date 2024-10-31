@@ -62,7 +62,7 @@ export default function CustomerTransactionHistoryPagePage() {
             width: 200,
         },
         {
-            title: "Phương thức",
+            title: "Hình ảnh",
             dataIndex: "method",
             key: "method",
             width: 200,

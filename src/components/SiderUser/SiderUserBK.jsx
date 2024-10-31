@@ -24,9 +24,9 @@ import {
     ChevronRightIcon,
     ChevronDownIcon,
 } from "@heroicons/react/24/outline";
-
+import { useGetBalanceQuery } from "../../services/walletCustomerService";
 import { useNavigate } from "react-router-dom";
-
+import { useGetUserByIdQuery } from "../../services/user.service";
 
 export function SiderUserBK() {
     const [open, setOpen] = React.useState(0);
@@ -35,20 +35,23 @@ export function SiderUserBK() {
     };
 
     const navigate = useNavigate();
-
+    const { data: balance, isLoading, isError } = useGetBalanceQuery();    
     const handleNavigate = (path) => {
         navigate(path);
     };
+    const { data:user } = useGetUserByIdQuery();    
+    const formattedBalance = balance ? new Intl.NumberFormat('vi-VN').format(balance) : 0;
 
     return (
         <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
             <div className="mb-2 p-4">
                 <div className="flex items-center gap-4">
-                    <Avatar src="https://docs.material-tailwind.com/img/face-2.jpg" alt="avatar" />
+                    <Avatar src={user?.avatar} alt="avatar" />
                     <div>
-                        <Typography variant="h6">Tania Andrew</Typography>
+                        <Typography variant="h6"> {user?.fullName || "Tên người dùng"}</Typography>
                         <Typography variant="small" color="gray" className="font-normal">
-                            Số dư:100000000
+                        {formattedBalance} VND
+
                         </Typography>
                     </div>
                 </div>
@@ -214,7 +217,7 @@ export function SiderUserBK() {
                     </AccordionBody>
                 </Accordion>
                 <hr className="my-2 border-blue-gray-50" />
-                <ListItem>
+                {/* <ListItem>
                     <ListItemPrefix>
                         <InboxIcon className="h-5 w-5" />
                     </ListItemPrefix>
@@ -234,7 +237,7 @@ export function SiderUserBK() {
                         <PowerIcon className="h-5 w-5" />
                     </ListItemPrefix>
                     Log Out
-                </ListItem>
+                </ListItem> */}
             </List>
         </Card>
     );
