@@ -11,10 +11,12 @@ import { selectIsLoggedIn } from "@/redux/auth/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import { useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery, useCheckUserInAuctionQuery } from "@/services/auctionRegistrations.service.js";
 import { Button } from "@material-tailwind/react";
+import { useGetWinBidQuery } from "../../services/bid.service";
 
 export default function AuctionSection({ dataItem, isSuccessItemDt }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAuctionId, setSelectedAuctionId] = useState(dataItem.auction.auction_id);
+    const { data: winningBid, error: fetchError2, isLoading: loading2 } = useGetWinBidQuery(dataItem.auction.auction_id);
     const isLoggedIn = useSelector(selectIsLoggedIn);
     const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
@@ -106,7 +108,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
 
         try {
             const auctionData = {
-                auction_id: product.itemId, // Giả sử product.itemId là auction_id
+                auction_id: product.itemId,
             };
             const response = await AuctionRegister(auctionData).unwrap();
             message.success(response.message || "Register auction successfully!");
@@ -197,23 +199,23 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
 
     const handleSubmitAuctionRegisterChanh = async (e) => {
         e.preventDefault();
-    
+
         // Kiểm tra người dùng đã đăng nhập
         if (!isLoggedIn) {
             message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
             navigate("/login");
             return;
         }
-    
+
         try {
             // Tạo body cho yêu cầu API
             const auctionData = {
-                auction_id: dataItem.auction.auction_id, 
+                auction_id: dataItem.auction.auction_id,
             };
-    
+
             // Gọi API để đăng ký tham gia đấu giá
             const response = await AuctionRegister(auctionData).unwrap();
-            
+
             // Hiển thị thông báo thành công
             message.success(response.message || "Đăng ký tham gia đấu giá thành công!");
             // Đóng modal sau khi đăng ký thành công
@@ -223,7 +225,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
             message.error(error.data?.message || "Đăng ký tham gia đấu giá thất bại.");
         }
     };
-    
+
 
     return (
         <>
@@ -252,7 +254,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
             >
                 {isRegisteredCheck ? (
                     <div style={{ width: "100%", textAlign: "center" }}>
-                            <BidForm dataItem={dataItem} /> 
+                        <BidForm dataItem={dataItem} />
                     </div>
                 ) : (
                     <form onSubmit={handleSubmitAuctionRegisterChanh}> {/* Xử lý sự kiện submit ở đây */}
@@ -318,7 +320,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                     <div
                         className="flex w-[34%] flex-col items-center rounded-md border border-solid border-gray-200 bg-bg-white px-[22px] py-[30px] shadow-sm md:w-full sm:p-5">
                         <div className="ml-1.5 mr-4 flex flex-col gap-[18px] self-stretch md:mx-0">
-                            <div className="flex items-center justify-center">
+                            {/* <div className="flex items-center justify-center">
                                 <Heading
                                     size="headinglg"
                                     as="h1"
@@ -336,7 +338,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                                         3,014 Đánh giá shop
                                     </Text>
                                 </div>
-                            </div>
+                            </div> */}
                             <Heading
                                 size="text4xl"
                                 as="h2"
@@ -358,19 +360,19 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             </a>
                         </Heading>
                         <Heading
-                            size="text6xl"
+                            size="text3xl"
                             as="h4"
-                            className="ml-1.5 mt-8 flex self-start font-bevietnampro text-[26px] font-medium text-blue_gray-900_01 md:ml-0 md:text-[24px] sm:text-[22px]"
+                            className="ml-1.5 mt-8 flex self-start font-bevietnampro text-[20px] font-medium text-blue_gray-900_01 md:ml-0 md:text-[20px] sm:text-[20px]"
                             style={{
                                 maxWidth: "100%", // Đảm bảo nó không tràn ra ngoài khung
                                 whiteSpace: "nowrap", // Không cho phép nội dung xuống dòng
                                 overflow: "hidden", // Ẩn nội dung thừa (nếu có)
                                 textOverflow: "ellipsis", // Thêm dấu "..." nếu cần thiết
-                                fontSize: "clamp(12px, 3vw, 26px)", // Thu nhỏ font size khi khung bị thu hẹp
+                                fontSize: "clamp(12px, 3vw, 20px)", // Thu nhỏ font size khi khung bị thu hẹp
                             }}
                         >
                             <span className="font-bold">Giá đấu hiện tại:</span>
-                            <span>&nbsp;{dataItem.auction.start_price}</span> {/* Ví dụ nhiều số 0 */}
+                            <span>&nbsp;{winningBid?.data?.bidAmount || "Chưa có giá đấu"}</span>
                             <a href="#" className="inline underline">
                                 đ
                             </a>
@@ -421,10 +423,9 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                                 <ButtonDH
                                     color="green_50"
                                     size="xl"
-
-                                    className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5 "
+                                    className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5 w-full"
                                 >
-                                    Danh sách những người đang đấu giá{" "}
+                                    Danh sách những người đang đấu giá
                                 </ButtonDH>
                             </a>
 
@@ -456,17 +457,17 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             </Text>
                             <div className="mr-1 flex items-center bg-bg-white md:mr-0">
                                 <Img
-                                    src="images/img_image_125.png"
+                                    src="/images/img_image_125.png"
                                     alt="Payment Icon 1"
                                     className="h-[10px] w-[18%] object-contain"
                                 />
                                 <Img
-                                    src="images/img_paypal.png"
+                                    src="/images/img_paypal.png"
                                     alt="Payment Icon 2"
                                     className="ml-5 h-[10px] w-[18%] object-contain"
                                 />
                                 <Img
-                                    src="images/img_images.png"
+                                    src="/images/img_images.png"
                                     alt="Payment Icon 3"
                                     className="ml-5 h-[28px] w-[16%] object-contain"
                                 />
@@ -486,9 +487,9 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                                     Info
                                 </button>
                             </Text>
-                            <div className="mr-1 flex items-center bg-bg-white md:mr-0">
+                            <div className="mr-[25px] flex items-center bg-bg-white md:mr-0 ">
                                 <div
-                                    className="inline-flex flex items-center space-x-10 rounded-md shadow-sm"
+                                    className="inline-flex flex items-center space-x-2 rounded-md shadow-sm" 
                                     role="group"
                                 >
                                     <button
@@ -510,7 +511,11 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
 
                                     <button
                                         type="button"
-                                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                                        className="inline-flex items-center px-4 py-2 text-sm 
+            font-medium text-gray-900 bg-white border-t border-b border-gray-200
+            hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700
+            focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white
+            dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
                                     >
                                         <svg
                                             className="w-3 h-3 me-2"
@@ -521,9 +526,9 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                                         >
                                             <path
                                                 stroke="currentColor"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
                                                 d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2"
                                             />
                                         </svg>
@@ -550,6 +555,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                                     </button>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
