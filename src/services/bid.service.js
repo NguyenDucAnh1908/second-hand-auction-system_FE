@@ -31,4 +31,4 @@ export const {
   useCreateBidMutation,
   useGetAllBidsQuery,
   useGetWinBidQuery
-} = bidApiSlice;
+  } = bidApiSlice;

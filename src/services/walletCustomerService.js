@@ -16,7 +16,26 @@ export const walletCustomerApiSlice = apiSlice.injectEndpoints({
                 method: "GET",
             }),
         }),
+
+        getBalance: builder.query({
+            query: () => "/walletCustomer/get-balance",
+            transformResponse: (response) => {
+                console.log("API Response:", response); // Log to verify structure
+                return response.data; // Adjust based on actual response
+            },
+        }),
+
+        getTransactionWalletByUser: builder.query({
+            // Use template literals correctly
+            query: ({ transactionCode }) => `/walletCustomer/${transactionCode}`,
+            transformResponse: (response) => {
+                console.log("API Response:", response); // Log to verify structure
+                return response.data; 
+            },
+        }),
+        
+        
     }),
 });
 
-export const {useDepositUserMutation, useCheckDepositUserMutation} = walletCustomerApiSlice;
+export const {useDepositUserMutation, useCheckDepositUserMutation, useGetBalanceQuery, useGetTransactionWalletByUserQuery} = walletCustomerApiSlice;
