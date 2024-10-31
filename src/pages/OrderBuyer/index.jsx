@@ -23,12 +23,12 @@ export default function OrderManagementBuyer() {
     const statusStyles = {
         PENDING: 'bg-gray-500 text-white',
         CONFIRMED: 'bg-green-500 text-white',
-        REJECTED: 'bg-red-500 text-red',
+        CANCELED: 'bg-red-500 text-white',
     };
 
     const columns = [
         {
-            title: 'ID', // New column for order ID
+            title: 'ID',
             dataIndex: 'id',
             key: 'id',
         },
@@ -54,7 +54,7 @@ export default function OrderManagementBuyer() {
             align: 'center',
             render: (status) => (
                 <div className="flex justify-center">
-                    <span className={`flex items-center justify-center w-32 h-8 px-9 ${statusStyles[status] || 'bg-gray-300 text-white'}`}>
+                    <span className={`flex items-center justify-center w-32 h-8 px-9 ${statusStyles[status] || 'bg-gray-300 text-black'}`}>
                         {status}
                     </span>
                 </div>
@@ -64,7 +64,6 @@ export default function OrderManagementBuyer() {
             title: 'Quantity',
             dataIndex: 'quantity',
             key: 'quantity',
-            align: 'center',
         },
         {
             title: 'Note',
@@ -74,7 +73,6 @@ export default function OrderManagementBuyer() {
         {
             title: 'Action',
             key: 'action',
-            align: 'center',
             render: (text, record) => (
                 <Button
                     type="primary"
@@ -98,8 +96,8 @@ export default function OrderManagementBuyer() {
     };
 
     const dataSource = data?.data.map(order => ({
-        key: order.id, // Ensure the key is unique
-        id: order.orderId, // Add ID to data source
+        key: order.id,
+        id: order.orderId,
         email: order.email,
         phoneNumber: order.phoneNumber,
         totalPrice: order.totalPrice,
@@ -115,8 +113,8 @@ export default function OrderManagementBuyer() {
         auctionId: order.auctionOrder.auctionId,
         auctionTypeName: order.auctionOrder.auctionTypeName,
         priceStep: order.auctionOrder.priceStep,
-        auctionStatus: order.auctionOrder.status,
-        termConditions: order.auctionOrder.termConditions
+        auctionstatus: order.auctionOrder.status,
+        termConditions:order.auctionOrder.termConditions
     })) || [];
 
     return (
@@ -186,71 +184,118 @@ export default function OrderManagementBuyer() {
                 />
 
                 {/* Modal to display order details */}
+      
 
-                <Modal
-                    title="Chi tiết đơn hàng"
-                    visible={isModalVisible}
-                    onCancel={handleModalClose}
-                    footer={null}
-                    width={600} // Set a width for the modal
-                    bodyStyle={{ padding: '20px' }} // Add padding to modal body
-                >
-                    {selectedOrder && (
-                        <div>
-                            {/* Order Details Section */}
-                            <div style={{ backgroundColor: '#f0f8ff', padding: '15px', borderRadius: '5px', marginBottom: '15px' }}>
-                                <h3 style={{ margin: '0 0 10px', display: 'flex', alignItems: 'center' }}>
-                                    <FaShoppingCart style={{ marginRight: '10px', color: '#007bff' }} /> {/* Order Icon */}
-                                    Thông tin đơn hàng
-                                </h3>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong>ID:</strong>
-                                    <span>{selectedOrder.id}</span> {/* Updated to show the ID */}
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong>Email:</strong>
-                                    <span>{selectedOrder.email}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong>Số điện thoại:</strong>
-                                    <span>{selectedOrder.phoneNumber}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong>Số tiền:</strong>
-                                    <span>{selectedOrder.totalPrice}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong>Trạng thái:</strong>
-                                    <span>{selectedOrder.status}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong>Ghi chú:</strong>
-                                    <span>{selectedOrder.note}</span>
-                                </div>
-                            </div>
+<Modal
+    title="Chi tiết đơn hàng"
+    visible={isModalVisible}
+    onCancel={handleModalClose}
+    footer={null}
+    width={600} // Set a width for the modal
+    bodyStyle={{ padding: '20px' }} // Add padding to modal body
+>
+    {selectedOrder && (
+        <div>
+            {/* Order Details Section */}
+            <div style={{ backgroundColor: '#f0f8ff', padding: '15px', borderRadius: '5px', marginBottom: '15px' }}>
+                <h3 style={{ margin: '0 0 10px', display: 'flex', alignItems: 'center' }}>
+                    <FaShoppingCart style={{ marginRight: '10px', color: '#007bff' }} /> {/* Order Icon */}
+                    Thông tin đơn hàng
+                </h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>ID:</strong>
+                    <span>{selectedOrder.id}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Email:</strong>
+                    <span>{selectedOrder.email}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Số điện thoại:</strong>
+                    <span>{selectedOrder.phoneNumber}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Số tiền:</strong>
+                    <span>{selectedOrder.totalPrice}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Trạng thái:</strong>
+                    <span>{selectedOrder.status}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Ghi chú:</strong>
+                    <span>{selectedOrder.note}</span>
+                </div>
+            </div>
 
-                            {/* Item Details Section */}
-                            <div style={{ backgroundColor: '#fff8dc', padding: '15px', borderRadius: '5px', marginBottom: '15px' }}>
-                                <h3 style={{ margin: '0 0 10px', display: 'flex', alignItems: 'center' }}>
-                                    <FaProductHunt style={{ marginRight: '10px', color: '#ff7f50' }} /> {/* Product Icon */}
-                                    Thông tin sản phẩm
-                                </h3>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong>Số lượng:</strong>
-                                    <span>{selectedOrder.quantity}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong>Phương thức thanh toán:</strong>
-                                    <span>{selectedOrder.paymentMethod}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong>Phương thức vận chuyển:</strong>
-                                    <span>{selectedOrder.shippingType}</span>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </Modal>
+            {/* Item Details Section */}
+            <div style={{ backgroundColor: '#fff8dc', padding: '15px', borderRadius: '5px', marginBottom: '15px' }}>
+                <h3 style={{ margin: '0 0 10px', display: 'flex', alignItems: 'center' }}>
+                    <FaProductHunt style={{ marginRight: '10px', color: '#ff7f50' }} /> {/* Product Icon */}
+                    Thông tin sản phẩm
+                </h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Số lượng:</strong>
+                    <span>{selectedOrder.quantity}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Phương thức thanh toán:</strong>
+                    <span>{selectedOrder.paymentMethod}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Phương thức vận chuyển:</strong>
+                    <span>{selectedOrder.shippingType}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Mã sản phẩm:</strong>
+                    <span>{selectedOrder.itemId}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Tên sản phẩm:</strong>
+                    <span>{selectedOrder.itemName}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Tên người bán:</strong>
+                    <span>{selectedOrder.sellerName}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <strong>Hình ảnh:</strong>
+                    <img src={selectedOrder.thumbnail} alt="Product thumbnail" width="100" style={{ borderRadius: '5px', marginLeft: '10px' }} />
+                </div>
+            </div>
+
+            {/* Auction Details Section */}
+            <div style={{ backgroundColor: '#ffe4e1', padding: '15px', borderRadius: '5px' }}>
+                <h3 style={{ margin: '0 0 10px', display: 'flex', alignItems: 'center' }}>
+                    <FaGavel style={{ marginRight: '10px', color: '#ff4500' }} /> {/* Auction Icon */}
+                    Thông tin đấu giá
+                </h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Mã đấu giá:</strong>
+                    <span>{selectedOrder.auctionId}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Kiểu dấu giá:</strong>
+                    <span>{selectedOrder.auctionTypeName}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Bước giá:</strong>
+                    <span>{selectedOrder.priceStep}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Trạng thái :</strong>
+                    <span>{selectedOrder.status}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Điều khoản :</strong>
+                    <span>{selectedOrder.termConditions}</span>
+                </div>
+            </div>
+        </div>
+    )}
+</Modal>
+
+
             </Layout>
         </>
     );
