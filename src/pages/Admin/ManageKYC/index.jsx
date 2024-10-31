@@ -65,6 +65,7 @@ const ManageKYC = () => {
     ];
 
     const handleDetail = (record) => {
+        console.log(record.kycId);
         navigate(`/dashboard/KiemduyetStaffPage/${record.kycId}`);
     };
     

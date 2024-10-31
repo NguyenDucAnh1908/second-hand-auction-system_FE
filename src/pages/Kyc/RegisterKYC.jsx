@@ -90,7 +90,6 @@ export default function KNCPage() {
         if (current === 0) {
             // Validate the fields before moving to the next step
             if (!validateFields()) {
-                alert("Vui lòng điền tất cả các trường bắt buộc.");
                 return; // Prevent moving to the next step
             }
             setCurrent(current + 1); // Move to the next step
@@ -262,7 +261,7 @@ export default function KNCPage() {
                             </Heading>
                             <InputDH
                                 shape="round"
-                                placeholder="01/01/2002"
+                                placeholder="2002-08-01"
                                 value={kycData.dob}
                                 onChange={(e) => setKycData({ ...kycData, dob: e.target.value })}
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"

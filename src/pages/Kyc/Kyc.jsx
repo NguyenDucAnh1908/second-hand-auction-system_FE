@@ -12,12 +12,11 @@ export default function KiemduyetStaffPage() {
     const { data: kycData, error, isLoading } = useGetKYCByIdQuery(id);
     const [updateKyc] = useUpdateKycMutation();
     const [status, setStatus] = useState(kycData?.data?.kycStatus);
-    const [reason, setReason] = useState(""); // Initialize state with an empty string
+    const [reason, setReason] = useState("");
 
-    // Update reason state when kycData changes
     useEffect(() => {
         if (kycData?.data) {
-            setReason(kycData.data.reason || ""); // Set initial reason
+            setReason(kycData.data.reason || "");
         }
     }, [kycData]);
 
@@ -38,7 +37,7 @@ export default function KiemduyetStaffPage() {
 
             const kycUpdateData = {
                 kycId: id,
-                kycData: { ...kycData.data, status: newStatus, reason }, // Include reason in the update
+                kycData: { ...kycData.data, status: newStatus, reason },
             };
             console.log("Data to be sent to API:", kycUpdateData);
 
@@ -64,11 +63,10 @@ export default function KiemduyetStaffPage() {
                         <br />
                         <Input.TextArea
                             rows={4}
-                            value={reason} // Bind the input value to state
-                            onChange={(e) => setReason(e.target.value)} // Update state on change
+                            value={reason}
+                            onChange={(e) => setReason(e.target.value)}
                             placeholder="Nhập lý do (nếu có)"
                         />
-
                         <div className="flex justify-center pt-6">
                             <div className="flex gap-5">
                                 <ButtonDH
@@ -80,7 +78,6 @@ export default function KiemduyetStaffPage() {
                                         Phê Duyệt
                                     </span>
                                 </ButtonDH>
-
                                 <ButtonDH
                                     shape="round"
                                     className="w-36 py-2 font-medium bg-yellow-400 text-gray-900 hover:bg-yellow-500 transition duration-300"
@@ -90,7 +87,6 @@ export default function KiemduyetStaffPage() {
                                         YC Bổ Sung
                                     </span>
                                 </ButtonDH>
-
                                 <ButtonDH
                                     shape="round"
                                     className="w-36 py-2 font-medium bg-red-500 text-white hover:bg-red-600 transition duration-300"
@@ -102,9 +98,6 @@ export default function KiemduyetStaffPage() {
                                 </ButtonDH>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
                 <div className="w-full h-px bg-gray-200 my-5" />
@@ -148,7 +141,7 @@ const Field = ({ label, value, type }) => (
         </Heading>
         {type === "date" ? (
             <DatePicker
-                value={new Date(value)} // Convert to Date object
+                value={new Date(value)}
                 readOnly
                 className="border rounded-md p-2"
             />
@@ -178,26 +171,16 @@ const GenderRow = ({ gender }) => (
 
 const DocumentImages = ({ frontUrl, backUrl }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex flex-col gap-2">
-            <Heading size="textmd" as="h3" className="text-lg font-semibold text-gray-800">
-                Ảnh CCCD (Mặt trước)
-            </Heading>
-            <img src={frontUrl} alt="Front Document" className="rounded-lg shadow-md" />
-        </div>
-        <div className="flex flex-col gap-2">
-            <Heading size="textmd" as="h3" className="text-lg font-semibold text-gray-800">
-                Ảnh CCCD (Mặt sau)
-            </Heading>
-            <img src={backUrl} alt="Back Document" className="rounded-lg shadow-md" />
-        </div>
+        <Field label="Hình ảnh mặt trước" value={frontUrl} type="text" />
+        <Field label="Hình ảnh mặt sau" value={backUrl} type="text" />
     </div>
 );
 
 const AddressSection = ({ address }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Field label="Thành Phố/Tỉnh thành" value={address?.province_name} type="text" />
-        <Field label="Quận/Huyện" value={address?.district_name} type="text" />
-        <Field label="Phường/Xã" value={address?.ward_name} type="text" />
-        <Field label="Địa chỉ" value={address?.address_name} type="text" />
+        <Field label="Thành Phố/Tỉnh thành" value={address?.province_name || 'N/A'} type="text" />
+        <Field label="Quận/Huyện" value={address?.district_name || 'N/A'} type="text" />
+        <Field label="Phường/Xã" value={address?.ward_name || 'N/A'} type="text" />
+        <Field label="Địa chỉ" value={address?.address_name || 'N/A'} type="text" />
     </div>
-)
+);

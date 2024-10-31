@@ -24,13 +24,8 @@ export const kycApiSlice = apiSlice.injectEndpoints({
         }),
 
         getKYCById: builder.query({
-            query: (id) => ({
-                url: `/kyc/${id}`,
-            }),
-            transformResponse: (response) => {
-                console.log(response);
-                return response || {};
-            },
+             query: (id) => `kyc/${id}`
+           
         }),
 
         updateKyc: builder.mutation({
