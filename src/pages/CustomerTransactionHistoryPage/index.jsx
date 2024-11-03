@@ -85,6 +85,18 @@ export default function CustomerTransactionHistoryPagePage() {
             width: 150,
         },
         {
+            title: "Người gửi", // Thêm cột Người gửi
+            dataIndex: "sender",
+            key: "sender",
+            width: 200,
+        },
+        {
+            title: "Người nhận", // Thêm cột Người nhận
+            dataIndex: "recipient",
+            key: "recipient",
+            width: 200,
+        },
+        {
             title: "Thêm",
             dataIndex: "more",
             key: "action",
@@ -100,11 +112,19 @@ export default function CustomerTransactionHistoryPagePage() {
     const data = dataTransactionWallet?.items?.map((item, index) => ({
         key: index + 1, // Dùng `index` làm key (có thể thay đổi theo nhu cầu)
         id: `#${item.transactionWalletCode}`, // Mã giao dịch
-        time: item.createAt, // Thời gian tạo giao dịch
-        transactionType: item.transactionType === "DEPOSIT" ? "Nạp tiền" : "Rút tiền", // Định dạng loại giao dịch
+        time: new Date(item.transactionDate).toLocaleString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+        }),        transactionType: item.transactionType === "DEPOSIT" ? "Nạp tiền" : "Rút tiền", // Định dạng loại giao dịch
         method: item.image || "Không xác định", // Phương thức (giả sử nếu `image` có URL là phương thức, nếu không thì để mặc định)
         status: item.transactionStatus === "COMPLETED" ? "Hoàn thành" : "Đang xử lý", // Trạng thái giao dịch
-        amount: item.amount, // Số tiền giao dịch
+        amount: item.amount,
+        sender: item.senderName,
+        recipient: item.recipientName,
     }));
 
     // Xử lý khi dữ liệu đang tải hoặc lỗi

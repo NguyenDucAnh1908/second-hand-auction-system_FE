@@ -51,11 +51,17 @@ export default function DepositMoneyPage() {
 
             console.log("Deposit data:", depositData);
 
-            if (depositData.data.checkoutUrl) {
+            if (depositData.data.paymentUrl) {
                 toast.success(depositData.message);
-                window.location.href = depositData.data.checkoutUrl;
+                window.location.href = depositData.data.paymentUrl;
             } else {
                 toast.error("Checkout URL not available.");
+            }
+
+            // Lưu transactionId vào localStorage
+            const transactionId = depositData.data.transactionId;
+            if (transactionId) {
+                localStorage.setItem("transactionId", transactionId);
             }
         } catch (err) {
             const errorMessage = err?.data?.message || "An error occurred";
@@ -157,20 +163,6 @@ export default function DepositMoneyPage() {
                                                         onChange={handleChange}
                                                     />
                                                 </div>
-                                                {/* <div className="mt-8 flex flex-col items-start justify-center gap-2">
-                                                    <Heading
-                                                        as="h5"
-                                                        className="text-[18px] font-medium text-blue_gray-900_01"
-                                                    >
-                                                        Tên ngân hàng
-                                                    </Heading>
-                                                    <Input
-                                                        size="large"
-                                                        placeholder="Tên ngân hàng"
-                                                        prefix={<BankOutlined />}
-                                                        className="w-[200%] rounded-md border border-gray-300 px-4 text-lg"
-                                                    />
-                                                </div> */}
                                                 <div className="mt-8 flex flex-col items-start justify-center gap-2">
                                                     <Heading
                                                         as="h6"
