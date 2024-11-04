@@ -153,7 +153,7 @@ export default function ListOfSellerProductPage() {
                                                         )}
                                                         className="flex h-[40px] w-[24%] items-center justify-center gap-4 rounded bg-bg-white px-4 text-[16px] text-blue_gray-600 shadow-xs sm:w-full "
                                                     />
-                                                    <Link to="/registerproduct" className="flex h-[40px] min-w-[152px] flex-row items-center justify-center gap-0.5 rounded-md" style={{ backgroundColor: '#28a745' }}>
+                                                    <Link to="/Dashboard-seller/registerproduct" className="flex h-[40px] min-w-[152px] flex-row items-center justify-center gap-0.5 rounded-md" style={{ backgroundColor: '#28a745' }}>
                                                         Tạo sản phẩm
                                                     </Link>
                                                 </div>

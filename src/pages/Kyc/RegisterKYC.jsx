@@ -82,16 +82,18 @@ export default function KNCPage() {
         setKycData({ ...kycData, gender: e.target.value });
     };
     const [createKyc, { isLoading, isSuccess, isError, error }] = useCreateKycMutation();
-    const handleSubmit = async (e) => {
+    const handleSubmit = async () => {
+
         try {
             const response = await createKyc(kycData).unwrap();
             console.log('KYC creation response:', response);
-            // Xử lý kết quả phản hồi ở đây
+            console.log("Front Document URL:", kycData.frontDocumentUrl);
+            console.log("Back Document URL:", kycData.backDocumentUrl);
         } catch (err) {
             console.error('Failed to create KYC:', err);
-            alert('Có lỗi xảy ra khi gửi dữ liệu KYC. Vui lòng thử lại.');
         }
     };
+
 
     const next = () => {
         if (current === 0) {
@@ -109,15 +111,8 @@ export default function KNCPage() {
         }
     };
 
-
-
-    // Trong render, thêm vào button hoặc form
-
-
-
     const prev = () => {
         if (current > 0) {
-            // Quay lại bước trước đó
             setCurrent(current - 1);
         }
     };
@@ -141,112 +136,45 @@ export default function KNCPage() {
         setPreviewOpen(true);
     };
     const handleChangeImage = async ({ fileList: newFileList }) => {
-        // Limit to 2 images
+        // Giới hạn số lượng ảnh tải lên
         if (newFileList.length > 2) {
             message.error("Bạn chỉ có thể tải lên tối đa 2 ảnh!");
             return;
         }
-    
-        // Set the new file list
+
         setFileList(newFileList);
-    
-        // Prepare an array to hold the URLs of uploaded images
         const uploadedUrls = [];
-    
-        // Upload images using the UploadImage function from the hook
+
         for (const file of newFileList) {
-            // Ensure the file is an actual file object
-            const fileToUpload = file.originFileObj || file; // Fallback if originFileObj is not available
+            const fileToUpload = file.originFileObj || file; // Fallback nếu originFileObj không có
             if (fileToUpload) {
                 try {
-                    const result = await UploadImage(fileToUpload);
-                    uploadedUrls.push(result); // Store the uploaded URL
-                    console.log("Upload successful:", result);
+                    const imageUrl = await UploadImage(fileToUpload); // Upload ảnh và lấy URL
+                    uploadedUrls.push(imageUrl);
                 } catch (error) {
                     message.error(`Tải lên ảnh ${file.name} thất bại: ${error.message}`);
                 }
             } else {
-                console.error("File object not valid:", file);
+                console.error("File object không hợp lệ:", file);
             }
         }
-    
-        // Check and update kycData only if both images are uploaded
+
+        // Cập nhật kycData khi có đủ hai ảnh
         if (uploadedUrls.length === 2) {
-            const frontDocumentUrl = uploadedUrls[0];
-            const backDocumentUrl = uploadedUrls[1];
-    
+            const [frontDocumentUrl, backDocumentUrl] = uploadedUrls;
+
             setKycData((prevKycData) => ({
                 ...prevKycData,
                 frontDocumentUrl,
                 backDocumentUrl,
             }));
-    
+
             console.log("Front Document URL:", frontDocumentUrl);
             console.log("Back Document URL:", backDocumentUrl);
         } else {
-            console.warn("Not enough images uploaded. Uploaded URLs:", uploadedUrls);
+            console.warn("Không đủ ảnh được tải lên. Các URL đã tải lên:", uploadedUrls);
         }
     };
-    
-    
-
-    // const validate = () => {
-    //     const newErrors = {};
-
-    //     // Validate Full Name
-    //     if (!kycData.fullName) newErrors.fullName = 'Họ tên đầy đủ là bắt buộc';
-
-    //     // Validate Email
-    //     if (!kycData.email) {
-    //         newErrors.email = 'Email là bắt buộc';
-    //     } else if (!/\S+@\S+\.\S+/.test(kycData.email)) {
-    //         newErrors.email = 'Email không hợp lệ';
-    //     }
-
-    //     // Validate Date of Birth
-    //     if (!kycData.dob) newErrors.dob = 'Ngày sinh là bắt buộc';
-
-    //     // Validate Phone Number
-    //     if (!kycData.phoneNumber) {
-    //         newErrors.phoneNumber = 'Số điện thoại là bắt buộc';
-    //     } else if (!/^\d{10}$/.test(kycData.phoneNumber.replace(/\D/g, ''))) {
-    //         newErrors.phoneNumber = 'Số điện thoại không hợp lệ';
-    //     }
-
-    //     // Validate Gender
-    //     if (!kycData.gender) newErrors.gender = 'Giới tính là bắt buộc';
-
-    //     // Validate Age
-    //     if (!kycData.age) {
-    //         newErrors.age = 'Tuổi là bắt buộc';
-    //     } else if (isNaN(kycData.age) || kycData.age <= 0) {
-    //         newErrors.age = 'Tuổi phải là số dương';
-    //     }
-
-    //     let valid = true;
-
-
-
-    //     // Kiểm tra CCCD/Hộ chiếu
-    //     if (!kycData.cccdNumber) {
-    //         newErrors.cccdNumber = 'Số CCCD/Hộ chiếu là bắt buộc';
-    //         valid = false;
-    //     } else {
-    //         newErrors.cccdNumber = ''; // Reset lỗi
-    //     }
-
-    //     // Kiểm tra ảnh tải lên
-    //     if (fileList.length === 0) {
-    //         newErrors.imageUpload = 'Vui lòng tải lên ảnh CCCD/Hộ chiếu.';
-    //         valid = false;
-    //     } else {
-    //         newErrors.imageUpload = ''; // Reset lỗi
-    //     }
-
-
-    //     setErrors(newErrors);
-    //     return Object.keys(newErrors).length === 0; // Return true if no errors
-    // };
 
     const handleDateChange = (date) => {
         setKycData({
@@ -254,12 +182,6 @@ export default function KNCPage() {
             dob: date ? date.format("YYYY-MM-DD") : null // Chuyển đổi ngày sang định dạng YYYY-MM-DD
         });
     };
-
-    const uploadButton = (
-        <div>
-            <div style={{ marginTop: 8 }}>Upload</div>
-        </div>
-    );
 
     const steps = [
         {
@@ -400,21 +322,25 @@ export default function KNCPage() {
 
                         {/* Upload CCCD/Hộ chiếu Image */}
                         <div className="flex flex-col gap-4 items-center justify-center p-4 bg-gray-50 rounded-lg shadow-lg">
-                            <h3 className="text-lg font-semibold text-blue-gray-900 mb-4">Tải lên ảnh CCCD/Hộ chiếu</h3>
+                            <h3 className="text-lg font-semibold text-blue-gray-900 mb-4">
+                                Tải lên ảnh CCCD/Hộ chiếu
+                            </h3>
                             <Upload
                                 listType="picture-card"
                                 onPreview={handlePreview}
                                 onChange={handleChangeImage}
                                 fileList={fileList}
-                                beforeUpload={() => false} // Prevent automatic upload
+                                beforeUpload={() => false} // Ngăn tải lên tự động
                             >
                                 {fileList.length < 2 ? (
                                     <div>
-                                        <UploadOutlined />
+                                        <PlusOutlined />
                                         <div style={{ marginTop: 8 }}>Chọn ảnh</div>
                                     </div>
                                 ) : null}
                             </Upload>
+
+                            {/* Hiển thị ảnh xem trước */}
                             {previewImage && (
                                 <Image
                                     preview={{
@@ -425,8 +351,10 @@ export default function KNCPage() {
                                 />
                             )}
 
-
-                            {fileList.length === 0 && <p className="text-red-500">Vui lòng tải lên ảnh CCCD/Hộ chiếu.</p>}
+                            {/* Thông báo khi chưa tải lên ảnh */}
+                            {fileList.length === 0 && (
+                                <p className="text-red-500">Vui lòng tải lên ảnh CCCD/Hộ chiếu.</p>
+                            )}
                         </div>
 
                     </div>

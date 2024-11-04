@@ -1,4 +1,4 @@
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import Sidebar from '../../../partials/Sidebar';
@@ -13,18 +13,18 @@ import {
     InputDH,
     TextArea,
 } from "../../../components";
-import React, {useEffect, useRef, useState} from "react";
-import {Select, Option} from "@material-tailwind/react";
-import {UploadOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, message, Upload, InputNumber, Image, Breadcrumb, Layout, Menu, theme, Spin} from 'antd';
+import React, { useEffect, useRef, useState } from "react";
+import { Select, Option } from "@material-tailwind/react";
+import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, message, Upload, InputNumber, Image, Breadcrumb, Layout, Menu, theme, Spin } from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
-import {useRegisterItemMutation} from "@/services/item.service.js";
-import {toast} from "react-toastify";
+import { useRegisterItemMutation } from "@/services/item.service.js";
+import { toast } from "react-toastify";
 import useHookUploadImage from "@/hooks/useHookUploadImage.js";
-import {useGetAuctionTypeQuery} from "@/services/auctionType.service.js";
-import {useGetCategoriesQuery} from "@/services/category.service.js";
+import { useGetAuctionTypeQuery } from "@/services/auctionType.service.js";
+import { useGetCategoriesQuery } from "@/services/category.service.js";
 
-const {Content, Sider} = Layout;
+const { Content, Sider } = Layout;
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ const props = {
 
 function RegisterProductPage() {
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [manufactureDate, setManufactureDate] = useState(null);
@@ -71,7 +71,7 @@ function RegisterProductPage() {
     ]);
     const [itemName, setItemName] = useState("");
     const [itemDescription, setItemDescription] = useState("");
-    const [itemCondition, setItemCondition] = useState("AVAILABLE");
+    const [itemCondition, setItemCondition] = useState("NEW");
     const [brandName, setBrandName] = useState("");
     const [imgItem, setImgItem] = useState([]);
     const [itemSpecific, setItemSpecific] = useState({
@@ -82,6 +82,7 @@ function RegisterProductPage() {
         dimension: '',
         manufacture_date: null,
         material: '',
+        price_buy_now: 0,
     });
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
@@ -89,7 +90,7 @@ function RegisterProductPage() {
     const [auctionType, setAuctionType] = useState(null);
     const userRef = useRef();
     const errRef = useRef();
-    const {UploadImage} = useHookUploadImage();
+    const { UploadImage } = useHookUploadImage();
     const {
         data: auctionTypes,
         error: errorAuctionType,
@@ -102,7 +103,7 @@ function RegisterProductPage() {
         isLoading: isloadingCategories,
     } = useGetCategoriesQuery();
     console.log("DATA CATEGORIES: ", categories)
-    const [registerItem, {isLoading: isLoadingItem}] = useRegisterItemMutation();
+    const [registerItem, { isLoading: isLoadingItem }] = useRegisterItemMutation();
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
@@ -110,7 +111,7 @@ function RegisterProductPage() {
         setPreviewImage(file.url || file.preview);
         setPreviewOpen(true);
     };
-    const handleChange = ({fileList: newFileList}) => setFileList(newFileList);
+    const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
     const uploadButton = (
         <button
             style={{
@@ -119,7 +120,7 @@ function RegisterProductPage() {
             }}
             type="button"
         >
-            <PlusOutlined/>
+            <PlusOutlined />
             <div
                 style={{
                     marginTop: 8,
@@ -130,7 +131,7 @@ function RegisterProductPage() {
         </button>
     );
     const handleImgUpload = () => {
-        const images = fileList.map(file => ({image_url: file.url}));
+        const images = fileList.map(file => ({ image_url: file.url }));
         setImgItem(images);
     };
     const handleItemSpecificChange = (field, value) => {
@@ -201,8 +202,8 @@ function RegisterProductPage() {
     // };
     return (
         <>
-            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-                <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
+            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
                 <Content
                     style={{
                         padding: '0 48px',
@@ -235,7 +236,7 @@ function RegisterProductPage() {
                             }}
                             width={300}
                         >
-                            <Sidebar/>
+                            <Sidebar />
                         </Sider>
                         <Content
                             style={{
@@ -260,21 +261,6 @@ function RegisterProductPage() {
 
                                                 <div className="flex gap-[30px] self-stretch md:flex-col">
                                                     <div className="flex flex-1 flex-col gap-[34px] md:self-stretch">
-                                                        <div
-                                                            className=" flex flex-col items-start justify-center gap-1.5 md:mx-0">
-                                                            <Heading
-                                                                as="h3"
-                                                                className="font-jost text-[16px] font-medium text-blue_gray-900"
-                                                            >
-                                                                Tiêu đề
-                                                            </Heading>
-                                                            <InputDH
-                                                                shape="round"
-                                                                name="Title Field"
-                                                                placeholder={`Tiêu đề sản phẩm`}
-                                                                className="w-[88%] rounded-md border px-3.5 font-jost"
-                                                            />
-                                                        </div>
                                                         <div
                                                             className=" flex flex-col items-start justify-center gap-1.5 md:mx-0">
                                                             <Heading
@@ -319,14 +305,16 @@ function RegisterProductPage() {
                                                             >
                                                                 Mô tả
                                                             </Heading>
-                                                            <TextArea
+                                                            <InputDH
                                                                 shape="round"
+                                                               
                                                                 name="Description Area"
                                                                 placeholder={`Mô tả`}
                                                                 className="w-[88%] rounded-md !border !border-gray-200 px-5 font-jost leading-[10px] text-blue_gray-600"
                                                                 value={itemDescription}
                                                                 onChange={(e) => setItemDescription(e.target.value)}
                                                             />
+
                                                         </div>
                                                     </div>
 
@@ -375,7 +363,7 @@ function RegisterProductPage() {
                                                             <div
                                                                 className="flex items-center gap-[21px] self-stretch rounded-[20px] bg-blue-200_01 px-7 py-1.5 sm:px-5">
                                                                 <Upload {...props}>
-                                                                    <Button icon={<UploadOutlined/>}>Click to
+                                                                    <Button icon={<UploadOutlined />}>Click to
                                                                         Upload</Button>
                                                                 </Upload>
                                                                 <Heading
@@ -390,7 +378,7 @@ function RegisterProductPage() {
                                                             <div
                                                                 className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">
                                                                 <Heading as="p"
-                                                                         className="font-jost text-[16px] font-medium">
+                                                                    className="font-jost text-[16px] font-medium">
                                                                     Auction type
                                                                 </Heading>
                                                                 <div className="w-72 mt-4">
@@ -401,7 +389,7 @@ function RegisterProductPage() {
                                                                     >
                                                                         {isloadingAuctionType ? (
                                                                             <Option disabled>
-                                                                                <Spin/> {/* Spinner shown while loading */}
+                                                                                <Spin /> {/* Spinner shown while loading */}
                                                                             </Option>
                                                                         ) : errorAuctionType ? (
                                                                             <Option disabled>Error loading
@@ -409,7 +397,7 @@ function RegisterProductPage() {
                                                                         ) : (
                                                                             auctionTypes?.map((type) => (
                                                                                 <Option key={type.act_id}
-                                                                                        value={type.act_id}>
+                                                                                    value={type.act_id}>
                                                                                     {type.auction_typeName}
                                                                                 </Option>
                                                                             ))
@@ -417,85 +405,47 @@ function RegisterProductPage() {
                                                                     </Select>
                                                                 </div>
                                                             </div>
-
-                                                            {/*<div*/}
-                                                            {/*    className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">*/}
-                                                            {/*    <Heading*/}
-                                                            {/*        as="p"*/}
-                                                            {/*        className="font-jost text-[16px] font-medium "*/}
-                                                            {/*    >*/}
-                                                            {/*        Danh mục*/}
-                                                            {/*    </Heading>*/}
-                                                            {/*    <div className="w-72 mt-4">*/}
-                                                            {/*        <Select label="Danh mục">*/}
-                                                            {/*            <Option>Material Tailwind HTML</Option>*/}
-                                                            {/*            <Option>Material Tailwind React</Option>*/}
-                                                            {/*            <Option>Material Tailwind Vue</Option>*/}
-                                                            {/*            <Option>Material Tailwind Angular</Option>*/}
-                                                            {/*            <Option>Material Tailwind Svelte</Option>*/}
-                                                            {/*        </Select>*/}
-                                                            {/*    </div>*/}
-                                                            {/*</div>*/}
-                                                            {/*<div*/}
-                                                            {/*    className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">*/}
-                                                            {/*    <Heading*/}
-                                                            {/*        as="p"*/}
-                                                            {/*        className="font-jost text-[16px] font-medium "*/}
-                                                            {/*    >*/}
-                                                            {/*        Danh mục phụ*/}
-                                                            {/*    </Heading>*/}
-                                                            {/*    <div className="w-72 mt-4">*/}
-                                                            {/*        <Select label="Danh mục phụ">*/}
-                                                            {/*            <Option>Material Tailwind HTML</Option>*/}
-                                                            {/*            <Option>Material Tailwind React</Option>*/}
-                                                            {/*            <Option>Material Tailwind Vue</Option>*/}
-                                                            {/*            <Option>Material Tailwind Angular</Option>*/}
-                                                            {/*            <Option>Material Tailwind Svelte</Option>*/}
-                                                            {/*        </Select>*/}
-                                                            {/*    </div>*/}
-                                                            {/*</div>*/}
                                                             <div className="flex flex-col gap-6">
                                                                 {/* Danh mục chọn */}
                                                                 <div
                                                                     className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">
-                                                                    <Heading as="p"
-                                                                             className="font-jost text-[16px] font-medium">
+                                                                    <Heading as="p" className="font-jost text-[16px] font-medium">
                                                                         Danh mục
                                                                     </Heading>
-                                                                    <div className="w-72 mt-4">
+                                                                    <div className="w-72 mt-4 text-black">
                                                                         <Select
-                                                                            value={selectedCategory || undefined} // Gán giá trị mặc định nếu có
+                                                                            value={selectedCategory || undefined}
                                                                             onChange={(value) => {
+                                                                                console.log("Selected Category ID:", value); // Kiểm tra giá trị đã chọn
                                                                                 setSelectedCategory(value);
-                                                                                setSelectedSubCategory(null); // Đặt lại danh mục phụ khi thay đổi danh mục
+                                                                                setSelectedSubCategory(null);
                                                                             }}
                                                                             placeholder="Chọn danh mục"
                                                                             loading={isloadingCategories}
-                                                                            style={{width: "100%"}}
+                                                                            style={{ width: "100%" }}
                                                                         >
                                                                             {isloadingCategories ? (
-                                                                                <Option disabled>
-                                                                                    <Spin/>
-                                                                                </Option>
+                                                                                <Select.Option disabled>
+                                                                                    <Spin />
+                                                                                </Select.Option>
                                                                             ) : errorCategories ? (
-                                                                                <Option disabled>Error loading
-                                                                                    categories</Option>
+                                                                                <Select.Option disabled>Error loading categories</Select.Option>
                                                                             ) : (
                                                                                 categories?.map((category) => (
-                                                                                    <Option key={category.categoryId}
-                                                                                            value={category.categoryId}>
+                                                                                    <Select.Option key={category.categoryId} value={category.categoryId}>
                                                                                         {category.categoryName}
-                                                                                    </Option>
+                                                                                    </Select.Option>
                                                                                 ))
                                                                             )}
                                                                         </Select>
                                                                     </div>
                                                                 </div>
 
+
                                                                 <div
                                                                     className="flex flex-col items-start justify-center gap-1 w-[50%] bg-white">
                                                                     <Heading as="p"
-                                                                             className="font-jost text-[16px] font-medium">
+                                                                        className="font-jost text-[16px] font-medium">
                                                                         Danh mục phụ
                                                                     </Heading>
                                                                     <div className="w-72 mt-4">
@@ -506,11 +456,11 @@ function RegisterProductPage() {
                                                                             }}
                                                                             placeholder="Chọn danh mục phụ"
                                                                             disabled={!selectedCategory} // Vô hiệu hóa nếu không có danh mục nào được chọn
-                                                                            style={{width: "100%"}}
+                                                                            style={{ width: "100%" }}
                                                                         >
                                                                             {filteredSubCategories.map((subCategory) => (
                                                                                 <Option key={subCategory.sc_id}
-                                                                                        value={subCategory.sc_id}>
+                                                                                    value={subCategory.sc_id}>
                                                                                     {subCategory.sub_category}
                                                                                 </Option>
                                                                             ))}
@@ -526,15 +476,29 @@ function RegisterProductPage() {
                                                                 >
                                                                     Trình trạng
                                                                 </Heading>
-                                                                <div className="w-72 mt-4">
-                                                                    <Select label="Trình trạng">
-                                                                        <Option>Material Tailwind HTML</Option>
-                                                                        <Option>Material Tailwind React</Option>
-                                                                        <Option>Material Tailwind Vue</Option>
-                                                                        <Option>Material Tailwind Angular</Option>
-                                                                        <Option>Material Tailwind Svelte</Option>
-                                                                    </Select>
+                                                                <div className="flex flex-col items-start justify-center gap-1 w-[50%]">
+                                                                    <Heading
+                                                                        as="p"
+                                                                        className="font-jost text-[16px] font-medium text-blue_gray-900"
+                                                                    >
+                                                                        Trình trạng
+                                                                    </Heading>
+                                                                    <div className="w-72 mt-4">
+                                                                        <Select
+                                                                            label="Trình trạng"
+                                                                            value={itemCondition} // Truyền giá trị mặc định từ state
+                                                                            onChange={(value) => setItemCondition(value)} // Cập nhật state khi thay đổi
+                                                                        >
+                                                                            <Option value="AVAILABLE">AVAILABLE</Option>
+                                                                            <Option value="DAMAGED">DAMAGED</Option>
+                                                                            <Option value="NEW">NEW</Option>
+                                                                            <Option value="USED_GOOD">USED_GOOD</Option>
+                                                                            <Option value="USED_FAIR">USED_FAIR</Option>
+                                                                            <Option value="REFURBISHED">REFURBISHED</Option>
+                                                                        </Select>
+                                                                    </div>
                                                                 </div>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -595,7 +559,7 @@ function RegisterProductPage() {
                                                                 as="p"
                                                                 className="font-jost text-[16px] font-medium text-blue_gray-900"
                                                             >
-                                                                type
+                                                                Loại
                                                             </Heading>
                                                             <InputDH
                                                                 shape="round"
@@ -628,7 +592,7 @@ function RegisterProductPage() {
                                                                 as="p"
                                                                 className="font-jost text-[16px] font-medium text-blue_gray-900"
                                                             >
-                                                                original
+                                                                Original
                                                             </Heading>
                                                             <InputDH
                                                                 shape="round"
@@ -645,7 +609,7 @@ function RegisterProductPage() {
                                                                 as="p"
                                                                 className="font-jost text-[16px] font-medium text-blue_gray-900"
                                                             >
-                                                                material
+                                                                Chất liệu
                                                             </Heading>
                                                             <InputDH
                                                                 shape="round"
@@ -656,60 +620,41 @@ function RegisterProductPage() {
                                                                 onChange={(e) => handleItemSpecificChange('material', e.target.value)}
                                                             />
                                                         </div>
-                                                        {/*<div*/}
-                                                        {/*    className="flex flex-col items-start justify-center gap-1.5">*/}
-                                                        {/*    <Heading*/}
-                                                        {/*        as="p"*/}
-                                                        {/*        className="font-jost text-[16px] font-medium text-blue_gray-900"*/}
-                                                        {/*    >*/}
-                                                        {/*        manufacture_date*/}
-                                                        {/*    </Heading>*/}
-                                                        {/*    <DatePicker*/}
-                                                        {/*        selected={itemSpecific.manufacture_date}*/}
-                                                        {/*        onChange={(date) => handleItemSpecificChange('manufacture_date', date)}*/}
-                                                        {/*        placeholderText="Chọn ngày sản xuất"*/}
-                                                        {/*        className="gap-4 self-stretch rounded-md border border-solid border-gray-200 px-3 font-jost w-full"*/}
-                                                        {/*        dateFormat="dd/MM/yyyy"*/}
-                                                        {/*        popperPlacement="bottom"*/}
-                                                        {/*        isClearable*/}
-                                                        {/*        showMonthYearDropdown/>*/}
-                                                        {/*</div>*/}
-
-                                                        {/*<div*/}
-                                                        {/*    className="flex flex-col items-start justify-center gap-1.5">*/}
-                                                        {/*    <Heading*/}
-                                                        {/*        as="p"*/}
-                                                        {/*        className="font-jost text-[16px] font-medium text-blue_gray-900"*/}
-                                                        {/*    >*/}
-                                                        {/*        Phần trăm*/}
-                                                        {/*    </Heading>*/}
-                                                        {/*    <InputDH*/}
-                                                        {/*        shape="round"*/}
-                                                        {/*        name="Percentage Field"*/}
-                                                        {/*        placeholder={`Phần trăm giá trị sản phẩm`}*/}
-                                                        {/*        className="w-[88%] rounded-md border px-3.5 font-jost"*/}
-                                                        {/*    />*/}
-                                                        {/*</div>*/}
-                                                    </div>
-                                                    <div className="flex w-full flex-col items-end gap-5">
-                                                        <div
-                                                            className="flex w-[86%] flex-col items-start justify-center gap-1 md:w-full">
+                                                        <div className="flex flex-col items-start justify-center gap-1.5">
                                                             <Heading
                                                                 as="p"
                                                                 className="font-jost text-[16px] font-medium text-blue_gray-900"
                                                             >
-                                                                Nguồn gốc/Xuất xứ
+                                                                Giá mua ngay
                                                             </Heading>
-                                                            <TextArea
-                                                                placeholder="Nguồn gốc/Xuất xứ"
-                                                                autoSize={{
-                                                                    minRows: 2,
-                                                                    maxRows: 4,
-                                                                }}
-                                                                className="w-full h-1/4 p-3 rounded-md border border-gray-300"
-                                                            />
+                                                            <InputDH
+                                                                shape="round"
+                                                                name="Price Field"
+                                                                placeholder="Giá mua ngay"
+                                                                className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                                value={itemSpecific.price_buy_now}
+                                                                onChange={(e) => handleItemSpecificChange('price', e.target.value)}
 
+                                                            />
                                                         </div>
+
+                                                        <div>
+                                                            <Heading
+                                                                as="p"
+                                                                className="font-jost text-[16px] font-medium text-blue_gray-900"
+                                                            >
+                                                                Phần trăm
+                                                            </Heading>
+                                                            <InputDH
+                                                                shape="round"
+                                                                name="Percentage Field"
+                                                                placeholder={`Phần trăm giá trị sản phẩm`}
+                                                                className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                            />
+                                                            <div>
+                                                            </div>
+                                                        </div>
+
                                                         {/*<div*/}
                                                         {/*    className="flex w-[86%] flex-col items-start justify-center gap-1 md:w-full">*/}
                                                         {/*    <Heading*/}
@@ -856,9 +801,9 @@ function RegisterProductPage() {
                             </div>
                         </Content>
                     </Layout>
-                </Content>
-                <FooterBK/>
-            </Layout>
+                </Content >
+                <FooterBK />
+            </Layout >
         </>
     );
 }

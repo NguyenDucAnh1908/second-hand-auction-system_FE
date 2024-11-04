@@ -55,7 +55,7 @@ export default function ProductPage() {
     const dispatch = useDispatch();
     const filters = useSelector(
         (state) =>
-            state.item || {keyword: "", min: 0, max: 1600000000, scIds: []}
+            state.item || {keyword: "", min: 0, max: 16000000, scIds: []}
     );
     const {
         data, error: errorItem,

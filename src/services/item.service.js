@@ -1,4 +1,4 @@
-import {apiSlice} from "../redux/api/apiSlice.js";
+import { apiSlice } from "../redux/api/apiSlice.js";
 
 export const itemApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -45,7 +45,7 @@ export const itemApiSlice = apiSlice.injectEndpoints({
         }),
 
         getItemDetail: builder.query({
-            query: ({id}) => `/item/detail/${encodeURIComponent(id)}`,
+            query: ({ id }) => `/item/detail/${encodeURIComponent(id)}`,
             transformResponse: (response) => response.data,
         }),
 
@@ -67,7 +67,7 @@ export const itemApiSlice = apiSlice.injectEndpoints({
         }),
 
         getAuctionProcessDetail: builder.query({
-            query: ({id}) => `/item/auction-process/${encodeURIComponent(id)}`,
+            query: ({ id }) => `/item/auction-process/${encodeURIComponent(id)}`,
             transformResponse: (response) => response.data,
         }),
 
@@ -92,7 +92,7 @@ export const itemApiSlice = apiSlice.injectEndpoints({
             query: (credentials) => ({
                 url: "/item",
                 method: "POST",
-                body: {...credentials},
+                body: { ...credentials },
             }),
         }),
 
@@ -112,6 +112,15 @@ export const itemApiSlice = apiSlice.injectEndpoints({
                 };
             },
         }),
+
+        createItem: builder.mutation({
+            query: (credentials) => ({
+                url: "/item",
+                method: "POST",
+                body: { ...credentials },
+            }),
+            transformResponse: (response) => response.data,
+        }),
     }),
 });
 
@@ -124,5 +133,6 @@ export const {
     useGetAuctionProcessDetailQuery,
     useGetAuctionCompletedItemQuery,
     useRegisterItemMutation,
-    useGetItemByUserQuery
+    useGetItemByUserQuery,
+    useCreateItemMutation,
 } = itemApiSlice;

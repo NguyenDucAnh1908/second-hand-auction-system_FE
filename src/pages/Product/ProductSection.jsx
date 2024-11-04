@@ -11,87 +11,7 @@ import {useGetFeatureItemsQuery, useGetItemsFilterQuery} from "../../services/it
 import {setFilters} from "@/redux/item/itemSlice.js";
 
 
-const fashionItemsGrid = [
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
-    {
-        productImage: "images/img_image_30_4.png",
-        productTitle: "Thời trang",
-        productDescription: "Áo Hoodie Nike dành cho mùa đông lạnh",
-        reviewCount: "3,014 đánh giá",
-        originalPrice: "328.000đ",
-    },
 
-    // ... (other items remain unchanged)
-];
 
 
 export default function ProductSection({selectedBrands, onTagClose}) {
@@ -241,17 +161,6 @@ export default function ProductSection({selectedBrands, onTagClose}) {
                         ))}
                     </div>
 
-
-                    {/*<select*/}
-                    {/*    className="rounded-md border border-solid border-gray-200 text-blue_gray-900_01"*/}
-                    {/*    defaultValue=""*/}
-                    {/*>*/}
-                    {/*    <option value="" disabled hidden>*/}
-                    {/*        Sắp xếp*/}
-                    {/*    </option>*/}
-                    {/*    <option value="low-to-high">Giá thấp đến cao</option>*/}
-                    {/*    <option value="high-to-low">Giá cao đến thấp</option>*/}
-                    {/*</select>*/}
                 </div>
 
                 <a href="/auction">
