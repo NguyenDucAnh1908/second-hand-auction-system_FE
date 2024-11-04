@@ -1,4 +1,4 @@
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import {
     Img,
     Text,
@@ -7,30 +7,30 @@ import {
     SelectBox,
     InputDH,
 } from "../../components";
-import {CloseSVG} from "../../components/InputDH/close.jsx";
+import { CloseSVG } from "../../components/InputDH/close.jsx";
 import NumberRow from "../../components/NumberRow";
-import React, {useState} from "react";
-import {TabPanel, TabList, Tab, Tabs} from "react-tabs";
+import React, { useState } from "react";
+import { TabPanel, TabList, Tab, Tabs } from "react-tabs";
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {Table, Button, theme, Layout, Breadcrumb, Menu} from "antd";
-import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
-import {useGetTransactionWalletQuery} from "@/services/transactionWallet.service.js";
+import { Table, Button, theme, Layout, Breadcrumb, Menu } from "antd";
+import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
+import { useGetTransactionWalletQuery } from "@/services/transactionWallet.service.js";
 import Pagination from "@/components/Pagination/index.jsx";
 
 
 const dropDownOptions = [
-    {label: "Option1", value: "option1"},
-    {label: "Option2", value: "option2"},
-    {label: "Option3", value: "option3"},
+    { label: "Option1", value: "option1" },
+    { label: "Option2", value: "option2" },
+    { label: "Option3", value: "option3" },
 ];
 
-const {Content, Sider} = Layout;
+const { Content, Sider } = Layout;
 export default function CustomerTransactionHistoryPagePage() {
     const [searchBarValue8, setSearchBarValue8] = React.useState("");
     const [page, setPage] = useState(1);
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const {
         data: dataTransactionWallet,
@@ -78,9 +78,9 @@ export default function CustomerTransactionHistoryPagePage() {
             dataIndex: "amount",
             key: "amount",
             render: (text, record) => (
-                <span style={{color: record.amount > 0 ? "green" : "red"}}>
-        {record.amount > 0 ? `+${text}` : text} đ
-      </span>
+                <span style={{ color: record.amount > 0 ? "green" : "red" }}>
+                    {record.amount > 0 ? `+${text}` : text} đ
+                </span>
             ),
             width: 150,
         },
@@ -119,7 +119,8 @@ export default function CustomerTransactionHistoryPagePage() {
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
-        }),        transactionType: item.transactionType === "DEPOSIT" ? "Nạp tiền" : "Rút tiền", // Định dạng loại giao dịch
+        }),
+        transactionType: item.transactionType === "DEPOSIT" ? "Nạp tiền" : "Rút tiền", // Định dạng loại giao dịch
         method: item.image || "Không xác định", // Phương thức (giả sử nếu `image` có URL là phương thức, nếu không thì để mặc định)
         status: item.transactionStatus === "COMPLETED" ? "Hoàn thành" : "Đang xử lý", // Trạng thái giao dịch
         amount: item.amount,
@@ -127,34 +128,13 @@ export default function CustomerTransactionHistoryPagePage() {
         recipient: item.recipientName,
     }));
 
-    // Xử lý khi dữ liệu đang tải hoặc lỗi
     if (isLoadingTransactionWallet) return <div>Loading...</div>;
     if (isErrorTransactionWallet) return <div>Error: {errorTransactionWallet.message}</div>;
-// Data của bảng
-//     const data = [
-//         {
-//             key: "1",
-//             id: "#1920",
-//             time: "12/9/2024 21:29",
-//             transactionType: "Nạp tiền",
-//             method: "Tp Bank",
-//             status: "Hoàn thành",
-//             amount: 250000,
-//         },
-//         {
-//             key: "2",
-//             id: "#1918",
-//             time: "12/9/2024 21:29",
-//             transactionType: "Nạp tiền",
-//             method: "Pay OS",
-//             status: "Hoàn thành",
-//             amount: +250000,
-//         },
-//     ];
+
     return (
         <>
-            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-                <Header2/>
+            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <Header2 />
                 <Content
                     style={{
                         padding: '0 48px',
@@ -186,7 +166,7 @@ export default function CustomerTransactionHistoryPagePage() {
                             }}
                             width={300}
                         >
-                            <SiderUserBK/>
+                            <SiderUserBK />
                         </Sider>
                         <Content
                             style={{
@@ -202,7 +182,7 @@ export default function CustomerTransactionHistoryPagePage() {
                             >
                                 Lịch sử nạp tiền
                             </Heading>
-                            <Table columns={columns} dataSource={data} bordered pagination={false}/>
+                            <Table columns={columns} dataSource={data} bordered pagination={false} />
                             {/*<Pagination className="ml-[290px]" />*/}
                             <div className="flex justify-center items-center mt-4">
                                 <Pagination
@@ -215,7 +195,7 @@ export default function CustomerTransactionHistoryPagePage() {
                     </Layout>
                 </Content>
                 <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
+                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
             </Layout>
         </>
     );

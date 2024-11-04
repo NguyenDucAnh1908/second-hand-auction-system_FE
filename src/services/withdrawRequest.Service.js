@@ -11,4 +11,4 @@ export const withdrawApiSlice = apiSlice.injectEndpoints({
     }),
 });
 
-export const { useLazyGetResultVNPayQuery } = withdrawApiSlice;
+export const { useGetResultVNPayQuery } = withdrawApiSlice;

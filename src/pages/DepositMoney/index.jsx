@@ -19,7 +19,6 @@ const { Content, Sider } = Layout;
 
 export default function DepositMoneyPage() {
     const [paymentMethod, setPaymentMethod] = useState("VN_PAYMENT");
-    const [bankName, setBankName] = useState("QR_CODE");
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState("");
     const [returnSuccess, setReturnSuccess] = useState("http://localhost:5173/SuccessfullyPayment");
@@ -46,7 +45,7 @@ export default function DepositMoneyPage() {
 
         try {
             const depositData = await depositUser({
-                paymentMethod, bankName, description, amount, returnSuccess, returnError,
+                paymentMethod, description, amount, returnSuccess, returnError,
             }).unwrap();
 
             console.log("Deposit data:", depositData);

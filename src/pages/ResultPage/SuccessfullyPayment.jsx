@@ -1,32 +1,54 @@
-import { useEffect } from "react";
-import { Button, Result, Spin } from 'antd';
-import { useNavigate } from "react-router-dom";
-import { useLazyGetResultVNPayQuery } from "@/services/withdrawRequest.Service.js";
+import React, { useEffect } from "react";
+import { Button, Result } from 'antd';
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useGetResultVNPayQuery } from "../../services/withdrawRequest.Service";
 
 const SuccessfullyPayment = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+
+    // Lấy các tham số từ URL
+    const vnp_Amount = searchParams.get("vnp_Amount");
+    const vnp_BankCode = searchParams.get("vnp_BankCode");
+    const vnp_BankTranNo = searchParams.get("vnp_BankTranNo");
+    const vnp_CardType = searchParams.get("vnp_CardType");
+    const vnp_OrderInfo = searchParams.get("vnp_OrderInfo");
+    const vnp_PayDate = searchParams.get("vnp_PayDate");
+    const vnp_ResponseCode = searchParams.get("vnp_ResponseCode");
+    const vnp_TmnCode = searchParams.get("vnp_TmnCode");
+    const vnp_TransactionNo = searchParams.get("vnp_TransactionNo");
+    const vnp_TransactionStatus = searchParams.get("vnp_TransactionStatus");
+    const vnp_TxnRef = searchParams.get("vnp_TxnRef");
+    const vnp_SecureHash = searchParams.get("vnp_SecureHash");
+    
+    // Lấy transactionId từ localStorage
     const transactionId = localStorage.getItem("transactionId");
 
-    // Using lazy hook to fetch transaction information when needed
-    const [getResultVNPay, { data, error, isLoading }] = useLazyGetResultVNPayQuery();
-
-    useEffect(() => {
-        if (transactionId) {
-            // Call getResultVNPay with transactionId when component mounts
-            getResultVNPay({ transactionId });
-        }
-    }, [transactionId, getResultVNPay]);
+    // Gọi hook API để kiểm tra thông tin giao dịch
+    const { data, error, isLoading } = useGetResultVNPayQuery({
+        vnp_Amount,
+        vnp_BankCode,
+        vnp_BankTranNo,
+        vnp_CardType,
+        vnp_OrderInfo,
+        vnp_PayDate,
+        vnp_ResponseCode,
+        vnp_TmnCode,
+        vnp_TransactionNo,
+        vnp_TransactionStatus,
+        vnp_TxnRef,
+        vnp_SecureHash,
+        transactionId, 
+    });
+    console.log("Amount to deposit:", vnp_Amount);
 
     useEffect(() => {
         if (data) {
             console.log("Transaction Data:", data);
-            // Clear transactionId from localStorage if necessary
-            localStorage.removeItem("transactionId");
         }
 
         if (error) {
             console.error("Error fetching transaction:", error);
-            // Optional: You might want to show a notification to the user about the error
         }
     }, [data, error]);
 
@@ -37,12 +59,15 @@ const SuccessfullyPayment = () => {
     return (
         <div>
             {isLoading ? (
-                <Spin size="large" tip="Đang xử lý thông tin giao dịch..." />
+                <Result
+                    status="info"
+                    title="Đang xử lý thông tin giao dịch..."
+                />
             ) : (
                 <Result
                     status="success"
                     title="Nạp tiền thành công!"
-                    subTitle={data ? "Thông tin giao dịch đã được xử lý." : "Có lỗi xảy ra. Vui lòng thử lại."}
+                    subTitle="Thông tin giao dịch đã được cập nhật."
                     extra={[
                         <Button onClick={navigateToTransaction} type="primary" key="console">
                             Go to Transaction History

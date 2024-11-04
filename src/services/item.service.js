@@ -95,6 +95,23 @@ export const itemApiSlice = apiSlice.injectEndpoints({
                 body: {...credentials},
             }),
         }),
+
+        getItemByUser: builder.query({
+            query: (paging) => ({
+                url: "item/product-user",
+                params: {
+                    page: paging.page || 0,
+                    limit: paging.limit || 10,
+                },
+            }),
+            transformResponse: (response) => {
+                return {
+                    items: response.data || [],
+                    totalPages: response.data.totalPages || 0,
+                    totalProducts: response.data.totalElements || 0,
+                };
+            },
+        }),
     }),
 });
 
@@ -107,4 +124,5 @@ export const {
     useGetAuctionProcessDetailQuery,
     useGetAuctionCompletedItemQuery,
     useRegisterItemMutation,
+    useGetItemByUserQuery
 } = itemApiSlice;
