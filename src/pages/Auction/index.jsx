@@ -15,13 +15,17 @@ import UserProfile from "../../components/UserProfile";
 import UserStatistics from "../../components/UserStatistics";
 import AuctionSection from "./AuctionSection";
 import RecommendedProductsSection from "./RecommendedProductsSection";
-import React, { Suspense, useEffect, useState } from "react";
+import React from "react";
 import { Avatar, Empty, Spin } from "antd";
 import { AntDesignOutlined } from "@ant-design/icons";
 import { Flex, Rate, Typography, Tabs } from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import { useGetItemDetailQuery } from "@/services/item.service.js";
-import { useParams } from "react-router-dom";
+import { useParams , useLocation } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useGetSellerInformationByAuctionIdQuery } from "../../services/sellerinformation.service.js";
+
 
 export default function AuctionPage() {
     const [sliderState, setSliderState] = React.useState(0);
@@ -30,12 +34,29 @@ export default function AuctionPage() {
     const [activeTabKey, setActiveTabKey] = useState("1");
     const { id } = useParams();
     const { data, error, isLoading, isSuccess } = useGetItemDetailQuery({ id });
+  
     const handleToggle = () => {
         setExpanded((prev) => !prev);
     };
     const onChange = (key) => {
         setActiveTabKey(key);
     };
+
+
+    const [auctionId, setAuctionId] = useState(null);
+
+    useEffect(() => {
+        const id = localStorage.getItem('auctionItemId');
+        console.log('auction ID from local storage:', id); 
+        if (id) {
+            setAuctionId(id);
+        }
+    }, []);
+
+    const { data: sellerInfo, error: sellerInfoError, isLoading: loadingSellerInfo } = useGetSellerInformationByAuctionIdQuery(auctionId);
+
+    if (loadingSellerInfo) return <p>Loading seller information...</p>;
+    if (sellerInfoError) return <p>Error loading seller information: {sellerInfoError.message}</p>;
 
 
     // if (isLoading) return <p>Loading...</p>;
@@ -203,12 +224,12 @@ export default function AuctionPage() {
                         <div className="flex items-center my-8 gap-6">
                             <Avatar
                                 size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
-                                src="https://firebasestorage.googleapis.com/v0/b/traveldb-64f9c.appspot.com/o/459935214_566819402437595_6740881433351511181_n.jpg?alt=media&token=18035951-3053-46e8-b754-7936dc90e266"
+                                src={sellerInfo.avatar}
                             />
                             <div className="font-semibold text-2xl dark:text-white">
-                                <div>Jese Leos</div>
+                                <div>{sellerInfo.storeName}</div>
                                 <div className="text-base text-gray-500 dark:text-gray-400">
-                                    Joined in August 2014
+                                {sellerInfo.address}
                                 </div>
                             </div>
                         </div>

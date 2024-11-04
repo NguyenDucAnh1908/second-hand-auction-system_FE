@@ -1,24 +1,27 @@
-import {Text, Heading, RatingBar, Img} from "./..";
-import React, {useState} from "react";
-import {Button, Input} from "@material-tailwind/react";
-import {Image, Statistic, Col, Row, Checkbox, Modal, message} from 'antd';
-import {useNavigate} from "react-router-dom";
-import {useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery} from "@/services/auctionRegistrations.service.js";
-import {selectIsLoggedIn} from "../../redux/auth/authSlice";
-import {setCredentials} from "@/redux/auth/authSlice.js";
-import {setError, setLoading} from "@/redux/user/userSlice.js";
-import {useSelector} from "react-redux";
+import { Text, Heading, RatingBar, Img } from "./..";
+import React, { useState } from "react";
+import { Button, Input } from "@material-tailwind/react";
+import { Image, Statistic, Col, Row, Checkbox, Modal, message } from 'antd';
+import { useNavigate } from "react-router-dom";
+import { useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery } from "@/services/auctionRegistrations.service.js";
+import { selectIsLoggedIn } from "../../redux/auth/authSlice";
+import { setCredentials } from "@/redux/auth/authSlice.js";
+import { setError, setLoading } from "@/redux/user/userSlice.js";
+import { useSelector } from "react-redux";
 
-export default function ProductDetails21({product}) {
+export default function ProductDetails21({ product }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAuctionId, setSelectedAuctionId] = useState(product.itemId);
     const navigate = useNavigate();
     const isLoggedIn = useSelector(selectIsLoggedIn);
     const auctionEndDate = product.auction?.endDate || null;
     const auctionEndTime = product.auction?.end_time || null;
-    const handleNavigateToAuction = (auctionId) => {
-        navigate(`/Auction/${auctionId}`);
+    const handleNavigateToAuction = (itemId, auctionId) => {
+    
+        localStorage.setItem('auctionItemId', auctionId);
+        navigate(`/Auction/${itemId}`);
     };
+
     let deadline = null;
     if (auctionEndDate && auctionEndTime) {
         try {
@@ -37,13 +40,13 @@ export default function ProductDetails21({product}) {
         isLoading: isLoadingCheckRegister,
         isError: isErrorCheckRegister,
         error: errorCheckRegister
-    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? {auctionId: selectedAuctionId} : null, {
+    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? { auctionId: selectedAuctionId } : null, {
         skip: !selectedAuctionId,
     });
 
     const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.registration_status === "CONFIRMED"
     // console.log("checkRegister", checkRegister)
-    const [AuctionRegister, {isLoading: isLoadingAuctionRegister, error}] = useAuctionRegisterMutation();
+    const [AuctionRegister, { isLoading: isLoadingAuctionRegister, error }] = useAuctionRegisterMutation();
     const handleSubmitAuctionRegister = async (e) => {
         e.preventDefault();
 
@@ -52,13 +55,14 @@ export default function ProductDetails21({product}) {
                 auction_id: product.itemId, // Giả sử product.itemId là auction_id
             };
             const response = await AuctionRegister(auctionData).unwrap();
+
             navigate(`/Auction/${product.itemId}`);
             message.success(response.message || "Register auction successfully!");
         } catch (error) {
             message.error("Failed to register auction.");
         }
     };
-    const {Countdown} = Statistic;
+    const { Countdown } = Statistic;
     const showModal = () => {
         if (!isLoggedIn) {
             message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
@@ -126,7 +130,7 @@ export default function ProductDetails21({product}) {
                             title="Auction ends in"
                             value={deadline}
                             format="D Ngày H giờ m phút s giây"
-                            valueStyle={{fontWeight: 'normal', fontSize: '15px'}}
+                            valueStyle={{ fontWeight: 'normal', fontSize: '15px' }}
                         />
                     </div>
 
@@ -141,8 +145,8 @@ export default function ProductDetails21({product}) {
                     </button>
                     <button
                         className="w-full text-[16px] font-semibold leading-[150%] text-blue_gray-900_01 hover:text-blue-500 transition duration-300"
-                        onClick={() => handleNavigateToAuction(product.itemId)}
-                    >
+                        onClick={() => handleNavigateToAuction(product.itemId, product.auction.auction_id)}
+                        >
                         {product.itemName}
                     </button>
 
@@ -156,7 +160,7 @@ export default function ProductDetails21({product}) {
                                 viewBox="0 0 22 20"
                             >
                                 <path
-                                    d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                    d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
                             </svg>
                             <p className="ms-2 text-sm font-bold text-gray-900 dark:text-white">
                                 4.95
