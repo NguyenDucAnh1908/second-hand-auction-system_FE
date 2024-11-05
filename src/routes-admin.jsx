@@ -121,7 +121,7 @@ export const routesAdmin = [
     ],
   },
   {
-    title: "Management ",
+    title: "Management Transactions",
     layout: "dashboard",
     pages: [
       {
@@ -155,16 +155,6 @@ export const routesAdmin = [
       },
     ],
   },
-  // {
-  //   layout: "dashboard",
-  //   pages: [
-  //     {
-  //       name: "Quản Lý Đơn hàng",
-  //       path: "/StoreOrders/OrderManagementAdmin",
-  //       element: <OrderManagementAdmin />,
-  //     },
-  //   ],
-  // },
 ];
 
 export default routesAdmin;
