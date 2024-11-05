@@ -1,4 +1,4 @@
-import {useLocation, Link} from "react-router-dom";
+import {useLocation, Link, useNavigate} from "react-router-dom";
 import {
     Navbar,
     Typography,
@@ -28,14 +28,20 @@ import {
 import {useGetUserByIdQuery} from "@/services/user.service.js";
 import UserMenu from "@/components/DashboardSeller/DropdownProfile.jsx";
 import React from "react";
-
+import {logOut} from "@/redux/auth/authSlice.js";
+import {useDispatch} from "react-redux";
 export function DashboardNavbar() {
     const [controller, dispatch] = useMaterialTailwindController();
     const {fixedNavbar, openSidenav} = controller;
     const {pathname} = useLocation();
+    const navigate = useNavigate();
+    const  dispatchLogOut = useDispatch();
     const {data: userHeader, error, isLoading: isUserLoading, refetch} = useGetUserByIdQuery();
     const [layout, page] = pathname.split("/").filter((el) => el !== "");
-
+    const handleLogout = () => {
+        dispatchLogOut(logOut());
+        navigate("/login");
+    };
     return (
         <Navbar
             color={fixedNavbar ? "white" : "transparent"}
@@ -131,7 +137,7 @@ export function DashboardNavbar() {
                             <MenuItem className="flex items-center gap-2">
                                 {/* Icon SVG */}
                                 <PowerIcon className="h-5 w-5"/>
-                                <Typography variant="small" className="font-medium">
+                                <Typography variant="small" className="font-medium" onClick={handleLogout}>
                                     Log Out
                                 </Typography>
                             </MenuItem>

@@ -16,7 +16,6 @@ export default function LoginPage() {
       <div className="flex w-full flex-col gap-[100px] bg-gradient-to-b from-blue-gray-900 to-blue-black-900 text-white md:gap-[75px] sm:gap-[50px]"> {/* Gradient background */}
         {/* Login Section */}
         <LoginSection />
-       
       </div>
     </>
   );

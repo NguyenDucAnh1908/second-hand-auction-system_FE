@@ -25,7 +25,7 @@ export default function RegisterSection({
     const showModal = () => console.log("OTP Verified");
 
     const onChange = (text) => {
-        console.log('onChange:', text);
+        //console.log('onChange:', text);
         setOtp(text); // Update OTP state
     };
     const sharedProps = {onChange};
