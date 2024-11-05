@@ -19,7 +19,7 @@ import ManagementTransactions from "./pages/Admin/ManagementTransactions/index.j
 import ManagementWindrawOfSeller from "./pages/Admin/ManageWithdraw/index.jsx";
 import Payment from "./pages/Admin/Payment/index.jsx";
 import ManageKYC from "./pages/Admin/ManageKYC/index.jsx";
-
+import ProductPending from "./pages/Admin/ManageProduct/index.jsx";
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
@@ -61,8 +61,14 @@ export const routesAdmin = [
       },
       {
         icon: <UserCircleIcon {...icon} />,
+        name: "Danh sách thẩm định",
+        path: "/ProductPending",
+        element: <ProductPending />,
+      },
+      {
+        icon: <UserCircleIcon {...icon} />,
         name: "Thẩm định sản phẩm",
-        path: "/AppraisalForm",
+        path: "/AppraisalForm/:itemId",
         element: <AppraisalFormPage />,
       },
       {
@@ -84,6 +90,7 @@ export const routesAdmin = [
         //element: <OrderManagementAdmin />,
         element: <StoreOrders />,
       },
+
       {
 
         path: "/KiemduyetStaffPage/:id",
@@ -109,8 +116,8 @@ export const routesAdmin = [
   //     },
   //   ],
   // },
-//   {
-// =======
+  //   {
+  // =======
   {
     title: "Management Transactions",
     layout: "dashboard",
@@ -126,7 +133,7 @@ export const routesAdmin = [
         name: "Đơn rút tiền sellers",
         path: "/managementWithdrawOfSeller",
         element: <ManagementWindrawOfSeller />,
-      },   {
+      }, {
         icon: <TableCellsIcon {...icon} />,
         name: "Danh sach KYC",
         path: "/managementKYC",

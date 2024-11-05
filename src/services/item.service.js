@@ -121,6 +121,17 @@ export const itemApiSlice = apiSlice.injectEndpoints({
             }),
             transformResponse: (response) => response.data,
         }),
+
+        getItemAdmin:builder.query({
+            query: (paging) => ({
+                url: "item/pending",
+                params: {
+                    page: paging.page || 0,
+                    limit: paging.limit || 10,
+                },
+            }),
+           
+        }),
     }),
 });
 
@@ -135,4 +146,5 @@ export const {
     useRegisterItemMutation,
     useGetItemByUserQuery,
     useCreateItemMutation,
+    useGetItemAdminQuery,
 } = itemApiSlice;
