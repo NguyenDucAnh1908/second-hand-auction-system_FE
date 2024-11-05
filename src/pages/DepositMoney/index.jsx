@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 
 const dropDownOptions = [
     { label: "VN_PAY", value: "paymentMethod" },
-    { label: "PAY_OS", value: "paymentMethod" },
+  
 ];
 const { Content, Sider } = Layout;
 

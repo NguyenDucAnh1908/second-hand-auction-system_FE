@@ -96,14 +96,13 @@ function RegisterProductPage() {
         error: errorAuctionType,
         isLoading: isloadingAuctionType,
     } = useGetAuctionTypeQuery()
-    console.log("DATA AUCTION TYPE: ", auctionTypes)
+    // console.log("DATA AUCTION TYPE: ", auctionTypes)
     const {
         data: categories,
         error: errorCategories,
         isLoading: isloadingCategories,
     } = useGetCategoriesQuery();
-    console.log("DATA CATEGORIES: ", categories)
-    const [registerItem, { isLoading: isLoadingItem }] = useRegisterItemMutation();
+    // console.log("DATA CATEGORIES: ", categories)
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
@@ -131,8 +130,21 @@ function RegisterProductPage() {
         </button>
     );
     const handleImgUpload = () => {
-        const images = fileList.map(file => ({ image_url: file.url }));
+        console.log("File List:", fileList); // Kiểm tra giá trị của fileList
+    
+        if (fileList.length === 0) {
+            console.log("No files uploaded.");
+            return;
+        }
+        const images = fileList.map(file => ({ image_url: file.url })); 
         setImgItem(images);
+    };
+    
+    
+    
+    const handleAuctionTypeChange = (value) => {
+        console.log("Selected auction type:", value); 
+        setAuctionType(value);
     };
     const handleItemSpecificChange = (field, value) => {
         setItemSpecific((prev) => ({
@@ -141,27 +153,45 @@ function RegisterProductPage() {
         }));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const userData = await registerItem({
-                itemName,
-                itemDescription,
-                itemCondition,
-                brandName,
-                imgItem,
-                itemSpecific, // Include itemSpecific here
-                scId,
-                auctionType,
-            }).unwrap();
+    const [registerItem, { isLoading, isSuccess, isError, error }] = useRegisterItemMutation();
 
+    const handleSubmit = async (e) => {
+        handleImgUpload();  // Ensure images are prepared
+
+        const payload = {
+
+            item_name: itemName,
+            item_description: itemDescription,
+            item_condition: itemCondition,
+            brand_name: brandName,
+            img_item: imgItem,
+            item_specific: { ...itemSpecific, manufacture_date: manufactureDate },
+            sc_id: scId,
+            auction_type: auctionType,
+        };
+        console.log("loi", {
+            itemName,
+            itemDescription,
+            itemCondition,
+            brandName,
+            imgItem,
+            itemSpecific,
+            scId,
+            auctionType
+        });
+        try {
+            const userData = await registerItem(payload).unwrap();
             toast.success(userData.message);
+            console.log("ketquar",userData.message);
         } catch (err) {
-            const errorMessage = err?.data?.message || 'An error occurred';
+            const errorMessage = err?.data?.message || 'Error registering item';
             toast.error(errorMessage);
-            errRef.current.focus();
+            console.log("ketquar",errorMessage);
+
         }
     };
+
+
     useEffect(() => {
         console.log("Selected Category: ", selectedCategory);
     }, [selectedCategory]);
@@ -169,37 +199,16 @@ function RegisterProductPage() {
     useEffect(() => {
         if (selectedCategory) {
             setSelectedSubCategory(null); // Reset subcategory khi thay đổi category
+            setScId(1); // Reset scId khi thay đổi category
         }
     }, [selectedCategory]);
+
 
     // Lọc subcategories dựa trên selectedCategory
     const filteredSubCategories = categories?.find(
         (category) => category.categoryId === selectedCategory
     )?.subCategory || [];
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     handleImgUpload();  // Ensure images are prepared
-    //
-    //     const payload = {
-    //         item_name: itemName,
-    //         item_description: itemDescription,
-    //         item_condition: itemCondition,
-    //         brand_name: brandName,
-    //         img_item: imgItem,
-    //         item_specific: {...itemSpecific, manufacture_date: manufactureDate},
-    //         sc_id: scId,
-    //         auction_type: auctionType,
-    //     };
-    //
-    //     try {
-    //         const userData = await registerItem(payload).unwrap();
-    //         toast.success(userData.message);
-    //     } catch (err) {
-    //         const errorMessage = err?.data?.message || 'Error registering item';
-    //         toast.error(errorMessage);
-    //         errRef.current.focus();
-    //     }
-    // };
+
     return (
         <>
             <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -307,7 +316,7 @@ function RegisterProductPage() {
                                                             </Heading>
                                                             <InputDH
                                                                 shape="round"
-                                                               
+
                                                                 name="Description Area"
                                                                 placeholder={`Mô tả`}
                                                                 className="w-[88%] rounded-md !border !border-gray-200 px-5 font-jost leading-[10px] text-blue_gray-600"
@@ -385,20 +394,18 @@ function RegisterProductPage() {
                                                                     <Select
                                                                         label="Auction type"
                                                                         value={auctionType}
-                                                                        onChange={(value) => setAuctionType(value)}
+                                                                        onChange={handleAuctionTypeChange}
                                                                     >
                                                                         {isloadingAuctionType ? (
                                                                             <Option disabled>
                                                                                 <Spin /> {/* Spinner shown while loading */}
                                                                             </Option>
                                                                         ) : errorAuctionType ? (
-                                                                            <Option disabled>Error loading
-                                                                                types</Option>
+                                                                            <Option disabled>Error loading types</Option>
                                                                         ) : (
                                                                             auctionTypes?.map((type) => (
-                                                                                <Option key={type.act_id}
-                                                                                    value={type.act_id}>
-                                                                                    {type.auction_typeName}
+                                                                                <Option key={type.auction_type_id} value={type.auction_type_id}>
+                                                                                    {type.auction_type_name}
                                                                                 </Option>
                                                                             ))
                                                                         )}
@@ -459,8 +466,8 @@ function RegisterProductPage() {
                                                                             style={{ width: "100%" }}
                                                                         >
                                                                             {filteredSubCategories.map((subCategory) => (
-                                                                                <Option key={subCategory.sc_id}
-                                                                                    value={subCategory.sc_id}>
+                                                                                <Option key={subCategory.scId}
+                                                                                    value={subCategory.scId}>
                                                                                     {subCategory.sub_category}
                                                                                 </Option>
                                                                             ))}
@@ -481,7 +488,6 @@ function RegisterProductPage() {
                                                                         as="p"
                                                                         className="font-jost text-[16px] font-medium text-blue_gray-900"
                                                                     >
-                                                                        Trình trạng
                                                                     </Heading>
                                                                     <div className="w-72 mt-4">
                                                                         <Select
@@ -783,17 +789,28 @@ function RegisterProductPage() {
                                                 <div className="flex w-[38%] justify-between gap-5 md:w-full">
                                                     <ButtonDH
                                                         size="md"
-                                                        className="min-w-[152px] rounded-md bg-green-500 text-white hover:bg-green-600" // Thêm màu nền và màu chữ cho nút "Gửi thẩm định"
+                                                        className="min-w-[152px] rounded-md bg-green-500 text-white hover:bg-green-600"
+                                                        onClick={() => handleSubmit()}
                                                     >
                                                         Gửi thẩm định
                                                     </ButtonDH>
+
+                                                    {/* Hiển thị trạng thái */}
+                                                    {isLoading && <p>Creating item...</p>}
+                                                    {isSuccess && <p>Item created successfully!</p>}
+                                                    {isError && <p>Error: {error.message}</p>}
+
                                                     <ButtonDH
                                                         size="md"
-                                                        className="min-w-[152px] rounded-md bg-red-500 text-white hover:bg-red-600" // Thêm màu nền và màu chữ cho nút "Hủy bỏ"
+                                                        className="min-w-[152px] rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                        onClick={() => {
+                                                            // Hàm hủy bỏ hoặc reset dữ liệu nếu cần
+                                                        }}
                                                     >
                                                         Hủy bỏ
                                                     </ButtonDH>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
