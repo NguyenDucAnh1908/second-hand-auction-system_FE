@@ -26,6 +26,19 @@ const icon = {
 
 export const routesAdmin = [
   {
+    title: "Profile",
+    layout: "dashboard",
+    pages: [
+      {
+        icon: <UserCircleIcon {...icon} />,
+        name: "profile",
+        path: "/profile",
+        element: <Profile />,
+      }
+    ],
+  },
+  {
+    title: "dashboard",
     layout: "dashboard",
     pages: [
       {
@@ -33,21 +46,19 @@ export const routesAdmin = [
         name: "dashboard của admin",
         path: "/home",
         element: <Home />,
-      },
-      {
-        icon: <UserCircleIcon {...icon} />,
-        name: "profile",
-        path: "/profile",
-        element: <Profile />,
-      },
+      }
+    ],
+  },
+  {
+    title: "Management item",
+    layout: "dashboard",
+    pages: [
       {
         icon: <UserCircleIcon {...icon} />,
         name: "Danh sách sản phẩm",
         path: "/StaffProductList",
         element: <StaffProductListPage />,
       },
-
-
       {
         icon: <UserCircleIcon {...icon} />,
         name: "Thẩm định sản phẩm",
@@ -74,7 +85,7 @@ export const routesAdmin = [
         element: <StoreOrders />,
       },
       {
-       
+
         path: "/KiemduyetStaffPage/:id",
         element: <KiemduyetStaffPage />,
       },
@@ -127,16 +138,53 @@ export const routesAdmin = [
   //     },
   //   ],
   // },
+//   {
+// =======
   {
+    title: "Management ",
     layout: "dashboard",
     pages: [
       {
-        name: "Quản Lý Đơn hàng",
-        path: "/StoreOrders/OrderManagementAdmin",
-        element: <OrderManagementAdmin />,
+        icon: <TableCellsIcon {...icon} />,
+        name: "Giao dịch",
+        path: "/managementTransactions",
+        element: <ManagementTransactions />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Đơn rút tiền sellers",
+        path: "/managementWithdrawOfSeller",
+        element: <ManagementWindrawOfSeller />,
+      },   {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Danh sach KYC",
+        path: "/managementKYC",
+        element: <ManageKYC />,
+      },
+      {
+        icon: <InformationCircleIcon {...icon} />,
+        name: "notifications",
+        path: "/notifications",
+        element: <Notifications />,
+      },
+      {
+        icon: <InformationCircleIcon {...icon} />,
+        name: "Payments",
+        path: "/payments",
+        element: <Payment />,
       },
     ],
   },
+  // {
+  //   layout: "dashboard",
+  //   pages: [
+  //     {
+  //       name: "Quản Lý Đơn hàng",
+  //       path: "/StoreOrders/OrderManagementAdmin",
+  //       element: <OrderManagementAdmin />,
+  //     },
+  //   ],
+  // },
 ];
 
 export default routesAdmin;

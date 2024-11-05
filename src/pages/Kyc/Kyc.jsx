@@ -6,6 +6,7 @@ import { useGetKYCByIdQuery, useUpdateKycMutation } from "../../services/kyc.ser
 import { useParams } from 'react-router-dom';
 import { Input } from 'antd';
 import DatePicker from 'react-flatpickr';
+import { useNavigate } from 'react-router-dom';
 
 export default function KiemduyetStaffPage() {
     const { id } = useParams();
@@ -13,6 +14,7 @@ export default function KiemduyetStaffPage() {
     const [updateKyc] = useUpdateKycMutation();
     const [status, setStatus] = useState(kycData?.data?.kycStatus);
     const [reason, setReason] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (kycData?.data) {
@@ -45,6 +47,7 @@ export default function KiemduyetStaffPage() {
             console.log("API response:", response);
             setStatus(newStatus);
             alert("KYC updated successfully!");
+            navigate('/dashboard/managementKYC');
         } catch (error) {
             console.error("Error updating KYC:", error);
             alert("Failed to update KYC: " + error.message);

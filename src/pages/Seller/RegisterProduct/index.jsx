@@ -96,7 +96,7 @@ function RegisterProductPage() {
         error: errorAuctionType,
         isLoading: isloadingAuctionType,
     } = useGetAuctionTypeQuery()
-    // console.log("DATA AUCTION TYPE: ", auctionTypes)
+    console.log("DATA AUCTION TYPE: ", auctionTypes)
     const {
         data: categories,
         error: errorCategories,
@@ -129,21 +129,46 @@ function RegisterProductPage() {
             </div>
         </button>
     );
-    const handleImgUpload = () => {
-        console.log("File List:", fileList); // Kiểm tra giá trị của fileList
+    const handleImgUpload = async () => {
+        console.log("File List:", fileList);
     
         if (fileList.length === 0) {
             console.log("No files uploaded.");
             return;
         }
-        const images = fileList.map(file => ({ image_url: file.url })); 
-        setImgItem(images);
+    
+        const images = [];
+        for (const file of fileList) {
+            // Kiểm tra file.originFileObj trước khi upload
+            if (!file.originFileObj) {
+                console.error("File is missing originFileObj:", file);
+                continue; // Bỏ qua file không có originFileObj
+            }
+            try {
+                const imageUrl = await UploadImage(file.originFileObj); // Upload and get URL
+                images.push({ image_url: imageUrl }); // Lưu URL vào mảng images
+                console.log("Uploaded image:", imageUrl);
+            } catch (err) {
+                console.error("Error uploading image:", err); // Ghi lại lỗi nếu có
+            }
+        }
+        
+        // Đảm bảo images không rỗng trước khi set vào imgItem
+        if (images.length > 0) {
+            setImgItem(images); // Set imgItem với các URL đã upload
+        } else {
+            console.warn("No images were uploaded successfully."); // Cảnh báo nếu không có ảnh nào được upload
+        }
+    
+        console.log("Images to upload:", images);
     };
     
-    
-    
+
+
+
+
     const handleAuctionTypeChange = (value) => {
-        console.log("Selected auction type:", value); 
+        console.log("Selected auction type:", value);
         setAuctionType(value);
     };
     const handleItemSpecificChange = (field, value) => {
@@ -156,10 +181,11 @@ function RegisterProductPage() {
     const [registerItem, { isLoading, isSuccess, isError, error }] = useRegisterItemMutation();
 
     const handleSubmit = async (e) => {
-        handleImgUpload();  // Ensure images are prepared
-
+        if (e) e.preventDefault(); // Kiểm tra e trước khi gọi preventDefault
+    
+        await handleImgUpload(); // Chờ hàm upload ảnh hoàn thành
+    
         const payload = {
-
             item_name: itemName,
             item_description: itemDescription,
             item_condition: itemCondition,
@@ -169,27 +195,20 @@ function RegisterProductPage() {
             sc_id: scId,
             auction_type: auctionType,
         };
-        console.log("loi", {
-            itemName,
-            itemDescription,
-            itemCondition,
-            brandName,
-            imgItem,
-            itemSpecific,
-            scId,
-            auctionType
-        });
+        console.log("Payload gửi đến API:", payload);
+    
         try {
             const userData = await registerItem(payload).unwrap();
             toast.success(userData.message);
-            console.log("ketquar",userData.message);
+            console.log("Kết quả", userData.message);
         } catch (err) {
-            const errorMessage = err?.data?.message || 'Error registering item';
+            const errorMessage = err?.data?.message || 'Lỗi đăng ký sản phẩm';
             toast.error(errorMessage);
-            console.log("ketquar",errorMessage);
-
+            console.log("Kết quả lỗi", errorMessage);
         }
     };
+    
+    
 
 
     useEffect(() => {
@@ -404,8 +423,8 @@ function RegisterProductPage() {
                                                                             <Option disabled>Error loading types</Option>
                                                                         ) : (
                                                                             auctionTypes?.map((type) => (
-                                                                                <Option key={type.auction_type_id} value={type.auction_type_id}>
-                                                                                    {type.auction_type_name}
+                                                                                <Option key={type.act_id} value={type.act_id}>
+                                                                                    {type.auction_typeName}
                                                                                 </Option>
                                                                             ))
                                                                         )}
@@ -626,30 +645,33 @@ function RegisterProductPage() {
                                                                 onChange={(e) => handleItemSpecificChange('material', e.target.value)}
                                                             />
                                                         </div>
-                                                        <div className="flex flex-col items-start justify-center gap-1.5">
+                                                        <div className="flex flex-col items-start justify-center gap-1.5 w-[100%] bg-white">
                                                             <Heading
                                                                 as="p"
                                                                 className="font-jost text-[16px] font-medium text-blue_gray-900"
                                                             >
                                                                 Giá mua ngay
                                                             </Heading>
-                                                            <InputDH
-                                                                shape="round"
-                                                                name="Price Field"
+                                                            <InputNumber
+                                                                min={0}
                                                                 placeholder="Giá mua ngay"
-                                                                className="w-[88%] rounded-md border px-3.5 font-jost"
+                                                                className="w-full rounded-md border border-gray-300 px-3.5 font-jost text-blue_gray-900"
                                                                 value={itemSpecific.price_buy_now}
-                                                                onChange={(e) => handleItemSpecificChange('price', e.target.value)}
-
+                                                                onChange={(value) => handleItemSpecificChange('price_buy_now', value)}
+                                                                formatter={(value) =>
+                                                                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ₫'
+                                                                } // Định dạng số với đơn vị VNĐ
+                                                                parser={(value) => value.replace(/[^\d]/g, '')} // Chỉ nhận số khi lưu vào state
                                                             />
                                                         </div>
+
 
                                                         <div>
                                                             <Heading
                                                                 as="p"
                                                                 className="font-jost text-[16px] font-medium text-blue_gray-900"
                                                             >
-                                                                Phần trăm
+                                                                Phần trăm giá trị sử dụng
                                                             </Heading>
                                                             <InputDH
                                                                 shape="round"

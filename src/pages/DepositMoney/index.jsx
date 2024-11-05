@@ -47,7 +47,7 @@ export default function DepositMoneyPage() {
             const depositData = await depositUser({
                 paymentMethod, description, amount, returnSuccess, returnError,
             }).unwrap();
-
+                
             console.log("Deposit data:", depositData);
 
             if (depositData.data.paymentUrl) {

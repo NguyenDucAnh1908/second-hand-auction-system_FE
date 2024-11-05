@@ -224,7 +224,7 @@ export default function KNCPage() {
                         {/* Date of Birth Field */}
                         <div className="flex flex-col gap-1.5">
                             <Heading as="h3" className="text-[16px] font-medium text-blue_gray-900_01 text-left">
-                                Email
+                                Ngày tháng năm sinh
                             </Heading>
                             <DatePicker
                                 style={{ width: '100%' }}
