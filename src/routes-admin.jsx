@@ -155,34 +155,16 @@ export const routesAdmin = [
       },
     ],
   },
-  {
-    title: "auth pages",
-    layout: "auth",
-    pages: [
-      {
-        icon: <ServerStackIcon {...icon} />,
-        name: "sign in",
-        path: "/sign-in",
-        element: <SignIn />,
-      },
-      {
-        icon: <RectangleStackIcon {...icon} />,
-        name: "sign up",
-        path: "/sign-up",
-        element: <SignUp />,
-      },
-    ],
-  },
-  {
-    layout: "dashboard",
-    pages: [
-      {
-        name: "Quản Lý Đơn hàng",
-        path: "/StoreOrders/OrderManagementAdmin",
-        element: <OrderManagementAdmin />,
-      },
-    ],
-  },
+  // {
+  //   layout: "dashboard",
+  //   pages: [
+  //     {
+  //       name: "Quản Lý Đơn hàng",
+  //       path: "/StoreOrders/OrderManagementAdmin",
+  //       element: <OrderManagementAdmin />,
+  //     },
+  //   ],
+  // },
 ];
 
 export default routesAdmin;
