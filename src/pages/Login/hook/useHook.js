@@ -3,11 +3,14 @@ import {useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {setCredentials} from "../../../redux/auth/authSlice";
 import {useLoginMutation} from "../../../services/auth.service";
+import {message} from "antd";
 
 const useHook = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errMsg, setErrMsg] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
     const userRef = useRef();
     const errRef = useRef();
     const navigate = useNavigate();
@@ -28,8 +31,34 @@ const useHook = () => {
         setErrMsg("");
     }, [email, password]);
 
+    const handleUserInput = (e) => {
+        const value = e.target.value;
+        setEmail(value);
+        // Kiểm tra định dạng email
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Biểu thức chính quy cho email
+        if (!emailPattern.test(value)) {
+            setEmailError("Địa chỉ email không hợp lệ");
+        } else {
+            setEmailError(""); // Xóa thông báo lỗi nếu hợp lệ
+        }
+    };
+
+    const handlePwdInput = (e) => {
+        const value = e.target.value;
+        setPassword(value);
+        // Kiểm tra độ dài mật khẩu
+        if (value.length < 6) {
+            setPasswordError("Mật khẩu phải ít nhất 6 ký tự");
+        } else {
+            setPasswordError(""); // Xóa thông báo lỗi nếu hợp lệ
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (emailError || passwordError) {
+            return; // Ngừng nếu có lỗi
+        }
         try {
             const userData = await login({email, password}).unwrap();
             dispatch(setCredentials(userData));
@@ -44,21 +73,13 @@ const useHook = () => {
                 navigate("/");
             }
         } catch (err) {
-            if (!err?.originalStatus) {
-                setErrMsg("No Server Response");
-            } else if (err.originalStatus === 400) {
-                setErrMsg("Missing Username or Password");
-            } else if (err.originalStatus === 401) {
-                setErrMsg("Unauthorized");
-            } else {
-                setErrMsg("Login Failed");
-            }
-            errRef.current.focus();
+            //console.log(err.data.message)
+            message.error(err.data.message)
         }
     };
 
-    const handleUserInput = (e) => setEmail(e.target.value);
-    const handlePwdInput = (e) => setPassword(e.target.value);
+    // const handleUserInput = (e) => setEmail(e.target.value);
+    // const handlePwdInput = (e) => setPassword(e.target.value);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -70,6 +91,8 @@ const useHook = () => {
     return {
         email,
         password,
+        emailError,
+        passwordError,
         errMsg,
         isLoading,
         userRef,

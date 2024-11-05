@@ -88,36 +88,7 @@ export const routesAdmin = [
 
         path: "/KiemduyetStaffPage/:id",
         element: <KiemduyetStaffPage />,
-      },
-      {
-        icon: <TableCellsIcon {...icon} />,
-        name: "Giao dịch",
-        path: "/managementTransactions",
-        element: <ManagementTransactions />,
-      },
-      {
-        icon: <TableCellsIcon {...icon} />,
-        name: "Đơn rút tiền sellers",
-        path: "/managementWithdrawOfSeller",
-        element: <ManagementWindrawOfSeller />,
-      },   {
-        icon: <TableCellsIcon {...icon} />,
-        name: "Danh sach KYC",
-        path: "/managementKYC",
-        element: <ManageKYC />,
-      },
-      {
-        icon: <InformationCircleIcon {...icon} />,
-        name: "notifications",
-        path: "/notifications",
-        element: <Notifications />,
-      },
-      {
-        icon: <InformationCircleIcon {...icon} />,
-        name: "Payments",
-        path: "/payments",
-        element: <Payment />,
-      },
+      }
     ],
   },
   {
