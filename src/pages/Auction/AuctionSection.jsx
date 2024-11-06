@@ -141,9 +141,13 @@ export default function AuctionSection({dataItem, isSuccessItemDt, isRefetch}) {
                 footer={null}
             >
                 {isRegistered ? (
-                    <div style={{width: "100%", textAlign: "center"}}>
-                        <BidForm dataItem={dataItem}/>
+                    // <div style={{width: "100%", textAlign: "center"}}>
+                    //     <BidForm dataItem={dataItem}/>
+                    // </div>
+                    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+                        <BidForm dataItem={dataItem} />
                     </div>
+
                 ) : (
                     <Spin spinning={isLoadingAuctionRegister} tip="Loading...">
                         <form>

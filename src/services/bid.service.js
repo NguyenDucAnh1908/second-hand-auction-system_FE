@@ -6,8 +6,8 @@ export const bidApiSlice = apiSlice.injectEndpoints({
     // API tạo bid
     createBid: builder.mutation({
       query: (bidData) => ({
-        url: "/bids", // Đường dẫn cho API tạo bid
-        method: "POST", // Phương thức POST
+        url: "/bids",
+        method: "POST",
         body: bidData,
       }),
     }),
