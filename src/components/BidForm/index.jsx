@@ -5,7 +5,7 @@ import {useCreateBidMutation} from "@/services/bid.service.js";
 import {Text, ButtonDH, InputDH} from "./..";
 import {message, Spin} from "antd";
 
-export default function BidForm({dataItem}) {
+export default function BidForm({dataItem, cancelModel, isRefetchWinningBid}) {
     // Kiểm tra dữ liệu phiên đấu giá
     if (!dataItem || !dataItem.auction) {
         return <div>Không có dữ liệu phiên đấu giá.</div>;
@@ -28,10 +28,16 @@ export default function BidForm({dataItem}) {
         // }
 
         try {
-            await createBid({bidAmount: Number(maxBid), auctionId: selectedAuctionId}).unwrap();
-            alert("Đặt giá thầu thành công!");
+            const createAuctionBid = await createBid({
+                bidAmount: Number(maxBid),
+                auctionId: selectedAuctionId
+            }).unwrap();
+            // alert("Đặt giá thầu thành công!");
+            message.success(createAuctionBid?.message);
             setMaxBid("");
             //message.success()
+            isRefetchWinningBid();
+            cancelModel();
         } catch (error) {
             const errorMessage = error.data?.message
             message.warning(errorMessage)

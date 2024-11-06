@@ -21,7 +21,12 @@ import {useGetWinBidQuery} from "../../services/bid.service";
 export default function AuctionSection({dataItem, isSuccessItemDt, isRefetch}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAuctionId, setSelectedAuctionId] = useState(dataItem.auction.auction_id);
-    const {data: winningBid, error: fetchError2, isLoading: loading2} = useGetWinBidQuery(dataItem.auction.auction_id);
+    const {
+        data: winningBid,
+        error: fetchWinningBid,
+        isLoading: loadingWinningBid,
+        refetch: isRefetchWinningBid
+    } = useGetWinBidQuery(dataItem.auction.auction_id);
     const isLoggedIn = useSelector(selectIsLoggedIn);
     const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
@@ -144,8 +149,8 @@ export default function AuctionSection({dataItem, isSuccessItemDt, isRefetch}) {
                     // <div style={{width: "100%", textAlign: "center"}}>
                     //     <BidForm dataItem={dataItem}/>
                     // </div>
-                    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                        <BidForm dataItem={dataItem} />
+                    <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                        <BidForm dataItem={dataItem} cancelModel={handleCancel} isRefetchWinningBid={isRefetchWinningBid}/>
                     </div>
 
                 ) : (
