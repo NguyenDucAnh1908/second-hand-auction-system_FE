@@ -1,22 +1,27 @@
-import { Text, Img, Heading, ButtonDH } from "../../components";
+import {Text, Img, Heading, ButtonDH} from "../../components";
 import UserProfileImage from "../../components/UserProfileImage";
-import React, { Suspense, useEffect, useState } from "react";
-import { Checkbox, message, Modal, Statistic } from "antd";
-import { Rate } from "antd";
+import React, {Suspense, useEffect, useState} from "react";
+import {Checkbox, message, Modal, Spin, Statistic} from "antd";
+import {Rate} from "antd";
 import BidForm from "../../components/BidForm";
 import ImageGallery from "react-image-gallery";
 import 'react-image-gallery/styles/css/image-gallery.css';
-import { useSelector } from "react-redux";
-import { selectIsLoggedIn } from "@/redux/auth/authSlice.js";
-import { useNavigate } from "react-router-dom";
-import { useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery, useCheckUserInAuctionQuery } from "@/services/auctionRegistrations.service.js";
-import { Button } from "@material-tailwind/react";
-import { useGetWinBidQuery } from "../../services/bid.service";
+import {useSelector} from "react-redux";
+import {selectIsLoggedIn} from "@/redux/auth/authSlice.js";
+import {useNavigate} from "react-router-dom";
+import {
+    useAuctionRegisterMutation,
+    useGetCheckAuctionRegisterQuery,
+    useCheckUserInAuctionQuery
+} from "@/services/auctionRegistrations.service.js";
+import {Button} from "@material-tailwind/react";
+import {useGetWinBidQuery} from "../../services/bid.service";
 
-export default function AuctionSection({ dataItem, isSuccessItemDt }) {
+// eslint-disable-next-line react/prop-types
+export default function AuctionSection({dataItem, isSuccessItemDt, isRefetch}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAuctionId, setSelectedAuctionId] = useState(dataItem.auction.auction_id);
-    const { data: winningBid, error: fetchError2, isLoading: loading2 } = useGetWinBidQuery(dataItem.auction.auction_id);
+    const {data: winningBid, error: fetchError2, isLoading: loading2} = useGetWinBidQuery(dataItem.auction.auction_id);
     const isLoggedIn = useSelector(selectIsLoggedIn);
     const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
@@ -24,22 +29,6 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
     const auctionStartDate = dataItem.auction?.startDate || null;
     const auctionStartTime = dataItem.auction?.start_time || null;
 
-
-
-    //check các trường hợp date 
-    const getDeadline = (date, time) => {
-        if (date && time) {
-            const dateTimeString = `${date}T${time}`;
-            const deadline = new Date(dateTimeString).getTime();
-            return isNaN(deadline) ? null : deadline;
-        }
-        return null;
-    };
-
-    const auctionStartDeadline = getDeadline(auctionStartDate, auctionStartTime);
-    const auctionEndDeadline = getDeadline(auctionEndDate, auctionEndTime);
-
-    // State for managing countdown display
     const [auctionStatus, setAuctionStatus] = useState("");
 
     const formatDate = (timestamp) => {
@@ -52,71 +41,36 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
         });
     };
 
-    // Determine auction status based on current time and deadlines
-    useEffect(() => {
-        const updateAuctionStatus = () => {
-            const now = Date.now();
-
-            if (auctionStartDeadline && now < auctionStartDeadline) {
-                setAuctionStatus(`Phiên đấu giá bắt đầu vào ${formatDate(auctionStartDeadline)}`);
-            } else if (auctionStartDeadline && now >= auctionStartDeadline && auctionEndDeadline && now < auctionEndDeadline) {
-                setAuctionStatus("Auction is Live!");
-            } else if (auctionEndDeadline && now >= auctionEndDeadline) {
-                setAuctionStatus(`Phiên Đấu Giá Đã Kết Thúc${formatDate(auctionEndDeadline)}.`);
-            } else {
-                setAuctionStatus("Invalid Auction Dates.");
-            }
-        };
-
-        updateAuctionStatus();
-        const timer = setInterval(updateAuctionStatus, 1000); // Update every second
-
-        return () => clearInterval(timer); // Cleanup on unmount
-    }, [auctionStartDeadline, auctionEndDeadline]);
-
-    // Render countdown timer only if auction is live
-    const renderCountdown = () => {
-        if (auctionStatus === "Auction is Live!" && auctionEndDeadline) {
-            return (
-                <Countdown
-                    title="Đang diễn ra"
-                    value={auctionEndDeadline}
-                    onFinish={() => setAuctionStatus("Phiên Đấu Giá Đã Kết Thúc")}
-                    format="D Ngày H giờ m phút s giây"
-                    valueStyle={{ fontWeight: 'bolder', fontSize: '15px', color: "green" }}
-                />
-            );
-        }
-        return <Text>{auctionStatus}</Text>;
-    };
-    //end check date
-
 
     const {
         data: checkRegister,
         isLoading: isLoadingCheckRegister,
         isError: isErrorCheckRegister,
-        error: errorCheckRegister
-    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? { auctionId: selectedAuctionId } : null, {
+        error: errorCheckRegister,
+        refetch: isRefetchCheckRegister,
+    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? {auctionId: selectedAuctionId} : null, {
         skip: !selectedAuctionId,
     });
-    const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.registration_status === "CONFIRMED"
+    //console.log("CHECK checkRegister: ", checkRegister)
+    const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.statusRegistration === true
     // *
-    const [AuctionRegister, { isLoading: isLoadingAuctionRegister, error }] = useAuctionRegisterMutation();
+    const [AuctionRegister, {isLoading: isLoadingAuctionRegister, error}] = useAuctionRegisterMutation();
     const handleSubmitAuctionRegister = async (e) => {
         e.preventDefault();
-
         try {
             const auctionData = {
-                auction_id: product.itemId,
+                auction_id: dataItem.auction.auction_id,
             };
             const response = await AuctionRegister(auctionData).unwrap();
+            isRefetch();
+            isRefetchCheckRegister();
             message.success(response.message || "Register auction successfully!");
         } catch (error) {
             message.error("Failed to register auction.");
         }
     };
-    const { Countdown } = Statistic;
+
+    const {Countdown} = Statistic;
     const showModal = () => {
         if (!isLoggedIn) {
             message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
@@ -161,80 +115,6 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
     };
 
 
-
-
-
-    // Check registration
-    const [auctionId123] = useState(dataItem.auction.auction_id);
-    const [shouldCheck, setShouldCheck] = useState(false);
-    const [hasChecked, setHasChecked] = useState(false);
-    const [isRegisteredCheck, setIsRegisteredCheck] = useState(false); // Trạng thái đăng ký
-
-    // Gọi API khi component được mount
-    useEffect(() => {
-        setShouldCheck(true);
-    }, []); // Chỉ chạy một lần khi component được mount
-
-    const { data, error: apiError, isLoading } = useCheckUserInAuctionQuery(
-        shouldCheck ? auctionId123 : null,
-        { skip: !shouldCheck }
-    );
-
-    // Chỉ hiển thị thông báo khi có dữ liệu hoặc lỗi và chưa thông báo lần nào
-    useEffect(() => {
-        if (!hasChecked) {
-            if (isLoading) return;
-
-            if (apiError) {
-                // message.error(`Kiểm tra đăng ký không thành công: ${apiError.message}`);
-                setHasChecked(true); // Đặt cờ sau khi hiển thị thông báo lỗi
-            } else if (data) {
-                if (data.exists) {
-                    setIsRegisteredCheck(true);  // Cập nhật trạng thái đã đăng ký
-                    // message.success(`Bạn đã đăng ký cho phiên đấu giá này! (User ID: ${data.userId})`);
-                } else {
-                    setIsRegisteredCheck(false); // Cập nhật trạng thái chưa đăng ký
-                    // message.error(`Bạn chưa đăng ký cho phiên đấu giá này! (User ID: ${data.userId})`);
-                }
-                setHasChecked(true); // Đặt cờ sau khi hiển thị thông báo thành công
-            }
-        }
-    }, [data, apiError, isLoading, hasChecked]);
-
-
-
-    //api registration
-
-    const handleSubmitAuctionRegisterChanh = async (e) => {
-        e.preventDefault();
-
-        // Kiểm tra người dùng đã đăng nhập
-        if (!isLoggedIn) {
-            message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
-            navigate("/login");
-            return;
-        }
-
-        try {
-            // Tạo body cho yêu cầu API
-            const auctionData = {
-                auction_id: dataItem.auction.auction_id,
-            };
-
-            // Gọi API để đăng ký tham gia đấu giá
-            const response = await AuctionRegister(auctionData).unwrap();
-
-            // Hiển thị thông báo thành công
-            message.success(response.message || "Đăng ký tham gia đấu giá thành công!");
-            // Đóng modal sau khi đăng ký thành công
-            setIsModalOpen(false);
-        } catch (error) {
-            // Hiển thị thông báo lỗi nếu có
-            message.error(error.data?.message || "Đăng ký tham gia đấu giá thất bại.");
-        }
-    };
-
-
     return (
         <>
             {/*<Modal*/}
@@ -254,46 +134,48 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
             {/*    </div>*/}
             {/*</Modal>*/}
             <Modal
-                title={isRegisteredCheck ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
+                title={isRegistered ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
                 open={isModalOpen}
                 onCancel={handleCancel}
                 centered
                 footer={null}
             >
-                {isRegisteredCheck ? (
-                    <div style={{ width: "100%", textAlign: "center" }}>
-                        <BidForm dataItem={dataItem} />
+                {isRegistered ? (
+                    <div style={{width: "100%", textAlign: "center"}}>
+                        <BidForm dataItem={dataItem}/>
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmitAuctionRegisterChanh}> {/* Xử lý sự kiện submit ở đây */}
-                        <div className="mt-4">
-                            <div className="flex items-center gap-2">
-                                <Checkbox
-                                    id="agreement"
-                                    className="h-5 w-5"
-                                    required // Yêu cầu checkbox này phải được chọn trước khi gửi
-                                />
-                                <span className="text-sm leading-5 text-gray-700">
+                    <Spin spinning={isLoadingAuctionRegister} tip="Loading...">
+                        <form>
+                            <div className="mt-4">
+                                <div className="flex items-center gap-2">
+                                    <Checkbox
+                                        id="agreement"
+                                        className="h-5 w-5"
+                                    />
+                                    <span className="text-sm leading-5 text-gray-700">
                                     Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
                                 </span>
+                                </div>
                             </div>
-                        </div>
-                        {/* Submit Button */}
-                        <div className="mt-4">
-                            <button
-                                type="submit"
-                                className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-indigo-200 focus:shadow-outline-indigo active:bg-indigo-200 transition duration-150 ease-in-out"
-                            >
-                                ĐĂNG KÝ THAM GIA ĐẤU GIÁ
-                            </button>
-                            <Button
-                                onClick={handleCancel}
-                                className="mt-4 w-full text-gray-600 hover:text-gray-800"
-                            >
-                                Đóng
-                            </Button>
-                        </div>
-                    </form>
+                            {/* Submit Button */}
+                            <div className="mt-4">
+                                <button
+                                    type="submit"
+                                    className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-indigo-200 focus:shadow-outline-indigo active:bg-indigo-200 transition duration-150 ease-in-out"
+                                    onClick={handleSubmitAuctionRegister} // Define this function to handle registration
+                                >
+                                    ĐĂNG KÝ THAM GIA ĐẤU GIÁ
+                                </button>
+                                <Button
+                                    onClick={handleCancel}
+                                    className="mt-4 w-full text-gray-600 hover:text-gray-800"
+                                >
+                                    Đóng
+                                </Button>
+                            </div>
+                        </form>
+                    </Spin>
                 )}
             </Modal>
 
@@ -354,7 +236,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             >
                                 {dataItem.itemName}{" "}
                             </Heading>
-                            <div className="h-px bg-gray-200" />
+                            <div className="h-px bg-gray-200"/>
                         </div>
                         <Heading
                             size="text3xl"
@@ -363,7 +245,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                         >
                             <span className="font-bold">Giá khởi điểm:</span>
                             <span>&nbsp;{formatPrice(dataItem.auction.start_price)}</span>
-                           
+
                         </Heading>
                         <Heading
                             size="text3xl"
@@ -379,7 +261,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                         >
                             <span className="font-bold">Giá đấu hiện tại:</span>
                             <span>&nbsp;{winningBid?.data?.bidAmount ? formatPrice(winningBid.data.bidAmount) : "Chưa có giá đấu"}</span>
-                       
+
                         </Heading>
 
                         {/*<div className="mx-1.5 mt-4 flex flex-col items-start gap-3 self-stretch md:mx-0">*/}
@@ -408,7 +290,12 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                             as="p"
                             className="mt-[22px] text-[11px] font-normal text-gray-900_01 self-stretch"
                         >
-                            {renderCountdown()}
+                            {/*{renderCountdown()}*/}
+                            <Countdown
+                                value={new Date(`${dataItem.auction?.endDate}T${dataItem.auction?.end_time}`).getTime()}
+                                format="D Ngày H giờ m phút s giây"
+                                valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "green"}}
+                            />
 
                         </Text>
 
@@ -439,7 +326,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                                 size="xl"
                                 className="self-stretch rounded-[26px] border border-solid border-green-700 px-[33px] !text-gray-100_01 sm:px-5 transition-colors duration-300 hover:bg-green-500 hover:text-white"
                             >
-                                {isRegisteredCheck ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
+                                {isRegistered ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
                             </ButtonDH>
 
                         </div>
@@ -508,7 +395,7 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                                             viewBox="0 0 20 20"
                                         >
                                             <path
-                                                d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
+                                                d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
                                         </svg>
                                         Profile
                                     </button>
@@ -551,9 +438,9 @@ export default function AuctionSection({ dataItem, isSuccessItemDt }) {
                                             viewBox="0 0 20 20"
                                         >
                                             <path
-                                                d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z" />
+                                                d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
                                             <path
-                                                d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
+                                                d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
                                         </svg>
                                         Downloads
                                     </button>

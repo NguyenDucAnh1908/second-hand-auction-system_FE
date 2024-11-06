@@ -34,7 +34,7 @@ export default function AuctionPage() {
     const [expanded, setExpanded] = useState(false);
     const [activeTabKey, setActiveTabKey] = useState("1");
     const { id } = useParams();
-    const { data, error, isLoading, isSuccess } = useGetItemDetailQuery({ id });
+    const { data, error, isLoading, isSuccess, refetch} = useGetItemDetailQuery({ id });
 
     const handleToggle = () => {
         setExpanded((prev) => !prev);
@@ -92,29 +92,21 @@ export default function AuctionPage() {
             } : null
     );
 
-
-
     if (loadingSellerInfo) return <p>Loading seller information...</p>;
     if (sellerInfoError) return <p>Error loading seller information: {sellerInfoError.message}</p>;
 
-
-
-
-
-    // if (isLoading) return <p>Loading...</p>;
-    // if (isLoading) return <Spin spinning={true} tip="Đang tải..." />;
     if (error) return <p>Error loading item details.</p>;
     const accordionData = [
         {
-            detailsTitle: "Thông tin sản phẩm",
+            detailsTitle: "Mô tả",
             content: (
                 <>
-                    <Heading
-                        as="h6"
-                        className="text-[16px] font-medium text-blue_gray-900_01"
-                    >
-                        Đặc điểm
-                    </Heading>
+                    {/*<Heading*/}
+                    {/*    as="h6"*/}
+                    {/*    className="text-[16px] font-medium text-blue_gray-900_01"*/}
+                    {/*>*/}
+                    {/*    Đặc điểm*/}
+                    {/*</Heading>*/}
                     <div className="flex items-start self-stretch md:flex-col">
                         <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
                         <Heading
@@ -124,15 +116,6 @@ export default function AuctionPage() {
                             <>
                                 {data?.itemDescription}
                                 <br />
-                                {data?.itemDescription}
-                                <br />
-                                {data?.itemDescription}
-                                <br />
-                                {data?.itemDescription}
-                                <br />
-                                {data?.itemDescription}
-                                <br />
-                                {data?.itemDescription}
                             </>
                         </Heading>
                     </div>
@@ -140,11 +123,43 @@ export default function AuctionPage() {
             ),
         },
         {
-            detailsTitle: "Chính sách đổi trả",
+            detailsTitle: "Thông tin sản phẩm",
             content: (
-                <p>
-                    {data?.itemDescription}
-                </p>
+                <div className="flex items-start self-stretch md:flex-col">
+                    <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01"/>
+                    <Heading
+                        as="p"
+                        className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
+                    >
+                        <div className="flex flex-wrap gap-4">
+                            <div className="w-1/4 p-2">
+                                <strong>Percent:</strong> {data?.itemSpecific?.percent}
+                            </div>
+                            <div className="w-1/4 p-2">
+                                <strong>Type:</strong> {data?.itemSpecific?.type}
+                            </div>
+                            <div className="w-1/4 p-2">
+                                <strong>Color:</strong> {data?.itemSpecific?.color}
+                            </div>
+                            <div className="w-1/4 p-2">
+                                <strong>Weight:</strong> {data?.itemSpecific?.weight} kg
+                            </div>
+                            <div className="w-1/4 p-2">
+                                <strong>Dimension:</strong> {data?.itemSpecific?.dimension} cm
+                            </div>
+                            <div className="w-1/4 p-2">
+                                <strong>Original:</strong> {data?.itemSpecific?.original}
+                            </div>
+                            <div className="w-1/4 p-2">
+                                <strong>Manufacture Date:</strong> {data?.itemSpecific?.manufactureDate || 'N/A'}
+                            </div>
+                            <div className="w-1/4 p-2">
+                                <strong>Material:</strong> {data?.itemSpecific?.material}
+                            </div>
+                        </div>
+
+                    </Heading>
+                </div>
             ),
         },
         {
@@ -171,7 +186,7 @@ export default function AuctionPage() {
                 {/* auction section */}
                 <Spin spinning={isLoading} tip="Đang tải...">
                     {isSuccess && data && (
-                        <AuctionSection dataItem={data} isSuccessItemDt={isSuccess} />
+                        <AuctionSection dataItem={data} isSuccessItemDt={isSuccess} isRefetch={refetch}/>
                     )}
                 </Spin>
 
@@ -430,8 +445,6 @@ export default function AuctionPage() {
                                 </article>
                             ))}
                         </div>
-
-
                     </div>
                 </div>
                 {/*here*/}
