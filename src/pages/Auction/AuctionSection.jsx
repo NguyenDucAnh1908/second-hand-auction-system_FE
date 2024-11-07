@@ -15,7 +15,7 @@ import {
     useCheckUserInAuctionQuery
 } from "@/services/auctionRegistrations.service.js";
 import {Button} from "@material-tailwind/react";
-import {useGetWinBidQuery} from "../../services/bid.service";
+import {useGetBidInfoQuery} from "../../services/bid.service";
 
 // eslint-disable-next-line react/prop-types
 export default function AuctionSection(
@@ -37,6 +37,15 @@ export default function AuctionSection(
     const auctionEndTime = dataItem.auction?.end_time || null;
     const auctionStartDate = dataItem.auction?.startDate || null;
     const auctionStartTime = dataItem.auction?.start_time || null;
+
+    const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}`).getTime();
+    const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
+    const now = new Date().getTime();
+    const [isAuctionStarted, setIsAuctionStarted] = useState(false);
+    useEffect(() => {
+        setIsAuctionStarted(now >= startDateTime);
+    }, [now, startDateTime]);
+
 
     const [auctionStatus, setAuctionStatus] = useState("");
 
@@ -78,6 +87,15 @@ export default function AuctionSection(
             message.error("Failed to register auction.");
         }
     };
+
+    const {
+        data: bidInfo,
+        error: fetchBidInfo,
+        isLoading: loadingBidInfo,
+        refetch: isRefetchBidInfo
+    } = useGetBidInfoQuery(dataItem?.auction?.auction_id);
+
+    //console.log("bidInfo: ", bidInfo)
 
     const {Countdown} = Statistic;
     const showModal = () => {
@@ -155,7 +173,10 @@ export default function AuctionSection(
                     // </div>
                     <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
                         <BidForm dataItem={dataItem} cancelModel={handleCancel}
-                                 isRefetchWinningBid={isRefetchWinningBid}/>
+                                 isRefetchWinningBid={isRefetchWinningBid}
+                                 bidIf={bidInfo}
+                                 isRefetchBidIf={isRefetchBidInfo}
+                        />
                     </div>
 
                 ) : (
@@ -284,18 +305,44 @@ export default function AuctionSection(
                             <span className="font-bold">Danh mục:</span>
                             <span>&nbsp;{dataItem.scId.sub_category}</span>
                         </Text>
+                        {/*<Text*/}
+                        {/*    size="textmd"*/}
+                        {/*    as="p"*/}
+                        {/*    className="mt-[22px] text-[11px] font-normal text-gray-900_01 self-stretch"*/}
+                        {/*>*/}
+                        {/*    /!*{renderCountdown()}*!/*/}
+                        {/*    <Countdown*/}
+                        {/*        value={new Date(`${dataItem.auction?.endDate}T${dataItem.auction?.end_time}`).getTime()}*/}
+                        {/*        format="D Ngày H giờ m phút s giây"*/}
+                        {/*        valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "green"}}*/}
+                        {/*    />*/}
+
+                        {/*</Text>*/}
+
                         <Text
                             size="textmd"
                             as="p"
                             className="mt-[22px] text-[11px] font-normal text-gray-900_01 self-stretch"
                         >
-                            {/*{renderCountdown()}*/}
-                            <Countdown
-                                value={new Date(`${dataItem.auction?.endDate}T${dataItem.auction?.end_time}`).getTime()}
-                                format="D Ngày H giờ m phút s giây"
-                                valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "green"}}
-                            />
-
+                            {isAuctionStarted ? (
+                                <div>
+                                    Thời gian kết thúc đấu giá sau:{" "}
+                                    <Countdown
+                                        value={endDateTime}
+                                        format="D Ngày H giờ m phút s giây"
+                                        valueStyle={{ fontWeight: "bolder", fontSize: "15px", color: "green" }}
+                                    />
+                                </div>
+                            ) : (
+                                <div>
+                                    Thời gian bắt đầu đấu giá sau:{" "}
+                                    <Countdown
+                                        value={startDateTime}
+                                        format="D Ngày H giờ m phút s giây"
+                                        valueStyle={{ fontWeight: "bolder", fontSize: "15px", color: "#CD853F" }}
+                                    />
+                                </div>
+                            )}
                         </Text>
 
 

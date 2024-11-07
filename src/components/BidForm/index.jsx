@@ -6,7 +6,7 @@ import {Text, ButtonDH, InputDH} from "./..";
 import {message, Spin, theme} from "antd";
 import {Button} from "@material-tailwind/react";
 
-export default function BidForm({dataItem, cancelModel, isRefetchWinningBid}) {
+export default function BidForm({dataItem, cancelModel, isRefetchWinningBid, bidIf, isRefetchBidIf}) {
 
     const selectedAuctionId = dataItem.auction.auction_id;
     const [maxBid, setMaxBid] = useState('');
@@ -15,7 +15,7 @@ export default function BidForm({dataItem, cancelModel, isRefetchWinningBid}) {
     const [createBid, {isLoading, isSuccess, isError}] = useCreateBidMutation();
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+         e.preventDefault();
         try {
             const createAuctionBid = await createBid({
                 bidAmount: Number(maxBid),
@@ -24,6 +24,7 @@ export default function BidForm({dataItem, cancelModel, isRefetchWinningBid}) {
             message.success(createAuctionBid?.message);
             setMaxBid("");
             isRefetchWinningBid();
+            isRefetchBidIf();
             cancelModel();
         } catch (error) {
             const errorMessage = error.data?.message
@@ -40,7 +41,7 @@ export default function BidForm({dataItem, cancelModel, isRefetchWinningBid}) {
     const handleQuickBid = (bidValue) => {
         setMaxBid(bidValue);
         setIsBidValid(true);
-        handleSubmit(bidValue);
+        //handleSubmit(bidValue);
     };
     return (
         <>
@@ -54,9 +55,9 @@ export default function BidForm({dataItem, cancelModel, isRefetchWinningBid}) {
 
             {/*<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">*/}
             <div className="bg-white rounded-lg shadow-lg p-1 w-full max-w-md">
-                <p className="mt-4 text-gray-600">EUR 9.99 + EUR 25 shipping</p>
+                <p className="mt-4 text-gray-600">Giá đặt tối thiểu: {bidIf?.data?.priceStep}</p>
                 <p className="text-gray-500">(approx. US $10.89 + 692,442.82 VND shipping)</p>
-                <p className="text-gray-500">0 bids • 3d 17h left</p>
+                <p className="text-gray-500">{bidIf?.data?.qualityBid} Đang đấu • 3d 17h left</p>
 
                 {/*<div className="flex gap-2 mt-6 justify-center">*/}
                 {/*    <button className="bg-blue-500 text-white rounded-full px-4 py-2">200000 VND</button>*/}
@@ -65,22 +66,22 @@ export default function BidForm({dataItem, cancelModel, isRefetchWinningBid}) {
                 {/*</div>*/}
                 <div className="flex gap-2 mt-6 justify-center">
                     <Button
-                        onClick={() => handleQuickBid(200000)}
+                        onClick={() => handleQuickBid(bidIf?.data?.minimumBidPrice1)}
                         className="bg-green-500  text-white rounded-full px-4 py-2"
                     >
-                        200000 VND
+                        {bidIf?.data?.minimumBidPrice1} VND
                     </Button>
                     <Button
-                        onClick={() => handleQuickBid(300000)}
+                        onClick={() => handleQuickBid(bidIf?.data?.minimumBidPrice2)}
                         className="bg-green-500 text-white rounded-full px-4 py-2"
                     >
-                        300000 VND
+                        {bidIf?.data?.minimumBidPrice2} VND
                     </Button>
                     <Button
-                        onClick={() => handleQuickBid(400000)}
+                        onClick={() => handleQuickBid(bidIf?.data?.minimumBidPrice3)}
                         className="bg-green-500  text-white rounded-full px-4 py-2"
                     >
-                        400000 VND
+                        {bidIf?.data?.minimumBidPrice3} VND
                     </Button>
                 </div>
 

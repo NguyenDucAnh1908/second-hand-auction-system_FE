@@ -10,4 +10,7 @@ export default defineConfig({
       pages: "/src/pages",
     },
   },
+  define: {
+    global: {},
+  },
 });
