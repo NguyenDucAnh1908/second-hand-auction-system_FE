@@ -65,12 +65,7 @@ export const routesAdmin = [
         path: "/ProductPending",
         element: <ProductPending />,
       },
-      {
-        icon: <UserCircleIcon {...icon} />,
-        name: "Thẩm định sản phẩm",
-        path: "/AppraisalForm/:itemId",
-        element: <AppraisalFormPage />,
-      },
+   
       {
         icon: <UserCircleIcon {...icon} />,
         name: "Tạo phiên đấu giá",
@@ -90,7 +85,12 @@ export const routesAdmin = [
         //element: <OrderManagementAdmin />,
         element: <StoreOrders />,
       },
-
+      {
+        // icon: <UserCircleIcon {...icon} />,
+        // name: "Thẩm định sản phẩm",
+        path: "/AppraisalForm/:itemId",
+        element: <AppraisalFormPage />,
+      },
       {
 
         path: "/KiemduyetStaffPage/:id",

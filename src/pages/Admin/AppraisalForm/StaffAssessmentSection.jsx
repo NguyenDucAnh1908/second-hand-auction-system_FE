@@ -21,7 +21,7 @@ const props = {
     },
 };
 
-export default function StaffAssessmentSection() {
+export default function StaffAssessmentSection({ itemDetail }) {
     return (
         <>
             {/* staff assessment section */}
@@ -38,9 +38,9 @@ export default function StaffAssessmentSection() {
                         </Heading>
                         <div className="mt-5 flex w-full items-center">
                             <div className="flex items-center gap-3">
-                                <Upload {...props}>
+                                {/* <Upload {...props}>
                                     <Button icon={<UploadOutlined/>}>Click to Upload</Button>
-                                </Upload>
+                                </Upload> */}
 
                                 {/* Tiêu đề "Giấy thẩm định" */}
                                 <Heading
@@ -48,7 +48,7 @@ export default function StaffAssessmentSection() {
                                     as="h5"
                                     className="text-[15px] font-medium text-black-900"
                                 >
-                                    Giấy thẩm định
+                                    {/* Giấy thẩm định */}
                                 </Heading>
                             </div>
                         </div>

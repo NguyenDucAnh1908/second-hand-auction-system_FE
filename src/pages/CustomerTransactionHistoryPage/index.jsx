@@ -77,13 +77,21 @@ export default function CustomerTransactionHistoryPagePage() {
             title: "Số tiền",
             dataIndex: "amount",
             key: "amount",
-            render: (text, record) => (
-                <span style={{ color: record.amount > 0 ? "green" : "red" }}>
-                    {record.amount > 0 ? `+${text}` : text} đ
-                </span>
-            ),
+            render: (text, record) => {
+                // Kiểm tra loại giao dịch là "WITHDRAWAL" hoặc "DEPOSIT_AUCTION" để áp dụng màu đỏ
+                const isWithdrawalOrAuctionDeposit = record.transactionType === "WITHDRAWAL" || record.transactionType === "DEPOSIT_AUCTION"; 
+                
+                return (
+                    <span style={{ color: isWithdrawalOrAuctionDeposit ? "red" : "green" }}>
+                        {isWithdrawalOrAuctionDeposit ? `-${text}` : text} đ
+                    </span>
+                );
+            },
             width: 150,
         },
+        
+        
+        
         {
             title: "Người gửi", // Thêm cột Người gửi
             dataIndex: "sender",
@@ -110,8 +118,8 @@ export default function CustomerTransactionHistoryPagePage() {
         },
     ];
     const data = dataTransactionWallet?.items?.map((item, index) => ({
-        key: index + 1, // Dùng `index` làm key (có thể thay đổi theo nhu cầu)
-        id: `#${item.transactionWalletCode}`, // Mã giao dịch
+        key: index + 1,
+        id: `#${item.transactionWalletCode}`,
         time: new Date(item.transactionDate).toLocaleString('vi-VN', {
             day: '2-digit',
             month: '2-digit',
@@ -120,13 +128,16 @@ export default function CustomerTransactionHistoryPagePage() {
             minute: '2-digit',
             second: '2-digit',
         }),
-        transactionType: item.transactionType === "DEPOSIT" ? "Nạp tiền" : "Rút tiền", // Định dạng loại giao dịch
-        method: item.image || "Không xác định", // Phương thức (giả sử nếu `image` có URL là phương thức, nếu không thì để mặc định)
-        status: item.transactionStatus === "COMPLETED" ? "Hoàn thành" : "Đang xử lý", // Trạng thái giao dịch
+        transactionType: item.transactionType === "DEPOSIT_AUCTION" ? "Nạp tiền đấu giá" :
+                          item.transactionType === "DEPOSIT" ? "Nạp tiền" :
+                          item.transactionType === "WITHDRAWAL" ? "Rút tiền" : "Chuyển khoản", // Định dạng loại giao dịch
+        method: item.image || "Không xác định",
+        status: item.transactionStatus === "COMPLETED" ? "Hoàn thành" : "Đang xử lý",
         amount: item.amount,
         sender: item.senderName,
         recipient: item.recipientName,
     }));
+    
 
     if (isLoadingTransactionWallet) return <div>Loading...</div>;
     if (isErrorTransactionWallet) return <div>Error: {errorTransactionWallet.message}</div>;

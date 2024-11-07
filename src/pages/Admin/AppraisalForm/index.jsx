@@ -2,14 +2,17 @@ import { Helmet } from "react-helmet";
 import ProductReviewSection from "./ProductReviewSection";
 import StaffAssessmentSection from "./StaffAssessmentSection";
 import React from "react";
-import { useGetItemDetailQuery } from "../../../services/item.service";
+import { useGetItemDetailQuery,useApproveItemAdminMutation, useGetSellerQuery } from "../../../services/item.service";
 import { useParams } from "react-router-dom";
 
 export default function ThmnhcaStaffPage() {
     const { itemId } = useParams(); // Khai báo itemId từ URL trước
-    console.log("itemId", itemId);
+    // console.log("itemId", itemId);
     const { data: itemDetail, isLoading, isError } = useGetItemDetailQuery({ id: itemId }); // Gọi API với itemId
+    const { data: sellerDetail, isLoading: isSellerLoading, isError: isSellerError } = useGetSellerQuery({ id: itemId });
+
     console.log("Data ne", itemDetail);
+    // console.log("Data seller", sellerDetail);
     if (isLoading) {
         return <div>Loading...</div>; // Hiển thị loading khi đang tải dữ liệu
     }

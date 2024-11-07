@@ -49,14 +49,19 @@ export default function AuctionListProcess() {
                             flex: 1, // Để Layout chiếm hết không gian còn lại
                         }}
                     >
-                        <Sider
+                        <SidereError khi focus
+                        
+                        Giá thầu trong phiên đấu giá
+                         ngày trước đó
+                        Missing Request Parameter Error
+                        
                             style={{
                                 background: colorBgContainer,
                             }}
                             width={300}
                         >
                             <SiderUserBK />
-                        </Sider>
+                        </SidereError>
                         <Content
                             style={{
                                 padding: '0 24px',
@@ -70,7 +75,7 @@ export default function AuctionListProcess() {
                                     selectedTabClassName=""
                                     selectedTabPanelClassName="tab-panel--selected"
                                 >
-                                    <AuctionListProcessSection />
+                                    <AuctionListsProcessSection />
                                 </Tabs>
                             </div>
                         </Content>

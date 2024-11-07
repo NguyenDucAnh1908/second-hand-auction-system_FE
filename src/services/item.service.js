@@ -132,6 +132,19 @@ export const itemApiSlice = apiSlice.injectEndpoints({
             }),
            
         }),
+
+        approveItemAdmin:builder.mutation({
+            query: (id) => ({
+                url: `/item/approve/${id}`,
+                method: "PUT",
+            }),
+        }),
+
+        getSeller: builder.query({
+            query: ({ id }) => `/item/get-seller/${id}`,
+            transformResponse: (response) => response.data,
+        }),
+        
     }),
 });
 
@@ -147,4 +160,6 @@ export const {
     useGetItemByUserQuery,
     useCreateItemMutation,
     useGetItemAdminQuery,
+    useApproveItemAdminMutation,
+    useGetSellerQuery,
 } = itemApiSlice;
