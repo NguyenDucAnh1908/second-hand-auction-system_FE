@@ -21,7 +21,7 @@ import { AntDesignOutlined } from "@ant-design/icons";
 import { Flex, Rate, Typography, Tabs } from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import { useGetItemDetailQuery } from "@/services/item.service.js";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useGetSellerInformationByAuctionIdQuery } from "../../services/sellerinformation.service.js";
@@ -29,6 +29,7 @@ import { useGetFeedbackBySellerUserIdQuery } from "../../services/feedback.servi
 import Pagination from "@/components/Pagination/index.jsx";
 import { useGetWinBidQuery } from "@/services/bid.service.js";
 import { selectIsLoggedIn } from "@/redux/auth/authSlice.js";
+
 
 const { Content } = Layout;
 export default function AuctionPage() {
@@ -105,6 +106,13 @@ export default function AuctionPage() {
                 size: pageSize,
             } : null
     );
+
+
+    const navigate = useNavigate();
+    const handleNavigateToAuction = (userIdseller) => {
+        localStorage.setItem('userIdseller', userIdseller);
+        navigate(`/SellerDetailPage?activeTab=reviews`);
+    };
 
     if (loadingSellerInfo) return <p>Loading seller information...</p>;
     if (sellerInfoError) return <p>Error loading seller information: {sellerInfoError.message}</p>;
@@ -421,8 +429,8 @@ export default function AuctionPage() {
                                                             {" "}
                                                             <div
                                                                 className="h-5 bg-yellow-300 rounded"
-                                                                style={{ width: `${sellerInfo.rating5Percentage}%` }}             
-                                                          ></div>
+                                                                style={{ width: `${sellerInfo.rating5Percentage}%` }}
+                                                            ></div>
                                                         </div>
                                                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
                                                             {sellerInfo.rating5Percentage.toFixed(0)}%
@@ -441,12 +449,12 @@ export default function AuctionPage() {
                                                             {/* Giảm khoảng cách ngang */}
                                                             <div
                                                                 className="h-5 bg-yellow-300 rounded"
-                                                                style={{ width: `${sellerInfo.rating4Percentage}%` }}  
+                                                                style={{ width: `${sellerInfo.rating4Percentage}%` }}
                                                             ></div>
                                                         </div>
                                                         <span
                                                             className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                                                             {sellerInfo.rating4Percentage.toFixed(0)}%
+                                                            {sellerInfo.rating4Percentage.toFixed(0)}%
                                                         </span>
                                                     </div>
 
@@ -484,7 +492,7 @@ export default function AuctionPage() {
                                                         </div>
                                                         <span
                                                             className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                                                           {sellerInfo.rating2Percentage.toFixed(0)}%
+                                                            {sellerInfo.rating2Percentage.toFixed(0)}%
                                                         </span>
                                                     </div>
 
@@ -628,6 +636,7 @@ export default function AuctionPage() {
                                                     variant="outline"
                                                     shape="round"
                                                     className="ml-[218px] min-w-[298px] rounded-md !border-2 px-8 font-medium md:ml-0 sm:px-5"
+                                                    onClick={() => handleNavigateToAuction(sellerInfo.userId)}
                                                 >
                                                     Xem Tất Cả
                                                 </ButtonDH>
