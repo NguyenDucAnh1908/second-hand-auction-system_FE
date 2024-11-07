@@ -1,4 +1,4 @@
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import {
     ButtonDH,
     Img,
@@ -16,32 +16,32 @@ import UserStatistics from "../../components/UserStatistics";
 import AuctionSection from "./AuctionSection";
 import RecommendedProductsSection from "./RecommendedProductsSection";
 import React from "react";
-import {Avatar, Breadcrumb, Empty, Layout, Spin, theme} from "antd";
-import {AntDesignOutlined} from "@ant-design/icons";
-import {Flex, Rate, Typography, Tabs} from "antd";
+import { Avatar, Breadcrumb, Empty, Layout, Spin, theme } from "antd";
+import { AntDesignOutlined } from "@ant-design/icons";
+import { Flex, Rate, Typography, Tabs } from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {useGetItemDetailQuery} from "@/services/item.service.js";
-import {useParams, useLocation} from "react-router-dom";
-import {useSelector} from 'react-redux';
-import {useEffect, useState} from 'react';
-import {useGetSellerInformationByAuctionIdQuery} from "../../services/sellerinformation.service.js";
-import {useGetFeedbackBySellerUserIdQuery} from "../../services/feedback.service.js";
+import { useGetItemDetailQuery } from "@/services/item.service.js";
+import { useParams, useLocation } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useGetSellerInformationByAuctionIdQuery } from "../../services/sellerinformation.service.js";
+import { useGetFeedbackBySellerUserIdQuery } from "../../services/feedback.service.js";
 import Pagination from "@/components/Pagination/index.jsx";
-import {useGetWinBidQuery} from "@/services/bid.service.js";
-import {selectIsLoggedIn} from "@/redux/auth/authSlice.js";
+import { useGetWinBidQuery } from "@/services/bid.service.js";
+import { selectIsLoggedIn } from "@/redux/auth/authSlice.js";
 
-const {Content} = Layout;
+const { Content } = Layout;
 export default function AuctionPage() {
     const [sliderState, setSliderState] = React.useState(0);
     const sliderRef = React.useRef(null);
     const [expanded, setExpanded] = useState(false);
     const [activeTabKey, setActiveTabKey] = useState("1");
     const isLoggedIn = useSelector(selectIsLoggedIn);
-    const {id} = useParams();
+    const { id } = useParams();
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-    const {data, error, isLoading, isSuccess, refetch} = useGetItemDetailQuery({id});
+    const { data, error, isLoading, isSuccess, refetch } = useGetItemDetailQuery({ id });
 
     const handleToggle = () => {
         setExpanded((prev) => !prev);
@@ -97,7 +97,7 @@ export default function AuctionPage() {
     const [currentPage, setCurrentPage] = useState(0);
     const pageSize = 10;
 
-    const {data: feedbackData} = useGetFeedbackBySellerUserIdQuery(
+    const { data: feedbackData } = useGetFeedbackBySellerUserIdQuery(
         userIdSeller !== null ?
             {
                 userId: userIdSeller,
@@ -122,14 +122,14 @@ export default function AuctionPage() {
                     {/*    Đặc điểm*/}
                     {/*</Heading>*/}
                     <div className="flex items-start self-stretch md:flex-col">
-                        <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01"/>
+                        <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
                         <Heading
                             as="p"
                             className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
                         >
                             <>
                                 {data?.itemDescription}
-                                <br/>
+                                <br />
                             </>
                         </Heading>
                     </div>
@@ -140,7 +140,7 @@ export default function AuctionPage() {
             detailsTitle: "Thông tin sản phẩm",
             content: (
                 <div className="flex items-start self-stretch md:flex-col">
-                    <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01"/>
+                    <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
                     <Heading
                         as="p"
                         className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
@@ -185,6 +185,9 @@ export default function AuctionPage() {
             ),
         },
     ];
+
+
+
     return (
         <>
             <Helmet>
@@ -195,7 +198,7 @@ export default function AuctionPage() {
                 />
             </Helmet>
             <Layout>
-                <Header2/>
+                <Header2 />
                 <Content
                     style={{
                         padding: '0 20px',
@@ -229,9 +232,9 @@ export default function AuctionPage() {
                             {isLoggedIn && winningBid && (
                                 <div
                                     className={`w-full p-1 flex justify-items-start items-center ${winningBid?.data?.winBid ? 'bg-green-700' : 'bg-red-700'}`}>
-                <span>
-                    {winningBid?.data?.winBid ? "You're the high bidder" : "You're out bidder"} ||
-                </span>
+                                    <span>
+                                        {winningBid?.data?.winBid ? "You're the high bidder" : "You're out bidder"} ||
+                                    </span>
                                     <button className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 ml-2">
                                         Increase max bid
                                     </button>
@@ -245,11 +248,11 @@ export default function AuctionPage() {
                                 {isSuccess && data && (
 
                                     <AuctionSection dataItem={data}
-                                                    isSuccessItemDt={isSuccess}
-                                                    isRefetch={refetch}
-                                                    winningBid={winningBid}
-                                                    isRefetchWinningBid={isRefetchWinningBid}
-                                                    isLoggedIn={isLoggedIn}
+                                        isSuccessItemDt={isSuccess}
+                                        isRefetch={refetch}
+                                        winningBid={winningBid}
+                                        isRefetchWinningBid={isRefetchWinningBid}
+                                        isLoggedIn={isLoggedIn}
                                     />
                                 )}
                             </Spin>
@@ -273,7 +276,7 @@ export default function AuctionPage() {
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-col items-start gap-6">
-                                                    <div className="h-px w-[72%] bg-gray-200"/>
+                                                    <div className="h-px w-[72%] bg-gray-200" />
                                                     <Tabs onChange={onChange} type="card" activeKey={activeTabKey}>
                                                         {accordionData.map((d, i) => (
                                                             <Tabs.TabPane
@@ -282,10 +285,10 @@ export default function AuctionPage() {
                                                                         className={`text-[20px] font-medium ${activeTabKey === String(i + 1)
                                                                             ? "text-green-500"
                                                                             : "text-blue_gray-900_01"
-                                                                        }`}
+                                                                            }`}
                                                                     >
-                                                            {d.detailsTitle}
-                                                        </span>
+                                                                        {d.detailsTitle}
+                                                                    </span>
                                                                 }
                                                                 key={String(i + 1)}
                                                             >
@@ -309,7 +312,7 @@ export default function AuctionPage() {
                                     </Text>
                                     <div className="flex items-center my-8 gap-6">
                                         <Avatar
-                                            size={{xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100}}
+                                            size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
                                             src={sellerInfo.avatar}
                                         />
                                         <div className="font-semibold text-2xl dark:text-white">
@@ -336,7 +339,7 @@ export default function AuctionPage() {
                                                 viewBox="0 0 20 20"
                                             >
                                                 <path
-                                                    d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+                                                    d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
                                             </svg>
                                             Visit store
                                         </button>
@@ -375,152 +378,274 @@ export default function AuctionPage() {
                                                 viewBox="0 0 20 20"
                                             >
                                                 <path
-                                                    d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
+                                                    d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z" />
                                                 <path
-                                                    d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                                                    d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
                                             </svg>
                                             Save seller
                                         </button>
                                     </div>
 
+                                    <div className="mb-5  flex items-start gap-[30px] self-stretch md:flex-col">
+                                        <div
+                                            className="flex w-[40%] flex-col items-start gap-[110px] md:w-full md:gap-[82px] sm:gap-[55px]">
+                                            <div className="flex flex-col gap-2 self-stretch">
+                                                <div className="flex items-center justify-between gap-5">
+                                                    <Heading
+                                                        size="text8xl"
+                                                        as="p"
+                                                        className="font-jost text-[60px] font-medium text-blue_gray-900_01 md:text-[52px] sm:text-[46px]"
+                                                    >
+                                                        {sellerInfo.totalStars.toFixed(1)}
+                                                    </Heading>
+                                                    <div className="flex w-[64%] flex-col items-start gap-3.5">
+                                                        <Flex gap="middle">
+                                                            <Rate disabled value={sellerInfo.totalStars} allowHalf />
+                                                        </Flex>
 
-                                    <div
-                                        className="flex w-[40%] flex-col items-start gap-[110px] md:w-full md:gap-[82px] sm:gap-[55px]">
-                                        <div className="flex flex-col gap-2 self-stretch">
-                                            <div className="flex items-center justify-between gap-5">
-                                                <Heading
-                                                    size="text8xl"
-                                                    as="p"
-                                                    className="font-jost text-[60px] font-medium text-blue_gray-900_01 md:text-[52px] sm:text-[46px]"
-                                                >
-                                                    <span>{sellerInfo.totalStars.toFixed(1)}</span>
-                                                </Heading>
-                                                <div className="flex w-[64%] flex-col items-start gap-3.5">
-                                                    <Flex gap="middle">
-                                                        <Rate disabled value={sellerInfo.totalStars} allowHalf/>
-                                                    </Flex>
-
-
-                                                </div>
-                                            </div>
-
-
-                                        </div>
-                                    </div>
-                                    <Heading
-                                        size="text2xl"
-                                        as="p"
-                                        className="text-[18px] font-medium leading-[22px] text-blue_gray-900_01"
-                                        style={{margin: 0, padding: 0}}
-                                    >
-                                        {sellerInfo.totalFeedbackCount} Đánh giá sản phẩm người bán
-                                    </Heading>
-
-                                    {/* Danh sách feedback */}
-                                    <div>
-                                        {feedbackData?.content.map((feedback) => (
-                                            <article key={feedback.feedbackId} className="feedback-item">
-                                                <div className="flex items-center my-6">
-                                                    <img
-                                                        className="w-10 h-10 me-4 rounded-full"
-                                                        src="/images/user.png"
-
-                                                    />
-                                                    <div className="font-medium dark:text-white">
-                                                        <p>
-                                                            {feedback.username}{" "}
-                                                            <time
-                                                                dateTime="2014-08-16 19:00"
-                                                                className="block text-sm text-gray-500 dark:text-gray-400"
-                                                            >
-                                                                Tham gia vào August 2014
-                                                            </time>
-                                                        </p>
                                                     </div>
                                                 </div>
 
-                                                {/* Hiển thị sao đánh giá */}
-                                                <div className="flex items-center mb-1 space-x-1 rtl:space-x-reverse">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <svg
-                                                            key={i}
-                                                            className={`w-4 h-4 ${i < feedback.rating ? "text-yellow-300" : "text-gray-300 dark:text-gray-500"}`}
-                                                            aria-hidden="true"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            fill="currentColor"
-                                                            viewBox="0 0 22 20"
-                                                        >
-                                                            <path
-                                                                d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
-                                                            />
-                                                        </svg>
-                                                    ))}
-                                                    <h3 className="ms-2 text-sm font-semibold text-gray-900 dark:text-white">
-                                                        Thinking to buy another one!
-                                                    </h3>
-                                                </div>
-
-                                                <footer className="mb-5 text-sm text-gray-500 dark:text-gray-400">
-                                                    <p>
-                                                        Đánh giá tại Việt Nam vào{" "}
-                                                        <time dateTime="2017-03-03 19:00">3 Tháng 3, 2017</time>
+                                                <div className="flex flex-col gap-[46px]">
+                                                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                        {sellerInfo.totalFeedbackCount} Lượt đánh giá
                                                     </p>
-                                                </footer>
-
-                                                <div className="flex flex-col gap-4 self-stretch">
-                                                    <Typography.Paragraph
-                                                        ellipsis={{
-                                                            rows: 2, // Giới hạn số dòng
-                                                            expanded,
-                                                            onExpand: (_, info) => setExpanded(info.expanded),
-                                                        }}
-                                                        className="w-[72%] text-[16px] font-normal leading-7 text-blue_gray-600_01 md:w-full"
-                                                    >
-                                                        {feedback.comment}
-                                                    </Typography.Paragraph>
-
-                                                    <img
-                                                        className="w-[100px] h-[100px] object-cover rounded"
-                                                        src={feedback.imageUrl}
-                                                        alt={feedback.itemName}
-                                                    />
-
-                                                </div>
-
-                                                <aside>
-                                                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                                        {feedback.helpfulCount} người thấy đánh giá này hữu ích
-                                                    </p>
-                                                    <div className="flex items-center mt-3">
-                                                        <button
-                                                            onClick={() => handleHelpful(feedback.feedbackId)}
-                                                            className="px-2 py-1.5 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                                        >
-                                                            Hữu ích
-                                                        </button>
+                                                    <div className="flex items-center mt-0">
                                                         <a
                                                             href="#"
-                                                            className="ps-4 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500 border-gray-200 ms-4 border-s md:mb-0 dark:border-gray-600"
+                                                            className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline flex-shrink-0"
                                                         >
-                                                            Báo cáo lạm dụng
+                                                            5 star
                                                         </a>
+                                                        <div className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
+                                                            {" "}
+                                                            <div
+                                                                className="h-5 bg-yellow-300 rounded"
+                                                                style={{ width: `${sellerInfo.rating5Percentage}%` }}             
+                                                          ></div>
+                                                        </div>
+                                                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                                            {sellerInfo.rating5Percentage.toFixed(0)}%
+                                                        </span>
+
                                                     </div>
-                                                </aside>
-                                            </article>
-                                        ))}
+                                                    <div className="flex items-center mt-4">
+                                                        <a
+                                                            href="#"
+                                                            className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline flex-shrink-0"
+                                                        >
+                                                            4 star
+                                                        </a>
+                                                        <div className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
+                                                            {" "}
+                                                            {/* Giảm khoảng cách ngang */}
+                                                            <div
+                                                                className="h-5 bg-yellow-300 rounded"
+                                                                style={{ width: `${sellerInfo.rating4Percentage}%` }}  
+                                                            ></div>
+                                                        </div>
+                                                        <span
+                                                            className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                                             {sellerInfo.rating4Percentage.toFixed(0)}%
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="flex items-center mt-4">
+                                                        <a
+                                                            href="#"
+                                                            className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline flex-shrink-0"
+                                                        >
+                                                            3 star
+                                                        </a>
+                                                        <div className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
+                                                            <div
+                                                                className="h-5 bg-yellow-300 rounded"
+                                                                style={{ width: `${sellerInfo.rating3Percentage}%` }}
+                                                            ></div>
+                                                        </div>
+                                                        <span
+                                                            className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                                            {sellerInfo.rating3Percentage.toFixed(0)}%
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="flex items-center mt-4">
+                                                        <a
+                                                            href="#"
+                                                            className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline flex-shrink-0"
+                                                        >
+                                                            2 star
+                                                        </a>
+                                                        <div className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
+                                                            <div
+                                                                className="h-5 bg-yellow-300 rounded"
+                                                                style={{ width: `${sellerInfo.rating2Percentage}%` }}
+                                                            ></div>
+                                                        </div>
+                                                        <span
+                                                            className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                                           {sellerInfo.rating2Percentage.toFixed(0)}%
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="flex items-center mt-4">
+                                                        <a
+                                                            href="#"
+                                                            className="text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline flex-shrink-0"
+                                                        >
+                                                            1 star
+                                                        </a>
+                                                        <div className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
+                                                            <div
+                                                                className="h-5 bg-yellow-300 rounded"
+                                                                style={{ width: `${sellerInfo.rating1Percentage}%` }}
+                                                            ></div>
+                                                        </div>
+                                                        <span
+                                                            className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                                            {sellerInfo.rating1Percentage.toFixed(0)}%
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="mt-[18px] flex flex-1 flex-col gap-9 self-center md:self-stretch">
+                                            <div className="ml-1 flex flex-col items-start gap-[50px] md:ml-0">
+                                                <div className="flex flex-col gap-1.5 self-stretch">
+                                                    {/*<Heading*/}
+                                                    {/*    size="text2xl"*/}
+                                                    {/*    as="p"*/}
+                                                    {/*    className="w-[32%] text-[18px] font-medium leading-[22px] text-blue_gray-900_01 md:w-full"*/}
+                                                    {/*>*/}
+                                                    {/*    39 Đánh giá sản phẩm người bán*/}
+                                                    {/*</Heading>*/}
+                                                    <Heading
+                                                        size="text2xl"
+                                                        as="p"
+                                                        className="text-[18px] font-medium leading-[22px] text-blue_gray-900_01"
+                                                        style={{ margin: 0, padding: 0 }}
+                                                    >
+                                                        {sellerInfo.totalFeedbackCount} Đánh giá sản phẩm người bán
+                                                    </Heading>
+                                                    {sellerInfo.feedbackList.map(feedback => (
+                                                        <article key={feedback.feedbackId}>
+                                                            <div className="flex items-center my-6">
+                                                                <img
+                                                                    className="w-10 h-10 me-4 rounded-full"
+                                                                    src="/images/user.png"
+                                                                    alt="User Avatar"
+                                                                />
+                                                                <div className="font-medium dark:text-white">
+                                                                    <p>
+                                                                        {feedback.username}
+                                                                        <time
+                                                                            dateTime="2014-08-16 19:00"
+                                                                            className="block text-sm text-gray-500 dark:text-gray-400"
+                                                                        >
+                                                                            {/* Reviewed on {new Date().toLocaleDateString()} */}
+                                                                        </time>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="flex items-center mb-1 space-x-1 rtl:space-x-reverse">
+                                                                {[...Array(feedback.rating)].map((_, index) => (
+                                                                    <svg
+                                                                        key={index}
+                                                                        className="w-4 h-4 text-yellow-300"
+                                                                        aria-hidden="true"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        fill="currentColor"
+                                                                        viewBox="0 0 22 20"
+                                                                    >
+                                                                        <path
+                                                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                                                                        />
+                                                                    </svg>
+                                                                ))}
+                                                                {[...Array(5 - feedback.rating)].map((_, index) => (
+                                                                    <svg
+                                                                        key={index + feedback.rating}
+                                                                        className="w-4 h-4 text-gray-300 dark:text-gray-500"
+                                                                        aria-hidden="true"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        fill="currentColor"
+                                                                        viewBox="0 0 22 20"
+                                                                    >
+                                                                        <path
+                                                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                                                                        />
+                                                                    </svg>
+                                                                ))}
+
+                                                            </div>
+
+                                                            <footer className="mb-5 text-sm text-gray-500 dark:text-gray-400">
+                                                                <h3 className=" text-sm font-semibold text-gray-900 dark:text-white">
+                                                                    {feedback.comment}
+                                                                </h3>
+                                                            </footer>
+
+                                                            <footer className="mb-5 text-sm text-gray-500 dark:text-gray-400">
+                                                                <h3 className=" text-sm font-semibold text-gray-900 dark:text-white">
+                                                                    <img
+                                                                        src={feedback.imageUrl}
+                                                                        style={{ width: '100px', height: '100px' }}
+                                                                    />
+                                                                </h3>
+                                                            </footer>
+
+                                                            <div className="flex flex-col gap-4 self-stretch">
+                                                                <div className="mb-2 flex items-center">
+
+
+                                                                </div>
+                                                            </div>
+
+                                                            <aside>
+
+                                                                <div className="flex items-center mt-3">
+                                                                    <a
+                                                                        href="#"
+                                                                        className="px-2 py-1.5 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                                                    >
+                                                                        Hữu ích
+                                                                    </a>
+                                                                    <a
+                                                                        href="#"
+                                                                        className="ps-4 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500 border-gray-200 ms-4 border-s md:mb-0 dark:border-gray-600"
+                                                                    >
+                                                                        Báo cáo
+                                                                    </a>
+                                                                </div>
+                                                            </aside>
+                                                        </article>
+                                                    ))}
+                                                </div>
+                                                <ButtonDH
+                                                    color="green_A700"
+                                                    size="xl"
+                                                    variant="outline"
+                                                    shape="round"
+                                                    className="ml-[218px] min-w-[298px] rounded-md !border-2 px-8 font-medium md:ml-0 sm:px-5"
+                                                >
+                                                    Xem Tất Cả
+                                                </ButtonDH>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             {/*here*/}
-                            <RecommendedProductsSection/>
+                            <RecommendedProductsSection />
                             {/* recommended products section */}
-                            <RecommendedProductsSection/>
+                            <RecommendedProductsSection />
 
                         </div>
                     </div>
                 </Content>
                 <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
+                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
             </Layout>
         </>
     );
