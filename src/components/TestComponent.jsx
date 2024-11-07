@@ -23,7 +23,8 @@ import {
     Button,
 } from "@material-tailwind/react";
 
-const {Content, Sider} = Layout;
+//const {Content, Sider} = Layout;
+const { Content } = Layout;
 import FaEthereum from "../assets/Ethereum.svg"
 
 // const AuctionItem = ({item}) => {
@@ -83,7 +84,10 @@ import FaEthereum from "../assets/Ethereum.svg"
 //         </Card>
 //     );
 // };
-
+const items = new Array(15).fill(null).map((_, index) => ({
+    key: index + 1,
+    label: `nav ${index + 1}`,
+}));
 export default function TestComponent() {
     const {
         token: {colorBgContainer, borderRadiusLG},
@@ -122,14 +126,12 @@ export default function TestComponent() {
         //         ))}
         //     </div>
         // </div>
-        <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+
+        <Layout>
             <Header2 />
             <Content
                 style={{
                     padding: '0 48px',
-                    flex: 1, // Cho phép Content chiếm không gian còn lại
-                    display: 'flex', // Đặt display là flex để chứa nội dung
-                    flexDirection: 'column', // Hướng theo chiều dọc
                 }}
             >
                 <Breadcrumb
@@ -141,34 +143,67 @@ export default function TestComponent() {
                     <Breadcrumb.Item>List</Breadcrumb.Item>
                     <Breadcrumb.Item>App</Breadcrumb.Item>
                 </Breadcrumb>
-                <Layout
+                <div
                     style={{
-                        padding: '24px 0',
                         background: colorBgContainer,
+                        minHeight: 280,
+                        padding: 24,
                         borderRadius: borderRadiusLG,
-                        flex: 1, // Để Layout chiếm hết không gian còn lại
                     }}
                 >
-                    <Sider
-                        style={{
-                            background: colorBgContainer,
-                        }}
-                        width={300}
-                    >
-                        <SiderUserBK/>
-                    </Sider>
-                    <Content
-                        style={{
-                            padding: '0 24px',
-                            minHeight: 280,
-                            flex: 1, // Để Content bên trong chiếm hết không gian còn lại
-                        }}
-                    >
-                        Content
-                    </Content>
-                </Layout>
+                    Content
+                </div>
             </Content>
             <FooterBK className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
         </Layout>
+        // lauout Both the top navigation and the sidebar, commonly used in documentation site.
+        // <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        //     <Header2 />
+        //     <Content
+        //         style={{
+        //             padding: '0 48px',
+        //             flex: 1, // Cho phép Content chiếm không gian còn lại
+        //             display: 'flex', // Đặt display là flex để chứa nội dung
+        //             flexDirection: 'column', // Hướng theo chiều dọc
+        //         }}
+        //     >
+        //         <Breadcrumb
+        //             style={{
+        //                 margin: '16px 0',
+        //             }}
+        //         >
+        //             <Breadcrumb.Item>Home</Breadcrumb.Item>
+        //             <Breadcrumb.Item>List</Breadcrumb.Item>
+        //             <Breadcrumb.Item>App</Breadcrumb.Item>
+        //         </Breadcrumb>
+        //         <Layout
+        //             style={{
+        //                 padding: '24px 0',
+        //                 background: colorBgContainer,
+        //                 borderRadius: borderRadiusLG,
+        //                 flex: 1, // Để Layout chiếm hết không gian còn lại
+        //             }}
+        //         >
+        //             <Sider
+        //                 style={{
+        //                     background: colorBgContainer,
+        //                 }}
+        //                 width={300}
+        //             >
+        //                 <SiderUserBK/>
+        //             </Sider>
+        //             <Content
+        //                 style={{
+        //                     padding: '0 24px',
+        //                     minHeight: 280,
+        //                     flex: 1, // Để Content bên trong chiếm hết không gian còn lại
+        //                 }}
+        //             >
+        //                 Content
+        //             </Content>
+        //         </Layout>
+        //     </Content>
+        //     <FooterBK className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
+        // </Layout>
     );
 }

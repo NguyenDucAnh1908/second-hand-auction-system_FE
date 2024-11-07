@@ -18,16 +18,20 @@ import {Button} from "@material-tailwind/react";
 import {useGetWinBidQuery} from "../../services/bid.service";
 
 // eslint-disable-next-line react/prop-types
-export default function AuctionSection({dataItem, isSuccessItemDt, isRefetch}) {
+export default function AuctionSection(
+    {
+        dataItem,
+        isSuccessItemDt,
+        isRefetch,
+        winningBid,
+        isRefetchWinningBid,
+        isLoggedIn
+    }
+) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAuctionId, setSelectedAuctionId] = useState(dataItem.auction.auction_id);
-    const {
-        data: winningBid,
-        error: fetchWinningBid,
-        isLoading: loadingWinningBid,
-        refetch: isRefetchWinningBid
-    } = useGetWinBidQuery(dataItem.auction.auction_id);
-    const isLoggedIn = useSelector(selectIsLoggedIn);
+
+    // const isLoggedIn = useSelector(selectIsLoggedIn);
     const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
     const auctionEndTime = dataItem.auction?.end_time || null;
@@ -150,7 +154,8 @@ export default function AuctionSection({dataItem, isSuccessItemDt, isRefetch}) {
                     //     <BidForm dataItem={dataItem}/>
                     // </div>
                     <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
-                        <BidForm dataItem={dataItem} cancelModel={handleCancel} isRefetchWinningBid={isRefetchWinningBid}/>
+                        <BidForm dataItem={dataItem} cancelModel={handleCancel}
+                                 isRefetchWinningBid={isRefetchWinningBid}/>
                     </div>
 
                 ) : (
@@ -199,7 +204,7 @@ export default function AuctionSection({dataItem, isSuccessItemDt, isRefetch}) {
                 <p>Some contents...</p>
             </Modal>
             {isSuccessItemDt && dataItem && (
-                <div className="mt-4 flex items-center gap-[50px] self-stretch px-[22px] md:flex-col sm:px-5">
+                <div className="mt-4 flex items-center gap-[50px] px-[22px] md:flex-col sm:px-5">
                     <div className="flex flex-1 items-start justify-end w-full md:flex-col md:self-stretch">
                         <ImageGallery
                             items={images}
@@ -272,21 +277,6 @@ export default function AuctionSection({dataItem, isSuccessItemDt, isRefetch}) {
                             <span>&nbsp;{winningBid?.data?.bidAmount ? formatPrice(winningBid.data.bidAmount) : "Chưa có giá đấu"}</span>
 
                         </Heading>
-
-                        {/*<div className="mx-1.5 mt-4 flex flex-col items-start gap-3 self-stretch md:mx-0">*/}
-                        {/*    <Text*/}
-                        {/*        as="p"*/}
-                        {/*        className="font-bevietnampro text-[14px] font-normal text-blue_gray-900_01"*/}
-                        {/*    >*/}
-                        {/*        <span className="font-medium">Màu sắc:</span>*/}
-                        {/*        <span>&nbsp;Xám</span>*/}
-                        {/*    </Text>*/}
-                        {/*    <Img*/}
-                        {/*        src="images/img_inner.svg"*/}
-                        {/*        alt="Color Image"*/}
-                        {/*        className="h-[26px] w-[52%] object-contain"*/}
-                        {/*    />*/}
-                        {/*</div>*/}
                         <Text
                             as="p"
                             className="ml-1.5 mt-5 self-start font-bevietnampro text-[14px] font-normal text-blue_gray-900_01 md:ml-0"
@@ -411,7 +401,7 @@ export default function AuctionSection({dataItem, isSuccessItemDt, isRefetch}) {
 
                                     <button
                                         type="button"
-                                        className="inline-flex items-center px-4 py-2 text-sm 
+                                        className="inline-flex items-center px-4 py-2 text-sm
             font-medium text-gray-900 bg-white border-t border-b border-gray-200
             hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700
             focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white
