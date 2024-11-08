@@ -122,7 +122,7 @@ export const itemApiSlice = apiSlice.injectEndpoints({
             transformResponse: (response) => response.data,
         }),
 
-        getItemAdmin:builder.query({
+        getItemAdmin: builder.query({
             query: (paging) => ({
                 url: "item/pending",
                 params: {
@@ -130,36 +130,39 @@ export const itemApiSlice = apiSlice.injectEndpoints({
                     limit: paging.limit || 10,
                 },
             }),
-           
+
         }),
 
-        approveItemAdmin:builder.mutation({
-            query: (id) => ({
-                url: `/item/approve/${id}`,
+        // Trong services/item.service.js
+        approveItemAdmin : builder.mutation({
+            query: ({ itemId, status, reason }) => ({
+                url: `/item/approve/${itemId}`,
                 method: "PUT",
+                body: { status, reason },
             }),
         }),
 
-        getSeller: builder.query({
-            query: ({ id }) => `/item/get-seller/${id}`,
-            transformResponse: (response) => response.data,
-        }),
-        
-    }),
-});
 
-export const {
-    useGetItemsQuery,
-    useGetFeatureItemsQuery,
-    useGetItemsFilterQuery,
-    useGetItemDetailQuery,
-    useGetAuctionProcessItemQuery,
-    useGetAuctionProcessDetailQuery,
-    useGetAuctionCompletedItemQuery,
-    useRegisterItemMutation,
-    useGetItemByUserQuery,
-    useCreateItemMutation,
-    useGetItemAdminQuery,
-    useApproveItemAdminMutation,
-    useGetSellerQuery,
-} = itemApiSlice;
+            getSeller: builder.query({
+                query: ({ id }) => `/item/get-seller/${id}`,
+                transformResponse: (response) => response.data,
+            }),
+
+        }),
+    });
+
+    export const {
+        useGetItemsQuery,
+        useGetFeatureItemsQuery,
+        useGetItemsFilterQuery,
+        useGetItemDetailQuery,
+        useGetAuctionProcessItemQuery,
+        useGetAuctionProcessDetailQuery,
+        useGetAuctionCompletedItemQuery,
+        useRegisterItemMutation,
+        useGetItemByUserQuery,
+        useCreateItemMutation,
+        useGetItemAdminQuery,
+        useApproveItemAdminMutation,
+        useGetSellerQuery,
+    } = itemApiSlice;

@@ -1,27 +1,55 @@
-import {ButtonDH, TextArea, Heading, Img} from "../../../components";
-import React from "react";
-import {UploadOutlined} from '@ant-design/icons';
-import {Button, message, Upload} from 'antd';
-
-const props = {
-    name: 'file',
-    action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-    headers: {
-        authorization: 'authorization-text',
-    },
-    onChange(info) {
-        if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
+import { ButtonDH, TextArea, Heading, InputDH } from "../../../components";
+import React, { useState, useEffect } from "react";
+import { Button, Input, message } from 'antd';
+import { useApproveItemAdminMutation, useGetItemDetailQuery } from "../../../services/item.service";
+import { useNavigate } from "react-router-dom";
+export default function StaffAssessmentSection({ itemId }) {
+    const { data: itemDetail, isLoading, isError } = useGetItemDetailQuery({ id: itemId });
+    const [approveItem] = useApproveItemAdminMutation();
+    const [status, setStatus] = useState('PENDING');
+    const [reason, setReason] = useState('');
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (itemDetail) {
+            setStatus(itemDetail.itemStatus || 'PENDING');
         }
-        if (info.file.status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-        }
-    },
-};
+    }, [itemDetail]);
 
-export default function StaffAssessmentSection({ itemDetail }) {
+    const handleApprove = async () => {
+        try {
+            const response = await approveItem({ itemId, status: 'ACCEPTED', reason });
+            console.log("Approve response:", response);
+            setStatus('ACCEPTED');
+            navigate('/dashboard/ProductPending');
+            message.success("Sản phẩm đã được phê duyệt.");
+        } catch (error) {
+            console.error("Error approving item:", error);
+            message.error("Có lỗi xảy ra khi phê duyệt sản phẩm.");
+
+        }
+    };
+
+    const handleReject = async () => {
+        try {
+            const response = await approveItem({ itemId, status: 'REJECTED', reason });
+            console.log("Reject response:", response);
+            setStatus('REJECTED');
+            message.success("Sản phẩm đã bị từ chối.");
+            navigate('/dashboard/ProductPending');
+        } catch (error) {
+            console.error("Error rejecting item:", error);
+            message.error("Có lỗi xảy ra khi từ chối sản phẩm.");
+        }
+    };
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (isError) {
+        return <div>Error loading item details.</div>;
+    }
+
     return (
         <>
             {/* staff assessment section */}
@@ -37,20 +65,13 @@ export default function StaffAssessmentSection({ itemDetail }) {
                             Kết quả thẩm định
                         </Heading>
                         <div className="mt-5 flex w-full items-center">
-                            <div className="flex items-center gap-3">
-                                {/* <Upload {...props}>
-                                    <Button icon={<UploadOutlined/>}>Click to Upload</Button>
-                                </Upload> */}
-
-                                {/* Tiêu đề "Giấy thẩm định" */}
-                                <Heading
-                                    size="textxs"
-                                    as="h5"
-                                    className="text-[15px] font-medium text-black-900"
-                                >
-                                    {/* Giấy thẩm định */}
-                                </Heading>
-                            </div>
+                            <Heading
+                                size="textxs"
+                                as="h5"
+                                className="text-[15px] font-medium text-black-900"
+                            >
+                                {/* Giấy thẩm định */}
+                            </Heading>
                         </div>
                         <div className="mt-[18px] w-full">
                             <div className="flex flex-col items-center w-full">
@@ -61,24 +82,29 @@ export default function StaffAssessmentSection({ itemDetail }) {
                                 >
                                     Ghi chú
                                 </Heading>
-                                <TextArea
-                                    shape="round"
-                                    name="Reason TextArea"
-                                    placeholder={`Lý do`}
-                                    className="mt-1 w-full rounded-md !border !border-gray-200 px-[18px] font-jost text-blue_gray-600 sm:pt-5"
+                                <textarea
+                                    name="Reason"
+                                    placeholder="Lý do"
+                                    className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-8 font-jost text-blue_gray-600 sm:pt-5 resize-none"  // resize-none để không thể thay đổi kích thước của textarea
+                                    value={reason}
+                                    onChange={(e) => setReason(e.target.value)} // Cập nhật giá trị lý do khi người dùng nhập
                                 />
+
+
 
                                 {/* Buttons */}
                                 <div className="mt-[66px] flex w-full justify-between gap-5 max-w-lg">
                                     <ButtonDH
                                         shape="round"
                                         className="w-full max-w-[200px] rounded-md px-[34px] bg-green-500 text-white hover:bg-green-600"
+                                        onClick={handleApprove}
                                     >
                                         Phê duyệt
                                     </ButtonDH>
                                     <ButtonDH
                                         shape="round"
                                         className="w-full max-w-[200px] rounded-md px-[34px] bg-red-500 text-white hover:bg-red-600"
+                                        onClick={handleReject}
                                     >
                                         Từ chối
                                     </ButtonDH>

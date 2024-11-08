@@ -10,8 +10,8 @@ export default function ThmnhcaStaffPage() {
     // console.log("itemId", itemId);
     const { data: itemDetail, isLoading, isError } = useGetItemDetailQuery({ id: itemId }); // Gọi API với itemId
     const { data: sellerDetail, isLoading: isSellerLoading, isError: isSellerError } = useGetSellerQuery({ id: itemId });
-
-    console.log("Data ne", itemDetail);
+    
+    // console.log("Data ne", data);
     // console.log("Data seller", sellerDetail);
     if (isLoading) {
         return <div>Loading...</div>; // Hiển thị loading khi đang tải dữ liệu
@@ -36,7 +36,7 @@ export default function ThmnhcaStaffPage() {
                     <ProductReviewSection itemDetail={itemDetail}/>
 
                     {/* staff assessment section */}
-                    <StaffAssessmentSection itemDetail={itemDetail} />
+                    <StaffAssessmentSection itemId={itemId} />
                 </div>
             </div>
         </>

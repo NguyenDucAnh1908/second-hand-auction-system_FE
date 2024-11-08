@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Button } from 'antd';
 import { useGetKYCItemsQuery } from '../../../services/kyc.service';
 import { useNavigate } from 'react-router-dom';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 
 const getStatusStyle = (status) => {
     switch (status) {
@@ -17,14 +19,66 @@ const getStatusStyle = (status) => {
 };
 
 const ManageKYC = () => {
-    const { data, error, isLoading } = useGetKYCItemsQuery({ page: 0, limit: 10 });
+    const { data, error, isLoading, refetch } = useGetKYCItemsQuery({ page: 0, limit: 10 });
     const navigate = useNavigate();
+    const [connected, setConnected] = useState(false);
+    const [items, setItems] = useState([]);
+
+    const stompClient = new Client({
+        brokerURL: 'ws://localhost:8080/ws', // WebSocket server URL
+        webSocketFactory: () => new SockJS('http://localhost:8080/api/v1/ws'), // WebSocket client using SockJS
+    });
+
+    // Khi kết nối thành công
+    stompClient.onConnect = (frame) => {
+        console.log('Connected: ' + frame);
+        setConnected(true);
+
+        // Subscribe vào topic KYC để nhận dữ liệu cập nhật
+        stompClient.subscribe('/topic/kyc', (message) => {
+            const updatedKYC = JSON.parse(message.body);
+            console.log('Received updated KYC: ', updatedKYC);
+
+            // Cập nhật danh sách KYC sau khi nhận dữ liệu mới
+            setItems((prevItems) => {
+                return prevItems.map(item =>
+                    item.kycId === updatedKYC.kycId ? updatedKYC : item
+                );
+            });
+        });
+    };
+
+    // Nếu có lỗi WebSocket
+    stompClient.onWebSocketError = (error) => {
+        console.error('WebSocket error:', error);
+    };
+
+    // Khi WebSocket đóng kết nối
+    stompClient.onWebSocketClose = () => {
+        console.log('WebSocket closed');
+        setConnected(false);
+    };
+
+    // Kết nối WebSocket khi component được mount
+    useEffect(() => {
+        stompClient.activate();
+
+        // Chỉ cập nhật `items` khi dữ liệu từ server đã được tải
+        if (data) {
+            setItems(data.data); // Lưu dữ liệu ban đầu vào state
+        }
+
+        // Dọn dẹp WebSocket khi component bị hủy
+        return () => {
+            if (stompClient) {
+                stompClient.deactivate(); // Ngắt kết nối WebSocket
+                console.log('WebSocket disconnected');
+            }
+        };
+    }, [data]);
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading KYC items: {error.message}</div>;
-
-    const items = data ? data.data : [];
-    console.log(data);
 
     const columns = [
         {
@@ -68,7 +122,6 @@ const ManageKYC = () => {
         console.log(record.kycId);
         navigate(`/dashboard/KiemduyetStaffPage/${record.kycId}`);
     };
-    
 
     return (
         <div>

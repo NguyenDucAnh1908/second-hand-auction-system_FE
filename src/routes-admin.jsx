@@ -55,7 +55,7 @@ export const routesAdmin = [
     pages: [
       {
         icon: <UserCircleIcon {...icon} />,
-        name: "Danh sách sản phẩm",
+        name: "Danh sách đấu giá",
         path: "/StaffProductList",
         element: <StaffProductListPage />,
       },
