@@ -27,7 +27,7 @@ export default function AddressPage() {
     const [modalText, setModalText] = useState("Content of the modal");
     const [selectedAddress, setSelectedAddress] = useState(null);
     const { addAddress } = useAddress();
-    const { addresses } = useFetchUserAddresses();
+    const { addresses , isRefetchAddress} = useFetchUserAddresses();
     const [setStatus] = useSetStatusMutation();
 
 
@@ -83,7 +83,9 @@ export default function AddressPage() {
     const handleFormSubmit = async (formData) => {
         const result = await addAddress(formData);
         if (result.success) {
+            isRefetchAddress();
             message.success("Địa chỉ đã được thêm thành công!");
+            isRefetchAddress();
 
             handleCancel();
         } else {

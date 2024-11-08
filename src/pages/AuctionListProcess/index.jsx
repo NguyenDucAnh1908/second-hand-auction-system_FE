@@ -49,19 +49,27 @@ export default function AuctionListProcess() {
                             flex: 1, // Để Layout chiếm hết không gian còn lại
                         }}
                     >
-                        <SidereError khi focus
+                        {/*<SidereError khi focus*/}
                         
-                        Giá thầu trong phiên đấu giá
-                         ngày trước đó
-                        Missing Request Parameter Error
+                        {/*Giá thầu trong phiên đấu giá*/}
+                        {/* ngày trước đó*/}
+                        {/*Missing Request Parameter Error*/}
                         
+                        {/*    style={{*/}
+                        {/*        background: colorBgContainer,*/}
+                        {/*    }}*/}
+                        {/*    width={300}*/}
+                        {/*>*/}
+                        {/*    <SiderUserBK />*/}
+                        {/*</SidereError>*/}
+                        <Sider
                             style={{
                                 background: colorBgContainer,
                             }}
                             width={300}
                         >
                             <SiderUserBK />
-                        </SidereError>
+                        </Sider>
                         <Content
                             style={{
                                 padding: '0 24px',
@@ -75,7 +83,7 @@ export default function AuctionListProcess() {
                                     selectedTabClassName=""
                                     selectedTabPanelClassName="tab-panel--selected"
                                 >
-                                    <AuctionListsProcessSection />
+                                    <AuctionListProcessSection/>
                                 </Tabs>
                             </div>
                         </Content>
