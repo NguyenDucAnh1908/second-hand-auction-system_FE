@@ -20,6 +20,8 @@ import ManagementWindrawOfSeller from "./pages/Admin/ManageWithdraw/index.jsx";
 import Payment from "./pages/Admin/Payment/index.jsx";
 import ManageKYC from "./pages/Admin/ManageKYC/index.jsx";
 import ProductPending from "./pages/Admin/ManageProduct/index.jsx";
+import ManageUser from "./pages/Admin/ManageUser/index.jsx";
+
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
@@ -53,6 +55,12 @@ export const routesAdmin = [
     title: "Management item",
     layout: "dashboard",
     pages: [
+      {
+        icon: <UserCircleIcon {...icon} />,
+        name: "Danh dách người dùng",
+        path: "/ManageUsers",
+        element: <ManageUser />,
+      },
       {
         icon: <UserCircleIcon {...icon} />,
         name: "Danh sách đấu giá",

@@ -1,4 +1,4 @@
-import {apiSlice} from "../redux/api/apiSlice.js";
+import { apiSlice } from "../redux/api/apiSlice.js";
 
 export const userApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -15,7 +15,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
             query: (credentials) => ({
                 url: "/user/changePassword",
                 method: "PATCH",
-                body: {...credentials},
+                body: { ...credentials },
             }),
         }),
 
@@ -23,9 +23,36 @@ export const userApiSlice = apiSlice.injectEndpoints({
             query: (credentials) => ({
                 url: "/user",
                 method: "PUT",
-                body: {...credentials},
+                body: { ...credentials },
             }),
         }),
+
+        deleteUser: builder.mutation({
+            query: (id) => ({
+                url: `/user/${id}`,
+                method: "DELETE",
+            }),
+        }),
+
+        getAllUser: builder.query({
+            query: (paging) => ({
+                url: "/user/get-users",
+                params: {
+                    page: paging.page || 0,
+                    limit: paging.limit || 10,
+                },
+            }),
+            transformResponse: (response) => {
+                return {
+                    items: response.data || [],
+                    totalPages: response.data.totalPages || 0,
+                    totalProducts: response.data.totalElements || 0,
+                };
+            },
+            
+        }),
+
+       
     }),
 });
 
@@ -34,4 +61,6 @@ export const {
     useGetUserByIdQuery,
     useChangePasswordMutation,
     useUpdateUserMutation,
+    useGetAllUserQuery,
+    useDeleteUserMutation,
 } = userApiSlice;
