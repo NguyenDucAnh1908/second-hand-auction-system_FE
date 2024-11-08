@@ -368,7 +368,7 @@ function RegisterProductPage() {
         },
         {
             key: '7',
-            label: 'Negotiated Amount',
+            label: 'Hình ảnh',
             children: <div
                 className="mr-1.5 mt-2 flex flex-col items-start gap-5 self-stretch rounded-[20px] bg-blue-200 px-[52px] py-[30px] md:mr-0 md:px-5 sm:p-5">
                 <>
