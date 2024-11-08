@@ -26,6 +26,7 @@ export const bidApiSlice = apiSlice.injectEndpoints({
         getBidInfo: builder.query({
             query: (auctionId) =>
                 `/bids/information-bid/${auctionId}`,
+            //transformResponse: (response) => response.data,
         }),
 
     }),

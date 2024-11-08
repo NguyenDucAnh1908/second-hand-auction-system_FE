@@ -27,7 +27,8 @@ import {
     Button,
     Tag,
     Spin,
-    Empty
+    Empty,
+    Radio, Space
 } from "antd";
 import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
 import {Input} from "@material-tailwind/react";
@@ -49,6 +50,7 @@ export default function ProductPage() {
     const [selectedSubCategoryIds, setSelectedSubCategoryIds] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [page, setPage] = useState(1);
+    const [selectedPriceFilter, setSelectedPriceFilter] = useState(null);
     const {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
@@ -80,37 +82,6 @@ export default function ProductPage() {
     } = useGetCategoriesQuery();
     // if (isLoading) return <p>Loading...</p>;
     // if (error) return <p>Error: {error.message}</p>;
-
-    const onSliderChange = (value) => {
-        setPriceRange(value);
-        handleFilterChange({min: value[0], max: value[1]});
-    };
-
-    // Hàm thay đổi giá trị đầu vào cho giá thấp
-    const onLowPriceChange = (value) => {
-        const newRange = [value, priceRange[1]];
-        setPriceRange(newRange);
-        handleFilterChange({min: value});
-    };
-
-    // Hàm thay đổi giá trị đầu vào cho giá cao
-    const onHighPriceChange = (value) => {
-        const newRange = [priceRange[0], value];
-        setPriceRange(newRange);
-        handleFilterChange({max: value});
-    };
-
-    // const onSliderChange = (value) => {
-    //     setPriceRange(value);
-    // };
-    //
-    // const onLowPriceChange = (value) => {
-    //     setPriceRange([value, priceRange[1]]);
-    // };
-    //
-    // const onHighPriceChange = (value) => {
-    //     setPriceRange([priceRange[0], value]);
-    // };
 
     const onPercentageSliderChange = (value) => {
         setPercentageRange(value);
@@ -161,6 +132,37 @@ export default function ProductPage() {
         setIsModalOpen(false);
     };
 
+    const onPriceRangeChange = (min, max) => {
+        setPriceRange([min, max]);
+        handleFilterChange({min, max});
+    };
+    const handlePriceFilterChange = (value) => {
+        if (selectedPriceFilter === value) {
+            setSelectedPriceFilter(null);
+            onPriceRangeChange(1, 1600000000); // giá trị mặc định không giới hạn
+        } else {
+            setSelectedPriceFilter(value);
+            switch (value) {
+                case 'under500k':
+                    onPriceRangeChange(1, 500000);
+                    break;
+                case '500kTo1M':
+                    onPriceRangeChange(500000, 1000000);
+                    break;
+                case '1MTo1_5M':
+                    onPriceRangeChange(1000000, 1500000);
+                    break;
+                case '2MTo5M':
+                    onPriceRangeChange(2000000, 5000000);
+                    break;
+                case 'above5M':
+                    onPriceRangeChange(5000000, 1600000000);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
     return (
         <>
             <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
@@ -260,43 +262,38 @@ export default function ProductPage() {
                                         <h2 className="text-[18px] font-medium text-blue_gray-900_01">Giá</h2>
                                     </div>
                                     <div className="flex flex-col gap-3 self-stretch">
-                                        <div className="flex items-center gap-6">
-                                            <div className="flex w-[46%] flex-col items-start gap-1">
-                                                <p className="text-[15px] font-normal text-blue_gray-900_01">Thấp</p>
-                                                <InputNumber
-                                                    min={filters.min}
-                                                    max={filters.max}
-                                                    value={priceRange[0]}
-                                                    onChange={onLowPriceChange}
-                                                />
-                                            </div>
-                                            <div className="flex flex-1 flex-col items-start gap-1.5">
-                                                <p className="text-[15px] font-normal text-blue_gray-900_01">Cao</p>
-                                                <InputNumber
-                                                    min={filters.min}
-                                                    max={filters.max}
-                                                    value={priceRange[1]}
-                                                    onChange={onHighPriceChange}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col items-start gap-3">
-                                            <Slider
-                                                range
-                                                min={filters.min}
-                                                max={filters.max}
-                                                step={10}
-                                                value={priceRange}
-                                                onChange={onSliderChange}
-                                                className="mr-5 flex self-stretch"
-                                            />
-                                            <p className="flex text-[14px] font-normal text-blue_gray-900_01">
-                                                <span>{priceRange[0]?.toLocaleString() || "0"}</span>
-                                                <a href="#" className="inline underline">đ</a>
-                                                <span>&nbsp;- {priceRange[1]?.toLocaleString() || "0"}</span>
-                                                <a href="#" className="inline underline">đ</a>
-                                            </p>
-                                        </div>
+                                        <Space direction="vertical">
+                                            <Checkbox
+                                                checked={selectedPriceFilter === 'under500k'}
+                                                onChange={(e) => handlePriceFilterChange('under500k', e.target.checked)}
+                                            >
+                                                Dưới 500,000₫
+                                            </Checkbox>
+                                            <Checkbox
+                                                checked={selectedPriceFilter === '500kTo1M'}
+                                                onChange={(e) => handlePriceFilterChange('500kTo1M', e.target.checked)}
+                                            >
+                                                500,000₫ - 1,000,000₫
+                                            </Checkbox>
+                                            <Checkbox
+                                                checked={selectedPriceFilter === '1MTo1_5M'}
+                                                onChange={(e) => handlePriceFilterChange('1MTo1_5M', e.target.checked)}
+                                            >
+                                                1,000,000₫ - 1,500,000₫
+                                            </Checkbox>
+                                            <Checkbox
+                                                checked={selectedPriceFilter === '2MTo5M'}
+                                                onChange={(e) => handlePriceFilterChange('2MTo5M', e.target.checked)}
+                                            >
+                                                2,000,000₫ - 5,000,000₫
+                                            </Checkbox>
+                                            <Checkbox
+                                                checked={selectedPriceFilter === 'above5M'}
+                                                onChange={(e) => handlePriceFilterChange('above5M', e.target.checked)}
+                                            >
+                                                Trên 5,000,000₫
+                                            </Checkbox>
+                                        </Space>
                                     </div>
                                     <div className="h-px w-[72%] bg-gray-200"/>
                                 </div>
@@ -476,30 +473,6 @@ export default function ProductPage() {
                                     <div className="mt-10 flex flex-col items-center self-stretch">
                                         <div className="flex items-center justify-between w-full">
                                             <span className="text-blue_gray-900_01">Filter:</span>
-
-                                            {/*<div className="flex items-center gap-2 ml-4">*/}
-                                            {/*  {selectedBrands.map((brand) => (*/}
-                                            {/*      <Tag*/}
-                                            {/*          key={brand}*/}
-                                            {/*          closeIcon={<CloseCircleOutlined/>}*/}
-                                            {/*          onClose={() => handleClose(brand)}*/}
-                                            {/*      >*/}
-                                            {/*        {brand}*/}
-                                            {/*      </Tag>*/}
-                                            {/*  ))}*/}
-                                            {/*</div>*/}
-
-
-                                            {/*<select*/}
-                                            {/*    className="rounded-md border border-solid border-gray-200 text-blue_gray-900_01"*/}
-                                            {/*    defaultValue=""*/}
-                                            {/*>*/}
-                                            {/*    <option value="" disabled hidden>*/}
-                                            {/*        Sắp xếp*/}
-                                            {/*    </option>*/}
-                                            {/*    <option value="low-to-high">Giá thấp đến cao</option>*/}
-                                            {/*    <option value="high-to-low">Giá cao đến thấp</option>*/}
-                                            {/*</select>*/}
                                         </div>
                                         {errorItem ? (
                                             <Empty
@@ -516,7 +489,7 @@ export default function ProductPage() {
                                                             </div>
                                                         ))
                                                     ) : (
-                                                        <Empty description="items" />
+                                                        <Empty description="items"/>
                                                     )}
                                                 </div>
                                             </Spin>

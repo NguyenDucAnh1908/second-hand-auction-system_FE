@@ -6,7 +6,15 @@ import {Text, ButtonDH, InputDH} from "./..";
 import {message, Spin, theme} from "antd";
 import {Button} from "@material-tailwind/react";
 
-export default function BidForm({dataItem, cancelModel, isRefetchWinningBid, bidIf, isRefetchBidIf}) {
+export default function BidForm(
+    {
+        dataItem,
+        cancelModel,
+        isRefetchWinningBid,
+        bidIf,
+        isRefetchBidIf
+    }
+) {
 
     const selectedAuctionId = dataItem.auction.auction_id;
     const [maxBid, setMaxBid] = useState('');
@@ -15,7 +23,7 @@ export default function BidForm({dataItem, cancelModel, isRefetchWinningBid, bid
     const [createBid, {isLoading, isSuccess, isError}] = useCreateBidMutation();
 
     const handleSubmit = async (e) => {
-         e.preventDefault();
+        e.preventDefault();
         try {
             const createAuctionBid = await createBid({
                 bidAmount: Number(maxBid),

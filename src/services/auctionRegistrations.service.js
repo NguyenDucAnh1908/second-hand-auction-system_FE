@@ -36,16 +36,12 @@ export const auctionRegistrationsApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
-
         // Thêm endpoint kiểm tra người dùng trong phiên đấu giá
         checkUserInAuction: builder.query({
             query: (auctionId) => `/auction-register/checkUser/${auctionId}`,
             method: "GET",
         }),
 
-    
-
-       
     }),
 });
 
