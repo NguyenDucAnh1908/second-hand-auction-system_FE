@@ -6,11 +6,12 @@ import ProductInfo1 from "../../components/ProductInfo1";
 import React, { Suspense } from "react";
 import SellerDetailHeader from "../../components/SellerDetail";
 import {Breadcrumb, Checkbox, Collapse, Layout, Menu, theme} from 'antd';
-import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
 import FooterBK from "@/components/FooterBK/index.jsx";
-import Pagination from "@/components/Pagination/index.jsx";
-import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
 import HorizontalTab from "../../components/HorizontalTabSeller";
+import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
+
+
 const { Panel } = Collapse;
 const {Content, Sider} = Layout;
 
@@ -24,6 +25,14 @@ const brands = [
 
 
 export default function SellerDetailPage() {
+    const [searchParams] = useSearchParams();
+    const activeTab = searchParams.get("activeTab") || "shop";
+
+    useEffect(() => {
+        if (activeTab === "reviews") {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [activeTab]);
    
     return (
         <>
@@ -33,7 +42,7 @@ export default function SellerDetailPage() {
                     className="flex w-full flex-col items-center gap-[104px] overflow-auto bg-bg-white py-[66px] md:gap-[78px] md:py-5 sm:gap-[52px]">
                     <SellerDetailHeader/>
                 </div>
-                <HorizontalTab/>
+                <HorizontalTab initialTab={activeTab} />
               
                 <FooterBK
                     className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>

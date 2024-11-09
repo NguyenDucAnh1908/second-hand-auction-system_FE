@@ -52,6 +52,8 @@ function App() {
                 <Route path="ForgotPassword" index element={<ForgotPassword/>}/>
                 <Route path="VerifyAccount" index element={<VerifyAccount/>}/>
                 <Route path="PaymentSuccess" index element={<PaymentSuccess/>}/>
+                <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
+
 
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
@@ -89,7 +91,6 @@ function App() {
                     <Route path="RegisterKYC" index element={<KNCPage/>}/>
                     <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
                     <Route path="ListOfSellerPage" index element={<ListOfSellerPage/>}/>
-                    <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
                     <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
                     <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
                     <Route path="AuctionListCompleted" index element={<AuctionListCompleted/>}/>
