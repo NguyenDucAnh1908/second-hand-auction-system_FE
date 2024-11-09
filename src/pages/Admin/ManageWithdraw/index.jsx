@@ -18,7 +18,11 @@ import { Drawer, Row, Col, Descriptions, Badge, Space } from 'antd';
 import Pagination from "@/components/Pagination/index.jsx";
 import { Link } from 'react-router-dom';
 
+
+
+
 const TABLE_HEAD = ["Name", "Amount", "Date", "Status", "Account", "Reason", "Detail", ""];
+
 
 const TABLE_ROWS = [
     // Sample data for the table
@@ -154,6 +158,7 @@ const ManagementWithdrawOfSeller = () => {
     };
 
 
+
     return (
         <div className="container mx-auto py-10">
             <div className="container mx-auto py-10">
@@ -161,7 +166,7 @@ const ManagementWithdrawOfSeller = () => {
                     <Descriptions
                         title="Yêu Cầu Rút Tiền"
                         bordered items={items}
-                        extra={ <Space>
+                        extra={<Space>
                             <Button color="red" danger>
                                 Hủy Yêu Cầu
                             </Button>
@@ -276,7 +281,7 @@ const ManagementWithdrawOfSeller = () => {
                                                 </Typography>
                                             </td>
                                             <td className={classes}>
-                                                <Button  onClick={showDrawer} variant="gradient" color="blue-gray" size="sm">
+                                                <Button onClick={showDrawer} variant="gradient" color="blue-gray" size="sm">
                                                     Details
                                                 </Button>
                                             </td>

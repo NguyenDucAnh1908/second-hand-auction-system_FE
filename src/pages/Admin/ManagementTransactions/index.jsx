@@ -1,268 +1,241 @@
-import React, { useState } from 'react';
-import FooterBK from '../../../components/FooterBK';
-import { DocumentIcon } from "@heroicons/react/24/solid";
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import React, { useState, useEffect } from 'react';
 import {
-    Button, Card, IconButton, Typography,
-    Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
+    Button, Card, Typography, Select, Option,
+    Dialog, DialogHeader, DialogBody, DialogFooter,
 } from "@material-tailwind/react";
 import { Tag } from "antd";
-import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
+import { useGetTransactionWalletAdminQuery } from '../../../services/transactionWallet.service';
+import useHookUploadImage from '../../../hooks/useHookUploadImage';
+import { Upload } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Image } from 'antd';
+import { useUploadImageTransactionMutation } from '../../../services/transactionWallet.service';
 
 const TABLE_HEAD = [
-    "Number",
-    "Customer",
-    "Amount",
-    "Request Date",
-    "Approval Date",
-    "Status",
-    "Actions",
+    "Mã giao dịch",
+    "Số tiền",
+    "Loại giao dịch",
+    "Lời nhắn",
+    "Ngày giao dịch",
+    "Trạng thái",
+    "Thao tác",
 ];
 
-// Sample transaction data
-const transaction = {
-    id: "#TX-001",
-    orderCode: "ORD-12345",
-    amount: "20,000,000",
-    amountPaid: "15,000,000",
-    amountRemaining: "5,000,000",
-    status: "Available",
-    createdAt: "2024-10-14T10:00:00Z",
-    transactions: [
-        {
-            reference: "REF-001",
-            amount: "10,000,000",
-            accountNumber: "ACC-123456789",
-            description: "Initial deposit",
-            transactionDateTime: "2024-10-10T10:00:00Z",
-            virtualAccountName: "Virtual Account A",
-        }
-
-    ],
+const dinhDangNgay = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN'); // 'vi-VN' định dạng ngày thành dd/MM/yyyy
 };
 
-const TABLE_ROWS = [
-    {
-        number: "#MS-415646",
-        customer: "CompanyINC",
-        amount: "$14,000",
-        issued: "31 Jan 2024",
-        date: "31 Feb 2024",
-        status: "Available",
-    },
-    {
-        number: "#MS-415647",
-        customer: "CompanyINC",
-        amount: "$4,000",
-        issued: "24 Jan 2024",
-        date: "24 Feb 2024",
-        status: "pending",
-    },
-    {
-        number: "#MS-415648",
-        customer: "CompanyINC",
-        amount: "$11,000",
-        issued: "12 Jan 2024",
-        date: "12 Feb 2024",
-        status: "UnAvailable",
-    },
-    {
-        number: "#MS-415649",
-        customer: "CompanyINC",
-        amount: "$2,600",
-        issued: "10 Jan 2024",
-        date: "10 Feb 2024",
-        status: "Fail",
-    },
-];
+export default function QuanLyGiaoDich() {
+    const [moDialog, setMoDialog] = useState(false);
+    const [giaoDichDuocChon, setGiaoDichDuocChon] = useState(null);
+    const [trang, setTrang] = useState(1);
+    const [image, setImage] = useState(null); // state để lưu hình ảnh tải lên
 
-export default function ManagementTransactions() {
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(!open);
+    const [roleFilter, setRoleFilter] = useState(""); // State for role filter
+    const [transactionTypeFilter, setTransactionTypeFilter] = useState(""); // State for transactionType filter
+
+    const { data, error, isLoading } = useGetTransactionWalletAdminQuery({
+        page: trang - 1, limit: 10, role: roleFilter, transactionType: transactionTypeFilter
+    });
+    const { UploadImage } = useHookUploadImage();
+
+    const moChiTiet = (transaction) => {
+        setGiaoDichDuocChon(transaction);
+        setMoDialog(!moDialog);
+    };
+    const danhSachGiaoDich = data?.data?.items || [];
+    console.log(danhSachGiaoDich); console
+    const totalPages1 = data?.data?.totalPages || 0;
+
+    const handlePageChange = (newPage) => {
+        setTrang(newPage);
+    };
+
+    const handleRoleChange = (value) => {
+        setRoleFilter(value);
+    };
+
+    const handleTransactionTypeChange = (value) => {
+        setTransactionTypeFilter(value);
+    };
+
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+
+    const handlePreview = async (file) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+        setPreviewImage(file.url || file.preview);
+        setPreviewOpen(true);
+    };
+
+    // Function to handle image upload
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    if (isLoading) return <p>Đang tải...</p>;
+    if (error) return <p>Lỗi khi tải danh sách giao dịch.</p>;
 
     return (
         <>
-            <Dialog
-                open={open}
-                size="md" // Thay đổi kích thước thành md
-            >
-                <DialogHeader>Chi tiết giao dịch</DialogHeader>
-                <DialogBody className="p-4 bg-white shadow-lg rounded-lg border border-gray-300"> {/* Giảm padding */}
-                    <div className="mb-4">
-                        <div className="flex flex-wrap mb-2">
-                            {/* Left Column for Labels */}
-                            <div className="w-1/2 pr-4">
-                                <p className="text-base font-semibold text-gray-800"><strong>ID:</strong></p>
-                                <p className="text-base font-semibold text-gray-800"><strong>Order Code:</strong></p>
-                                <p className="text-base font-semibold text-gray-800"><strong>Amount:</strong></p>
-                                <p className="text-base font-semibold text-gray-800"><strong>Amount Paid:</strong></p>
-                                <p className="text-base font-semibold text-gray-800"><strong>Amount Remaining:</strong>
-                                </p>
-                                <p className="text-base font-semibold text-gray-800"><strong>Status:</strong></p>
-                                <p className="text-base font-semibold text-gray-800"><strong>Request Date:</strong></p>
-                                <h3 className="font-bold text-lg mt-4 text-gray-900">Transactions:</h3>
+            {/* Dialog chi tiết giao dịch */}
+            <Dialog open={moDialog} size="md">
+                <DialogHeader className="text-xl font-semibold text-gray-800">Chi tiết giao dịch</DialogHeader>
+                <DialogBody className="p-6 bg-white shadow-lg rounded-lg border border-gray-300 space-y-4">
+                    {giaoDichDuocChon && (
+                        <div className="space-y-3">
+                            <p><strong className="text-gray-700">Mã giao dịch:</strong> <span className="text-gray-600">{giaoDichDuocChon.transactionWalletCode}</span></p>
+                            <p><strong className="text-gray-700">Số tiền:</strong> <span className="text-green-600">{giaoDichDuocChon.amount.toLocaleString('vi-VN')} VND</span></p>
+                            <p><strong className="text-gray-700">Loại giao dịch:</strong> <span className="text-blue-600">{giaoDichDuocChon.transactionType}</span></p>
+                            <p><strong className="text-gray-700">Người gửi:</strong> <span className="text-gray-600">{giaoDichDuocChon.senderName}</span></p>
+                            <p><strong className="text-gray-700">Người nhận:</strong> <span className="text-gray-600">{giaoDichDuocChon.recipientName}</span></p>
+                            <p><strong className="text-gray-700">Lời nhắn:</strong> <span className="text-gray-600">{giaoDichDuocChon.description || "Không có nội dung"}</span></p>
+                            <p><strong className="text-gray-700">Ngày giao dịch:</strong> <span className="text-gray-600">{dinhDangNgay(giaoDichDuocChon.transactionDate)}</span></p>
+                            <p><strong className="text-gray-700">Trạng thái:</strong> <span className="text-green-600">{giaoDichDuocChon.transactionStatus}</span></p>
+                            {/* Hình ảnh giao dịch */}
+                            <p><strong className="text-gray-700">Hình ảnh:</strong></p>
+                            {giaoDichDuocChon.imageUrl ? (
+                                <img src={giaoDichDuocChon.imageUrl} alt="Hình ảnh giao dịch" className="w-full h-auto mt-2" />
+                            ) : (
+                                <p className="text-gray-500">Không có hình ảnh.</p>
+                            )}
+
+                            {/* Phần thêm ảnh */}
+                            <div className="relative mt-4">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    className="block w-full text-sm text-gray-700 border border-gray-300 rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:text-sm file:text-white file:bg-blue-500 file:hover:bg-blue-400"
+                                />
+                                <p className="mt-2 text-sm text-gray-500">Chọn một hình ảnh để tải lên</p>
                             </div>
-                            {/* Right Column for Values */}
-                            <div className="w-1/2">
-                                <p className="text-base text-gray-700">{transaction.id}</p>
-                                <p className="text-base text-gray-700">{transaction.orderCode}</p>
-                                <p className="text-base text-gray-700">{transaction.amount.toLocaleString()} VND</p>
-                                <p className="text-base text-gray-700">{transaction.amountPaid.toLocaleString()} VND</p>
-                                <p className="text-base text-gray-700">{transaction.amountRemaining.toLocaleString()} VND</p>
-                                <p className="text-base text-gray-700">{transaction.status}</p>
-                                <p className="text-base text-gray-700">{new Date(transaction.createdAt).toLocaleString()}</p>
-                                {/* Transaction Details for each transaction */}
-                                <div className="mt-2">
-                                    {transaction.transactions.map((trans, index) => (
-                                        <div key={index} className="border p-2 rounded-lg mb-2 bg-gray-50 shadow"> {/* Giảm padding cho từng transaction */}
-                                            <p className="text-sm font-semibold text-gray-800"><strong>Reference:</strong> {trans.reference}</p>
-                                            <p className="text-sm text-gray-600"><strong>Amount:</strong> {trans.amount.toLocaleString()} VND</p>
-                                            <p className="text-sm text-gray-600"><strong>Account Number:</strong> {trans.accountNumber}</p>
-                                            <p className="text-sm text-gray-600"><strong>Description:</strong> {trans.description}</p>
-                                            <p className="text-sm text-gray-600"><strong>Transaction Date:</strong> {new Date(trans.transactionDateTime).toLocaleString()}</p>
-                                            <p className="text-sm text-gray-600"><strong>Virtual Account Name:</strong> {trans.virtualAccountName || 'N/A'}</p>
-                                        </div>
-                                    ))}
+
+                            {/* Xem trước ảnh */}
+                            {image && (
+                                <div className="mt-4 flex items-center space-x-4">
+
+                                    <div className="relative w-32 h-32 bg-gray-200 border-2 border-dashed border-gray-300 rounded-md overflow-hidden">
+                                        <img
+                                            src={image}
+                                            alt="Ảnh tải lên"
+                                            className="w-full h-full object-cover object-center"
+                                        />
+                                    </div>
+                                    {/* Nút xóa ảnh */}
+                                    <button
+                                        onClick={() => setImage(null)}
+                                        className="mt-4 text-sm text-red-500 hover:text-red-700"
+                                    >
+                                        Xóa ảnh
+                                    </button>
                                 </div>
-
-                            </div>
-
+                            )}
                         </div>
-                        {/* Money Image placed at the bottom */}
-                        <div className="flex justify-center mb-4">
-                            <img
-                                src="https://static.vecteezy.com/system/resources/previews/001/923/526/non_2x/stack-bills-with-pile-coins-isolated-icon-free-vector.jpg" // Replace with actual money image URL
-                                alt="Money"
-                                className="w-24 h-24" // Kích thước hình ảnh
-                            />
-                        </div>
-
-                    </div>
+                    )}
                 </DialogBody>
-                <DialogFooter>
-                    <Button
-                        variant="text"
-                        color="red"
-                        onClick={handleOpen}
-                        className="mr-1"
-                    >
-                        <span>Cancel</span>
-                    </Button>
-                    <Button variant="gradient" color="green" onClick={handleOpen}> {/* Sửa thành handleConfirm */}
-                        <span>Confirm</span>
+
+                <DialogFooter className="space-x-4">
+                    <Button variant="text" color="red" onClick={() => setMoDialog(false)} className="mr-1">
+                        Đóng
                     </Button>
                 </DialogFooter>
             </Dialog>
 
+            {/* Tiêu đề */}
+            <h1 className="text-3xl font-bold text-center mb-8">Quản lý giao dịch</h1>
 
-            <h1 className="text-3xl font-bold text-center mb-8">Management Transactions</h1>
+            {/* Filters */}
+            <div className="flex justify-between mb-4">
+                <div className="w-1/3">
+                    <Select label="Chọn Vai trò" onChange={handleRoleChange} value={roleFilter}>
+                        <Option value="">Tất cả</Option>
+                        <Option value="ADMIN">Admin</Option>
+                        <Option value="BUYER">Người đấu giá</Option>
+                        <Option value="SELLER">Người bán hàng</Option>
+                    </Select>
+                </div>
+                <div className="w-1/3">
+                    <Select label="Loại giao dịch" onChange={handleTransactionTypeChange} value={transactionTypeFilter}>
+                        <Option value="">Tất cả</Option>
+                        <Option value="DEPOSIT">Nạp tiền</Option>
+                        <Option value="WITHDRAWAL">Rút tiền</Option>
+                        <Option value="DEPOSIT_AUCTION">Nạp tiền đấu giá</Option>
+                    </Select>
+                </div>
+            </div>
 
+            {/* Danh sách giao dịch */}
             <Card className="h-full w-full overflow-scroll">
-                <table className="w-full min-w-max table-auto text-left">
+                <table className="w-full min-w-[640px] table-auto">
                     <thead>
                         <tr>
                             {TABLE_HEAD.map((head) => (
-                                <th key={head} className="p-4 pt-10">
-                                    <Typography
-                                        variant="small"
-                                        color="blue-gray"
-                                        className="font-bold leading-none"
-                                    >
-                                        {head}
-                                    </Typography>
-                                </th>
+                                <th key={head} className="p-2 text-left text-sm font-medium">{head}</th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {TABLE_ROWS.map(({ number, customer, amount, issued, date, status }) => {
-                            return (
-                                <tr key={number}>
-                                    <td className="p-4">
-                                        <Typography
-                                            variant="small"
-                                            color="blue-gray"
-                                            className="font-bold"
-                                        >
-                                            {number}
-                                        </Typography>
-                                    </td>
-                                    <td className="p-4">
-                                        <Typography
-                                            variant="small"
-                                            className="font-normal text-gray-600"
-                                        >
-                                            {customer}
-                                        </Typography>
-                                    </td>
-                                    <td className="p-4">
-                                        <Typography
-                                            variant="small"
-                                            className="font-normal text-gray-600"
-                                        >
-                                            {amount}
-                                        </Typography>
-                                    </td>
-                                    <td className="p-4">
-                                        <Typography
-                                            variant="small"
-                                            className="font-normal text-gray-600"
-                                        >
-                                            {issued}
-                                        </Typography>
-                                    </td>
-                                    <td className="p-4">
-                                        <Typography
-                                            variant="small"
-                                            className="font-normal text-gray-600"
-                                        >
-                                            {date}
-                                        </Typography>
-                                    </td>
-                                    <td className="p-4">
-                                        {status === "Available" && (
-                                            <Tag icon={<CheckCircleOutlined />} color="success">
-                                                Available
-                                            </Tag>
+                        {danhSachGiaoDich.length > 0 ? (
+                            danhSachGiaoDich.map((giaoDich) => (
+                                <tr key={giaoDich.transactionWalletCode}>
+                                    <td className="p-2">{giaoDich.transactionWalletCode}</td>
+                                    <td className="p-2">{giaoDich.amount.toLocaleString('vi-VN')} VND</td>
+                                    <td className="p-4 w-[50px]">
+                                        {giaoDich.transactionType === "DEPOSIT" && (
+                                            <Tag color="green" className="font-semibold w-[120px] h-[20px] text-center">Nạp tiền</Tag>
                                         )}
-                                        {status === "pending" && (
-                                            <Tag icon={<SyncOutlined spin />} color="processing">
-                                                Pending
-                                            </Tag>
+                                        {giaoDich.transactionType === "WITHDRAWAL" && (
+                                            <Tag color="red" className="font-semibold w-[120px] h-[20px] text-center">Rút tiền</Tag>
                                         )}
-                                        {status === "UnAvailable" && (
-                                            <Tag icon={<CloseCircleOutlined />} color="error">
-                                                UnAvailable
-                                            </Tag>
-                                        )}
-                                        {status === "Fail" && (
-                                            <Tag icon={<ExclamationCircleOutlined />} color="warning">
-                                                Fail
-                                            </Tag>
+                                        {giaoDich.transactionType === "DEPOSIT_AUCTION" && (
+                                            <Tag color="blue" className="font-semibold w-[120px] h-[20px] text-center">Tiền cọc</Tag>
                                         )}
                                     </td>
+
+                                    <td className="p-2">{giaoDich.description || "Không có"}</td>
+                                    <td className="p-2">{dinhDangNgay(giaoDich.transactionDate)}</td>
                                     <td className="p-4">
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex items-center gap-2">
-                                                <Button color="blue" onClick={handleOpen}>Chi Tiết</Button>
-                                            </div>
-                                        </div>
+                                        {giaoDich.transactionStatus === "COMPLETED" && <Tag icon={<CheckCircleOutlined />} color="success">Available</Tag>}
+                                        {giaoDich.transactionStatus === "PENDING" && <Tag icon={<SyncOutlined spin />} color="processing">Pending</Tag>}
+                                        {giaoDich.transactionStatus === "CANCELLED" && <Tag icon={<ExclamationCircleOutlined />} color="error">Unavailable</Tag>}
+                                        {giaoDich.transactionStatus === "FAILED" && <Tag icon={<ExclamationCircleOutlined />} color="warning">Failed</Tag>}
+                                    </td>
+
+                                    <td className="p-2">
+                                        <Button onClick={() => moChiTiet(giaoDich)} className="bg-blue-500 text-white">Xem chi tiết</Button>
                                     </td>
                                 </tr>
-                            );
-                        })}
+                            ))
+                        ) : (
+                            <tr><td colSpan={7} className="text-center p-4">Không có dữ liệu</td></tr>
+                        )}
                     </tbody>
                 </table>
             </Card>
+
+
+            {/* Pagination */}
             <div className="flex justify-center items-center mt-4">
-                <Pagination />
+                <Pagination
+                    currentPage={trang}
+                    totalPages={totalPages1}
+                    onPageChange={handlePageChange}
+                />
             </div>
-       
-            
+
         </>
     );
 }
