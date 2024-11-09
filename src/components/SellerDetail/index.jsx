@@ -1,24 +1,54 @@
 import { Text, Img, ButtonDH, Heading } from "./..";
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import DrawerChat from "@/components/DrawerChat/index.jsx";
 import { Button, Typography, Avatar } from "@material-tailwind/react";
+import { useGetSellerInformationByUserIdQuery } from "../../services/sellerinformation.service.js";
+import { useNavigate } from "react-router-dom";
+
 
 export default function SellerDetailHeader({ ...props }) {
-    const data = [
-        { label: "Sản Phẩm", value: "220", img: "images/san_pham.png" },
-       
-        { label: "Tỉ lệ phản hồi", value: "82% (Trong vài giờ)", img: "images/ti_le_phan_hoi.png" },
-        { label: "Tỷ lệ shop hủy đơn", value: "0%", img: "images/huy_don.png" },
-        { label: "Người theo dõi", value: "100k", img: "images/nguoi_theo_doi.png" },
-        { label: "Đánh giá", value: "4.6 (100k Đánh giá)", img: "images/danh_gia.png" },
-        { label: "Tham gia", value: "2 Năm trước", img: "images/tham_gia.png" },
-    ];
+  
+
+
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     
     const showDrawer = () => setIsDrawerOpen(true);
     const closeDrawer = () => setIsDrawerOpen(false);
 
+    //api
+    const [userIdSeller, setUserIdSeller] = useState(null);
+    useEffect(() => {
+        const sellerIdFromLocalStorage = localStorage.getItem('userIdseller');
+
+        if (sellerIdFromLocalStorage) {
+            setUserIdSeller(parseInt(sellerIdFromLocalStorage, 10));
+        }
+    }, []);
+
+    const { data: sellerInforData, isLoading, error } = useGetSellerInformationByUserIdQuery(userIdSeller);
+
+
+    const data = [
+        { label: "Sản Phẩm", value: "chưa có", img: "images/san_pham.png" },
+        { label: "Tỉ lệ phản hồi", value: "chưa có", img: "images/ti_le_phan_hoi.png" },
+        { label: "Tỷ lệ shop hủy đơn", value: "chưa có", img: "images/huy_don.png" },
+        { label: "Người theo dõi", value: "chưa có  ", img: "images/nguoi_theo_doi.png" },
+        {
+            label: "Đánh giá",
+            value: `${sellerInforData?.totalStars || 'N/A'} (${sellerInforData?.totalFeedbackCount || '0'} Đánh giá)`,
+            img: "images/danh_gia.png"
+        },
+        { label: "Tham gia", value: "chưa có", img: "images/tham_gia.png" },
+    ];
+
+    if (isLoading) {
+        return <div>Đang tải dữ liệu...</div>;
+    }
+    
+    if (error) {
+        return <div>Đã xảy ra lỗi khi tải dữ liệu.</div>;
+    }
     return (
         <header
             {...props}
@@ -27,17 +57,19 @@ export default function SellerDetailHeader({ ...props }) {
             <figure className="relative h-40 w-[600px]">
                 <img
                     className="h-full w-full rounded-xl object-cover object-center"
-                    src="https://images.unsplash.com/photo-1682407186023-12c70a4a35e0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2832&q=80"
+                    src={sellerInforData.backgroundImage}
                     alt="nature image"
                 />
                 <figcaption className="absolute bottom-8 left-2/4 flex w-[calc(100%-4rem)] -translate-x-2/4 justify-between rounded-xl border border-white bg-white/75 py-4 px-6 shadow-lg shadow-black/5 saturate-200 backdrop-blur-sm">
                     <div className="mt-2">
                         <div className="flex items-center gap-4">
-                            <Avatar src="https://docs.material-tailwind.com/img/face-2.jpg" alt="avatar" />
+                            <Avatar src={sellerInforData.avatar} alt="avatar" />
                             <div>
-                                <Typography variant="h6">PHỤ KIỆN THỜI TRANG-DUDUSTORE</Typography>
+                            <Typography variant="h6">
+                                {sellerInforData?.storeName}
+                            </Typography>
                                 <Typography variant="small" color="gray" className="font-normal">
-                                    Online 49 phút trước
+                                    {sellerInforData.address}
                                 </Typography>
                             </div>
                         </div>
