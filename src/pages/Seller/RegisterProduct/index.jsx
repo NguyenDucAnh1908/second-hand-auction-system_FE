@@ -7,7 +7,6 @@ import Banner from '../../../partials/Banner';
 import {
     ButtonDH,
     Img,
-    Text,
     Heading,
     SelectBox,
     InputDH,
@@ -28,7 +27,7 @@ import {
     theme,
     Spin,
     Badge,
-    Descriptions, Checkbox
+    Descriptions, Checkbox, Input, Typography, Space
 } from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
 import {useRegisterItemMutation} from "@/services/item.service.js";
@@ -37,7 +36,9 @@ import useHookUploadImage from "@/hooks/useHookUploadImage.js";
 import {useGetAuctionTypeQuery} from "@/services/auctionType.service.js";
 import {useGetCategoriesQuery} from "@/services/category.service.js";
 import TextEditor from "@/components/TextEditor/index.jsx";
+import {useNavigate} from "react-router-dom";
 
+const {Text, Link} = Typography;
 const {Content, Sider} = Layout;
 
 const getBase64 = (file) =>
@@ -58,6 +59,7 @@ function RegisterProductPage() {
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState([]);
     const [itemName, setItemName] = useState("");
+    const [brandError, setBrandError] = useState("");
     const [itemDescription, setItemDescription] = useState("");
     const [itemCondition, setItemCondition] = useState("NEW");
     const [brandName, setBrandName] = useState("");
@@ -72,6 +74,7 @@ function RegisterProductPage() {
         material: '',
         price_buy_now: 0,
     });
+    const [itemNameError, setItemNameError] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
     const [scId, setScId] = useState(0);
@@ -81,6 +84,14 @@ function RegisterProductPage() {
     const [spinning, setSpinning] = React.useState(false);
     const [percent, setPercent] = React.useState(0);
     const [intervalId, setIntervalId] = React.useState(null);
+    const [colorError, setColorError] = useState("");
+    const [typeError, setTypeError] = useState("");
+    const [materialError, setMaterialError] = useState("");
+    const [weightError, setWeightError] = useState("");
+    const [priceError, setPriceError] = useState("");
+    const [dimensionError, setDimensionError] = useState("");
+    const [originalError, setOriginalError] = useState("");
+    const navigate = useNavigate();
     const userRef = useRef();
     const errRef = useRef();
     const {UploadImage} = useHookUploadImage();
@@ -122,42 +133,153 @@ function RegisterProductPage() {
             </div>
         </button>
     );
-    const handleImgUpload = async () => {
-        console.log("File List:", fileList);
 
+    const validateItemName = (name) => {
+        if (!name) {
+            return "Tên sản phẩm không được để trống.";
+        }
+        if (name.length < 3 || name.length > 50) {
+            return "Tên sản phẩm phải có từ 3 đến 50 ký tự.";
+        }
+        return "";
+    };
+
+    const handleItemNameChange = (e) => {
+        const name = e.target.value;
+        setItemName(name);
+        setItemNameError(validateItemName(name)); // Kiểm tra ngay khi nhập
+    };
+
+    const validateBrand = (brand) => {
+        if (!brand) {
+            return "Thương hiệu phẩm không được để trống.";
+        }
+        if (brand.length < 3 || brand.length > 50) {
+            return "Thương hiệu phải có từ 3 đến 50 ký tự.";
+        }
+        return "";
+    };
+
+    const handleBrandChange = (e) => {
+        const brand = e.target.value;
+        setBrandName(brand);
+        setBrandError(validateBrand(brand)); // Kiểm tra ngay khi nhập
+    };
+
+    const validateColor = (color) => {
+        if (!color) {
+            return "Màu sắc không được để trống.";
+        }
+        return "";
+    };
+
+    const validateMaterial = (material) => {
+        if (!material) {
+            return "material không được để trống.";
+        }
+        return "";
+    };
+
+    const validateType = (type) => {
+        if (!type) {
+            return "Thể loại không được để trống.";
+        }
+        return "";
+    };
+
+    const validateWeight = (weight) => {
+        if (isNaN(weight) || weight <= 0) {
+            return "Khối lượng phải là số dương.";
+        }
+        return "";
+    };
+
+    const validatePrice = (price) => {
+        if (isNaN(price) || price <= 0) {
+            return "Giá phải là số dương.";
+        }
+        return "";
+    };
+
+    const validateDimension = (dimension) => {
+        if (!dimension) {
+            return "Kích thước không được để trống.";
+        }
+        return "";
+    };
+
+    const validateOriginal = (original) => {
+        if (!original) {
+            return "Thông tin 'original' không được để trống.";
+        }
+        return "";
+    };
+    const handleItemSpecificChange = (key, value) => {
+        // Update the value in the state
+        setItemSpecific((prevState) => ({
+            ...prevState,
+            [key]: value,
+        }));
+
+        // Validate based on key
+        switch (key) {
+            case 'color':
+                setColorError(validateColor(value));
+                break;
+            case 'type':
+                setTypeError(validateType(value));
+                break;
+            case 'material':
+                setMaterialError(validateMaterial(value));
+                break;
+            case 'weight':
+                setWeightError(validateWeight(value));
+                break;
+            case 'price_buy_now':
+                setPriceError(validatePrice(value));
+                break;
+            case 'dimension':
+                setDimensionError(validateDimension(value));
+                break;
+            case 'original':
+                setOriginalError(validateOriginal(value));
+                break;
+            // Handle other fields...
+            default:
+                break;
+        }
+    };
+
+// You can add other validation functions similarly
+
+
+    const handleImgUpload = async () => {
         if (fileList.length === 0) {
-            console.log("No files uploaded.");
             message.warning("No files uploaded.");
-            return;
+            return [];
         }
 
-        const images = [];
+        const uploadedImages = [];
         for (const file of fileList) {
-            // Kiểm tra file.originFileObj trước khi upload
-            if (!file.originFileObj) {
+            if (file.originFileObj) {
+                try {
+                    const imageUrl = await UploadImage(file.originFileObj); // Upload and get URL
+                    uploadedImages.push({image_url: imageUrl});
+                } catch (err) {
+                    console.error("Error uploading image:", err);
+                    message.error("Error uploading an image.");
+                }
+            } else {
                 console.error("File is missing originFileObj:", file);
                 message.warning("File is missing originFileObj.");
-                continue; // Bỏ qua file không có originFileObj
-            }
-            try {
-                const imageUrl = await UploadImage(file.originFileObj); // Upload and get URL
-                images.push({image_url: imageUrl}); // Lưu URL vào mảng images
-                console.log("Uploaded image:", imageUrl);
-            } catch (err) {
-                console.error("Error uploading image:", err); // Ghi lại lỗi nếu có
-                message.error("File is missing originFileObj.");
             }
         }
 
-        // Đảm bảo images không rỗng trước khi set vào imgItem
-        if (images.length > 0) {
-            setImgItem(images); // Set imgItem với các URL đã upload
-        } else {
-            console.warn("No images were uploaded successfully."); // Cảnh báo nếu không có ảnh nào được upload
+        if (uploadedImages.length === 0) {
             message.error("No images were uploaded successfully.");
         }
 
-        console.log("Images to upload:", images);
+        return uploadedImages;
     };
 
 
@@ -165,48 +287,59 @@ function RegisterProductPage() {
         console.log("Selected auction type:", value);
         setAuctionType(value);
     };
-    const handleItemSpecificChange = (field, value) => {
-        setItemSpecific((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
-    };
+    // const handleItemSpecificChange = (field, value) => {
+    //     setItemSpecific((prev) => ({
+    //         ...prev,
+    //         [field]: value,
+    //     }));
+    // };
 
     const [registerItem, {isLoading, isSuccess, isError, error}] = useRegisterItemMutation();
 
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
+
+        // Bật loader ngay từ đầu
         showLoader();
-        await handleImgUpload();
+
+        const uploadedImages = await handleImgUpload(); // Bắt đầu upload hình
+        if (uploadedImages.length === 0) {
+            message.error("Please upload at least one image.");
+            setSpinning(false); // Tắt loader nếu không có ảnh upload thành công
+            return;
+        }
 
         const payload = {
             item_name: itemName,
             item_description: itemDescription,
             item_condition: itemCondition,
             brand_name: brandName,
-            img_item: imgItem,
+            img_item: uploadedImages,
             item_specific: {...itemSpecific, manufacture_date: manufactureDate},
             sc_id: scId,
             auction_type: auctionType,
         };
-        console.log("Payload gửi đến API:", payload);
+
+        //console.log("Payload gửi đến API:", payload);
 
         try {
             const userData = await registerItem(payload).unwrap();
-            //toast.success(userData.message);
             message.success(userData.message);
-            console.log("Kết quả", userData.message);
+            navigate("/Dashboard-seller/ListOfSellerProduct");
+            //console.log("Kết quả:", userData.message);
         } catch (err) {
-            const errorMessage = err?.data?.message || 'Lỗi đăng ký sản phẩm';
-            // toast.error(errorMessage);
+            const errorMessage = err?.data?.message || "Lỗi đăng ký sản phẩm";
             message.error(errorMessage);
-            console.log("Kết quả lỗi", errorMessage);
+            //console.log("Kết quả lỗi:", errorMessage);
+        } finally {
+            setSpinning(false); // Tắt loader sau khi hoàn tất
+            setPercent(0);
         }
     };
 
 
     useEffect(() => {
-        console.log("Selected Category: ", selectedCategory);
+        //console.log("Selected Category: ", selectedCategory);
     }, [selectedCategory]);
 
     useEffect(() => {
@@ -222,42 +355,29 @@ function RegisterProductPage() {
         (category) => category.categoryId === selectedCategory
     )?.subCategory || [];
 
-
-    // const showLoader = () => {
-    //     setSpinning(true);
-    //     let ptg = -10;
-    //     const interval = setInterval(() => {
-    //         ptg += 5;
-    //         setPercent(ptg);
-    //         if (ptg > 120) {
-    //             clearInterval(interval);
-    //             setSpinning(false);
-    //             setPercent(0);
-    //         }
-    //     }, 200);
-    // };
     const showLoader = () => {
         setSpinning(true);
         let ptg = -10;
         const id = setInterval(() => {
-            if (!isLoading) { // Dừng nếu isLoading chuyển sang false
+            // Nếu cả hai process (upload và gọi API) đã hoàn tất, dừng loader
+            if (!isLoading && percent >= 100) {
                 clearInterval(id);
                 setTimeout(() => {
                     setSpinning(false);
                     setPercent(0);
-                }, 500); // timeout 0.5s sau khi hoàn tất
+                }, 500);
                 return;
             }
+            // Tiến độ loading tăng dần
             ptg += 5;
             setPercent(ptg);
-            if (ptg > 120) {
-                clearInterval(id);
-                setSpinning(false);
-                setPercent(0);
+            if (ptg > 100) {
+                ptg = 0;
             }
         }, 200);
         setIntervalId(id);
     };
+
     React.useEffect(() => {
         return () => {
             if (intervalId) clearInterval(intervalId);
@@ -267,32 +387,88 @@ function RegisterProductPage() {
         console.log(`checked = ${e.target.checked}`);
     };
 
+    const handleDetailChange = (field, value) => {
+        setProductDetails((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
+    };
+
+    const handleSpecificsChange = (field, value) => {
+        setProductDetails((prev) => ({
+            ...prev,
+            specifics: {
+                ...prev.specifics,
+                [field]: value,
+            },
+        }));
+    };
+
     const items = [
         {
             key: '1',
             label: <label className="font-bold">Tên sản phẩm</label>,
-            children: <InputDH
-                shape="round"
-                name="Product Name Field"
-                placeholder={`Tên sản phẩm sản phẩm`}
-                className="w-[88%] rounded-md border px-3.5 font-jost"
-                type="text"
-                value={itemName}
-                onChange={(e) => setItemName(e.target.value)}
-            />,
+            children:
+                <Space
+                    direction="vertical"
+                    style={{
+                        width: '100%',
+                    }}
+                >
+                    <Input
+                        //type="text"
+                        placeholder="Nhập tên sản phẩm"
+                        value={itemName}
+                        onChange={handleItemNameChange}
+                        status={itemNameError ? "error" : ""}
+                        style={{
+                            borderRadius: '8px',
+                            border: itemNameError ? '1px solid red' : '1px solid #ccc',
+                            padding: '10px',
+                        }}
+                    />
+                    {itemNameError && (
+                        <Text type="danger">{itemNameError}</Text>
+                    )}
+                </Space>
+            ,
         },
         {
             key: '2',
             label: <label className="font-bold">Tên thương hiệu</label>,
-            children: <InputDH
-                shape="round"
-                name="Brand Name Field"
-                placeholder={`Tiêu đề thương hiệu`}
-                className="w-[88%] rounded-md border px-3.5 font-jost"
-                type="text"
-                value={brandName}
-                onChange={(e) => setBrandName(e.target.value)}
-            />,
+            children:
+            //     <InputDH
+            //     shape="round"
+            //     name="Brand Name Field"
+            //     placeholder={`Tiêu đề thương hiệu`}
+            //     className="w-[88%] rounded-md border px-3.5 font-jost"
+            //     type="text"
+            //     value={brandName}
+            //     onChange={(e) => setBrandName(e.target.value)}
+            // />
+                <Space
+                    direction="vertical"
+                    style={{
+                        width: '100%',
+                    }}
+                >
+                    <Input
+                        //type="text"
+                        placeholder="Nhập tên sản phẩm"
+                        value={brandName}
+                        onChange={handleBrandChange}
+                        status={brandError ? "error" : ""}
+                        style={{
+                            borderRadius: '8px',
+                            border: brandError ? '1px solid red' : '1px solid #ccc',
+                            padding: '10px',
+                        }}
+                    />
+                    {brandError && (
+                        <Text type="danger">{brandError}</Text>
+                    )}
+                </Space>
+            ,
         },
         {
             key: '3',
@@ -348,7 +524,7 @@ function RegisterProductPage() {
                 <Select
                     value={selectedCategory || undefined}
                     onChange={(value) => {
-                        console.log("Selected Category ID:", value); // Kiểm tra giá trị đã chọn
+                        //console.log("Selected Category ID:", value); // Kiểm tra giá trị đã chọn
                         setSelectedCategory(value);
                         setSelectedSubCategory(null);
                     }}
@@ -435,15 +611,6 @@ function RegisterProductPage() {
             label: <label className="font-bold">Mo tả</label>,
             children:
                 <TextEditor value={itemDescription} onChange={setItemDescription}/>
-            // <InputDH
-            //     shape="round"
-            //
-            //     name="Description Area"
-            //     placeholder={`Mô tả`}
-            //     className="w-[100%] rounded-md !border !border-gray-200 px-5 font-jost leading-[10px] text-blue_gray-600"
-            //     value={itemDescription}
-            //     onChange={(e) => setItemDescription(e.target.value)}
-            // />
         }
     ];
 
@@ -451,38 +618,110 @@ function RegisterProductPage() {
         {
             key: '1',
             label: <label className="font-bold">Màu sắc</label>,
-            children: <InputDH
-                shape="round"
-                name="Color Field"
-                placeholder={`Màu sắc sản phẩm`}
-                className="w-[88%] rounded-md border px-3.5 font-jost"
-                value={itemSpecific.color}
-                onChange={(e) => handleItemSpecificChange('color', e.target.value)}
-            />,
+            children:
+            //     <InputDH
+            //     shape="round"
+            //     name="Color Field"
+            //     placeholder={`Màu sắc sản phẩm`}
+            //     className="w-[88%] rounded-md border px-3.5 font-jost"
+            //     value={itemSpecific.color}
+            //     onChange={(e) => handleItemSpecificChange('color', e.target.value)}
+            // />
+                <Space
+                    direction="vertical"
+                    style={{
+                        width: '100%',
+                    }}
+                >
+                    <Input
+                        //type="text"
+                        placeholder="Nhập tên sản phẩm"
+                        value={itemSpecific.color}
+                        onChange={(e) => handleItemSpecificChange('color', e.target.value)}
+                        status={colorError ? "error" : ""}
+                        style={{
+                            borderRadius: '8px',
+                            border: colorError ? '1px solid red' : '1px solid #ccc',
+                            padding: '10px',
+                        }}
+                    />
+                    {colorError && (
+                        <Text type="danger">{colorError}</Text>
+                    )}
+                </Space>
+            ,
         },
         {
             key: '2',
             label: <label className="font-bold">Kích thước</label>,
-            children: <InputDH
-                shape="round"
-                name="Color Field"
-                placeholder={`Kích thước sản phẩm`}
-                className="w-[88%] rounded-md border px-3.5 font-jost"
-                value={itemSpecific.dimension}
-                onChange={(e) => handleItemSpecificChange('dimension', e.target.value)}
-            />,
+            children:
+            //     <InputDH
+            //     shape="round"
+            //     name="Color Field"
+            //     placeholder={`Kích thước sản phẩm`}
+            //     className="w-[88%] rounded-md border px-3.5 font-jost"
+            //     value={itemSpecific.dimension}
+            //     onChange={(e) => handleItemSpecificChange('dimension', e.target.value)}
+            // />
+                <Space
+                    direction="vertical"
+                    style={{
+                        width: '100%',
+                    }}
+                >
+                    <Input
+                        //type="text"
+                        placeholder={`Kích thước sản phẩm`}
+                        value={itemSpecific.dimension}
+                        onChange={(e) => handleItemSpecificChange('dimension', e.target.value)}
+                        status={dimensionError ? "error" : ""}
+                        style={{
+                            borderRadius: '8px',
+                            border: dimensionError ? '1px solid red' : '1px solid #ccc',
+                            padding: '10px',
+                        }}
+                    />
+                    {dimensionError && (
+                        <Text type="danger">{dimensionError}</Text>
+                    )}
+                </Space>
+            ,
         },
         {
             key: '3',
             label: <label className="font-bold">Loại</label>,
-            children: <InputDH
-                shape="round"
-                name="Color Field"
-                placeholder={`type sản phẩm`}
-                className="w-[88%] rounded-md border px-3.5 font-jost"
-                value={itemSpecific.type}
-                onChange={(e) => handleItemSpecificChange('type', e.target.value)}
-            />,
+            children:
+            //     <InputDH
+            //     shape="round"
+            //     name="Color Field"
+            //     placeholder={`type sản phẩm`}
+            //     className="w-[88%] rounded-md border px-3.5 font-jost"
+            //     value={itemSpecific.type}
+            //     onChange={(e) => handleItemSpecificChange('type', e.target.value)}
+            // />
+                <Space
+                    direction="vertical"
+                    style={{
+                        width: '100%',
+                    }}
+                >
+                    <Input
+                        //type="text"
+                        placeholder={`type sản phẩm`}
+                        value={itemSpecific.type}
+                        onChange={(e) => handleItemSpecificChange('type', e.target.value)}
+                        status={typeError ? "error" : ""}
+                        style={{
+                            borderRadius: '8px',
+                            border: typeError ? '1px solid red' : '1px solid #ccc',
+                            padding: '10px',
+                        }}
+                    />
+                    {typeError && (
+                        <Text type="danger">{typeError}</Text>
+                    )}
+                </Space>
+            ,
         },
         {
             key: '4',
@@ -499,26 +738,75 @@ function RegisterProductPage() {
         {
             key: '5',
             label: <label className="font-bold">Original</label>,
-            children: <InputDH
-                shape="round"
-                name="Color Field"
-                placeholder={`original sản phẩm`}
-                className="w-[88%] rounded-md border px-3.5 font-jost"
-                value={itemSpecific.original}
-                onChange={(e) => handleItemSpecificChange('original', e.target.value)}
-            />,
+            children:
+            //     <InputDH
+            //     shape="round"
+            //     name="Color Field"
+            //     placeholder={`original sản phẩm`}
+            //     className="w-[88%] rounded-md border px-3.5 font-jost"
+            //     value={itemSpecific.original}
+            //     onChange={(e) => handleItemSpecificChange('original', e.target.value)}
+            // />
+                <Space
+                    direction="vertical"
+                    style={{
+                        width: '100%',
+                    }}
+                >
+                    <Input
+                        //type="text"
+                        placeholder={`original sản phẩm`}
+                        value={itemSpecific.original}
+                        onChange={(e) => handleItemSpecificChange('original', e.target.value)}
+                        status={originalError ? "error" : ""}
+                        style={{
+                            borderRadius: '8px',
+                            border: originalError ? '1px solid red' : '1px solid #ccc',
+                            padding: '10px',
+                        }}
+                    />
+                    {originalError && (
+                        <Text type="danger">{originalError}</Text>
+                    )}
+                </Space>
+            ,
         },
         {
             key: '6',
             label: <label className="font-bold">Chất liệu</label>,
-            children: <InputDH
-                shape="round"
-                name="Color Field"
-                placeholder={`material sản phẩm`}
-                className="w-[88%] rounded-md border px-3.5 font-jost"
-                value={itemSpecific.material}
-                onChange={(e) => handleItemSpecificChange('material', e.target.value)}
-            />,
+            children:
+            //     <InputDH
+            //     shape="round"
+            //     name="Color Field"
+            //     placeholder={`material sản phẩm`}
+            //     className="w-[88%] rounded-md border px-3.5 font-jost"
+            //     value={itemSpecific.material}
+            //     onChange={(e) => handleItemSpecificChange('material', e.target.value)}
+            // />
+
+                <Space
+                    direction="vertical"
+                    style={{
+                        width: '100%',
+                    }}
+                >
+                    <Input
+                        //type="text"
+                        placeholder={`material sản phẩm`}
+                        value={itemSpecific.material}
+                        onChange={(e) => handleItemSpecificChange('material', e.target.value)}
+                        status={materialError ? "error" : ""}
+                        style={{
+                            borderRadius: '8px',
+                            border: materialError ? '1px solid red' : '1px solid #ccc',
+                            padding: '10px',
+                        }}
+                    />
+                    {materialError && (
+                        <Text type="danger">{materialError}</Text>
+                    )}
+                </Space>
+            ,
         },
         {
             key: '7',
@@ -526,13 +814,14 @@ function RegisterProductPage() {
             children: <InputNumber
                 min={0}
                 placeholder="Giá mua ngay"
-                className="w-full rounded-md border border-gray-300 px-3.5 font-jost text-blue_gray-900"
+                // className="w-full rounded-md border border-gray-300 px-3.5 font-jost text-blue_gray-900"
+                style={{width: 200}}
                 value={itemSpecific.price_buy_now}
                 onChange={(value) => handleItemSpecificChange('price_buy_now', value)}
                 formatter={(value) =>
                     `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ₫'
-                } // Định dạng số với đơn vị VNĐ
-                parser={(value) => value.replace(/[^\d]/g, '')} // Chỉ nhận số khi lưu vào state
+                }
+                parser={(value) => value.replace(/[^\d]/g, '')}
             />,
         },
         {
@@ -548,14 +837,19 @@ function RegisterProductPage() {
         {
             key: '9',
             label: <label className="font-bold">Giá trị định giá</label>,
-            children: <InputNumber
-                min={1}
-                addonBefore="+"
-                addonAfter="%"
-                value={itemSpecific.percent} // Bind value to percent
-                onChange={(value) => handleItemSpecificChange('percent', value)} // Handle change
-                className="w-full"
-            />,
+            children:
+                <InputNumber
+                    min={0}
+                    placeholder="Giá mua ngay"
+                    // className="w-full rounded-md border border-gray-300 px-3.5 font-jost text-blue_gray-900"
+                    style={{width: 200}}
+                    value={itemSpecific.percent}
+                    onChange={(value) => handleItemSpecificChange('percent', value)}
+                    formatter={(value) =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ₫'
+                    }
+                    parser={(value) => value.replace(/[^\d]/g, '')}
+                />
         },
         {
             key: '10',

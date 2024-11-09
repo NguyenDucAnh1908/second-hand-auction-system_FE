@@ -99,7 +99,7 @@ export default function ProfileDetailPage() {
             // Hiển thị thông báo thành công
             message.success(response.message || "User updated successfully!");
             setModal2Open(false);
-            refetch(); // Gọi lại API để lấy thông tin mới nhất
+            refetch();
         } catch (error) {
             dispatch(setError(error));
             message.error("Failed to update user.");
