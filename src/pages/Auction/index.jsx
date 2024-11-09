@@ -98,20 +98,26 @@ export default function AuctionPage() {
     const [currentPage, setCurrentPage] = useState(0);
     const pageSize = 10;
 
-    const { data: feedbackData } = useGetFeedbackBySellerUserIdQuery(
-        userIdSeller !== null ?
-            {
-                userId: userIdSeller,
-                page: currentPage,
-                size: pageSize,
-            } : null
-    );
+    // const { data: feedbackData } = useGetFeedbackBySellerUserIdQuery(
+    //     userIdSeller !== null ?
+    //         {
+    //             userId: userIdSeller,
+    //             page: currentPage,
+    //             size: pageSize,
+    //         } : null
+    // );
 
 
     const navigate = useNavigate();
+
     const handleNavigateToAuction = (userIdseller) => {
         localStorage.setItem('userIdseller', userIdseller);
         navigate(`/SellerDetailPage?activeTab=reviews`);
+    };
+
+    const handleNavigateToUserIdSeller = (userIdseller) => {
+        localStorage.setItem('userIdseller', userIdseller);
+        navigate(`/SellerDetailPage`);
     };
 
     if (loadingSellerInfo) return <p>Loading seller information...</p>;
@@ -322,6 +328,8 @@ export default function AuctionPage() {
                                         <Avatar
                                             size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
                                             src={sellerInfo.avatar}
+                                            onClick={() => handleNavigateToUserIdSeller(sellerInfo.userId)}
+
                                         />
                                         <div className="font-semibold text-2xl dark:text-white">
                                             <div>{sellerInfo.storeName}</div>
@@ -338,7 +346,9 @@ export default function AuctionPage() {
                                         <button
                                             type="button"
                                             className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
-                                        >
+                                            onClick={() => handleNavigateToUserIdSeller(sellerInfo.userId)}
+
+                                      >
                                             <svg
                                                 className="w-3 h-3 me-2"
                                                 aria-hidden="true"
