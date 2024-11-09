@@ -387,22 +387,6 @@ function RegisterProductPage() {
         console.log(`checked = ${e.target.checked}`);
     };
 
-    const handleDetailChange = (field, value) => {
-        setProductDetails((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
-    };
-
-    const handleSpecificsChange = (field, value) => {
-        setProductDetails((prev) => ({
-            ...prev,
-            specifics: {
-                ...prev.specifics,
-                [field]: value,
-            },
-        }));
-    };
 
     const items = [
         {
@@ -437,15 +421,6 @@ function RegisterProductPage() {
             key: '2',
             label: <label className="font-bold">Tên thương hiệu</label>,
             children:
-            //     <InputDH
-            //     shape="round"
-            //     name="Brand Name Field"
-            //     placeholder={`Tiêu đề thương hiệu`}
-            //     className="w-[88%] rounded-md border px-3.5 font-jost"
-            //     type="text"
-            //     value={brandName}
-            //     onChange={(e) => setBrandName(e.target.value)}
-            // />
                 <Space
                     direction="vertical"
                     style={{
