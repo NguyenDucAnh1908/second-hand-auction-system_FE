@@ -142,8 +142,9 @@ export default function AuctionPage() {
                             className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
                         >
                             <>
-                                {data?.itemDescription}
-                                <br />
+                                {/*{data?.itemDescription}*/}
+                                <p dangerouslySetInnerHTML={{__html: data?.itemDescription}}/>
+                                <br/>
                             </>
                         </Heading>
                     </div>
