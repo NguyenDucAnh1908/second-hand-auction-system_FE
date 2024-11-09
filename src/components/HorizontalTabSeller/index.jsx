@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useGetFeedbackBySellerUserIdQuery } from "../../services/feedback.service.js";
 import Pagination from "@/components/Pagination/index.jsx";
 import { useNavigate } from "react-router-dom";
+import { useGetSellerInformationByUserIdQuery } from "../../services/sellerinformation.service.js";
 
 const TabContent = ({ activeTab }) => {
     const [currentPage, setCurrentPage] = useState(0);
@@ -18,7 +19,7 @@ const TabContent = ({ activeTab }) => {
     }, []);
 
 
-
+    //api feedback
     const { data: feedbackData } = useGetFeedbackBySellerUserIdQuery(
         userIdSeller !== null ?
             {
@@ -34,7 +35,16 @@ const TabContent = ({ activeTab }) => {
 
     const totalPages = feedbackData ? Math.ceil(feedbackData.totalElements / pageSize) : 1;
 
+    //api sellerinfor
+    const { data: sellerInforData, isLoading, error } = useGetSellerInformationByUserIdQuery(userIdSeller);
 
+    if (isLoading) {
+        return <div>Đang tải dữ liệu...</div>;
+    }
+    
+    if (error) {
+        return <div>Đã xảy ra lỗi khi tải dữ liệu.</div>;
+    }
     switch (activeTab) {
         case "reviews":
             return (
@@ -48,23 +58,48 @@ const TabContent = ({ activeTab }) => {
                                     alt="User Avatar"
                                 />
                                 <div className="font-medium dark:text-white">
-                                    <p>{feedback.username}</p>
+                                    {feedback.username} <br />
+                                    <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>
+                                        {feedback.createAt.substring(0, 10)}
+                                    </span>
                                 </div>
                             </div>
                             {/* Render the star rating */}
                             <div className="flex items-center mb-1 space-x-1 rtl:space-x-reverse">
                                 {[...Array(feedback.rating)].map((_, index) => (
-                                    <svg key={index} className="w-4 h-4 text-yellow-300" /* Star icon */ />
+                                    <svg
+                                        key={index}
+                                        className="w-4 h-4 text-yellow-300"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 22 20"
+                                    >
+                                        <path
+                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                                        />
+                                    </svg>
                                 ))}
                                 {[...Array(5 - feedback.rating)].map((_, index) => (
-                                    <svg key={index + feedback.rating} className="w-4 h-4 text-gray-300 dark:text-gray-500" /* Empty star icon */ />
+                                    <svg
+                                        key={index + feedback.rating}
+                                        className="w-4 h-4 text-gray-300 dark:text-gray-500"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 22 20"
+                                    >
+                                        <path
+                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                                        />
+                                    </svg>
                                 ))}
                             </div>
                             <footer className="mb-5 text-sm text-gray-500 dark:text-gray-400">
                                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                                     {feedback.comment}
                                 </h3>
-                                <img src={feedback.imageUrl} style={{ width: '100px', height: '100px' }} />
+
                             </footer>
                             {/* Action links */}
                             <aside>
@@ -83,6 +118,21 @@ const TabContent = ({ activeTab }) => {
                     />
                 </div>
             );
+
+        case "info":
+            return (
+                <div className="w-full h-full ml-[100px]">
+                    <div
+                        dangerouslySetInnerHTML={{ __html: sellerInforData.description }}
+                        style={{
+                            wordWrap: "break-word",
+                            overflowWrap: "break-word",
+                            wordBreak: "break-all"  
+                        }}
+                    />
+                </div>
+            );
+
         default:
             return null;
     }

@@ -143,8 +143,8 @@ export default function AuctionPage() {
                         >
                             <>
                                 {/*{data?.itemDescription}*/}
-                                <p dangerouslySetInnerHTML={{__html: data?.itemDescription}}/>
-                                <br/>
+                                <p dangerouslySetInnerHTML={{ __html: data?.itemDescription }} />
+                                <br />
                             </>
                         </Heading>
                     </div>
@@ -349,7 +349,7 @@ export default function AuctionPage() {
                                             className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
                                             onClick={() => handleNavigateToUserIdSeller(sellerInfo.userId)}
 
-                                      >
+                                        >
                                             <svg
                                                 className="w-3 h-3 me-2"
                                                 aria-hidden="true"
@@ -556,12 +556,16 @@ export default function AuctionPage() {
                                                                 />
                                                                 <div className="font-medium dark:text-white">
                                                                     <p>
-                                                                        {feedback.username}
+                                                                        {feedback.username} <br/>
+                                                                        <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>
+                                                                            {feedback.createAt.substring(0, 10)}
+                                                                        </span>
+
                                                                         <time
                                                                             dateTime="2014-08-16 19:00"
                                                                             className="block text-sm text-gray-500 dark:text-gray-400"
                                                                         >
-                                                                            {/* Reviewed on {new Date().toLocaleDateString()} */}
+
                                                                         </time>
                                                                     </p>
                                                                 </div>
@@ -605,15 +609,7 @@ export default function AuctionPage() {
                                                                 </h3>
                                                             </footer>
 
-                                                            <footer className="mb-5 text-sm text-gray-500 dark:text-gray-400">
-                                                                <h3 className=" text-sm font-semibold text-gray-900 dark:text-white">
-                                                                    <img
-                                                                        src={feedback.imageUrl}
-                                                                        style={{ width: '100px', height: '100px' }}
-                                                                    />
-                                                                </h3>
-                                                            </footer>
-
+                                                          
                                                             <div className="flex flex-col gap-4 self-stretch">
                                                                 <div className="mb-2 flex items-center">
 
