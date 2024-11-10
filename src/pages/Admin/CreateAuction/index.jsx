@@ -9,6 +9,7 @@ import {useGetItemDetailQuery} from "@/services/item.service.js";
 export default function CreateAuction() {
     const { itemId } = useParams();
     const { data: itemDetail, isLoading, isError } = useGetItemDetailQuery({ id: itemId });
+    const auctionId = itemDetail?.auction?.auction_id;
   return (
     <>
       <Helmet>
@@ -26,7 +27,7 @@ export default function CreateAuction() {
         {/*<ProductDetailsSection />*/}
 
         {/*/!* auction creation section *!/*/}
-        <AuctionCreationSection1 />
+        <AuctionCreationSection1 itemId={itemId}/>
       </div>
     </>
   );
