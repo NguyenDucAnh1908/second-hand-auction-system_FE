@@ -159,6 +159,25 @@ export const itemApiSlice = apiSlice.injectEndpoints({
 
         }),
 
+       
+          
+          getItemsBySeller: builder.query({
+            query: ({ userId, keyword, minPrice, maxPrice, scIds, page, limit }) => ({
+              url: `/item/by-seller`,
+              params: {
+                userId,
+                keyword,
+                minPrice,
+                maxPrice,
+                scIds,
+                page,
+                limit,
+              },
+              method: "GET",
+            }),
+          }),
+
+
         }),
     });
 
@@ -177,4 +196,5 @@ export const itemApiSlice = apiSlice.injectEndpoints({
         useApproveItemAdminMutation,
         useGetSellerQuery,
         useGetItemPendingAuctionQuery,
+        useGetItemsBySellerQuery,
     } = itemApiSlice;

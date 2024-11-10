@@ -11,7 +11,6 @@ import HorizontalTab from "../../components/HorizontalTabSeller";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 
-
 const { Panel } = Collapse;
 const {Content, Sider} = Layout;
 

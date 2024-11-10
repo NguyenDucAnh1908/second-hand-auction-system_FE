@@ -39,7 +39,11 @@ export default function SellerDetailHeader({ ...props }) {
             value: `${sellerInforData?.totalStars || 'N/A'} (${sellerInforData?.totalFeedbackCount || '0'} Đánh giá)`,
             img: "images/danh_gia.png"
         },
-        { label: "Tham gia", value: "chưa có", img: "images/tham_gia.png" },
+        {
+            label: "Đánh giá",
+            value: `${sellerInforData?.sellerCreateAt.substring(0,10) || 'N/A'}` ,
+            img: "images/danh_gia.png"
+        },
     ];
 
     if (isLoading) {
