@@ -13,8 +13,20 @@ export const orderApiSlice = apiSlice.injectEndpoints({
             }),
             
         }),
+
+        createOrder: builder.mutation({
+            query: (credentials) => ({
+                url: "/orders",
+                method: "POST",
+                body: { ...credentials },
+            }),
+        }),
+
+       
+    
     }),
 });
 
 // Export the hook for use in components
-export const { useGetOrderQuery } = orderApiSlice;
+export const { useGetOrderQuery, useCreateOrderMutation } = orderApiSlice;
+ 
