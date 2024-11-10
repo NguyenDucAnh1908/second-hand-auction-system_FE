@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {useGetItemAdminQuery} from '../../../services/item.service';
-import {Table, Button, Image, Spin, Alert, Tag, Modal} from 'antd';
+import {Table, Image, Spin, Alert, Tag, Modal} from 'antd';
 import Pagination from "@/components/Pagination/index.jsx";
 import {useNavigate} from 'react-router-dom';
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
-import {Typography} from "@material-tailwind/react";
+import {Button, Typography} from "@material-tailwind/react";
 
 export default function ProductPending() {
     const [page, setPage] = useState(1);
@@ -18,9 +18,9 @@ export default function ProductPending() {
         refetch();
     }, [refetch]);
 
-    if (isLoading) {
-        return <Spin size="large"/>;
-    }
+    // if (isLoading) {
+    //     return <Spin size="large"/>;
+    // }
 
     if (error) {
         return <Alert message="Error loading products." type="error"/>;
@@ -119,8 +119,9 @@ export default function ProductPending() {
             key: 'action',
             render: (_, record) => (
                 <>
-                    <Button type="primary" size="small" onClick={() => handleAppraisal(record.itemId)} className="mr-2">Thẩm
-                        định</Button>
+                    <Button onClick={() => handleAppraisal(record.itemId)}
+                            className="bg-green-500 text-white hover:bg-green-700">Thẩm định
+                    </Button>
 
                 </>
             ),
@@ -147,16 +148,23 @@ export default function ProductPending() {
 
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-4">Product Pending</h1>
-                <Table
-                    dataSource={pendingProducts}
-                    columns={columns}
-                    rowKey="itemId"
-                    pagination={false}
-                />
+                <div className="flex items-center justify-center w-full h-full">
+                    {isLoading ? (
+                        <Spin size="large" tip="Đang tải thông tin người bán...">
+                        </Spin>
+                    ) : (
+                        <Table
+                            dataSource={pendingProducts}
+                            columns={columns}
+                            rowKey="itemId"
+                            pagination={false}
+                        />
+                    )}
+                </div>
                 <div className="flex justify-center items-center mt-4">
                     <Pagination
                         currentPage={page}
-                        totalPages={data.data.totalPages || 1}
+                        totalPages={data?.data.totalPages || 1}
                         onPageChange={setPage}
                     />
                 </div>

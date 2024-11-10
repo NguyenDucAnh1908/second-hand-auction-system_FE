@@ -200,6 +200,12 @@ export default function QuanLyGiaoDich() {
                                         {giaoDich.transactionType === "WITHDRAWAL" && (
                                             <Tag color="red" className="font-semibold w-[120px] h-[20px] text-center">Rút tiền</Tag>
                                         )}
+                                        {giaoDich.transactionType === "REFUND" && (
+                                            <Tag color="geekblue-inverse" className="font-semibold w-[120px] h-[20px] text-center">Hoàn cọc</Tag>
+                                        )}
+                                        {giaoDich.transactionType === "TRANSFER" && (
+                                            <Tag color="green-inverse" className="font-semibold w-[120px] h-[20px] text-center">Chuyển khoản</Tag>
+                                        )}
                                         {giaoDich.transactionType === "DEPOSIT_AUCTION" && (
                                             <Tag color="blue" className="font-semibold w-[120px] h-[20px] text-center">Tiền cọc</Tag>
                                         )}

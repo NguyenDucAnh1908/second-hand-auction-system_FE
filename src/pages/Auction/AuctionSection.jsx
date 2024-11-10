@@ -144,22 +144,6 @@ export default function AuctionSection(
 
     return (
         <>
-            {/*<Modal*/}
-            {/*    title="Đặt Giá Thầu"*/}
-            {/*    open={isModalOpen}*/}
-            {/*    onCancel={handleCancel} // Vẫn giữ onCancel để đóng modal khi người dùng nhấn ra ngoài modal*/}
-            {/*    centered*/}
-            {/*    bodyStyle={{*/}
-            {/*        display: "flex",*/}
-            {/*        justifyContent: "center",*/}
-            {/*        alignItems: "center",*/}
-            {/*    }}*/}
-            {/*    footer={null} // Xóa các nút OK và Cancel*/}
-            {/*>*/}
-            {/*    <div style={{width: "100%", textAlign: "center"}}>*/}
-            {/*        <BidForm/>*/}
-            {/*    </div>*/}
-            {/*</Modal>*/}
             <Modal
                 title={isRegistered ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
                 open={isModalOpen}
@@ -168,9 +152,6 @@ export default function AuctionSection(
                 footer={null}
             >
                 {isRegistered ? (
-                    // <div style={{width: "100%", textAlign: "center"}}>
-                    //     <BidForm dataItem={dataItem}/>
-                    // </div>
                     <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
                         <BidForm dataItem={dataItem} cancelModel={handleCancel}
                                  isRefetchWinningBid={isRefetchWinningBid}
@@ -226,44 +207,46 @@ export default function AuctionSection(
             </Modal>
             {isSuccessItemDt && dataItem && (
                 <div className="mt-4 flex items-center gap-[50px] px-[22px] md:flex-col sm:px-5">
+                    {/*<div className="flex flex-1 items-start justify-end w-full md:flex-col md:self-stretch">*/}
+                    {/*    <ImageGallery*/}
+                    {/*        items={images}*/}
+                    {/*        showFullscreenButton={true}*/}
+                    {/*        showPlayButton={true}*/}
+                    {/*        showThumbnails={true}*/}
+                    {/*        thumbnailPosition="left"*/}
+                    {/*        lazyLoad={true}*/}
+                    {/*        autoPlay={true}*/}
+                    {/*        slideInterval={3000}*/}
+                    {/*        showBullets={true}*/}
+                    {/*        onSlide={(currentIndex) => console.log(`Slide hiện tại: ${currentIndex}`)}*/}
+                    {/*        additionalClass="w-full h-auto"*/}
+                    {/*    />*/}
+                    {/*</div>*/}
                     <div className="flex flex-1 items-start justify-end w-full md:flex-col md:self-stretch">
-                        <ImageGallery
-                            items={images}
-                            showFullscreenButton={true}
-                            showPlayButton={true}
-                            showThumbnails={true}
-                            thumbnailPosition="left"
-                            lazyLoad={true}
-                            autoPlay={true}
-                            slideInterval={3000}
-                            showBullets={true}
-                            onSlide={(currentIndex) => console.log(`Slide hiện tại: ${currentIndex}`)}
-                            additionalClass="w-full h-auto"
-                        />
+                        <div className="w-full" style={{width: '700px', height: '500px', position: 'relative'}}>
+                            <ImageGallery
+                                items={images}
+                                showFullscreenButton={true}
+                                showPlayButton={true}
+                                showThumbnails={true}
+                                thumbnailPosition="left"
+                                lazyLoad={true}
+                                autoPlay={true}
+                                slideInterval={3000}
+                                showBullets={true}
+                                //onSlide={(currentIndex) => console.log(`Slide hiện tại: ${currentIndex}`)}
+                                additionalClass="w-full h-full"
+                                style={{
+                                    objectFit: 'cover',
+                                    width: '100%',
+                                    height: '100%',
+                                }}
+                            />
+                        </div>
                     </div>
-
                     <div
                         className="flex w-[34%] flex-col items-center rounded-md border border-solid border-gray-200 bg-bg-white px-[22px] py-[30px] shadow-sm md:w-full sm:p-5">
                         <div className="ml-1.5 mr-4 flex flex-col gap-[18px] self-stretch md:mx-0">
-                            {/* <div className="flex items-center justify-center">
-                                <Heading
-                                    size="headinglg"
-                                    as="h1"
-                                    className="text-[15px] font-bold uppercase text-blue_gray-900_01"
-                                >
-                                    Nike
-                                </Heading>
-                                <div className="ml-2.5 h-[20px] w-px bg-gray-200" />
-                                <div className="flex flex-1 items-start gap-2.5 px-2.5">
-                                    <Rate disabled defaultValue={2} />
-                                    <Text
-                                        as="p"
-                                        className="self-center text-[14px] font-normal text-blue_gray-900_01"
-                                    >
-                                        3,014 Đánh giá shop
-                                    </Text>
-                                </div>
-                            </div> */}
                             <Heading
                                 size="text4xl"
                                 as="h2"
@@ -305,20 +288,6 @@ export default function AuctionSection(
                             <span className="font-bold">Danh mục:</span>
                             <span>&nbsp;{dataItem.scId.sub_category}</span>
                         </Text>
-                        {/*<Text*/}
-                        {/*    size="textmd"*/}
-                        {/*    as="p"*/}
-                        {/*    className="mt-[22px] text-[11px] font-normal text-gray-900_01 self-stretch"*/}
-                        {/*>*/}
-                        {/*    /!*{renderCountdown()}*!/*/}
-                        {/*    <Countdown*/}
-                        {/*        value={new Date(`${dataItem.auction?.endDate}T${dataItem.auction?.end_time}`).getTime()}*/}
-                        {/*        format="D Ngày H giờ m phút s giây"*/}
-                        {/*        valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "green"}}*/}
-                        {/*    />*/}
-
-                        {/*</Text>*/}
-
                         <Text
                             size="textmd"
                             as="p"
@@ -330,7 +299,7 @@ export default function AuctionSection(
                                     <Countdown
                                         value={endDateTime}
                                         format="D Ngày H giờ m phút s giây"
-                                        valueStyle={{ fontWeight: "bolder", fontSize: "15px", color: "green" }}
+                                        valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "green"}}
                                     />
                                 </div>
                             ) : (
@@ -339,21 +308,11 @@ export default function AuctionSection(
                                     <Countdown
                                         value={startDateTime}
                                         format="D Ngày H giờ m phút s giây"
-                                        valueStyle={{ fontWeight: "bolder", fontSize: "15px", color: "#CD853F" }}
+                                        valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "#CD853F"}}
                                     />
                                 </div>
                             )}
                         </Text>
-
-
-                        {/*<Text*/}
-                        {/*    size="textmd"*/}
-                        {/*    as="p"*/}
-                        {/*    className="mt-[22px] text-[11px] font-normal text-gray-900_01 self-stretch"*/}
-                        {/*>*/}
-                        {/*    <span className="font-bold">Thời gian phiên đấu giá:</span>{" "}*/}
-                        {/*    2015-09-01 09:12:11*/}
-                        {/*</Text>*/}
                         <div className="ml-1.5 mt-[18px] flex flex-col gap-3 self-stretch md:ml-0">
 
                             <a href="/ListOfBuyerBids">

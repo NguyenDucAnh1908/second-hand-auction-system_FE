@@ -38,6 +38,7 @@ import PaymentSuccess from "./pages/Payment/PaymentSuccess.jsx";
 import SuccessfullyPayment from "pages/ResultPage/SuccessfullyPayment.jsx";
 import FailPayment from "pages/ResultPage/FailPayment.jsx";
 import AuctionListCompleted from "pages/AuctionListCompleted/index.jsx";
+import CreateOrder from "./pages/Order/index.jsx";
 
 function App() {
     return (
@@ -94,6 +95,7 @@ function App() {
                     <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
                     <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
                     <Route path="AuctionListCompleted" index element={<AuctionListCompleted/>}/>
+                    <Route path="CreateOrder/:id" index element={<CreateOrder/>}/>
                 </Route>
                 {/*<Route element={<RequireAuth allowedRoles={["STAFF", "ADMIN"]}/>}>*/}
 
