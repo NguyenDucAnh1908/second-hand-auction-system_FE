@@ -150,7 +150,6 @@ export default function HorizontalTab({ initialTab = "shop" }) {
 
     const tabs = [
         { label: "Cửa hàng", value: "shop" },
-        { label: "Đấu giá", value: "auction" },
         { label: "Thông tin", value: "info" },
         { label: "Đánh giá", value: "reviews" }
     ];
