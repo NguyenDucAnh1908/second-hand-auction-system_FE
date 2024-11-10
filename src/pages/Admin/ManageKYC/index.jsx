@@ -20,6 +20,7 @@ const getStatusStyle = (status) => {
 
 const ManageKYC = () => {
     const { data, error, isLoading, refetch } = useGetKYCItemsQuery({ page: 0, limit: 10 });
+
     const navigate = useNavigate();
     const [connected, setConnected] = useState(false);
     const [items, setItems] = useState([]);
@@ -28,7 +29,7 @@ const ManageKYC = () => {
         brokerURL: 'ws://localhost:8080/ws', // WebSocket server URL
         webSocketFactory: () => new SockJS('http://localhost:8080/api/v1/ws'), // WebSocket client using SockJS
     });
-
+    // console.log('data: ', data);
     // Khi kết nối thành công
     stompClient.onConnect = (frame) => {
         console.log('Connected: ' + frame);

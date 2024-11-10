@@ -1,13 +1,14 @@
-import { Heading, InputDH } from "../../components/index.jsx";
+import {Heading, InputDH} from "../../components/index.jsx";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import Header2 from "../../components/Header2/index.jsx";
-import React, { useState } from "react";
-import { TabPanel, TabList, Tab, Tabs } from "react-tabs";
-import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
-import { PlusOutlined } from '@ant-design/icons';
-import { useCreateKycMutation } from "../../services/kyc.service.js";
+import React, {useState} from "react";
+import {TabPanel, TabList, Tab, Tabs} from "react-tabs";
+import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
+import {PlusOutlined} from '@ant-design/icons';
+import {useCreateKycMutation} from "../../services/kyc.service.js";
 import {Breadcrumb, Button, Layout, Steps, theme, Image, Upload, DatePicker, message} from 'antd';
 import useHookUploadImage from "../../hooks/useHookUploadImage.js";
+import {useNavigate} from "react-router-dom";
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -16,19 +17,22 @@ const getBase64 = (file) =>
         reader.onload = () => resolve(reader.result);
         reader.onerror = (error) => reject(error);
     });
-const { Content, Sider } = Layout;
+const {Content, Sider} = Layout;
 
 
 export default function KNCPage() {
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
+    const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0);
-    const { token } = theme.useToken();
+    const {token} = theme.useToken();
     const [fileList, setFileList] = useState([]);
-    const { UploadImage } = useHookUploadImage();
+    const {UploadImage} = useHookUploadImage();
     const [current, setCurrent] = useState(0);
-
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [ FormData,setFormData] = useState("");
     const [kycData, setKycData] = useState({
         dob: "",
         gender: "",
@@ -76,18 +80,63 @@ export default function KNCPage() {
         return Object.keys(newErrors).length === 0; // Trả về true nếu không có lỗi
     };
     const handleGenderChange = (e) => {
-        setKycData({ ...kycData, gender: e.target.value });
+        setKycData({...kycData, gender: e.target.value});
     };
-    const [createKyc, { isLoading, isSuccess, isError, error }] = useCreateKycMutation();
+    const [createKyc, {isLoading, isSuccess, isError, error}] = useCreateKycMutation();
+    const handleChangeImage = async ({fileList: newFileList}) => {
+        if (newFileList.length > 2) {
+            message.warning("Bạn chỉ có thể tải lên tối đa 2 ảnh!");
+            return;
+        }
+
+        setFileList(newFileList);
+        const uploadedUrls = [];
+
+        for (const file of newFileList) {
+            const fileToUpload = file.originFileObj || file;
+            if (fileToUpload) {
+                try {
+                    const imageUrl = await UploadImage(fileToUpload);
+                    uploadedUrls.push(imageUrl);
+                } catch (error) {
+                    message.error(`Tải lên ảnh ${file.name} thất bại: ${error.message}`);
+                }
+            } else {
+                //console.error("File object không hợp lệ:", file);
+                message.warning("File object không hợp lệ")
+            }
+        }
+
+        // Cập nhật kycData khi có đủ hai ảnh
+        if (uploadedUrls.length === 2) {
+            const [frontDocumentUrl, backDocumentUrl] = uploadedUrls;
+
+            setKycData((prevKycData) => ({
+                ...prevKycData,
+                frontDocumentUrl,
+                backDocumentUrl,
+            }));
+            // console.log("Front Document URL:", frontDocumentUrl);
+            // console.log("Back Document URL:", backDocumentUrl);
+        } else {
+            //console.warn("Không đủ ảnh được tải lên. Các URL đã tải lên:", uploadedUrls);
+            message.warning("Không đủ ảnh được tải lên. Các URL đã tải lên")
+        }
+    };
     const handleSubmit = async () => {
 
         try {
             const response = await createKyc(kycData).unwrap();
-            console.log('KYC creation response:', response);
-            console.log("Front Document URL:", kycData.frontDocumentUrl);
-            console.log("Back Document URL:", kycData.backDocumentUrl);
+            // console.log('KYC creation response:', response);
+            // console.log("Front Document URL:", kycData.frontDocumentUrl);
+            // console.log("Back Document URL:", kycData.backDocumentUrl);
+            const responseMessage = response?.message
+            navigate('/ProfileDetail');
+            message.success(responseMessage)
+
         } catch (err) {
             console.error('Failed to create KYC:', err);
+            message.error(err?.data?.message);
         }
     };
 
@@ -122,8 +171,6 @@ export default function KNCPage() {
         }));
     };
 
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState('');
 
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
@@ -132,46 +179,7 @@ export default function KNCPage() {
         setPreviewImage(file.url || file.preview);
         setPreviewOpen(true);
     };
-    const handleChangeImage = async ({ fileList: newFileList }) => {
-        // Giới hạn số lượng ảnh tải lên
-        if (newFileList.length > 2) {
-            message.error("Bạn chỉ có thể tải lên tối đa 2 ảnh!");
-            return;
-        }
 
-        setFileList(newFileList);
-        const uploadedUrls = [];
-
-        for (const file of newFileList) {
-            const fileToUpload = file.originFileObj || file; // Fallback nếu originFileObj không có
-            if (fileToUpload) {
-                try {
-                    const imageUrl = await UploadImage(fileToUpload); // Upload ảnh và lấy URL
-                    uploadedUrls.push(imageUrl);
-                } catch (error) {
-                    message.error(`Tải lên ảnh ${file.name} thất bại: ${error.message}`);
-                }
-            } else {
-                console.error("File object không hợp lệ:", file);
-            }
-        }
-
-        // Cập nhật kycData khi có đủ hai ảnh
-        if (uploadedUrls.length === 2) {
-            const [frontDocumentUrl, backDocumentUrl] = uploadedUrls;
-
-            setKycData((prevKycData) => ({
-                ...prevKycData,
-                frontDocumentUrl,
-                backDocumentUrl,
-            }));
-
-            console.log("Front Document URL:", frontDocumentUrl);
-            console.log("Back Document URL:", backDocumentUrl);
-        } else {
-            console.warn("Không đủ ảnh được tải lên. Các URL đã tải lên:", uploadedUrls);
-        }
-    };
 
     const handleDateChange = (date) => {
         setKycData({
@@ -195,7 +203,7 @@ export default function KNCPage() {
                                 shape="round"
                                 placeholder="Please input name"
                                 value={kycData.fullName}
-                                onChange={(e) => setKycData({ ...kycData, fullName: e.target.value })}
+                                onChange={(e) => setKycData({...kycData, fullName: e.target.value})}
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"
                             />
                             {errors.fullName && <p className="text-red-600">{errors.fullName}</p>} {/* Thông báo lỗi */}
@@ -211,7 +219,7 @@ export default function KNCPage() {
                                 shape="round"
                                 placeholder="example@gmail.com"
                                 value={kycData.email}
-                                onChange={(e) => setKycData({ ...kycData, email: e.target.value })}
+                                onChange={(e) => setKycData({...kycData, email: e.target.value})}
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"
                             />
                             {errors.email && <p className="text-red-600 ml-0">{errors.email}</p>} {/* Thông báo lỗi */}
@@ -224,7 +232,7 @@ export default function KNCPage() {
                                 Ngày tháng năm sinh
                             </Heading>
                             <DatePicker
-                                style={{ width: '100%' }}
+                                style={{width: '100%'}}
                                 placeholder="Chọn ngày sinh"
                                 format="YYYY-MM-DD" // Định dạng ngày
                                 onChange={handleDateChange} // Gọi hàm cập nhật khi chọn ngày
@@ -241,10 +249,11 @@ export default function KNCPage() {
                                 shape="round"
                                 placeholder="09xx xxx xxx"
                                 value={kycData.phoneNumber}
-                                onChange={(e) => setKycData({ ...kycData, phoneNumber: e.target.value })}
+                                onChange={(e) => setKycData({...kycData, phoneNumber: e.target.value})}
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"
                             />
-                            {errors.phoneNumber && <p className="text-red-600">{errors.phoneNumber}</p>} {/* Thông báo lỗi */}
+                            {errors.phoneNumber &&
+                                <p className="text-red-600">{errors.phoneNumber}</p>} {/* Thông báo lỗi */}
 
                         </div>
 
@@ -256,21 +265,21 @@ export default function KNCPage() {
                             <div className="flex items-center gap-8">
                                 <label className="flex items-center">
                                     <input type="radio" name="gender" value="male" className="mr-2"
-                                        checked={kycData.gender === 'male'}
-                                        onChange={handleGenderChange} />
+                                           checked={kycData.gender === 'male'}
+                                           onChange={handleGenderChange}/>
                                     Nam
                                 </label>
                                 <label className="flex items-center">
                                     <input type="radio" name="gender" value="female" className="mr-2"
-                                        checked={kycData.gender === 'female'}
-                                        onChange={handleGenderChange}
+                                           checked={kycData.gender === 'female'}
+                                           onChange={handleGenderChange}
                                     />
                                     Nữ
                                 </label>
                                 <label className="flex items-center">
                                     <input type="radio" name="gender" value="other" className="mr-2"
-                                        checked={kycData.gender === 'other'}
-                                        onChange={handleGenderChange}
+                                           checked={kycData.gender === 'other'}
+                                           onChange={handleGenderChange}
                                     />
                                     Khác
                                 </label>
@@ -286,7 +295,7 @@ export default function KNCPage() {
                                 shape="round"
                                 placeholder="age"
                                 value={kycData.age}
-                                onChange={(e) => setKycData({ ...kycData, age: e.target.value })}
+                                onChange={(e) => setKycData({...kycData, age: e.target.value})}
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"
                             />
                             {errors.age && <p className="text-red-600">{errors.age}</p>} {/* Thông báo lỗi */}
@@ -311,14 +320,16 @@ export default function KNCPage() {
                                 placeholder="012345678"
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"
                                 value={kycData.cccdNumber}
-                                onChange={(e) => setKycData({ ...kycData, cccdNumber: e.target.value })}
+                                onChange={(e) => setKycData({...kycData, cccdNumber: e.target.value})}
                             />
-                            {errors.cccdNumber && <p className="text-red-500 text-sm">{errors.cccdNumber}</p>} {/* Hiển thị lỗi */}
+                            {errors.cccdNumber &&
+                                <p className="text-red-500 text-sm">{errors.cccdNumber}</p>} {/* Hiển thị lỗi */}
 
                         </div>
 
                         {/* Upload CCCD/Hộ chiếu Image */}
-                        <div className="flex flex-col gap-4 items-center justify-center p-4 bg-gray-50 rounded-lg shadow-lg">
+                        <div
+                            className="flex flex-col gap-4 items-center justify-center p-4 bg-gray-50 rounded-lg shadow-lg">
                             <h3 className="text-lg font-semibold text-blue-gray-900 mb-4">
                                 Tải lên ảnh CCCD/Hộ chiếu
                             </h3>
@@ -331,8 +342,8 @@ export default function KNCPage() {
                             >
                                 {fileList.length < 2 ? (
                                     <div>
-                                        <PlusOutlined />
-                                        <div style={{ marginTop: 8 }}>Chọn ảnh</div>
+                                        <PlusOutlined/>
+                                        <div style={{marginTop: 8}}>Chọn ảnh</div>
                                     </div>
                                 ) : null}
                             </Upload>
@@ -364,7 +375,8 @@ export default function KNCPage() {
                 <TabPanel>
                     <div className="flex flex-col items-center justify-center h-full p-4">
                         <h3 className="text-3xl font-bold text-green-600 mb-4">Xác minh thành công!</h3>
-                        <p className="mt-2 text-lg text-gray-700 text-center">Cảm ơn bạn đã xác minh thông tin của mình.</p>
+                        <p className="mt-2 text-lg text-gray-700 text-center">Cảm ơn bạn đã xác minh thông tin của
+                            mình.</p>
                     </div>
                 </TabPanel>
             ),
@@ -373,8 +385,8 @@ export default function KNCPage() {
 
     return (
         <>
-            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-                <Header2 />
+            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+                <Header2/>
                 <Content
                     style={{
                         padding: '0 48px',
@@ -406,7 +418,7 @@ export default function KNCPage() {
                             }}
                             width={300}
                         >
-                            <SiderUserBK />
+                            <SiderUserBK/>
                         </Sider>
                         <Content
                             style={{
@@ -418,7 +430,7 @@ export default function KNCPage() {
                             <main className="flex flex-1 flex-col gap-6 md:self-stretch">
                                 <header className="text-center">
                                     <Heading size="headinglg"
-                                        className="text-4xl font-semibold uppercase text-blue_gray-900_01">
+                                             className="text-4xl font-semibold uppercase text-blue_gray-900_01">
                                         xác minh danh tính
                                     </Heading>
 
@@ -427,30 +439,30 @@ export default function KNCPage() {
                                             <Tab className="cursor-pointer">Danh tính</Tab>
                                             <Tab className="cursor-pointer">CCCD/Hộ chiếu</Tab>
                                         </TabList>
-                                        <div style={{ width: '90%', margin: '0 auto' }}>
+                                        <div style={{width: '90%', margin: '0 auto'}}>
                                             <Steps current={current}>
                                                 {steps.map((item) => (
-                                                    <Steps.Step key={item.title} title={item.title} />
+                                                    <Steps.Step key={item.title} title={item.title}/>
                                                 ))}
                                             </Steps>
                                             <div className="step-content">
                                                 {steps[current].content(handleChange, fileList, setFileList, previewImage, setPreviewImage, handlePreview)}
                                             </div>
-                                            <div style={{ marginTop: 24 }}>
+                                            <div style={{marginTop: 24}}>
                                                 {current < steps.length - 1 && (
                                                     <Button type="primary" onClick={next}>
                                                         Next
                                                     </Button>
                                                 )}
                                                 {current > 0 && (
-                                                    <Button style={{ margin: '0 8px' }} onClick={prev}>
+                                                    <Button style={{margin: '0 8px'}} onClick={prev}>
                                                         Previous
                                                     </Button>
                                                 )}
                                             </div>
                                         </div>
                                     </Tabs>
-                                    <br />
+                                    <br/>
 
                                 </header>
                             </main>
@@ -458,7 +470,7 @@ export default function KNCPage() {
                     </Layout>
                 </Content>
                 <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
+                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
             </Layout>
         </>
     );
