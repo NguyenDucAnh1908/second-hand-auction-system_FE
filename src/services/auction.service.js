@@ -10,23 +10,18 @@ export const auctionApiSlice = apiSlice.injectEndpoints({
                 body: {...credentials},
             }),
         }),
+
+        getAuctionById: builder.query({
+            query: (id) => ({
+              url: `/auctions/${encodeURIComponent(id)}`,
+            }),
+        
+          }),
     }),
 });
 
 export const {
     useAuctionCreateMutation,
+    useGetAuctionByIdQuery
 } = auctionApiSlice;
-import { apiSlice } from "../redux/api/apiSlice.js"; 
 
-export const auctionApiSlice = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    getAuctionById: builder.query({
-      query: (id) => ({
-        url: `/auctions/${encodeURIComponent(id)}`,
-      }),
-  
-    }),
-  }),
-});
-
-export const { useGetAuctionByIdQuery } = auctionApiSlice; 
