@@ -1,13 +1,18 @@
 import { ButtonDH, Radio, RadioGroup, Heading, InputDH } from "../../../components";
 import TimeDisplayRow from "../../../components/TimeDisplayRow";
 import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
+//import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Flex, Input } from 'antd';
+import {DatePicker, Space, Input, InputNumber,  Flex} from 'antd';
 import { Button } from "@material-tailwind/react";
 const { TextArea } = Input;
 const onChange = (e) => {
     console.log('Change:', e.target.value);
+};
+const { RangePicker } = DatePicker;
+const baseStyle = {
+    width: '25%',
+    height: 54,
 };
 export default function AuctionCreationSection1() {
 
@@ -32,54 +37,32 @@ export default function AuctionCreationSection1() {
                                 {/* Time and Price Input Fields */}
                                 <div className="flex items-center justify-between self-stretch md:flex-col">
                                     <div className="flex flex-1 flex-col mt-12 gap-10 md:w-full">
-                                        <div className="grid grid-cols-2 gap-x-10 gap-y-6 px-[200px]">
-                                            {/* Thời gian bắt đầu */}
-                                            <div className="flex flex-col">
-                                                <label className="text-[15px] font-medium text-black-900">Thời gian bắt
-                                                    đầu:</label>
-                                                <DatePicker
-                                                    selected={startDate}
-                                                    onChange={(date) => setStartDate(date)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                    className="border rounded-md px-3 py-2 mt-2"
-                                                />
-                                            </div>
 
-                                            {/* Thời gian kết thúc */}
-                                            <div className="flex flex-col">
-                                                <label className="text-[15px] font-medium text-black-900">Thời gian kết
-                                                    thúc:</label>
-                                                <DatePicker
-                                                    selected={endDate}
-                                                    onChange={(date) => setEndDate(date)}
-                                                    dateFormat="dd/MM/yyyy"
-                                                    className="border rounded-md px-3 py-2 mt-2"
-                                                />
-                                            </div>
+                                        <div className="gap-x-10 gap-y-6 px-[200px]">
+                                            <Flex gap="middle" horizontal>
+                                                <Flex gap="middle" vertical>
+                                                    <label className="text-[15px] font-medium text-black-900">Ngày Giờ bắt đầu và ngày kết thúc:</label>
 
-                                            {/* Giá khởi điểm */}
-                                            <div className="flex flex-col">
-                                                <label className="text-[15px] font-medium text-black-900">Giá khởi
-                                                    điểm:</label>
-                                                <InputDH
-                                                    shape="round"
-                                                    name="Starting Price"
-                                                    placeholder={`VND`}
-                                                    className="rounded-md border px-3 mt-2 bg-white"
-                                                />
-                                            </div>
-
-                                            {/* Giá mong muốn */}
-                                            <div className="flex flex-col">
-                                                <label className="text-[15px] font-medium text-black-900">Giá mong
-                                                    muốn:</label>
-                                                <InputDH
-                                                    shape="round"
-                                                    name="Desired Price"
-                                                    placeholder={`VND`}
-                                                    className="rounded-md bg-white border px-3 mt-2"
-                                                />
-                                            </div>
+                                                    <Space direction="vertical" size={12}>
+                                                        <RangePicker showTime/>
+                                                    </Space>
+                                                </Flex>
+                                                <Space>
+                                                    <Flex gap="middle" vertical>
+                                                        <label className="text-[15px] font-medium text-black-900">Giá
+                                                            mong muốn:</label>
+                                                        <InputNumber
+                                                            defaultValue={1000}
+                                                            formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                            parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                                                            onChange={onChange}
+                                                            style={{
+                                                                width: 300,
+                                                            }}
+                                                        />
+                                                    </Flex>
+                                                </Space>
+                                            </Flex>
                                         </div>
                                     </div>
 
@@ -145,7 +128,6 @@ export default function AuctionCreationSection1() {
                     </div>
                 </div>
             </div>
-
         </>
     );
 

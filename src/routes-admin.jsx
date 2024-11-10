@@ -21,6 +21,7 @@ import Payment from "./pages/Admin/Payment/index.jsx";
 import ManageKYC from "./pages/Admin/ManageKYC/index.jsx";
 import ProductPending from "./pages/Admin/ManageProduct/index.jsx";
 import ManageUser from "./pages/Admin/ManageUser/index.jsx";
+import ManageListCreateAuctionProduct from "pages/Admin/ManageListCreateAuctionProduct/index.jsx";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -73,11 +74,16 @@ export const routesAdmin = [
         path: "/ProductPending",
         element: <ProductPending />,
       },
-   
+      {
+        icon: <UserCircleIcon {...icon} />,
+        name: "Danh sách tạo đấu giá",
+        path: "/auction-create-list",
+        element: <ManageListCreateAuctionProduct />,
+      },
       {
         icon: <UserCircleIcon {...icon} />,
         name: "Tạo phiên đấu giá",
-        path: "/CreateAuction",
+        path: "/CreateAuction/:itemId",
         element: <CreateAuction />,
       },
       {

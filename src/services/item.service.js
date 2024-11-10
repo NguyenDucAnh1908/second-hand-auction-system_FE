@@ -148,6 +148,17 @@ export const itemApiSlice = apiSlice.injectEndpoints({
                 transformResponse: (response) => response.data,
             }),
 
+        getItemPendingAuction: builder.query({
+            query: (paging) => ({
+                url: "item/pending-auction",
+                params: {
+                    page: paging.page || 0,
+                    limit: paging.limit || 10,
+                },
+            }),
+
+        }),
+
         }),
     });
 
@@ -165,4 +176,5 @@ export const itemApiSlice = apiSlice.injectEndpoints({
         useGetItemAdminQuery,
         useApproveItemAdminMutation,
         useGetSellerQuery,
+        useGetItemPendingAuctionQuery,
     } = itemApiSlice;
