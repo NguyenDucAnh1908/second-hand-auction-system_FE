@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Select, Button, message } from 'antd';
+import { Input, Select, Button, message, Spin } from 'antd';
 import { UserOutlined, MailOutlined, PhoneOutlined, CreditCardOutlined, BankOutlined } from '@ant-design/icons';
 import Header2 from '../../components/Header2';
 import FooterBK from '../../components/FooterBK';
 import { useCreateOrderMutation } from '../../services/order.service';
 import { useGetAuctionByIdQuery } from '../../services/auction.service';
-import { useParams } from 'react-router-dom'; // Import useParams để lấy id từ URL
+import { useParams } from 'react-router-dom';
+import { useGetAddressOrderQuery } from '../../services/address.service';
 const { TextArea } = Input;
+import { useNavigate } from "react-router-dom"; // Nếu dùng React Router v6
+
 
 export default function CreateOrder() {
     const { id } = useParams();
@@ -19,11 +22,20 @@ export default function CreateOrder() {
         note: '',
         auctionId: id, // Trường auctionId sẽ lấy giá trị từ URL
     });
+    const navigate = useNavigate();
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
+
     // Lấy thông tin đấu giá từ API
     const { data: auctionData, error: auctionError, isLoading: auctionLoading } = useGetAuctionByIdQuery(id);
+    const userId = JSON.parse(localStorage.getItem('user'))?.id;
+    console.log(userId);
+
+    const { data: addressData, error: addressError, isLoading: addressLoading } = useGetAddressOrderQuery(userId);
+    console.log("Data", addressData);
+
+
 
     useEffect(() => {
         if (auctionLoading) {
@@ -32,20 +44,23 @@ export default function CreateOrder() {
 
         if (auctionError) {
             console.error("Error fetching auction data:", auctionError);
+            message.error('Lỗi khi tải thông tin đấu giá');
         }
 
-        if (auctionData) {
-            console.log("Auction data:", auctionData);
+        if (addressError) {
+            console.error("Error fetching address data:", addressError);
+            message.error('Lỗi khi tải địa chỉ');
         }
-    }, [auctionData, auctionError, auctionLoading]);
+    }, [auctionData, auctionError, auctionLoading, addressError]);
 
     const [createOrder, { isLoading }] = useCreateOrderMutation();
     const [paymentMethod, setPaymentMethod] = useState('');
     const [addressOptions, setAddressOptions] = useState([]);
 
-    // Tính hoa hồng 5%
-    const commission = auctionData?.data?.amount ? auctionData.data.amount * 0.05 : 0;
-    const totalAmount = auctionData?.data?.amount ? auctionData.data.amount + commission : 0;
+    // Kiểm tra auctionData và amount để tính hoa hồng và tổng số tiền
+    const auctionAmount = auctionData?.data?.amount || 0; // Nếu không có amount, đặt giá trị mặc định là 0
+    const commission = auctionAmount * 0.05; // Hoa hồng là 5% của giá đấu
+    const totalAmount = auctionAmount + commission; // Tổng số tiền là giá đấu cộng hoa hồng
 
     const handleSubmit = async () => {
         try {
@@ -53,11 +68,15 @@ export default function CreateOrder() {
                 ...orderDetails,
                 paymentMethod,
             }).unwrap();
-
+    
             message.success('Đơn hàng đã được tạo thành công!');
             console.log("Order created:", result);
-
-            // Có thể thêm logic để reset form hoặc chuyển trang nếu cần
+    
+            // Chuyển trang sau 5 giây
+            setTimeout(() => {
+                navigate('/OrderManagementBuyer'); // Đường dẫn bạn muốn chuyển đến
+            }, 5000);
+    
         } catch (error) {
             message.error('Lỗi khi tạo đơn hàng. Vui lòng thử lại.');
             console.error("Create order error:", error);
@@ -102,21 +121,6 @@ export default function CreateOrder() {
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-700 font-semibold mb-2">Địa chỉ</label>
-                            <Select
-                                className="w-full"
-                                placeholder="Chọn địa chỉ"
-                                value={orderDetails.address}
-                                onChange={(value) => setOrderDetails({ ...orderDetails, address: value })}
-                            >
-                                {addressOptions.map((address) => (
-                                    <Select.Option key={address.id} value={address.id}>
-                                        {address.fullAddress}
-                                    </Select.Option>
-                                ))}
-                            </Select>
-                        </div>
-                        <div className="mb-4">
                             <label className="block text-gray-700 font-semibold mb-2">Phương thức giao hàng</label>
                             <Select
                                 className="w-full"
@@ -137,12 +141,30 @@ export default function CreateOrder() {
                                 placeholder="Thêm ghi chú nếu có"
                             />
                         </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700 font-semibold mb-2">Địa chỉ</label>
+                            <div className="space-y-2">
+                                <div className="flex items-center space-x-4 hover:bg-gradient-to-r hover:from-blue-100 hover:to-blue-300 hover:shadow-2xl rounded-full p-4 transition-all duration-300 ease-in-out transform hover:scale-105">
+                                    {/* Dấu chấm nhỏ - với hiệu ứng lấp lánh */}
+                                    <div className="w-5 h-5 bg-gradient-to-tl from-blue-500 to-indigo-500 rounded-full mr-4 transform transition-all duration-300 hover:scale-110"></div>
+
+                                    {/* Hiển thị địa chỉ với màu chữ và hiệu ứng */}
+                                    <span className="text-gray-900 text-lg font-semibold tracking-tight hover:text-indigo-600">
+                                        {addressData.address_name}, {addressData.ward_name}, {addressData.district_name}, {addressData.province_name}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
                     </form>
                 </div>
 
                 {/* Bên phải - Hình ảnh sản phẩm và phương thức thanh toán */}
                 <div className="w-full lg:w-1/2 p-6 bg-white rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-bold mb-6 text-gray-800">Phương thức thanh toán</h2>
+
 
                     {/* Thông tin sản phẩm */}
                     <div className="mb-6">
@@ -159,14 +181,12 @@ export default function CreateOrder() {
                                 <h4 className="text-xl font-semibold text-gray-800 mb-2">{auctionData?.data.itemName}</h4>
                                 <p className="text-sm text-gray-600 mb-4">{auctionData?.data.description}</p>
                                 <p className="text-gray-700 font-medium mb-2">Người bán: {auctionData?.data.seller}</p>
-                                <p className="text-lg font-semibold text-gray-900 mt-3">Giá đặt cao nhất: {auctionData?.data.amount} VND</p>
+                                <p className="text-gray-700 font-medium">{formatCurrency(auctionAmount)}</p>
                             </div>
                         </div>
                     </div>
-
-                    {/* Phương thức thanh toán */}
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Chọn phương thức thanh toán</h3>
                     <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Chọn phương thức thanh toán</h3>
                         <Select
                             className="w-full"
                             value={paymentMethod}
@@ -179,29 +199,28 @@ export default function CreateOrder() {
                         </Select>
                     </div>
 
-                    {/* Tóm tắt đơn hàng */}
-                    <div className="mb-6 border-t pt-6 border-gray-300">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Tóm tắt đơn hàng</h3>
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="text-gray-700 font-medium">Hoa hồng (5%)</span>
-                            <span className="text-gray-900 font-semibold">{formatCurrency(commission)}</span>
+                    {/* Tổng số tiền và hoa hồng */}
+                    <div className="mb-6">
+                        <div className="flex justify-between items-center">
+                            <span className="text-lg text-gray-800">Hoa hồng</span>
+                            <span className="font-semibold text-gray-900">{formatCurrency(commission)}</span>
                         </div>
-                        <div className="flex justify-between items-center mb-4">
-                            <span className="text-gray-700 font-medium">Tổng số tiền</span>
-                            <span className="text-blue-700 font-semibold">{formatCurrency(totalAmount)}</span>
+                        <div className="flex justify-between items-center mt-2">
+                            <span className="text-lg text-gray-800">Tổng số tiền</span>
+                            <span className="font-semibold text-gray-900">{formatCurrency(totalAmount)}</span>
                         </div>
                     </div>
 
-                    {/* Nút Checkout */}
-                    <Button
-                        type="primary"
-                        className="w-full"
-                        loading={isLoading}
-                        onClick={handleSubmit}
-                        disabled={!paymentMethod}
-                    >
-                        Thanh toán
-                    </Button>
+                    {/* Thanh toán */}
+                    <div className="flex items-center gap-4">
+                        <Button
+                            className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600"
+                            onClick={handleSubmit}
+                            loading={isLoading || auctionLoading || addressLoading}
+                        >
+                            {isLoading || auctionLoading || addressLoading ? 'Đang xử lý' : 'Tạo đơn hàng'}
+                        </Button>
+                    </div>
                 </div>
             </div>
             <FooterBK />
