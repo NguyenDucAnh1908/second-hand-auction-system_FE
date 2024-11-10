@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {Table, Button, Image, Spin, Alert, Tag, Modal} from 'antd';
+import {Table, Image, Spin, Alert, Tag, Modal} from 'antd';
 import Pagination from "@/components/Pagination/index.jsx";
 import {useNavigate} from 'react-router-dom';
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
-import {Typography} from "@material-tailwind/react";
+import {Button, Typography} from "@material-tailwind/react";
 import {useGetItemPendingAuctionQuery} from "@/services/item.service.js";
 
 export default function ManageListCreateAuctionProduct() {
@@ -18,15 +18,15 @@ export default function ManageListCreateAuctionProduct() {
         refetch();
     }, [refetch]);
 //console.log("DATA: ", data?.data.data)
-    if (isLoading) {
-        return <Spin size="large"/>;
-    }
-
+//     if (isLoading) {
+//         return <Spin size="large"/>;
+//     }
+//
     if (error) {
         return <Alert message="Error loading products." type="error"/>;
     }
 
-     const pendingProducts = data?.data.data || [];
+    const pendingProducts = data?.data.data || [];
     const handleNavigateToCreateAuction = (itemId) => {
         navigate(`/dashboard/CreateAuction/${itemId}`);
     };
@@ -59,7 +59,7 @@ export default function ManageListCreateAuctionProduct() {
             render: (itemDescription, record) => (
                 <Button
                     onClick={() => handleOpenDescriptionModal(record.itemDescription)}
-                    className="text-blue-500 hover:underline"
+                    className="ql-bg-blue-500 text-white hover:bg-yellow-600"
                 >
                     Xem mô tả
                 </Button>
@@ -120,7 +120,8 @@ export default function ManageListCreateAuctionProduct() {
             key: 'action',
             render: (_, record) => (
                 <>
-                    <Button type="primary" size="small" onClick={() => handleNavigateToCreateAuction(record.itemId)} className="mr-2">Tạo Đấu Giá</Button>
+                    <Button color="blue" onClick={() => handleNavigateToCreateAuction(record.itemId)}
+                            className="bg-green-500 text-white hover:bg-green-700">Tạo Đấu Giá</Button>
                 </>
             ),
         },
@@ -133,7 +134,8 @@ export default function ManageListCreateAuctionProduct() {
                 visible={isModalDescriptionVisible}
                 onCancel={handleCloseDescriptionModal}
                 footer={[
-                    <Button key="close" onClick={handleCloseDescriptionModal}
+                    // eslint-disable-next-line react/jsx-key
+                    <Button color="blue" onClick={handleCloseDescriptionModal}
                             className="bg-red-500 text-white hover:bg-red-600">
                         Đóng
                     </Button>,
@@ -146,16 +148,23 @@ export default function ManageListCreateAuctionProduct() {
 
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-4">Product Pending</h1>
-                <Table
-                    dataSource={pendingProducts}
-                    columns={columns}
-                    rowKey="itemId"
-                    pagination={false}
-                />
+                <div className="flex items-center justify-center w-full h-full">
+                    {isLoading ? (
+                        <Spin size="large" tip="Đang tải thông tin người bán...">
+                        </Spin>
+                    ) : (
+                        <Table
+                            dataSource={pendingProducts}
+                            columns={columns}
+                            rowKey="itemId"
+                            pagination={false}
+                        />
+                    )}
+                </div>
                 <div className="flex justify-center items-center mt-4">
                     <Pagination
                         currentPage={page}
-                        totalPages={data.data.totalPages || 1}
+                        totalPages={data?.data.totalPages || 1}
                         onPageChange={setPage}
                     />
                 </div>

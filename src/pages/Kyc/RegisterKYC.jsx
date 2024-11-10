@@ -6,7 +6,7 @@ import { TabPanel, TabList, Tab, Tabs } from "react-tabs";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { PlusOutlined } from '@ant-design/icons';
 import { useCreateKycMutation } from "../../services/kyc.service.js";
-import { Breadcrumb, Button, Layout, Steps, theme, Image, Upload, DatePicker } from 'antd';
+import {Breadcrumb, Button, Layout, Steps, theme, Image, Upload, DatePicker, message} from 'antd';
 import useHookUploadImage from "../../hooks/useHookUploadImage.js";
 
 const getBase64 = (file) =>
@@ -17,7 +17,7 @@ const getBase64 = (file) =>
         reader.onerror = (error) => reject(error);
     });
 const { Content, Sider } = Layout;
-const { UploadImage } = useHookUploadImage();
+
 
 export default function KNCPage() {
     const {
@@ -26,11 +26,8 @@ export default function KNCPage() {
     const [currentStep, setCurrentStep] = useState(0);
     const { token } = theme.useToken();
     const [fileList, setFileList] = useState([]);
-
+    const { UploadImage } = useHookUploadImage();
     const [current, setCurrent] = useState(0);
-
-
-
 
     const [kycData, setKycData] = useState({
         dob: "",

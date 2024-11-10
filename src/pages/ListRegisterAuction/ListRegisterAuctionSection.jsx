@@ -63,7 +63,7 @@ export default function ListRegisterAuctionSection() {
         action: <Button color="blue" onClick={() => showModal(item.ar_id)}>Chi tiết</Button>,
         //.toFixed(2)<Button color="blue" onClick={showModal((record.ar_id)}>Chi tiết</Button>
     })) || [];
-    console.log("data",data);
+    // console.log("data",data);
 
     const items = dataAuctionRegisterDetail ? [
         {
@@ -132,7 +132,7 @@ export default function ListRegisterAuctionSection() {
                             <Select size="lg" label="Chọn Trạng Thái">
                                 <Option>Tất cả</Option>
                                 <Option>Thành công</Option>
-                                <Option>Đã hủy</Option>
+                                <Option>Kết thúc</Option>
                             </Select>
                         </div>
                     </div>

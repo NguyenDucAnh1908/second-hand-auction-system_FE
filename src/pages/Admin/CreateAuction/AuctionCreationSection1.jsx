@@ -41,11 +41,11 @@ export default function AuctionCreationSection1({itemId}) {
     });
 
     const handleChange = (value) => {
-        console.log(`Selected auction type: ${value}`);
+        //console.log(`Selected auction type: ${value}`);
         setFormData((prev) => ({...prev, auction_type_id: value}));
     };
     const handleShipTypeChange = (value) => {
-        console.log("Selected Ship Type:", value);
+        //console.log("Selected Ship Type:", value);
         setFormData((prev) => ({
             ...prev,
             ship_type: value, // Update ship_type in formData
@@ -53,7 +53,7 @@ export default function AuctionCreationSection1({itemId}) {
     };
     const onChange = (e, fieldName) => {
         const value = e.target ? e.target.value : e;
-        console.log(`Cập nhật ${fieldName}: ${value}`);
+        //console.log(`Cập nhật ${fieldName}: ${value}`);
         setFormData((prev) => ({
             ...prev,
             [fieldName]: value,

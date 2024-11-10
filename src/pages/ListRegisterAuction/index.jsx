@@ -79,9 +79,7 @@ export default function ListRegisterAuction() {
                                     selectedTabClassName=""
                                     selectedTabPanelClassName="tab-panel--selected"
                                 >
-
                                     <ListRegisterAuctionSection />
-
                                 </Tabs>
                             </div>
                         </Content>
