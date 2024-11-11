@@ -10,13 +10,10 @@ import {
     Text,
 } from "../../components";
 import Header2 from "../../components/Header2";
-import ProductDetails4 from "../../components/ProductDetails4";
-import UserProfile from "../../components/UserProfile";
-import UserStatistics from "../../components/UserStatistics";
 import AuctionSection from "./AuctionSection";
 import RecommendedProductsSection from "./RecommendedProductsSection";
 import React from "react";
-import {Avatar, Breadcrumb, Empty, Layout, Spin, theme} from "antd";
+import {Avatar, Breadcrumb, Empty, Layout, Skeleton, theme} from "antd";
 import {AntDesignOutlined} from "@ant-design/icons";
 import {Flex, Rate, Typography, Tabs} from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
@@ -236,13 +233,6 @@ export default function AuctionPage() {
                         }}
                     >
                         <div className="flex w-full flex-col items-center bg-bg-white">
-                            {/*<div className="w-full bg-red-700 text-white p-4 flex justify-items-start items-center">*/}
-                            {/*    <span>You're out bidder ||</span>*/}
-                            {/*    <button className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 ml-2">*/}
-                            {/*        Increase max bid*/}
-                            {/*    </button>*/}
-                            {/*</div>*/}
-
                             {isLoggedIn && winningBid && (
                                 <div
                                     className={`w-full p-1 flex justify-items-start items-center ${winningBid?.data?.winBid ? 'bg-green-700' : 'bg-red-700'}`}>
@@ -254,13 +244,8 @@ export default function AuctionPage() {
                                     </button>
                                 </div>
                             )}
-
-                            {/*<Header2 />*/}
-
-                            {/* auction section */}
-                            <Spin spinning={isLoading} tip="Đang tải...">
+                            <Skeleton loading={isLoading} active>
                                 {isSuccess && data && (
-
                                     <AuctionSection dataItem={data}
                                                     isSuccessItemDt={isSuccess}
                                                     isRefetch={refetch}
@@ -269,12 +254,11 @@ export default function AuctionPage() {
                                                     isLoggedIn={isLoggedIn}
                                     />
                                 )}
-                            </Spin>
-
+                            </Skeleton>
                             <div
                                 className="container-xs mt-[70px] flex flex-col gap-[10px] md:gap-[85px] md:px-5 sm:gap-[57px]">
                                 <div className="ml-1 mr-2.5 flex flex-col items-start md:mx-0">
-                                    <Spin spinning={isLoading} tip="Đang tải...">
+                                    <Skeleton loading={isLoading} active>
                                         {isSuccess && data && (
                                             <div className="flex flex-col gap-4 self-stretch px-2.5">
                                                 <div className="flex flex-col items-start gap-3.5">
@@ -315,37 +299,33 @@ export default function AuctionPage() {
                                                 </div>
                                             </div>
                                         )}
-                                    </Spin>
-                                    {/*end info item*/}
-                                    {loadingSellerInfo ? (
-                                        <Spin size="large" tip="Đang tải thông tin người bán...">
-                                            {/* Nội dung có thể bị ẩn khi loading */}
-                                        </Spin>
-                                    ) : (
-                                        <>
-                                            <Text
-                                                size="text5xl"
-                                                as="p"
-                                                className="mt-[30px] text-[25px] font-normal text-black-900 md:text-[23px] sm:text-[21px]"
-                                            >
-                                                Tổng quan đánh giá
-                                            </Text>
-                                            <div className="flex items-center my-8 gap-6">
-                                                <Avatar
-                                                    size={{xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100}}
-                                                    src={sellerInfo?.avatar}
-                                                    onClick={() => handleNavigateToUserIdSeller(sellerInfo.userId)}
+                                    </Skeleton>
+                                    <Skeleton loading={loadingSellerInfo} active>
 
-                                                />
-                                                <div className="font-semibold text-2xl dark:text-white">
-                                                    <div>{sellerInfo?.storeName}</div>
-                                                    <div className="text-base text-gray-500 dark:text-gray-400">
-                                                        {sellerInfo?.address}
-                                                    </div>
+                                        <Text
+                                            size="text5xl"
+                                            as="p"
+                                            className="mt-[30px] text-[25px] font-normal text-black-900 md:text-[23px] sm:text-[21px]"
+                                        >
+                                            Tổng quan đánh giá
+                                        </Text>
+                                        <div className="flex items-center my-8 gap-6">
+                                            <Avatar
+                                                size={{xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100}}
+                                                src={sellerInfo?.avatar}
+                                                onClick={() => handleNavigateToUserIdSeller(sellerInfo.userId)}
+
+                                            />
+                                            <div className="font-semibold text-2xl dark:text-white">
+                                                <div>{sellerInfo?.storeName}</div>
+                                                <div className="text-base text-gray-500 dark:text-gray-400">
+                                                    {sellerInfo?.address}
                                                 </div>
                                             </div>
-                                        </>
-                                    )}
+                                        </div>
+
+                                        {/*)}*/}
+                                    </Skeleton>
                                     <div
                                         className="inline-flex flex items-center space-x-10 rounded-md shadow-sm"
                                         role="group"
@@ -410,11 +390,7 @@ export default function AuctionPage() {
                                             Save seller
                                         </button>
                                     </div>
-                                    {loadingSellerInfo ? (
-                                        <Spin size="large" tip="Đang tải thông tin người bán...">
-                                            {/* Nội dung có thể bị ẩn khi loading */}
-                                        </Spin>
-                                    ) : (
+                                    <Skeleton loading={loadingSellerInfo} active>
                                         <div className="mb-5  flex items-start gap-[30px] self-stretch md:flex-col">
                                             <div
                                                 className="flex w-[40%] flex-col items-start gap-[110px] md:w-full md:gap-[82px] sm:gap-[55px]">
@@ -429,7 +405,8 @@ export default function AuctionPage() {
                                                         </Heading>
                                                         <div className="flex w-[64%] flex-col items-start gap-3.5">
                                                             <Flex gap="middle">
-                                                                <Rate disabled value={sellerInfo?.totalStars} allowHalf/>
+                                                                <Rate disabled value={sellerInfo?.totalStars}
+                                                                      allowHalf/>
                                                             </Flex>
 
                                                         </div>
@@ -669,7 +646,7 @@ export default function AuctionPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                    )}
+                                    </Skeleton>
                                     {/*end infoseller*/}
                                 </div>
                             </div>

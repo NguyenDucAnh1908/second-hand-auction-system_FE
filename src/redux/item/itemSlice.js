@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {createSlice} from "@reduxjs/toolkit";
 
 const itemSlice = createSlice({
     name: "item",
@@ -8,11 +8,11 @@ const itemSlice = createSlice({
         max: 16000000000,
         scIds: [],
         page: 0,
-        limit: 8,
+        limit: 6,
     },
     reducers: {
         setFilters: (state, action) => {
-            const { keyword, min, max, scIds, page, limit } =
+            const {keyword, min, max, scIds, page, limit} =
                 action.payload;
             if (keyword !== undefined) state.keyword = keyword;
             if (min !== undefined) state.min = min;
@@ -26,5 +26,5 @@ const itemSlice = createSlice({
     },
 });
 
-export const { setFilters } = itemSlice.actions;
+export const {setFilters} = itemSlice.actions;
 export default itemSlice.reducer;

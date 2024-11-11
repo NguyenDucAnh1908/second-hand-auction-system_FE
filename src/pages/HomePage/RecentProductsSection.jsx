@@ -8,18 +8,19 @@ import {IconButton} from "@material-tailwind/react";
 import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
 import {useGetFeatureItemsQuery} from "../../services/item.service";
 import Slider from 'react-slick';
+import CartItem from "@/components/CartItem/index.jsx";
 
 export default function RecentProductsSection() {
     const sliderRef = React.useRef(null);
     const {data = {}, isLoading, isError, error} = useGetFeatureItemsQuery();
     if (isLoading) return <p>Đang tải dữ liệu...</p>;
     if (isError) return <p>Có lỗi xảy ra khi tải dữ liệu: {error.message}</p>;
-    // Cấu hình cho slider (react-slick)
+
     const sliderSettings = {
         className: "center",
         centerMode: true,
         infinite: true,
-        centerPadding: "30px",
+        centerPadding: "10px",
         slidesToShow: 4,
         speed: 500,
         autoplay: true,
@@ -41,7 +42,7 @@ export default function RecentProductsSection() {
     };
 
     return (
-        <div className="w-full overflow-hidden">
+        <div className="w-full">
             {/* Slider ngang */}
             <Heading
                 size="text7xl"
@@ -52,10 +53,10 @@ export default function RecentProductsSection() {
             </Heading>
             <Slider {...sliderSettings} ref={sliderRef}>
                 {data.map((item) => (
-                    <div key={item.id} className="px-2">
-                        <ProductDetails21
+                    <div key={item.id} >
+                        <CartItem
                             product={item}
-                            className="border border-gray-200 bg-white p-3 rounded-lg"
+                            // className="border border-gray-200 bg-white p-3 rounded-lg"
                         />
                     </div>
                 ))}

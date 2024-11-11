@@ -8,6 +8,7 @@ import {useGetFeatureItemsQuery} from "../../services/item.service";
 //import {useGetCheckAuctionRegisterQuery} from "../../services/auctionRegistrations.service";
 import Slider from 'react-slick';
 import {Spin} from "antd";
+import CartItem from "@/components/CartItem/index.jsx";
 
 export default function FeaturedProducts() {
     const sliderRef = React.useRef(null);
@@ -55,9 +56,8 @@ export default function FeaturedProducts() {
                 <Slider {...sliderSettings} ref={sliderRef}>
                     {data.map((item) => (
                         <div key={item.id} className="px-2">
-                            <ProductDetails21
+                            <CartItem
                                 product={item}
-                                className="border border-gray-200 bg-white p-3 rounded-lg"
                             />
                         </div>
                     ))}

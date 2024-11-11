@@ -39,6 +39,7 @@ import {useGetCategoriesQuery} from "@/services/category.service.js";
 import {useDispatch, useSelector} from "react-redux";
 import {useGetItemsFilterQuery} from "@/services/item.service.js";
 import {setFilters} from "@/redux/item/itemSlice.js";
+import CartItem from "@/components/CartItem/index.jsx";
 
 const {Panel} = Collapse;
 const {Content, Sider} = Layout;
@@ -480,11 +481,11 @@ export default function ProductPage() {
                                         ) : (
                                             <Spin spinning={loadingItem} tip="Loading...">
                                                 <div
-                                                    className="mx-7 mt-5 grid grid-cols-4 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
+                                                    className="mx-7 mt-5 grid grid-cols-3 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
                                                     {data?.item && data.item.length > 0 ? (
                                                         data.item.map((item, index) => (
                                                             <div key={`itemsGrid-${index}`}>
-                                                                <ProductDetails21 product={item}
+                                                                <CartItem product={item}
                                                                                   onBidClick={showModal}/>
                                                             </div>
                                                         ))
