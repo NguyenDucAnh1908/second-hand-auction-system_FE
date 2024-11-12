@@ -54,8 +54,7 @@ function App() {
                 <Route path="VerifyAccount" index element={<VerifyAccount/>}/>
                 <Route path="PaymentSuccess" index element={<PaymentSuccess/>}/>
                 <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
-
-
+                
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>

@@ -178,8 +178,10 @@ export default function CartItem({product}) {
                             title={
                                 <Statistic
                                     title="Giá khởi điểm"
-                                    value={100000000}
-                                    formatter={(value) => value.toLocaleString()}
+                                    // value={100000000}
+                                    // formatter={(value) => value.toLocaleString()}
+                                    value={product.auction?.start_price}
+                                    formatter={formatter}
                                     suffix={<span style={{fontSize: '12px'}}>VND</span>}
                                 />
                             }

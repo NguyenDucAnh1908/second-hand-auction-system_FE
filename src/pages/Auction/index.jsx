@@ -64,8 +64,8 @@ export default function AuctionPage() {
         data: sellerInfo,
         error: sellerInfoError,
         isLoading: loadingSellerInfo
-    } = useGetSellerInformationByAuctionIdQuery(auctionId);
-
+    } = useGetSellerInformationByAuctionIdQuery(data?.auction?.auction_id);
+// console.log("data", data)
     const {
         data: winningBid,
         error: fetchWinningBid,
@@ -313,7 +313,7 @@ export default function AuctionPage() {
                                             <Avatar
                                                 size={{xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100}}
                                                 src={sellerInfo?.avatar}
-                                                onClick={() => handleNavigateToUserIdSeller(sellerInfo.userId)}
+                                                onClick={() => handleNavigateToUserIdSeller(sellerInfo?.userId)}
 
                                             />
                                             <div className="font-semibold text-2xl dark:text-white">
@@ -639,7 +639,7 @@ export default function AuctionPage() {
                                                         variant="outline"
                                                         shape="round"
                                                         className="ml-[218px] min-w-[298px] rounded-md !border-2 px-8 font-medium md:ml-0 sm:px-5"
-                                                        onClick={() => handleNavigateToAuction(sellerInfo.userId)}
+                                                        onClick={() => handleNavigateToAuction(sellerInfo?.userId)}
                                                     >
                                                         Xem Tất Cả
                                                     </ButtonDH>
