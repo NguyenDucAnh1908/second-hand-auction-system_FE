@@ -23,8 +23,8 @@ import {
     Button,
 } from "@material-tailwind/react";
 
-//const {Content, Sider} = Layout;
-const { Content } = Layout;
+const {Content, Sider} = Layout;
+// const { Content } = Layout;
 import FaEthereum from "../assets/Ethereum.svg"
 
 // const AuctionItem = ({item}) => {
