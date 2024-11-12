@@ -60,57 +60,57 @@ export default function KiemduyetStaffPage() {
         {
             key: '1',
             label: 'Họ tên đầy đủ',
-            children: kyc.fullName,
+            children: kyc?.fullName,
         },
         {
             key: '2',
             label: 'Giới tính',
-            children: kyc.gender,
+            children: kyc?.gender,
         },
         {
             key: '3',
             label: 'Email',
-            children: kyc.email,
+            children: kyc?.email,
         },
         {
             key: '4',
             label: 'Số điện thoại',
-            children: kyc.phoneNumber,
+            children: kyc?.phoneNumber,
         },
         {
             key: '5',
             label: 'Ngày sinh',
-            children: kyc.dob,
+            children: kyc?.dob,
         },
         {
             key: '6',
             label: 'CCCD',
-            children: kyc.cccdNumber,
+            children: kyc?.cccdNumber,
         },
         {
             key: '7',
             label: 'Thành phố/Tỉnh thành',
-            children: kyc.address.province_name,
+            children: kyc?.address.province_name,
         },
         {
             key: '8',
             label: 'Quận/Huyện',
-            children: kyc.address.district_name,
+            children: kyc?.address.district_name,
         },
         {
             key: '9',
             label: 'Phường/Xã',
-            children: kyc.address.ward_name,
+            children: kyc?.address.ward_name,
         },
         {
             key: '10',
             label: 'Địa chỉ',
-            children: kyc.address.address_name,
+            children: kyc?.address.address_name,
         },
         {
             key: '11',
             label: 'Ngày tạo',
-            children: kyc.submited,
+            children: kyc?.submited,
             span: 2,
         },
         {
@@ -118,7 +118,7 @@ export default function KiemduyetStaffPage() {
             label: 'Hình ảnh CMND',
             children: <Image
                 width={200}
-                src={kyc.frontDocumentUrl}
+                src={kyc?.frontDocumentUrl}
             />,
         },
         {
@@ -126,7 +126,7 @@ export default function KiemduyetStaffPage() {
             label: 'Hình ảnh CMND',
             children: <Image
                 width={200}
-                src={kyc.backDocumentUrl}
+                src={kyc?.backDocumentUrl}
             />,
         }
     ];

@@ -41,7 +41,7 @@ export default function SellerDetailHeader({ ...props }) {
         },
         {
             label: "Đánh giá",
-            value: `${sellerInforData?.sellerCreateAt.substring(0,10) || 'N/A'}` ,
+            value: `${sellerInforData?.sellerCreateAt || 'N/A'}` ,
             img: "images/danh_gia.png"
         },
     ];

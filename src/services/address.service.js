@@ -13,7 +13,7 @@ export const addressApiSlice = apiSlice.injectEndpoints({
 
     // API lấy tất cả địa chỉ theo userId
     getUserAddress: builder.query({
-      query: (userId) => `/address/user/${userId}`, // Sửa để sử dụng userId
+      query: (userId) => `/address/user`, // Sửa để sử dụng userId
     }),
 
     // API xóa địa chỉ

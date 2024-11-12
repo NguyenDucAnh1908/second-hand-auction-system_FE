@@ -47,15 +47,15 @@ export default function CreateOrder() {
             message.error('Lỗi khi tải thông tin đấu giá');
         }
 
-        if (addressError) {
-            console.error("Error fetching address data:", addressError);
-            message.error('Lỗi khi tải địa chỉ');
-        }
-    }, [auctionData, auctionError, auctionLoading, addressError]);
+        // if (addressError) {
+        //     console.error("Error fetching address data:", addressError);
+        //     message.error('Lỗi khi tải địa chỉ');
+        // }
+    }, [auctionData, auctionError, auctionLoading]);
 
     const [createOrder, { isLoading }] = useCreateOrderMutation();
     const [paymentMethod, setPaymentMethod] = useState('');
-    const [addressOptions, setAddressOptions] = useState([]);
+    // const [addressOptions, setAddressOptions] = useState([]);
 
     // Kiểm tra auctionData và amount để tính hoa hồng và tổng số tiền
     const auctionAmount = auctionData?.data?.amount || 0; // Nếu không có amount, đặt giá trị mặc định là 0
@@ -68,15 +68,15 @@ export default function CreateOrder() {
                 ...orderDetails,
                 paymentMethod,
             }).unwrap();
-    
+
             message.success('Đơn hàng đã được tạo thành công!');
             console.log("Order created:", result);
-    
+
             // Chuyển trang sau 5 giây
             setTimeout(() => {
                 navigate('/OrderManagementBuyer'); // Đường dẫn bạn muốn chuyển đến
             }, 5000);
-    
+
         } catch (error) {
             message.error('Lỗi khi tạo đơn hàng. Vui lòng thử lại.');
             console.error("Create order error:", error);
@@ -86,7 +86,7 @@ export default function CreateOrder() {
     return (
         <div>
             <Header2 />
-            <div className="max-w-screen-xl mx-auto p-4 flex flex-col lg:flex-row gap-4">
+           <div className="max-w-screen-xl mx-auto p-4 flex flex-col lg:flex-row gap-4">
                 {/* Bên trái - Thông tin đơn hàng */}
                 <div className="w-full lg:w-1/2 p-4 bg-white rounded-lg shadow-md">
                     <h2 className="text-2xl font-bold mb-4">Thông tin đơn hàng</h2>
@@ -147,25 +147,21 @@ export default function CreateOrder() {
                                 <div className="flex items-center space-x-4 hover:bg-gradient-to-r hover:from-blue-100 hover:to-blue-300 hover:shadow-2xl rounded-full p-4 transition-all duration-300 ease-in-out transform hover:scale-105">
                                     {/* Dấu chấm nhỏ - với hiệu ứng lấp lánh */}
                                     <div className="w-5 h-5 bg-gradient-to-tl from-blue-500 to-indigo-500 rounded-full mr-4 transform transition-all duration-300 hover:scale-110"></div>
-
                                     {/* Hiển thị địa chỉ với màu chữ và hiệu ứng */}
                                     <span className="text-gray-900 text-lg font-semibold tracking-tight hover:text-indigo-600">
-                                        {addressData.address_name}, {addressData.ward_name}, {addressData.district_name}, {addressData.province_name}
+                                        {addressData?.address_name || 'Địa chỉ mặc định'},
+                                        {addressData?.ward_name || 'Phường mặc định'},
+                                        {addressData?.district_name || 'Quận/Huyện mặc định'},
+                                        {addressData?.province_name || 'Tỉnh/Thành mặc định'}
                                     </span>
+
                                 </div>
                             </div>
                         </div>
-
-
-
-
                     </form>
                 </div>
-
                 {/* Bên phải - Hình ảnh sản phẩm và phương thức thanh toán */}
                 <div className="w-full lg:w-1/2 p-6 bg-white rounded-lg shadow-lg">
-
-
                     {/* Thông tin sản phẩm */}
                     <div className="mb-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Thông tin sản phẩm</h3>
@@ -198,13 +194,7 @@ export default function CreateOrder() {
                             </Select.Option>
                         </Select>
                     </div>
-
-                    {/* Tổng số tiền và hoa hồng */}
                     <div className="mb-6">
-                        <div className="flex justify-between items-center">
-                            <span className="text-lg text-gray-800">Hoa hồng</span>
-                            <span className="font-semibold text-gray-900">{formatCurrency(commission)}</span>
-                        </div>
                         <div className="flex justify-between items-center mt-2">
                             <span className="text-lg text-gray-800">Tổng số tiền</span>
                             <span className="font-semibold text-gray-900">{formatCurrency(totalAmount)}</span>
@@ -216,9 +206,9 @@ export default function CreateOrder() {
                         <Button
                             className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600"
                             onClick={handleSubmit}
-                            loading={isLoading || auctionLoading || addressLoading}
+                            loading={isLoading || auctionLoading}
                         >
-                            {isLoading || auctionLoading || addressLoading ? 'Đang xử lý' : 'Tạo đơn hàng'}
+                            {isLoading || auctionLoading ? 'Đang xử lý' : 'Tạo đơn hàng'}
                         </Button>
                     </div>
                 </div>

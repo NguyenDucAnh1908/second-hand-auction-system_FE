@@ -27,7 +27,7 @@ const ManageKYC = () => {
 
     const stompClient = new Client({
         brokerURL: 'ws://localhost:8080/ws', // WebSocket server URL
-        webSocketFactory: () => new SockJS('http://localhost:8080/api/v1/ws'), // WebSocket client using SockJS
+        webSocketFactory: () => new SockJS('http://localhost:8080/ws'), // WebSocket client using SockJS
     });
     // console.log('data: ', data);
     // Khi kết nối thành công

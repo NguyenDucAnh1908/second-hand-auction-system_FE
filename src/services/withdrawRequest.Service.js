@@ -8,7 +8,18 @@ export const withdrawApiSlice = apiSlice.injectEndpoints({
                 method: "GET",
             }),
         }),
+
+        getWithdraws: builder.query({
+            query: (paging) => ({
+              url: '/withdrawRequest',
+              params: {
+                page: paging.page || 0,  // Default to page 0
+                limit: paging.limit || 10, // Default to limit 10
+              },
+            }),
+        }),
     }),
+    
 });
 
-export const { useGetResultVNPayQuery } = withdrawApiSlice;
+export const { useGetResultVNPayQuery, useGetWithdrawsQuery } = withdrawApiSlice;

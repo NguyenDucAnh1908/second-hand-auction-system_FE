@@ -17,7 +17,7 @@ export default function StaffAssessmentSection({ itemId }) {
 
     const handleApprove = async () => {
         try {
-            const response = await approveItem({ itemId, status: 'ACCEPTED', reason });
+            const response = await approveItem({ itemId, status: 'PENDING_AUCTION', reason });
             console.log("Approve response:", response);
             setStatus('ACCEPTED');
             navigate('/dashboard/ProductPending');

@@ -22,11 +22,21 @@ export const orderApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
-       
+        getOrderAdmin: builder.query({
+            query: (paging) => ({
+                url: '/orders',
+                params: {
+                    page: paging.page || 0,       // Default to 0 if no page is provided
+                    limit: paging.limit || 10,    // Default to 10 if no limit is provided
+                    status: paging.status,        // Pass status if available
+                },
+            }),
+        }),
+        
     
     }),
 });
 
 // Export the hook for use in components
-export const { useGetOrderQuery, useCreateOrderMutation } = orderApiSlice;
+export const { useGetOrderQuery, useCreateOrderMutation, useGetOrderAdminQuery } = orderApiSlice;
  
