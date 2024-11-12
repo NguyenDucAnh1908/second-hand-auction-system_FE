@@ -8,7 +8,7 @@ import ProductDetails21 from "../ProductDetails21/index.jsx";
 import {
 
     Spin,
-    Empty, Layout, theme, Collapse, Checkbox, Space, InputNumber, Slider,
+    Empty, Layout, theme, Collapse, Checkbox, Space, InputNumber, Slider, Breadcrumb,
 
 } from "antd";
 import {Heading, InputDH} from "@/components/index.jsx";
@@ -17,6 +17,8 @@ import {setFilters} from "@/redux/item/itemSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import {setItemShopFilters} from "@/redux/item/itemStoreSlice.js";
 import CartItem from "@/components/CartItem/index.jsx";
+import Header2 from "@/components/Header2/index.jsx";
+import FooterBK from "@/components/FooterBK/index.jsx";
 
 const {Panel} = Collapse;
 const {Content, Sider} = Layout;
@@ -180,60 +182,257 @@ const TabContent = ({activeTab}) => {
     switch (activeTab) {
         case "reviews":
             return (
-                <div className="w-full h-full ml-[200px] mr-[200px]">
-                    {feedbackData?.content?.map(feedback => (
-                        <article key={feedback.feedbackId}>
-                            <div className="flex items-center my-6">
-                                <img className="w-10 h-10 me-4 rounded-full" src="/images/user.png" alt="User Avatar"/>
-                                <div className="font-medium dark:text-white">
-                                    {feedback.username} <br/>
-                                    <span style={{color: 'rgba(0, 0, 0, 0.5)'}}>
-                                        {feedback.createAt.substring(0, 10)}
-                                    </span>
+                <Layout>
+                    <Content
+                        style={{
+                            padding: '0 48px',
+                        }}
+                    >
+                        <div
+                            style={{
+                                background: colorBgContainer,
+                                minHeight: 280,
+                                padding: 24,
+                                borderRadius: borderRadiusLG,
+                            }}
+                        >
+                            {/*<div className="w-full h-full ml-[200px] mr-[200px]">*/}
+                            {/*    {feedbackData?.content?.map(feedback => (*/}
+                            {/*        <article key={feedback.feedbackId}>*/}
+                            {/*            <div className="flex items-center my-6">*/}
+                            {/*                <img className="w-10 h-10 me-4 rounded-full" src="/images/user.png"*/}
+                            {/*                     alt="User Avatar"/>*/}
+                            {/*                <div className="font-medium dark:text-white">*/}
+                            {/*                    {feedback.username} <br/>*/}
+                            {/*                    <span style={{color: 'rgba(0, 0, 0, 0.5)'}}>*/}
+                            {/*            {feedback.createAt.substring(0, 10)}*/}
+                            {/*        </span>*/}
+                            {/*                </div>*/}
+                            {/*            </div>*/}
+                            {/*            <div className="flex items-center mb-1 space-x-1 rtl:space-x-reverse">*/}
+                            {/*                {[...Array(feedback.rating)].map((_, index) => (*/}
+                            {/*                    <svg key={index} className="w-4 h-4 text-yellow-300"/>*/}
+                            {/*                ))}*/}
+                            {/*                {[...Array(5 - feedback.rating)].map((_, index) => (*/}
+                            {/*                    <svg key={index + feedback.rating}*/}
+                            {/*                         className="w-4 h-4 text-gray-300 dark:text-gray-500"/>*/}
+                            {/*                ))}*/}
+                            {/*            </div>*/}
+                            {/*            <footer className="mb-5 text-sm text-gray-500 dark:text-gray-400">*/}
+                            {/*                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">*/}
+                            {/*                    {feedback.comment}*/}
+                            {/*                </h3>*/}
+                            {/*            </footer>*/}
+                            {/*            <aside>*/}
+                            {/*                <div className="flex items-center mt-3">*/}
+                            {/*                    <a href="#" className="px-2 py-1.5 text-xs font-medium">Hữu ích</a>*/}
+                            {/*                    <a href="#" className="ps-4 text-sm font-medium text-blue-600">Báo*/}
+                            {/*                        cáo</a>*/}
+                            {/*                </div>*/}
+                            {/*            </aside>*/}
+                            {/*            <hr className="my-6 border-gray-300 dark:border-gray-600 mx-auto w-[60%] ml-[0]"/>*/}
+                            {/*        </article>*/}
+                            {/*    ))}*/}
+                            {/*    <Pagination*/}
+                            {/*        currentPage={currentPage + 1}*/}
+                            {/*        totalPages={feedbackData ? Math.ceil(feedbackData.totalElements / pageSize) : 1}*/}
+                            {/*        onPageChange={(page) => setCurrentPage(page - 1)}*/}
+                            {/*    />*/}
+                            {/*</div>*/}
+                            <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
+                                <div className="max-w-2xl mx-auto px-4">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Discussion
+                                            (20)</h2>
+                                    </div>
+                                    {/*startfeedback*/}
+                                    {feedbackData?.content?.map(feedback => (
+                                        <>
+                                            <article key={feedback.feedbackId}
+                                                     className="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
+                                                <footer className="flex justify-between items-center mb-2">
+                                                    <div className="flex items-center">
+                                                        <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                                                            <img
+                                                                className="mr-2 w-6 h-6 rounded-full"
+                                                                src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                                                                alt="Michael Gough"/>{feedback.username}</p>
+                                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                            <time pubdate dateTime="2022-02-08"
+                                                                  title="February 8th, 2022">{feedback.createAt.substring(0, 10)}
+                                                            </time>
+                                                        </p>
+                                                    </div>
+                                                    <button id="dropdownComment1Button"
+                                                            data-dropdown-toggle="dropdownComment1"
+                                                            className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                                                            type="button">
+                                                        <svg className="w-4 h-4" aria-hidden="true"
+                                                             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                             viewBox="0 0 16 3">
+                                                            <path
+                                                                d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+                                                        </svg>
+                                                        <span className="sr-only">Comment settings</span>
+                                                    </button>
+                                                    <div id="dropdownComment1"
+                                                         className="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                                                        <ul className="py-1 text-sm text-gray-700 dark:text-gray-200"
+                                                            aria-labelledby="dropdownMenuIconHorizontalButton">
+                                                            <li>
+                                                                <a href="#"
+                                                                   className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#"
+                                                                   className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Remove</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#"
+                                                                   className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Report</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </footer>
+                                                <p className="text-gray-500 dark:text-gray-400">{feedback.comment}</p>
+                                                <div className="flex items-center mt-4 space-x-4">
+                                                    <button type="button"
+                                                            className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium">
+                                                        <svg className="mr-1.5 w-3.5 h-3.5" aria-hidden="true"
+                                                             xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                             viewBox="0 0 20 18">
+                                                            <path stroke="currentColor" stroke-linecap="round"
+                                                                  stroke-linejoin="round" stroke-width="2"
+                                                                  d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z"/>
+                                                        </svg>
+                                                        Reply
+                                                    </button>
+                                                </div>
+                                            </article>
+                                            <article key={feedback.feedbackId}
+                                                     className="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900">
+                                                <footer className="flex justify-between items-center mb-2">
+                                                    <div className="flex items-center">
+                                                        <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                                                            <img
+                                                                className="mr-2 w-6 h-6 rounded-full"
+                                                                src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                                                                alt="Jese Leos"/>Jese Leos</p>
+                                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                            <time pubdate dateTime="2022-02-12"
+                                                                  title="February 12th, 2022">Feb. 12, 2022
+                                                            </time>
+                                                        </p>
+                                                    </div>
+                                                    <button id="dropdownComment2Button"
+                                                            data-dropdown-toggle="dropdownComment2"
+                                                            className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-40 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                                                            type="button">
+                                                        <svg className="w-4 h-4" aria-hidden="true"
+                                                             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                             viewBox="0 0 16 3">
+                                                            <path
+                                                                d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+                                                        </svg>
+                                                        <span className="sr-only">Comment settings</span>
+                                                    </button>
+                                                    <div id="dropdownComment2"
+                                                         className="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                                                        <ul className="py-1 text-sm text-gray-700 dark:text-gray-200"
+                                                            aria-labelledby="dropdownMenuIconHorizontalButton">
+                                                            <li>
+                                                                <a href="#"
+                                                                   className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#"
+                                                                   className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Remove</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#"
+                                                                   className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Report</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </footer>
+                                                <p className="text-gray-500 dark:text-gray-400">Much appreciated! Glad
+                                                    you liked
+                                                    it ☺️</p>
+                                                <div className="flex items-center mt-4 space-x-4">
+                                                    <button type="button"
+                                                            className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium">
+                                                        <svg className="mr-1.5 w-3.5 h-3.5" aria-hidden="true"
+                                                             xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                             viewBox="0 0 20 18">
+                                                            <path stroke="currentColor" stroke-linecap="round"
+                                                                  stroke-linejoin="round" stroke-width="2"
+                                                                  d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z"/>
+                                                        </svg>
+                                                        Reply
+                                                    </button>
+                                                </div>
+                                            </article>
+                                        </>
+                                    ))}
+                                    <div className="flex justify-center items-center mt-4">
+                                        <Pagination
+                                            // currentPage={page}
+                                            // totalPages={data?.data.totalPages || 1}
+                                            // onPageChange={setPage}
+                                            currentPage={filters.page + 1}
+                                            totalPages={data ? data.data.totalPages : 1}
+                                            onPageChange={(page) => handleFilterChange({page})}
+                                        />
+                                    </div>
+                                    {/*endfeedback*/}
+                                    <form className="my-6 ">
+                                        <div
+                                            className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                                            <label htmlFor="comment" className="sr-only">Your comment</label>
+                                            <textarea id="comment" rows="6"
+                                                      className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                                                      placeholder="Write a comment..." required></textarea>
+                                        </div>
+                                        <button type="submit"
+                                                className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                                            Post comment
+                                        </button>
+                                    </form>
                                 </div>
-                            </div>
-                            <div className="flex items-center mb-1 space-x-1 rtl:space-x-reverse">
-                                {[...Array(feedback.rating)].map((_, index) => (
-                                    <svg key={index} className="w-4 h-4 text-yellow-300"/>
-                                ))}
-                                {[...Array(5 - feedback.rating)].map((_, index) => (
-                                    <svg key={index + feedback.rating}
-                                         className="w-4 h-4 text-gray-300 dark:text-gray-500"/>
-                                ))}
-                            </div>
-                            <footer className="mb-5 text-sm text-gray-500 dark:text-gray-400">
-                                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                                    {feedback.comment}
-                                </h3>
-                            </footer>
-                            <aside>
-                                <div className="flex items-center mt-3">
-                                    <a href="#" className="px-2 py-1.5 text-xs font-medium">Hữu ích</a>
-                                    <a href="#" className="ps-4 text-sm font-medium text-blue-600">Báo cáo</a>
-                                </div>
-                            </aside>
-                            <hr className="my-6 border-gray-300 dark:border-gray-600 mx-auto w-[60%] ml-[0]"/>
-                        </article>
-                    ))}
-                    <Pagination
-                        currentPage={currentPage + 1}
-                        totalPages={feedbackData ? Math.ceil(feedbackData.totalElements / pageSize) : 1}
-                        onPageChange={(page) => setCurrentPage(page - 1)}
-                    />
-                </div>
+                            </section>
+                        </div>
+                    </Content>
+                </Layout>
             );
         case "info":
             return (
-                <div className="w-full h-full ml-[100px]">
-                    <div
-                        dangerouslySetInnerHTML={{__html: sellerInforData?.description}}
+                <Layout>
+                    <Content
                         style={{
-                            wordWrap: "break-word",
-                            overflowWrap: "break-word",
-                            wordBreak: "break-all"
+                            padding: '0 48px',
                         }}
-                    />
-                </div>
+                    >
+                        <div
+                            style={{
+                                background: colorBgContainer,
+                                minHeight: 280,
+                                padding: 24,
+                                borderRadius: borderRadiusLG,
+                            }}
+                        >
+                            <div className="w-full h-full ">
+                                <div
+                                    dangerouslySetInnerHTML={{__html: sellerInforData?.description}}
+                                    style={{
+                                        wordWrap: "break-word",
+                                        overflowWrap: "break-word",
+                                        wordBreak: "break-all"
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </Content>
+                </Layout>
             );
         case "shop":
             return (
@@ -434,39 +633,6 @@ const TabContent = ({activeTab}) => {
                                         flex: 1, // Để Content bên trong chiếm hết không gian còn lại
                                     }}
                                 >
-                                    {/*<div className="mt-10 flex flex-col items-center self-stretch">*/}
-                                    {/*    <div className="flex items-center justify-between w-full">*/}
-                                    {/*        <span className="text-blue_gray-900_01">Filter:</span>*/}
-                                    {/*    </div>*/}
-                                    {/*    {errorItem ? (*/}
-                                    {/*        <Empty*/}
-                                    {/*            description={`Error: ${errorItem.message || "Failed to load categories."}`}/>*/}
-                                    {/*    ) : (*/}
-                                    {/*        <Spin spinning={loadingItem} tip="Loading...">*/}
-                                    {/*            <div*/}
-                                    {/*                className="mx-7 mt-5 grid grid-cols-3 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">*/}
-                                    {/*                {data?.item && data.item.length > 0 ? (*/}
-                                    {/*                    data.item.map((item, index) => (*/}
-                                    {/*                        <div key={`itemsGrid-${index}`}>*/}
-                                    {/*                            <CartItem product={item}*/}
-                                    {/*                                      // onBidClick={showModal}*/}
-                                    {/*                            />*/}
-                                    {/*                        </div>*/}
-                                    {/*                    ))*/}
-                                    {/*                ) : (*/}
-                                    {/*                    <Empty description="items"/>*/}
-                                    {/*                )}*/}
-                                    {/*            </div>*/}
-                                    {/*        </Spin>*/}
-                                    {/*    )}*/}
-                                    {/*    <div className="my-10">*/}
-                                    {/*        <Pagination*/}
-                                    {/*            currentPage={filters.page + 1}*/}
-                                    {/*            totalPages={data ? data.totalPages : 1}*/}
-                                    {/*            onPageChange={(page) => handleFilterChange({page})}*/}
-                                    {/*        />*/}
-                                    {/*    </div>*/}
-                                    {/*</div>*/}
                                     <div className="mt-10 flex flex-col items-center self-stretch">
                                         <div className="flex items-center justify-between w-full">
                                             <span className="text-blue_gray-900_01">Filter:</span>
@@ -490,49 +656,31 @@ const TabContent = ({activeTab}) => {
                                                 </div>
                                             </Spin>
                                         )}
-                                        <div className="my-10">
-                                            <Pagination
-                                                currentPage={filters.page + 1}
-                                                totalPages={data ? data.data.totalPages : 1}
-                                                onPageChange={(page) => handleFilterChange({page})}
-                                            />
-                                        </div>
+                                        {/*<div className="my-10">*/}
+                                        {/*    <Pagination*/}
+                                        {/*        currentPage={filters.page + 1}*/}
+                                        {/*        totalPages={data ? data.data.totalPages : 1}*/}
+                                        {/*        onPageChange={(page) => handleFilterChange({page})}*/}
+                                        {/*    />*/}
+                                        {/*</div>*/}
+
+
+                                        {/*<div className="flex justify-center items-center mt-4">*/}
+                                        {/*    <Pagination*/}
+                                        {/*        // currentPage={page}*/}
+                                        {/*        // totalPages={data?.data.totalPages || 1}*/}
+                                        {/*        // onPageChange={setPage}*/}
+                                        {/*                currentPage={filters.page + 1}*/}
+                                        {/*                totalPages={data ? data.data.totalPages : 1}*/}
+                                        {/*                onPageChange={(page) => handleFilterChange({page})}*/}
+                                        {/*    />*/}
+                                        {/*</div>*/}
                                     </div>
                                 </Content>
                             </Layout>
                         </Content>
                     </Layout>
                 </>
-                // <div className="mt-10 flex flex-col items-center self-stretch">
-                //     <div className="flex items-center justify-between w-full">
-                //         <span className="text-blue_gray-900_01">Filter:</span>
-                //     </div>
-                //     {errorItem ? (
-                //         <Empty description={`Error: ${errorItem.message || "Failed to load categories."}`} />
-                //     ) : (
-                //         <Spin spinning={loadingItem} tip="Loading...">
-                //             <div className="mx-7 mt-5 grid grid-cols-4 justify-center gap-3.5 self-stretch px-1 md:mx-0 md:grid-cols-2 sm:grid-cols-1 ml-auto">
-                //                 {isSuccessItem && items.length > 0 ? (
-                //                     items.map((item, index) => (
-                //                         <div key={`itemsGrid-${index}`}>
-                //                             <ProductDetails21 product={item} />
-                //                         </div>
-                //                     ))
-                //                 ) : (
-                //                     <Empty description="No items found." />
-                //                 )}
-                //             </div>
-                //         </Spin>
-                //     )}
-                //     <div className="my-10">
-                //         <Pagination
-                //             currentPage={currentPage + 1}
-                //             totalPages={isSuccessItem ? Math.ceil(items.length / pageSize) : 1}
-                //             onPageChange={(page) => setCurrentPage(page - 1)}
-                //         />
-                //     </div>
-                // </div>
-
             );
 
 

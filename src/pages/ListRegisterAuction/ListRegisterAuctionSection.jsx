@@ -1,6 +1,6 @@
 import {Img, InputDH} from "../../components/index.jsx";
 import {Button, Card, Typography, Select, Option} from "@material-tailwind/react";
-import {Tag, Badge, Descriptions, Modal} from "antd";
+import {Tag, Badge, Descriptions, Modal, Skeleton, Empty} from "antd";
 import {CheckCircleOutlined, CloseCircleOutlined} from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
 import React, {useState} from 'react';
@@ -138,9 +138,11 @@ export default function ListRegisterAuctionSection() {
                     </div>
                     <Card className="h-full w-full overflow-auto">
                         {isLoadingAutionRegister ? (
-                            <p>Loading...</p>
+                            <Skeleton loading={isLoadingAutionRegister}
+                                      active avatar={true} title={true} round={true} paragraph={true}
+                            />
                         ) : isErrorAutionRegister ? (
-                            <p>Error: {errorAutionRegister?.message || "Failed to load data"}</p>
+                            <Empty/>
                         ) : (
                             <table className="w-full min-w-max table-auto text-left">
                                 <thead>

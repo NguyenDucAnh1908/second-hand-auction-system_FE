@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 import {
     Img,
     Text,
@@ -7,30 +7,30 @@ import {
     SelectBox,
     InputDH,
 } from "../../components";
-import { CloseSVG } from "../../components/InputDH/close.jsx";
+import {CloseSVG} from "../../components/InputDH/close.jsx";
 import NumberRow from "../../components/NumberRow";
-import React, { useState } from "react";
-import { TabPanel, TabList, Tab, Tabs } from "react-tabs";
+import React, {useState} from "react";
+import {TabPanel, TabList, Tab, Tabs} from "react-tabs";
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import { Table, Button, theme, Layout, Breadcrumb, Menu } from "antd";
-import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
-import { useGetTransactionWalletQuery } from "@/services/transactionWallet.service.js";
+import {Table, Button, theme, Layout, Breadcrumb, Menu, Empty, Skeleton} from "antd";
+import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
+import {useGetTransactionWalletQuery} from "@/services/transactionWallet.service.js";
 import Pagination from "@/components/Pagination/index.jsx";
 
 
 const dropDownOptions = [
-    { label: "Option1", value: "option1" },
-    { label: "Option2", value: "option2" },
-    { label: "Option3", value: "option3" },
+    {label: "Option1", value: "option1"},
+    {label: "Option2", value: "option2"},
+    {label: "Option3", value: "option3"},
 ];
 
-const { Content, Sider } = Layout;
+const {Content, Sider} = Layout;
 export default function CustomerTransactionHistoryPagePage() {
     const [searchBarValue8, setSearchBarValue8] = React.useState("");
     const [page, setPage] = useState(1);
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
     const {
         data: dataTransactionWallet,
@@ -79,19 +79,18 @@ export default function CustomerTransactionHistoryPagePage() {
             key: "amount",
             render: (text, record) => {
                 // Kiểm tra loại giao dịch là "WITHDRAWAL" hoặc "DEPOSIT_AUCTION" để áp dụng màu đỏ
-                const isWithdrawalOrAuctionDeposit = record.transactionType === "WITHDRAWAL" || record.transactionType === "DEPOSIT_AUCTION"; 
-                
+                const isWithdrawalOrAuctionDeposit = record.transactionType === "WITHDRAWAL" || record.transactionType === "DEPOSIT_AUCTION";
+
                 return (
-                    <span style={{ color: isWithdrawalOrAuctionDeposit ? "red" : "green" }}>
+                    <span style={{color: isWithdrawalOrAuctionDeposit ? "red" : "green"}}>
                         {isWithdrawalOrAuctionDeposit ? `-${text}` : text} đ
                     </span>
                 );
             },
             width: 150,
         },
-        
-        
-        
+
+
         {
             title: "Người gửi", // Thêm cột Người gửi
             dataIndex: "sender",
@@ -129,23 +128,20 @@ export default function CustomerTransactionHistoryPagePage() {
             second: '2-digit',
         }),
         transactionType: item.transactionType === "DEPOSIT_AUCTION" ? "Nạp tiền đấu giá" :
-                          item.transactionType === "DEPOSIT" ? "Nạp tiền" :
-                          item.transactionType === "WITHDRAWAL" ? "Rút tiền" : "Chuyển khoản", // Định dạng loại giao dịch
+            item.transactionType === "DEPOSIT" ? "Nạp tiền" :
+                item.transactionType === "WITHDRAWAL" ? "Rút tiền" : "Chuyển khoản", // Định dạng loại giao dịch
         method: item.image || "Không xác định",
         status: item.transactionStatus === "COMPLETED" ? "Hoàn thành" : "Đang xử lý",
         amount: item.amount,
         sender: item.senderName,
         recipient: item.recipientName,
     }));
-    
 
-    if (isLoadingTransactionWallet) return <div>Loading...</div>;
-    if (isErrorTransactionWallet) return <div>Error: {errorTransactionWallet.message}</div>;
 
     return (
         <>
-            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-                <Header2 />
+            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+                <Header2/>
                 <Content
                     style={{
                         padding: '0 48px',
@@ -177,7 +173,7 @@ export default function CustomerTransactionHistoryPagePage() {
                             }}
                             width={300}
                         >
-                            <SiderUserBK />
+                            <SiderUserBK/>
                         </Sider>
                         <Content
                             style={{
@@ -193,7 +189,14 @@ export default function CustomerTransactionHistoryPagePage() {
                             >
                                 Lịch sử nạp tiền
                             </Heading>
-                            <Table columns={columns} dataSource={data} bordered pagination={false} />
+                            {isErrorTransactionWallet ? (
+                                    <Empty/>
+                                ) :
+                                <Skeleton loading={isLoadingTransactionWallet} active>
+                                    <Table columns={columns} dataSource={data} bordered pagination={false}/>
+                                </Skeleton>
+                            }
+
                             {/*<Pagination className="ml-[290px]" />*/}
                             <div className="flex justify-center items-center mt-4">
                                 <Pagination
@@ -206,7 +209,7 @@ export default function CustomerTransactionHistoryPagePage() {
                     </Layout>
                 </Content>
                 <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
+                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
             </Layout>
         </>
     );

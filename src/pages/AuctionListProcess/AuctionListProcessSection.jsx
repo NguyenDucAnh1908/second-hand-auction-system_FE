@@ -1,6 +1,6 @@
 import {Img, InputDH} from "../../components/index.jsx";
 import {Button, Card, Typography, Select, Option} from "@material-tailwind/react";
-import {Badge, Descriptions, Tag, Modal, Statistic} from "antd";
+import {Badge, Descriptions, Tag, Modal, Statistic, Skeleton, Empty} from "antd";
 import Pagination from "@/components/Pagination/index.jsx";
 import React, {useState, useEffect} from 'react';
 import {SyncOutlined} from "@ant-design/icons";
@@ -162,71 +162,77 @@ export default function AuctionListProcessSection() {
                             </Select>
                         </div>
                     </div>
-                    <Card className="h-full w-full overflow-auto">
-                        <table className="w-full min-w-max table-auto text-left">
-                            <thead>
-                            <tr>
-                                {TABLE_HEAD.map((head) => (
-                                    <th key={head} className="p-4 pt-10">
-                                        <Typography
-                                            variant="small"
-                                            color="blue-gray"
-                                            className="font-bold leading-none"
-                                        >
-                                            {head}
-                                        </Typography>
-                                    </th>
-                                ))}
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {TABLE_ROWS.map((row) => (
-                                <tr key={row.number}>
-                                    <td className="p-4">
-                                        <Typography variant="small" color="blue-gray" className="font-bold">
-                                            {row.number}
-                                        </Typography>
-                                    </td>
-                                    <td className="p-4">
-                                        <img src={row.image} alt={row.product}
-                                             className="w-16 h-16 object-cover rounded"/>
-                                    </td>
-                                    <td className="p-4">
-                                        <Typography variant="small" className="font-normal text-gray-600">
-                                            {row.product}
-                                        </Typography>
-                                    </td>
-                                    <td className="p-4">
-                                        <Typography variant="small" className="font-normal text-gray-600">
-                                            {row.endTime} {/* Hiển thị thời gian còn lại */}
-                                        </Typography>
-                                    </td>
-                                    <td className="p-4">
-                                        <Tag icon={<SyncOutlined spin/>} color="processing">
-                                            {row.status}
-                                        </Tag>
-                                    </td>
-                                    <td className="p-4">
-                                        <Typography variant="small" className="font-normal text-gray-600">
-                                            ${row.currentPrice}
-                                        </Typography>
-                                    </td>
-                                    <td className="p-4">
-                                        <Typography
-                                            variant="small"
-                                            className={`font-normal ${row.yourPrice >= row.currentPrice ? 'text-green-500' : 'text-red-500'}`}
-                                        >
-                                            ${row.yourPrice}
-                                        </Typography>
-                                    </td>
-                                    <td className="p-4">
-                                        {row.action}
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </Card>
+                    {isErrorAuctionProcess ? (
+                        <Empty/>
+                    ) : (
+                        <Skeleton loading={isLoadingAuctionProcess} active>
+                            <Card className="h-full w-full overflow-auto">
+                                <table className="w-full min-w-max table-auto text-left">
+                                    <thead>
+                                    <tr>
+                                        {TABLE_HEAD.map((head) => (
+                                            <th key={head} className="p-4 pt-10">
+                                                <Typography
+                                                    variant="small"
+                                                    color="blue-gray"
+                                                    className="font-bold leading-none"
+                                                >
+                                                    {head}
+                                                </Typography>
+                                            </th>
+                                        ))}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {TABLE_ROWS.map((row) => (
+                                        <tr key={row.number}>
+                                            <td className="p-4">
+                                                <Typography variant="small" color="blue-gray" className="font-bold">
+                                                    {row.number}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                <img src={row.image} alt={row.product}
+                                                     className="w-16 h-16 object-cover rounded"/>
+                                            </td>
+                                            <td className="p-4">
+                                                <Typography variant="small" className="font-normal text-gray-600">
+                                                    {row.product}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                <Typography variant="small" className="font-normal text-gray-600">
+                                                    {row.endTime} {/* Hiển thị thời gian còn lại */}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                <Tag icon={<SyncOutlined spin/>} color="processing">
+                                                    {row.status}
+                                                </Tag>
+                                            </td>
+                                            <td className="p-4">
+                                                <Typography variant="small" className="font-normal text-gray-600">
+                                                    ${row.currentPrice}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                <Typography
+                                                    variant="small"
+                                                    className={`font-normal ${row.yourPrice >= row.currentPrice ? 'text-green-500' : 'text-red-500'}`}
+                                                >
+                                                    ${row.yourPrice}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                {row.action}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </Card>
+                        </Skeleton>
+                    )}
                     <div className="flex justify-center items-center mt-4">
                         <Pagination
                             currentPage={page}
