@@ -1,4 +1,4 @@
-import { apiSlice } from "../redux/api/apiSlice.js";
+import {apiSlice} from "../redux/api/apiSlice.js";
 
 export const itemApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -45,7 +45,7 @@ export const itemApiSlice = apiSlice.injectEndpoints({
         }),
 
         getItemDetail: builder.query({
-            query: ({ id }) => `/item/detail/${encodeURIComponent(id)}`,
+            query: ({id}) => `/item/detail/${encodeURIComponent(id)}`,
             transformResponse: (response) => response.data,
         }),
 
@@ -67,7 +67,7 @@ export const itemApiSlice = apiSlice.injectEndpoints({
         }),
 
         getAuctionProcessDetail: builder.query({
-            query: ({ id }) => `/item/auction-process/${encodeURIComponent(id)}`,
+            query: ({id}) => `/item/auction-process/${encodeURIComponent(id)}`,
             transformResponse: (response) => response.data,
         }),
 
@@ -92,7 +92,7 @@ export const itemApiSlice = apiSlice.injectEndpoints({
             query: (credentials) => ({
                 url: "/item",
                 method: "POST",
-                body: { ...credentials },
+                body: {...credentials},
             }),
         }),
 
@@ -117,7 +117,7 @@ export const itemApiSlice = apiSlice.injectEndpoints({
             query: (credentials) => ({
                 url: "/item",
                 method: "POST",
-                body: { ...credentials },
+                body: {...credentials},
             }),
             transformResponse: (response) => response.data,
         }),
@@ -134,19 +134,19 @@ export const itemApiSlice = apiSlice.injectEndpoints({
         }),
 
         // Trong services/item.service.js
-        approveItemAdmin : builder.mutation({
-            query: ({ itemId, status, reason }) => ({
+        approveItemAdmin: builder.mutation({
+            query: ({itemId, status, reason}) => ({
                 url: `/item/approve/${itemId}`,
                 method: "PUT",
-                body: { status, reason },
+                body: {status, reason},
             }),
         }),
 
 
-            getSeller: builder.query({
-                query: ({ id }) => `/item/get-seller/${id}`,
-                transformResponse: (response) => response.data,
-            }),
+        getSeller: builder.query({
+            query: ({id}) => `/item/get-seller/${id}`,
+            transformResponse: (response) => response.data,
+        }),
 
         getItemPendingAuction: builder.query({
             query: (paging) => ({
@@ -159,42 +159,56 @@ export const itemApiSlice = apiSlice.injectEndpoints({
 
         }),
 
-       
-          
-          getItemsBySeller: builder.query({
-            query: ({ userId, keyword, minPrice, maxPrice, scIds, page, limit }) => ({
-              url: `/item/by-seller`,
-              params: {
-                userId,
-                keyword,
-                minPrice,
-                maxPrice,
-                scIds,
-                page,
-                limit,
-              },
-              method: "GET",
+
+        // getItemsBySeller: builder.query({
+        //   query: ({ userId, keyword, minPrice, maxPrice, scIds, page, limit }) => ({
+        //     url: `/item/by-seller`,
+        //     params: {
+        //       userId,
+        //       keyword,
+        //       minPrice,
+        //       maxPrice,
+        //       scIds,
+        //       page,
+        //       limit,
+        //     },
+        //     method: "GET",
+        //   }),
+        // }),
+
+
+        getItemsBySeller: builder.query({
+            query: (filters) => ({
+                url: "/item/by-seller",
+                params: {
+                    keyword: filters?.keyword || "",
+                    page: filters?.page || 0,
+                    limit: filters?.limit || 8,
+                    minPrice: filters?.min || 0,
+                    maxPrice: filters?.max || 1600000,
+                    scIds: filters?.scIds?.join(",") || "",
+                    userId: filters?.userId || null,
+                }
             }),
-          }),
+        })
 
+    }),
+});
 
-        }),
-    });
-
-    export const {
-        useGetItemsQuery,
-        useGetFeatureItemsQuery,
-        useGetItemsFilterQuery,
-        useGetItemDetailQuery,
-        useGetAuctionProcessItemQuery,
-        useGetAuctionProcessDetailQuery,
-        useGetAuctionCompletedItemQuery,
-        useRegisterItemMutation,
-        useGetItemByUserQuery,
-        useCreateItemMutation,
-        useGetItemAdminQuery,
-        useApproveItemAdminMutation,
-        useGetSellerQuery,
-        useGetItemPendingAuctionQuery,
-        useGetItemsBySellerQuery,
-    } = itemApiSlice;
+export const {
+    useGetItemsQuery,
+    useGetFeatureItemsQuery,
+    useGetItemsFilterQuery,
+    useGetItemDetailQuery,
+    useGetAuctionProcessItemQuery,
+    useGetAuctionProcessDetailQuery,
+    useGetAuctionCompletedItemQuery,
+    useRegisterItemMutation,
+    useGetItemByUserQuery,
+    useCreateItemMutation,
+    useGetItemAdminQuery,
+    useApproveItemAdminMutation,
+    useGetSellerQuery,
+    useGetItemPendingAuctionQuery,
+    useGetItemsBySellerQuery,
+} = itemApiSlice;

@@ -64,8 +64,8 @@ export default function AuctionPage() {
         data: sellerInfo,
         error: sellerInfoError,
         isLoading: loadingSellerInfo
-    } = useGetSellerInformationByAuctionIdQuery(auctionId);
-
+    } = useGetSellerInformationByAuctionIdQuery(data?.auction?.auction_id);
+// console.log("data", data)
     const {
         data: winningBid,
         error: fetchWinningBid,
@@ -234,15 +234,19 @@ export default function AuctionPage() {
                     >
                         <div className="flex w-full flex-col items-center bg-bg-white">
                             {isLoggedIn && winningBid && (
-                                <div
-                                    className={`w-full p-1 flex justify-items-start items-center ${winningBid?.data?.winBid ? 'bg-green-700' : 'bg-red-700'}`}>
-                                    <span>
-                                        {winningBid?.data?.winBid ? "You're the high bidder" : "You're out bidder"} ||
-                                    </span>
-                                    <button className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 ml-2">
-                                        Increase max bid
-                                    </button>
-                                </div>
+                                <>
+                                    <div
+                                        className={`w-full p-1 flex items-center rounded-lg ${winningBid?.data?.winBid ? 'bg-gradient-to-r from-white to-green-500' : 'bg-gradient-to-r from-white to-red-500'}`}
+                                    >
+                                        <span
+                                            className="text-sm font-semibold">{winningBid?.data?.winBid ? "You're the high bidder" : "You're outbid"} ||</span>
+                                        <button
+                                            className={`px-4 py-2 ml-2 rounded-lg text-white bg-gradient-to-r ${winningBid?.data?.winBid ? 'from-white to-green-500 hover:from-green-400' : 'from-white to-red-500 hover:from-red-400'}`}
+                                        >
+                                            Increase max bid
+                                        </button>
+                                    </div>
+                                </>
                             )}
                             <Skeleton loading={isLoading} active>
                                 {isSuccess && data && (
@@ -313,7 +317,7 @@ export default function AuctionPage() {
                                             <Avatar
                                                 size={{xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100}}
                                                 src={sellerInfo?.avatar}
-                                                onClick={() => handleNavigateToUserIdSeller(sellerInfo.userId)}
+                                                onClick={() => handleNavigateToUserIdSeller(sellerInfo?.userId)}
 
                                             />
                                             <div className="font-semibold text-2xl dark:text-white">
@@ -639,7 +643,7 @@ export default function AuctionPage() {
                                                         variant="outline"
                                                         shape="round"
                                                         className="ml-[218px] min-w-[298px] rounded-md !border-2 px-8 font-medium md:ml-0 sm:px-5"
-                                                        onClick={() => handleNavigateToAuction(sellerInfo.userId)}
+                                                        onClick={() => handleNavigateToAuction(sellerInfo?.userId)}
                                                     >
                                                         Xem Tất Cả
                                                     </ButtonDH>

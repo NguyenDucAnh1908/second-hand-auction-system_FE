@@ -55,7 +55,6 @@ function App() {
                 <Route path="PaymentSuccess" index element={<PaymentSuccess/>}/>
                 <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
 
-
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>
@@ -88,7 +87,7 @@ function App() {
                     <Route path="ProfileDetail" index element={<ProfileDetailPage/>}/>
                     <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
                     <Route path="Address" index element={<AddressPage/>}/>
-                    <Route path="ListOfBuyerBids" index element={<ListOfBuyerBids/>}/>
+                    <Route path="ListOfBuyerBids/:id" index element={<ListOfBuyerBids/>}/>
                     <Route path="RegisterKYC" index element={<KNCPage/>}/>
                     <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
                     <Route path="ListOfSellerPage" index element={<ListOfSellerPage/>}/>

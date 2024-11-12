@@ -37,7 +37,6 @@ export default function AuctionSection(
     const auctionEndTime = dataItem.auction?.end_time || null;
     const auctionStartDate = dataItem.auction?.startDate || null;
     const auctionStartTime = dataItem.auction?.start_time || null;
-
     const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}`).getTime();
     const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
     const now = new Date().getTime();
@@ -45,7 +44,8 @@ export default function AuctionSection(
     useEffect(() => {
         setIsAuctionStarted(now >= startDateTime);
     }, [now, startDateTime]);
-
+    const idAuction = dataItem?.auction.auction_id;
+    //console.log("idAuction", idAuction)
 
     const [auctionStatus, setAuctionStatus] = useState("");
 
@@ -315,7 +315,7 @@ export default function AuctionSection(
                         </Text>
                         <div className="ml-1.5 mt-[18px] flex flex-col gap-3 self-stretch md:ml-0">
 
-                            <a href="/ListOfBuyerBids">
+                            <a href={`/ListOfBuyerBids/${idAuction}`}>
                                 <ButtonDH
                                     color="green_50"
                                     size="xl"
