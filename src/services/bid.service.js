@@ -29,6 +29,11 @@ export const bidApiSlice = apiSlice.injectEndpoints({
             //transformResponse: (response) => response.data,
         }),
 
+        getBidDetail: builder.query({
+            query: (auctionId) =>
+                `/bids/detail/${auctionId}`,
+            //transformResponse: (response) => response.data,
+        }),
     }),
 });
 
@@ -37,4 +42,5 @@ export const {
     useGetAllBidsQuery,
     useGetWinBidQuery,
     useGetBidInfoQuery,
+    useGetBidDetailQuery,
 } = bidApiSlice;

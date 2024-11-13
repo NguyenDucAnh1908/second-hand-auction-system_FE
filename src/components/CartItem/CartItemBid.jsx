@@ -8,7 +8,7 @@ const imgStyle = {
     display: 'block',
     width: 273,
 };
-export default function CartItemBid() {
+export default function CartItemBid({bidIF}) {
     return (
         <Card
             hoverable
@@ -23,7 +23,7 @@ export default function CartItemBid() {
             <Flex justify="space-between">
                 <img
                     alt="avatar"
-                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                    src={bidIF?.thumbnail}
                     style={imgStyle}
                 />
                 <Flex
@@ -35,10 +35,11 @@ export default function CartItemBid() {
                     }}
                 >
                     <Typography.Title level={3}>
-                        “antd is an enterprise-class UI design language and React UI library.”
+                        {bidIF?.itemName}
                     </Typography.Title>
-                    <Button type="primary" href="https://ant.design" target="_blank">
-                        Get Started
+                    <Button type="primary" href={bidIF?.itemId ? `/Auction/${bidIF?.itemId}` : "#"}
+                            target="_blank">
+                        đặt giá thầu
                     </Button>
                 </Flex>
             </Flex>
