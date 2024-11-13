@@ -5,8 +5,8 @@ export default function FeaturedProductsSection() {
   return (
     <>
       {/* featured products section */}
-      <div className="relative mt-[74px] h-[400px] self-stretch">
-        <div className="container-xs absolute bottom-0 left-0 right-0 top-0 my-auto flex h-max flex-col items-end md:px-5">
+      <div className="relative h-[400px] self-stretch">
+        {/*<div className="container-xs absolute bottom-0 left-0 right-0 top-0 my-auto flex h-max flex-col items-end md:px-5">*/}
           <div className="mr-3.5 self-stretch bg-gray-100_01 px-14 py-[60px] md:mr-0 md:p-5">
             <div className="flex flex-col items-start gap-6">
               <div className="flex flex-col items-start gap-2.5 self-stretch">
@@ -44,8 +44,8 @@ export default function FeaturedProductsSection() {
               </ButtonDH>
             </div>
           </div>
-          <div className="relative mr-60 mt-[-46px] h-[46px] w-[28px] rotate-[4deg] rounded-[50%] bg-light_green-900_99 blur-[40.00px] backdrop-opacity-[0.5] md:mr-0" />
-        </div>
+          {/*<div className="relative mr-60 mt-[-46px] h-[46px] w-[28px] rotate-[4deg] rounded-[50%] bg-light_green-900_99 blur-[40.00px] backdrop-opacity-[0.5] md:mr-0" />*/}
+        {/*</div>*/}
         <div className="absolute bottom-[0.82px] right-[24.40px] m-auto h-[312px] w-[34%] rounded-[242px] bg-green-a700_19" />
         <div className="absolute bottom-0 left-0 right-0 top-0 m-auto h-[384px] w-[84%] content-center md:h-auto">
           <Img

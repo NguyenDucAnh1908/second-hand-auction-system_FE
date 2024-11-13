@@ -14,10 +14,14 @@ function DrawerDetailItem({itemIds}) {
     // console.log("itemDetail", itemIds);
     const [selectedDescription, setSelectedDescription] = useState(null);
     const [isModalDescriptionVisible, setIsModalDescriptionVisible] = useState(false);
-    const {data: itemDetail, isLoading: itemDetailLoading, isError: itemDetailError} = useGetItemDetailQuery({ id: itemIds });
+    const {
+        data: itemDetail,
+        isLoading: itemDetailLoading,
+        isError: itemDetailError
+    } = useGetItemDetailQuery({id: itemIds});
 
-    const { data: seller } = useGetSellerQuery({id: itemDetail?.itemId});
-    const { data: staff } = useGetUserByIdQuery();
+    const {data: seller} = useGetSellerQuery({id: itemDetail?.itemId});
+    const {data: staff} = useGetUserByIdQuery();
     const handleOpenDescriptionModal = (itemDescription) => {
         setSelectedDescription(itemDescription);
         setIsModalDescriptionVisible(true);

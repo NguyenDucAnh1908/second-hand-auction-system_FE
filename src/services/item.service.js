@@ -159,24 +159,6 @@ export const itemApiSlice = apiSlice.injectEndpoints({
 
         }),
 
-
-        // getItemsBySeller: builder.query({
-        //   query: ({ userId, keyword, minPrice, maxPrice, scIds, page, limit }) => ({
-        //     url: `/item/by-seller`,
-        //     params: {
-        //       userId,
-        //       keyword,
-        //       minPrice,
-        //       maxPrice,
-        //       scIds,
-        //       page,
-        //       limit,
-        //     },
-        //     method: "GET",
-        //   }),
-        // }),
-
-
         getItemsBySeller: builder.query({
             query: (filters) => ({
                 url: "/item/by-seller",
@@ -190,8 +172,12 @@ export const itemApiSlice = apiSlice.injectEndpoints({
                     userId: filters?.userId || null,
                 }
             }),
-        })
+        }),
 
+        getMostParticipatingItems: builder.query({
+            query: () => "item/top-10-most-participating-products",
+            transformResponse: (response) => response.data,
+        }),
     }),
 });
 
@@ -211,4 +197,5 @@ export const {
     useGetSellerQuery,
     useGetItemPendingAuctionQuery,
     useGetItemsBySellerQuery,
+    useGetMostParticipatingItemsQuery,
 } = itemApiSlice;
