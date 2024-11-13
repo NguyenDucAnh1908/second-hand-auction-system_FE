@@ -4,11 +4,12 @@ import {CloseSVG} from "../../../components/InputDH/close.jsx";
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Button, Card, IconButton, Typography} from "@material-tailwind/react";
-import {Empty, Skeleton, Tag} from "antd";
+import {Empty, Skeleton, Tag, Drawer, Space} from "antd";
 import {CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined} from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
 import {useSelector, useDispatch} from "react-redux";
-import {useGetItemsQuery} from "../../../services/item.service";
+import {useGetItemDetailQuery, useGetItemsQuery} from "../../../services/item.service";
+import DrawerDetailItem from "@/components/DrawerDetailItem/index.jsx";
 
 const TABLE_HEAD = [
     "Number",
@@ -20,17 +21,19 @@ const TABLE_HEAD = [
     "Tùy chỉnh"
 ];
 
-
 export default function StaffProductListPage() {
 
     const [searchBarValue, setSearchBarValue] = useState("");
     const [page, setPage] = useState(1);
-
+    const [open, setOpen] = useState(false);
+    const [size, setSize] = useState();
+    const [selectedItemId, setSelectedItemId] = useState(null);
     const {data = {}, isLoading, isError, error} = useGetItemsQuery({
         page: page - 1, // API thường dùng chỉ số 0-based
         limit: 10
     });
-    //console.log("DATA", data)
+    console.log(data)
+
     const TABLE_ROWS = data?.items?.map((item) => ({
         number: item?.itemId,
         product: item?.itemName,
@@ -40,8 +43,19 @@ export default function StaffProductListPage() {
         sellerHeader: item?.auction.created_by || "Unknown Seller",
     })) || [];
 
-    // if (isLoading) return <div>Loading...</div>;
-    // if (isError) return <div>Error: {error?.message || "API request failed."}</div>;
+    const showDefaultDrawer = (itemId) => {
+        setSize('default');
+        setOpen(true);
+        setSelectedItemId(itemId);
+    };
+    const showLargeDrawer = (itemId) => {
+        setSize('large');
+        setOpen(true);
+        setSelectedItemId(itemId);
+    };
+    const onClose = () => {
+        setOpen(false);
+    };
     return (
         <>
 
@@ -168,7 +182,8 @@ export default function StaffProductListPage() {
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex items-center gap-2">
-                                                        <Button color="blue">Chi tiết</Button>
+                                                        <Button onClick={() => showDefaultDrawer(number)} color="blue">Chi
+                                                            tiết</Button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -189,6 +204,25 @@ export default function StaffProductListPage() {
                     </div>
                 </div>
             </div>
+
+            <Drawer
+                title={"Chi tiết sản phẩm"}
+                placement="right"
+                size={size}
+                width={1200}
+                onClose={onClose}
+                open={open}
+                extra={
+                    <Space>
+                        <Button onClick={onClose}>Cancel</Button>
+                        <Button type="primary" onClick={onClose}>
+                            OK
+                        </Button>
+                    </Space>
+                }
+            >
+                <DrawerDetailItem itemIds={selectedItemId}/>
+            </Drawer>
         </>
     );
 }
