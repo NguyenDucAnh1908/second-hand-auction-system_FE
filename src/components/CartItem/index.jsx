@@ -8,12 +8,13 @@ import {selectIsLoggedIn} from "../../redux/auth/authSlice";
 import {setCredentials} from "@/redux/auth/authSlice.js";
 import {setError, setLoading} from "@/redux/user/userSlice.js";
 import {useSelector} from "react-redux";
-import { PlusSquareFilled, CheckCircleFilled} from '@ant-design/icons';
+import {PlusSquareFilled, CheckCircleFilled} from '@ant-design/icons';
 import CountUp from 'react-countup';
 import "./indext.css"
 
 const {Meta, Grid} = Card;
-export default function CartItem({product}) {
+export default function CartItem({product, refetchItem}) {
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAuctionId, setSelectedAuctionId] = useState(product.itemId);
     const navigate = useNavigate();
@@ -26,7 +27,6 @@ export default function CartItem({product}) {
         //localStorage.setItem('auctionItemId', auctionId);
         navigate(`/Auction/${itemId}`);
     };
-
     let deadline = null;
     if (auctionEndDate && auctionEndTime) {
         try {
@@ -57,12 +57,13 @@ export default function CartItem({product}) {
 
         try {
             const auctionData = {
-                auction_id: product.itemId, // Giả sử product.itemId là auction_id
+                auction_id: product?.auction.auction_id,
             };
             const response = await AuctionRegister(auctionData).unwrap();
 
             navigate(`/Auction/${product.itemId}`);
             message.success(response.message || "Register auction successfully!");
+            refetchItem();
         } catch (error) {
             message.error("Failed to register auction.");
         }
@@ -145,12 +146,12 @@ export default function CartItem({product}) {
                         }
 
                         actions={[
-                                isRegistered ? (
-                                        <CheckCircleFilled key="regisAuctioned"/>
-                                ) : (
-                                    <PlusSquareFilled onClick={showModal}
-                                                      key="regisAuction"/>
-                                )
+                            isRegistered ? (
+                                <CheckCircleFilled key="regisAuctioned"/>
+                            ) : (
+                                <PlusSquareFilled onClick={showModal}
+                                                  key="regisAuction"/>
+                            )
                         ]}
 
                     >

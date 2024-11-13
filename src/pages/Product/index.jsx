@@ -63,7 +63,8 @@ export default function ProductPage() {
     const {
         data, error: errorItem,
         isLoading: loadingItem,
-        isSuccess: isSuccessItem
+        isSuccess: isSuccessItem,
+        refetch: refetchItem,
     } = useGetItemsFilterQuery(filters);
 
     const handleFilterChange = (newFilters) => {
@@ -485,7 +486,7 @@ export default function ProductPage() {
                                                     {data?.item && data.item.length > 0 ? (
                                                         data.item.map((item, index) => (
                                                             <div key={`itemsGrid-${index}`}>
-                                                                <CartItem product={item}
+                                                                <CartItem product={item} refetchItem={refetchItem}
                                                                                   onBidClick={showModal}/>
                                                             </div>
                                                         ))
