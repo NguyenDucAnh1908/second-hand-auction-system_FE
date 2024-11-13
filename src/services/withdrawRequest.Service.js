@@ -18,8 +18,16 @@ export const withdrawApiSlice = apiSlice.injectEndpoints({
               },
             }),
         }),
+
+        createWithdraw: builder.mutation({
+            query: (credentials) => ({
+                url: "/withdrawRequest",
+                method: "POST",
+                body: { ...credentials },
+            }),
+        }),
     }),
     
 });
 
-export const { useGetResultVNPayQuery, useGetWithdrawsQuery } = withdrawApiSlice;
+export const { useGetResultVNPayQuery, useGetWithdrawsQuery, useCreateWithdrawMutation   } = withdrawApiSlice;

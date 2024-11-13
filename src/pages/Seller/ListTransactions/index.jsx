@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import FooterBK from '../../../components/FooterBK';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { PencilIcon } from "@heroicons/react/24/solid";
-import {
-    ArrowDownTrayIcon,
-    MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowDownTrayIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import {
     Card,
     CardHeader,
@@ -13,164 +10,100 @@ import {
     Button,
     CardBody,
     Chip,
-    CardFooter,
     Avatar,
-    IconButton,
-    Tooltip,
     Input,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle
 } from "@material-tailwind/react";
+
 import Pagination from "@/components/Pagination/index.jsx";
 import Sidebar from '../../../partials/Sidebar';
 import Header from "@/partials/Header.jsx";
-
+import { useGetTransactionWalletQuery } from '../../../services/transactionWallet.service';
 
 const { Content, Sider } = Layout;
 
 export default function ListTransaction() {
-
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-    const TABLE_HEAD = ["Tên", "Số tiền", "Ngày", "Trạng thái", "Loại giao dịch"];
-    const TABLE_ROWS = [
-        {
-            img: "https://docs.material-tailwind.com/img/logos/logo-spotify.svg",
-            name: "Spotify",
-            amount: "$2,500",
-            date: "Wed 3:00pm",
-            status: "paid",
-            account: "visa",
-            accountNumber: "1234",
-            expiry: "06/2026",
-        },
-        {
-            img: "https://docs.material-tailwind.com/img/logos/logo-amazon.svg",
-            name: "Amazon",
-            amount: "$5,000",
-            date: "Wed 1:00pm",
-            status: "paid",
-            account: "master-card",
-            accountNumber: "1234",
-            expiry: "06/2026",
-        },
-        {
-            img: "https://docs.material-tailwind.com/img/logos/logo-pinterest.svg",
-            name: "Pinterest",
-            amount: "$3,400",
-            date: "Mon 7:40pm",
-            status: "pending",
-            account: "master-card",
-            accountNumber: "1234",
-            expiry: "06/2026",
-        },
-        {
-            img: "https://docs.material-tailwind.com/img/logos/logo-google.svg",
-            name: "Google",
-            amount: "$1,000",
-            date: "Wed 5:00pm",
-            status: "paid",
-            account: "visa",
-            accountNumber: "1234",
-            expiry: "06/2026",
-        },
-        {
-            img: "https://docs.material-tailwind.com/img/logos/logo-netflix.svg",
-            name: "netflix",
-            amount: "$14,000",
-            date: "Wed 3:30am",
-            status: "cancelled",
-            account: "visa",
-            accountNumber: "1234",
-            expiry: "06/2026",
-        },
-    ];
+    const [open, setOpen] = useState(false);
+    const [selectedTransaction, setSelectedTransaction] = useState(null); // Store selected transaction for dialog
+    const [page, setPage] = useState(1);
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    // Pagination state
-    const [currentPage, setCurrentPage] = useState(1);
-    return (
-        <>
-            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-                <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
-                <Content
-                    style={{
-                        padding: '0 48px',
-                        flex: 1, // Cho phép Content chiếm không gian còn lại
-                        display: 'flex', // Đặt display là flex để chứa nội dung
-                        flexDirection: 'column', // Hướng theo chiều dọc
-                    }}
-                >
-                    <Breadcrumb
-                        style={{
-                            margin: '16px 0',
-                        }}
-                    >
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                        <Breadcrumb.Item>List</Breadcrumb.Item>
-                        <Breadcrumb.Item>App</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <Layout
-                        style={{
-                            padding: '24px 0',
-                            background: colorBgContainer,
-                            borderRadius: borderRadiusLG,
-                            flex: 1, // Để Layout chiếm hết không gian còn lại
-                        }}
-                    >
 
-                        <Sider
-                            style={{
-                                background: colorBgContainer,
-                            }}
-                            width={300}
-                        >
-                            <Sidebar/>
-                        </Sider>
-                        <Content
-                            style={{
-                                padding: '0 24px',
-                                minHeight: 280,
-                                flex: 1, // Để Content bên trong chiếm hết không gian còn lại
-                            }}
-                        >
-                            <Card className="h-full w-full">
-                                <CardHeader floated={false} shadow={false} className="rounded-none">
-                                    <div
-                                        className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
-                                        <div>
-                                            <Typography variant="h5" color="blue-gray">
-                                                Lịch sử giao dịch
-                                            </Typography>
-                                            <Typography color="gray" className="mt-1 font-normal">
-                                                These are details about the last transactions
-                                            </Typography>
-                                        </div>
-                                        <div className="flex w-full shrink-0 gap-2 md:w-max">
-                                            <div className="w-full md:w-72">
-                                                <Input
-                                                    label="Search"
-                                                    icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-                                                />
-                                            </div>
-                                            <Button className="flex items-center gap-3" size="sm">
-                                                <MagnifyingGlassIcon strokeWidth={2} className="h-4 w-4" /> Search
-                                            </Button>
-                                        </div>
+    // Fetching transaction data from the query
+    const { data, error, isLoading } = useGetTransactionWalletQuery({
+        page: page - 1,
+        limit: 10
+    });
+
+    const transactions = data?.items || [];
+    const TABLE_HEAD = ["Mã giao dịch", "Số tiền", "Ngày", "Trạng thái", "Người chuyển", "Người nhận", "Loại giao dịch", "Khác"];
+
+    const handleClickOpen = (transaction) => {
+        setSelectedTransaction(transaction); // Set the selected transaction data
+        setOpen(true); // Open dialog
+    };
+
+    const handleClose = () => {
+        setOpen(false); // Close dialog
+    };
+
+    return (
+        <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            {/* Header */}
+            <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+            {/* Main content */}
+            <Content style={{ padding: '0 48px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                {/* Breadcrumb */}
+                <Breadcrumb style={{ margin: '16px 0' }}>
+                    <Breadcrumb.Item>Home</Breadcrumb.Item>
+                    <Breadcrumb.Item>List</Breadcrumb.Item>
+                    <Breadcrumb.Item>App</Breadcrumb.Item>
+                </Breadcrumb>
+
+                <Layout style={{ padding: '24px 0', background: colorBgContainer, borderRadius: borderRadiusLG, flex: 1 }}>
+                    {/* Sidebar */}
+                    <Sider width={300} style={{ background: colorBgContainer }}>
+                        <Sidebar />
+                    </Sider>
+
+                    {/* Main Content */}
+                    <Content style={{ padding: '0 24px', minHeight: 280, flex: 1 }}>
+                        <Card className="h-full w-full">
+                            <CardHeader floated={false} shadow={false} className="rounded-none">
+                                <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
+                                    <div>
+                                        <Typography variant="h5" color="blue-gray">Lịch sử giao dịch</Typography>
+                                        <Typography color="gray" className="mt-1 font-normal">These are details about the last transactions</Typography>
                                     </div>
-                                </CardHeader>
-                                <CardBody className="overflow-scroll px-0">
+                                    <div className="flex w-full shrink-0 gap-2 md:w-max">
+                                        <div className="w-full md:w-72">
+                                            <Input label="Search" icon={<MagnifyingGlassIcon className="h-5 w-5" />} />
+                                        </div>
+                                        <Button className="flex items-center gap-3" size="sm">
+                                            <MagnifyingGlassIcon strokeWidth={2} className="h-4 w-4" /> Search
+                                        </Button>
+                                    </div>
+                                </div>
+                            </CardHeader>
+
+                            {/* Table Body */}
+                            <CardBody className="overflow-auto px-0">
+                                {isLoading ? (
+                                    <p>Loading ...</p>
+                                ) : error ? (
+                                    <p>Error fetching data: {error.message}</p>
+                                ) : (
                                     <table className="w-full min-w-max table-auto text-left">
                                         <thead>
                                             <tr>
-                                                {TABLE_HEAD.filter(head => head.trim() !== "").map((head) => (
-                                                    <th
-                                                        key={head}
-                                                        className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
-                                                    >
-                                                        <Typography
-                                                            variant="small"
-                                                            color="blue-gray"
-                                                            className="font-normal leading-none opacity-70"
-                                                        >
+                                                {TABLE_HEAD.map((head) => (
+                                                    <th key={head} className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                                                        <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
                                                             {head}
                                                         </Typography>
                                                     </th>
@@ -178,128 +111,103 @@ export default function ListTransaction() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {TABLE_ROWS.map(
-                                                (
-                                                    {
-                                                        img,
-                                                        name,
-                                                        amount,
-                                                        date,
-                                                        status,
-                                                        account,
-                                                        accountNumber,
-                                                        expiry,
-                                                    },
-                                                    index,
-                                                ) => {
-                                                    const isLast = index === TABLE_ROWS.length - 1;
-                                                    const classes = isLast
-                                                        ? "p-4"
-                                                        : "p-4 border-b border-blue-gray-50";
-
-                                                    return (
-                                                        <tr key={name}>
-                                                            <td className={classes}>
-                                                                <div className="flex items-center gap-3">
-                                                                    <Avatar
-                                                                        src={img}
-                                                                        alt={name}
-                                                                        size="md"
-                                                                        className="border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
-                                                                    />
-                                                                    <Typography
-                                                                        variant="small"
-                                                                        color="blue-gray"
-                                                                        className="font-bold"
-                                                                    >
-                                                                        {name}
+                                            {transactions.map((transaction) => {
+                                                const classes = "p-4 border-b border-blue-gray-50";
+                                                return (
+                                                    <tr key={transaction.transactionId} className="transition-all duration-300 ease-in-out hover:bg-blue-50">
+                                                        <td className={classes}>
+                                                            <Typography variant="small" color="blue-gray" className="font-bold">
+                                                                {transaction.transactionWalletCode}
+                                                            </Typography>
+                                                        </td>
+                                                        <td className={classes}>
+                                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                                {new Intl.NumberFormat('vi-VN', {
+                                                                    style: 'currency',
+                                                                    currency: 'VND',
+                                                                }).format(transaction.amount)}
+                                                            </Typography>
+                                                        </td>
+                                                        <td className={classes}>
+                                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                                {new Date(transaction.transactionDate).toLocaleDateString()}
+                                                            </Typography>
+                                                        </td>
+                                                        <td className={classes} style={{ textAlign: 'center' }}>
+                                                            <Chip
+                                                                size="sm"
+                                                                variant="ghost"
+                                                                value={transaction.transactionStatus}
+                                                                color={
+                                                                    transaction.transactionStatus === "COMPLETED"
+                                                                        ? "green"
+                                                                        : transaction.transactionStatus === "PENDING"
+                                                                            ? "amber"
+                                                                            : "red"
+                                                                }
+                                                                className="transition-all duration-200 ease-in-out mx-auto"
+                                                            />
+                                                        </td>
+                                                        <td className={classes}>
+                                                            <div className="flex items-center gap-3">
+                                                                <Avatar
+                                                                    src={transaction.senderName === "visa" ? "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/visa.png" : "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/mastercard.png"}
+                                                                    size="sm"
+                                                                    alt={transaction.senderName}
+                                                                    variant="square"
+                                                                    className="h-10 w-12 object-contain p-1"
+                                                                />
+                                                                <div className="flex flex-col">
+                                                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                                                        {transaction.recipientName}
+                                                                    </Typography>
+                                                                    <Typography variant="small" color="blue-gray" className="opacity-70">
+                                                                        {transaction.description}
                                                                     </Typography>
                                                                 </div>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <Typography
-                                                                    variant="small"
-                                                                    color="blue-gray"
-                                                                    className="font-normal"
-                                                                >
-                                                                    {amount}
-                                                                </Typography>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <Typography
-                                                                    variant="small"
-                                                                    color="blue-gray"
-                                                                    className="font-normal"
-                                                                >
-                                                                    {date}
-                                                                </Typography>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <div className="w-max">
-                                                                    <Chip
-                                                                        size="sm"
-                                                                        variant="ghost"
-                                                                        value={status}
-                                                                        color={
-                                                                            status === "paid"
-                                                                                ? "green"
-                                                                                : status === "pending"
-                                                                                    ? "amber"
-                                                                                    : "red"
-                                                                        }
-                                                                    />
-                                                                </div>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <div className="flex items-center gap-3">
-                                                                    <div
-                                                                        className="h-9 w-12 rounded-md border border-blue-gray-50 p-1">
-                                                                        <Avatar
-                                                                            src={
-                                                                                account === "visa"
-                                                                                    ? "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/visa.png"
-                                                                                    : "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/mastercard.png"
-                                                                            }
-                                                                            size="sm"
-                                                                            alt={account}
-                                                                            variant="square"
-                                                                            className="h-full w-full object-contain p-1"
-                                                                        />
-                                                                    </div>
-                                                                    <div className="flex flex-col">
-                                                                        <Typography
-                                                                            variant="small"
-                                                                            color="blue-gray"
-                                                                            className="font-normal capitalize"
-                                                                        >
-                                                                            {account.split("-").join(" ")} {accountNumber}
-                                                                        </Typography>
-                                                                        <Typography
-                                                                            variant="small"
-                                                                            color="blue-gray"
-                                                                            className="font-normal opacity-70"
-                                                                        >
-                                                                            {expiry}
-                                                                        </Typography>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                },
-                                            )}
+                                                            </div>
+                                                        </td>
+                                                        <td className={classes}>
+                                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                                {transaction.senderName}
+                                                            </Typography>
+                                                        </td>
+                                                        <td className={classes}>
+                                                            <Typography variant="small" color="blue-gray" className="font-medium text-lg text-gray-800 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-500 hover:shadow-lg">
+                                                                {transaction.transactionType}
+                                                            </Typography>
+                                                        </td>
+                                                        <td className={classes}>
+                                                            <Button
+                                                                size="sm"
+                                                                color="green"
+                                                                onClick={() => handleClickOpen(transaction)} // Pass the transaction data to the dialog
+                                                            >
+                                                                Xem chi tiết
+                                                            </Button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
-                                </CardBody>
-                                <div className="my-10 flex justify-center">
-                                    <Pagination />
-                                </div>
-                            </Card>
-                        </Content>
-                    </Layout>
-                </Content>
-                <FooterBK/>
-            </Layout>
-        </>
+                                )}
+                            </CardBody>
+                        </Card>
+
+                        {/* Pagination */}
+                        <Pagination
+                            currentPage={page}
+                            totalCount={data?.totalItems}
+                            pageSize={10}
+                            onPageChange={setPage}
+                        />
+                    </Content>
+                </Layout>
+            </Content>
+
+            {/* Footer */}
+            <FooterBK />
+        </Layout>
     );
 }
