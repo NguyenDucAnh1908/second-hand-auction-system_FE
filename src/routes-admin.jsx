@@ -80,12 +80,7 @@ export const routesAdmin = [
                 path: "/auction-create-list",
                 element: <ManageListCreateAuctionProduct/>,
             },
-            {
-                icon: <UserCircleIcon {...icon} />,
-                name: "Tạo phiên đấu giá",
-                path: "/CreateAuction/:itemId",
-                element: <CreateAuction/>,
-            },
+           
             {
                 icon: <UserCircleIcon {...icon} />,
                 name: "Quản Lý FeedBack",
@@ -109,7 +104,13 @@ export const routesAdmin = [
 
                 path: "/KiemduyetStaffPage/:id",
                 element: <KiemduyetStaffPage/>,
-            }
+            },
+            {
+                // icon: <UserCircleIcon {...icon} />,
+                // name: "Tạo phiên đấu giá",
+                path: "/CreateAuction/:itemId",
+                element: <CreateAuction/>,
+            },
         ],
     },
     // {

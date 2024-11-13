@@ -40,6 +40,9 @@ import FailPayment from "pages/ResultPage/FailPayment.jsx";
 import AuctionListCompleted from "pages/AuctionListCompleted/index.jsx";
 import CreateOrder from "./pages/Order/index.jsx";
 import OrderForm from "./pages/Order/order.jsx";
+import Contact from "./pages/Contact/index.jsx";
+import Policy from "./pages/Policy/index.jsx";
+import AboutAuction from "./pages/Introduce/index.jsx";
 function App() {
     return (
         <Routes>
@@ -54,7 +57,9 @@ function App() {
                 <Route path="VerifyAccount" index element={<VerifyAccount/>}/>
                 <Route path="PaymentSuccess" index element={<PaymentSuccess/>}/>
                 <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
-
+                <Route path="Contact" index element={<Contact/>}/>
+                <Route path="Policy" index element={<Policy/>}/>
+                <Route path="articles" index element={<AboutAuction/>}/>
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>

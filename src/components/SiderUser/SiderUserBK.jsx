@@ -132,13 +132,13 @@ export function SiderUserBK() {
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
-                                Danh sách đang đấu giá
+                                Danh sách chưa thanh toán
                             </ListItem>
                             <ListItem onClick={() => handleNavigate('/AuctionListCompleted')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
-                                Sản phẩm đã đấu giá
+                                Đấu giá thành công
                             </ListItem>
                         </List>
                     </AccordionBody>
