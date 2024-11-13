@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header2 from '../../components/Header2'
 import FooterBK from '../../components/FooterBK'
 import { useParams } from 'react-router-dom';
+import { stringify } from 'flatted';
 import { useCreateOrderMutation } from '../../services/order.service';
 import { useGetAuctionByIdQuery } from '../../services/auction.service';
 import { useGetAddressOrderQuery } from '../../services/address.service';
@@ -24,7 +25,8 @@ export default function OrderForm() {
     };
     const { data: auctionData, error: auctionError, isLoading: auctionLoading } = useGetAuctionByIdQuery(id);
     const userId = JSON.parse(localStorage.getItem('user'))?.id;
-    const [paymentMethod, setPaymentMethod] = useState('WALLET_PAYMENT'); // Default set to WALLET_PAYMENT
+    // const [paymentMethod, setPaymentMethod] = useState('WALLET_PAYMENT'); // Default set to WALLET_PAYMENT
+    const [paymentMethod, setPaymentMethod] = useState(""); // Khởi tạo state
 
     const handleSubmit = async (e) => {
         e.preventDefault();

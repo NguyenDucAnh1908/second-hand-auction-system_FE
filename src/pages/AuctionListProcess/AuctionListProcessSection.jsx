@@ -1,10 +1,11 @@
-import {Img, InputDH} from "../../components/index.jsx";
-import {Button, Card, Typography, Select, Option} from "@material-tailwind/react";
-import {Badge, Descriptions, Tag, Modal, Statistic, Skeleton, Empty} from "antd";
+import { Img, InputDH } from "../../components/index.jsx";
+import { Button, Card, Typography, Select, Option } from "@material-tailwind/react";
+import { Badge, Descriptions, Tag, Modal, Statistic, Skeleton, Empty } from "antd";
 import Pagination from "@/components/Pagination/index.jsx";
-import React, {useState, useEffect} from 'react';
-import {SyncOutlined} from "@ant-design/icons";
-import {useGetAuctionProcessItemQuery, useGetAuctionProcessDetailQuery} from "@/services/item.service.js";
+import React, { useState, useEffect } from 'react';
+import { SyncOutlined } from "@ant-design/icons";
+import { useGetAuctionProcessItemQuery, useGetAuctionProcessDetailQuery } from "@/services/item.service.js";
+import { useNavigate } from "react-router-dom";
 
 const TABLE_HEAD = [
     "Số Đăng Ký",
@@ -14,16 +15,17 @@ const TABLE_HEAD = [
     "Trạng thái",
     "Giá Hiện Tại",
     "Giá của bạn",
-    "Tùy chỉnh"
+    "Tùy chỉnh",
+    "Thanh toán"
 ];
 
 export default function AuctionListProcessSection() {
     const [searchBarValue, setSearchBarValue] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [page, setPage] = useState(1);
-    const {Countdown} = Statistic;
+    const { Countdown } = Statistic;
     const [selectedArId, setSelectedArId] = useState(null);
-
+    const navigate = useNavigate();
     const {
         data: dataAuctionProcess,
         isLoading: isLoadingAuctionProcess,
@@ -33,12 +35,14 @@ export default function AuctionListProcessSection() {
         page: page - 1, // API thường dùng chỉ số 0-based
         limit: 10
     });
+
+    console.log(dataAuctionProcess);
     const {
         data: dataAuctionProcessDetail,
         isLoading: isLoadingAuctionProcessDetail,
         isError: isErrorAuctionProcessDetail,
         error: errorAuctionProcessDetail,
-    } = useGetAuctionProcessDetailQuery(selectedArId ? {id: selectedArId} : null, {
+    } = useGetAuctionProcessDetailQuery(selectedArId ? { id: selectedArId } : null, {
         skip: !selectedArId,
     });
 
@@ -47,8 +51,8 @@ export default function AuctionListProcessSection() {
     const auctionItems = dataAuctionProcess?.items || [];
 
     const TABLE_ROWS = auctionItems.map((item) => {
-        const {auction, itemName, thumbnail, itemId} = item;
-        const {auction_id, endDate, end_time, status, start_price} = auction || {};
+        const { auction, itemName, thumbnail, itemId } = item;
+        const { auction_id, endDate, end_time, status, start_price } = auction || {};
 
         let deadline = null;
         if (endDate && end_time) {
@@ -59,15 +63,18 @@ export default function AuctionListProcessSection() {
             }
         }
 
+        
+
         return {
             number: `#AU-${auction_id}`,
             product: itemName || "Không xác định",
             image: thumbnail,
+            auctionId: auction_id,
             endTime: deadline ? (
                 <Countdown
                     value={deadline}
                     format="D Ngày H giờ m phút s giây"
-                    valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "green"}}
+                    valueStyle={{ fontWeight: "bolder", fontSize: "15px", color: "green" }}
                 />
             ) : (
                 "Không xác định"
@@ -110,7 +117,7 @@ export default function AuctionListProcessSection() {
                 <Countdown
                     value={new Date(`${dataAuctionProcessDetail.auction?.endDate}T${dataAuctionProcessDetail.auction?.end_time}`).getTime()}
                     format="D Ngày H giờ m phút s giây"
-                    valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "green"}}
+                    valueStyle={{ fontWeight: "bolder", fontSize: "15px", color: "green" }}
                 />
             ) : (
                 "Không xác định"
@@ -120,7 +127,7 @@ export default function AuctionListProcessSection() {
         {
             key: '5',
             label: 'Trạng Thái',
-            children: <Badge status="processing" text={dataAuctionProcessDetail?.auction?.status || "Chưa đăng ký"}/>,
+            children: <Badge status="processing" text={dataAuctionProcessDetail?.auction?.status || "Chưa đăng ký"} />,
             span: 3,
         },
         {
@@ -144,6 +151,15 @@ export default function AuctionListProcessSection() {
     const handleOk = () => setIsModalOpen(false);
     const handleCancel = () => setIsModalOpen(false);
 
+    const handleCreateOrder = (auctionId) => {
+        if (auctionId) {
+            navigate(`/Order/${auctionId}`);
+        } else {
+            console.error("Auction ID is missing!");
+        }
+    };
+    
+
     return (
         <div>
             <div className="flex w-full flex-col items-center">
@@ -163,71 +179,80 @@ export default function AuctionListProcessSection() {
                         </div>
                     </div>
                     {isErrorAuctionProcess ? (
-                        <Empty/>
+                        <Empty />
                     ) : (
                         <Skeleton loading={isLoadingAuctionProcess} active>
                             <Card className="h-full w-full overflow-auto">
                                 <table className="w-full min-w-max table-auto text-left">
                                     <thead>
-                                    <tr>
-                                        {TABLE_HEAD.map((head) => (
-                                            <th key={head} className="p-4 pt-10">
-                                                <Typography
-                                                    variant="small"
-                                                    color="blue-gray"
-                                                    className="font-bold leading-none"
-                                                >
-                                                    {head}
-                                                </Typography>
-                                            </th>
-                                        ))}
-                                    </tr>
+                                        <tr>
+                                            {TABLE_HEAD.map((head) => (
+                                                <th key={head} className="p-4 pt-10">
+                                                    <Typography
+                                                        variant="small"
+                                                        color="blue-gray"
+                                                        className="font-bold leading-none"
+                                                    >
+                                                        {head}
+                                                    </Typography>
+                                                </th>
+                                            ))}
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    {TABLE_ROWS.map((row) => (
-                                        <tr key={row.number}>
-                                            <td className="p-4">
-                                                <Typography variant="small" color="blue-gray" className="font-bold">
-                                                    {row.number}
-                                                </Typography>
-                                            </td>
-                                            <td className="p-4">
-                                                <img src={row.image} alt={row.product}
-                                                     className="w-16 h-16 object-cover rounded"/>
-                                            </td>
-                                            <td className="p-4">
-                                                <Typography variant="small" className="font-normal text-gray-600">
-                                                    {row.product}
-                                                </Typography>
-                                            </td>
-                                            <td className="p-4">
-                                                <Typography variant="small" className="font-normal text-gray-600">
-                                                    {row.endTime} {/* Hiển thị thời gian còn lại */}
-                                                </Typography>
-                                            </td>
-                                            <td className="p-4">
-                                                <Tag icon={<SyncOutlined spin/>} color="processing">
-                                                    {row.status}
-                                                </Tag>
-                                            </td>
-                                            <td className="p-4">
-                                                <Typography variant="small" className="font-normal text-gray-600">
-                                                    ${row.currentPrice}
-                                                </Typography>
-                                            </td>
-                                            <td className="p-4">
-                                                <Typography
-                                                    variant="small"
-                                                    className={`font-normal ${row.yourPrice >= row.currentPrice ? 'text-green-500' : 'text-red-500'}`}
-                                                >
-                                                    ${row.yourPrice}
-                                                </Typography>
-                                            </td>
-                                            <td className="p-4">
-                                                {row.action}
-                                            </td>
-                                        </tr>
-                                    ))}
+                                        {TABLE_ROWS.map((row) => (
+                                            <tr key={row.number}>
+                                                <td className="p-4">
+                                                    <Typography variant="small" color="blue-gray" className="font-bold">
+                                                        {row.number}
+                                                    </Typography>
+                                                </td>
+                                                <td className="p-4">
+                                                    <img src={row.image} alt={row.product}
+                                                        className="w-16 h-16 object-cover rounded" />
+                                                </td>
+                                                <td className="p-4">
+                                                    <Typography variant="small" className="font-normal text-gray-600">
+                                                        {row.product}
+                                                    </Typography>
+                                                </td>
+                                                <td className="p-4">
+                                                    <Typography variant="small" className="font-normal text-gray-600">
+                                                        {row.endTime} {/* Hiển thị thời gian còn lại */}
+                                                    </Typography>
+                                                </td>
+                                                <td className="p-4">
+                                                    <Tag icon={<SyncOutlined spin />} color="processing">
+                                                        {row.status}
+                                                    </Tag>
+                                                </td>
+                                                <td className="p-4">
+                                                    <Typography variant="small" className="font-normal text-gray-600">
+                                                        ${row.currentPrice}
+                                                    </Typography>
+                                                </td>
+                                                <td className="p-4">
+                                                    <Typography
+                                                        variant="small"
+                                                        className={`font-normal ${row.yourPrice >= row.currentPrice ? 'text-green-500' : 'text-red-500'}`}
+                                                    >
+                                                        ${row.yourPrice}
+                                                    </Typography>
+                                                </td>
+
+                                                <td className="p-4">
+                                                    {row.action}
+                                                </td>
+                                                <td className="p-4">
+                                                    <Button
+                                                        variant="small"
+                                                        onClick={() => handleCreateOrder(row.auctionId)} 
+                                                    >
+                                                        Thanh toán
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </Card>
@@ -243,8 +268,8 @@ export default function AuctionListProcessSection() {
                 </div>
             </div>
             <Modal footer={null} width={1000} title="Auction Process Detail" open={isModalOpen} onOk={handleOk}
-                   onCancel={handleCancel}>
-                <Descriptions title="Infomation Info" layout="vertical" bordered items={items}/>
+                onCancel={handleCancel}>
+                <Descriptions title="Infomation Info" layout="vertical" bordered items={items} />
             </Modal>
         </div>
     );
