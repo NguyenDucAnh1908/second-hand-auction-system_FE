@@ -210,9 +210,10 @@ export default function ListRegisterAuctionSection() {
                         )}
                     </Card>
                     <div className="flex justify-center items-center mt-4">
-                        <Pagination currentPage={page}
-                                    totalPages={data.totalPages || 1}
-                                    onPageChange={setPage}
+                        <Pagination
+                            currentPage={page}
+                            totalPages={data.totalPages || 1}
+                            onPageChange={setPage}
                         />
                     </div>
                 </div>

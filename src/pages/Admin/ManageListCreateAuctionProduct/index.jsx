@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Table, Image, Spin, Alert, Tag, Modal} from 'antd';
+import {Table, Image, Spin, Alert, Tag, Modal, Skeleton} from 'antd';
 import Pagination from "@/components/Pagination/index.jsx";
 import {useNavigate} from 'react-router-dom';
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
@@ -150,8 +150,7 @@ export default function ManageListCreateAuctionProduct() {
                 <h1 className="text-2xl font-bold mb-4">Product Pending</h1>
                 <div className="flex items-center justify-center w-full h-full">
                     {isLoading ? (
-                        <Spin size="large" tip="Đang tải thông tin người bán...">
-                        </Spin>
+                        <Skeleton active/>
                     ) : (
                         <Table
                             dataSource={pendingProducts}

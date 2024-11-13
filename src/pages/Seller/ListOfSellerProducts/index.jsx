@@ -8,10 +8,10 @@ import {Link} from 'react-router-dom';
 import {DocumentIcon} from "@heroicons/react/24/solid";
 import {ArrowDownTrayIcon} from "@heroicons/react/24/outline";
 import {Card, IconButton, Typography} from "@material-tailwind/react";
-import Pagination from "@/components/Pagination/index.jsx"; // Đảm bảo Pagination được export đúng
+import Pagination from "@/components/Pagination/index.jsx";
 import {useGetItemByUserQuery} from "../../../services/item.service.js";
 import {CheckCircleOutlined, CloseCircleOutlined, SyncOutlined} from '@ant-design/icons';
-import {Tag, Breadcrumb, Layout, theme, Button} from 'antd';
+import {Tag, Breadcrumb, Layout, theme, Button, Empty, Skeleton} from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
 import {Modal} from 'antd';
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
@@ -33,57 +33,52 @@ export default function ListOfSellerProductPage() {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
 
-    const [isModalVisible, setIsModalVisible] = useState(false); // State để quản lý modal
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [isModalDescriptionVisible, setIsModalDescriptionVisible] = useState(false);
-    const [selectedAuction, setSelectedAuction] = useState(null); // State để lưu thông tin đấu giá
+    const [selectedAuction, setSelectedAuction] = useState(null);
     const [selectedDescription, setSelectedDescription] = useState(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [searchBarValue1, setSearchBarValue1] = useState("");
-    const [currentPage, setCurrentPage] = useState(1); // State cho trang hiện tại
-    const pageSize = 10; // Kích thước mỗi trang
+    const [page, setPage] = useState(1);
+
+    const pageSize = 10;
     const formatDate = (dateString) => {
         const options = {year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Ho_Chi_Minh'};
         return new Date(dateString).toLocaleDateString('vi-VN', options);
     };
 
-    // Sử dụng hook để gọi API
-    const {data, error, isLoading} = useGetItemByUserQuery({page: currentPage - 1, limit: pageSize}); // API cần page bắt đầu từ 0
-    console.log(data);
+    const {data, isError, isLoading} = useGetItemByUserQuery(
+        {page: page - 1, limit: pageSize}
+    );
 
     const handlePageChange = (page) => {
-        setCurrentPage(page); // Cập nhật trang hiện tại
+        setCurrentPage(page);
     };
 
     const handleOpenModal = (auction) => {
-        setSelectedAuction(auction); // Lưu thông tin đấu giá vào state handleOpenDescriptionModal
-        setIsModalVisible(true); // Mở modal isModalDescriptionVisible handleCloseDescriptionModalhandleCloseDescriptionModal
+        setSelectedAuction(auction);
+        setIsModalVisible(true);
     };
 
     const handleOpenDescriptionModal = (itemDescription) => {
-        setSelectedDescription(itemDescription); // Lưu thông tin đấu giá vào state handleOpenDescriptionModal
+        setSelectedDescription(itemDescription);
         setIsModalDescriptionVisible(true);
     };
 
     const handleCloseModal = () => {
-        setIsModalVisible(false); // Đóng modal
-        setSelectedAuction(null); // Reset thông tin đấu giá
+        setIsModalVisible(false);
+        setSelectedAuction(null);
     };
 
     const handleCloseDescriptionModal = () => {
-        setIsModalDescriptionVisible(false); // Đóng modal
-        setSelectedDescription(null); // Reset thông tin đấu giá
+        setIsModalDescriptionVisible(false);
+        setSelectedDescription(null);
     };
 
 
     const renderTableRows = () => {
-        if (isLoading) return <tr>
-            <td colSpan={7}>Loading...</td>
-        </tr>;
-        if (error) return <tr>
-            <td colSpan={7}>Error fetching data</td>
-        </tr>;
 
-        return data.items.items.map(({itemId, itemName, thumbnail, itemDescription, auction, itemStatus}, index) => (
+        return data?.items?.items.map(({itemId, itemName, thumbnail, itemDescription, auction, itemStatus}, index) => (
             <tr key={itemId}>
                 <td className="p-4">
                     <Typography variant="small" color="blue-gray" className="font-bold">
@@ -184,31 +179,43 @@ export default function ListOfSellerProductPage() {
                                                         Tạo sản phẩm
                                                     </Link>
                                                 </div>
-                                                <Card className="h-full w-full overflow-scroll">
-                                                    <table className="w-full min-w-max table-auto text-left">
-                                                        <thead>
-                                                        <tr>
-                                                            {TABLE_HEAD.map((head) => (
-                                                                <th key={head} className="p-4 pt-10">
-                                                                    <Typography variant="small" color="blue-gray"
-                                                                                className="font-bold leading-none">
-                                                                        {head}
-                                                                    </Typography>
-                                                                </th>
-                                                            ))}
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        {renderTableRows()}
-                                                        </tbody>
-                                                    </table>
-                                                </Card>
+                                                {isError ? (
+                                                    <Empty/>
+                                                ) : (
+                                                    <Skeleton loading={isLoading} active>
+                                                        <Card className="h-full w-full overflow-scroll">
+                                                            <table className="w-full min-w-max table-auto text-left">
+                                                                <thead>
+                                                                <tr>
+                                                                    {TABLE_HEAD.map((head) => (
+                                                                        <th key={head} className="p-4 pt-10">
+                                                                            <Typography variant="small"
+                                                                                        color="blue-gray"
+                                                                                        className="font-bold leading-none">
+                                                                                {head}
+                                                                            </Typography>
+                                                                        </th>
+                                                                    ))}
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                {renderTableRows()}
+                                                                </tbody>
+                                                            </table>
+                                                        </Card>
+                                                    </Skeleton>
+                                                )}
                                                 <div className="flex justify-center items-center mt-4">
+                                                    {/*<Pagination*/}
+                                                    {/*    current={currentPage}*/}
+                                                    {/*    total={data?.total || 0} // Tổng số mục*/}
+                                                    {/*    pageSize={pageSize}*/}
+                                                    {/*    onChange={handlePageChange}*/}
+                                                    {/*/>*/}
                                                     <Pagination
-                                                        current={currentPage}
-                                                        total={data?.total || 0} // Tổng số mục
-                                                        pageSize={pageSize}
-                                                        onChange={handlePageChange}
+                                                        currentPage={page}
+                                                        totalPages={data?.totalPages || 1}
+                                                        onPageChange={setPage}
                                                     />
                                                 </div>
                                             </div>
