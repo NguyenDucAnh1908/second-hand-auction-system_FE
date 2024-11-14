@@ -16,7 +16,7 @@ const {Meta, Grid} = Card;
 export default function CartItem({product, refetchItem}) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedAuctionId, setSelectedAuctionId] = useState(product?.auction.auction_id);
+    const [selectedAuctionId, setSelectedAuctionId] = useState(product?.auction?.auction_id );
     const navigate = useNavigate();
     const formatter = (value) => <CountUp end={value} separator="."/>;
     const isLoggedIn = useSelector(selectIsLoggedIn);
