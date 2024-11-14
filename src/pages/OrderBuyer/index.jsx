@@ -2,14 +2,21 @@ import { Helmet } from "react-helmet";
 import React, { useState } from "react"; // Import useState
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK";
-import { Breadcrumb, Layout, theme, Table, Spin, Alert, Button, Modal, Skeleton, Empty } from "antd"; // Import Modal
+import {Breadcrumb, Layout, theme, Table, Spin, Alert, Button, Modal, Skeleton, Empty, Tag, Statistic} from "antd";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { useGetOrderQuery } from "../../services/order.service";
-import { FaShoppingCart, FaProductHunt, FaGavel } from 'react-icons/fa'; // Importing icons from react-icons
+import { FaShoppingCart, FaProductHunt, FaGavel } from 'react-icons/fa';
 import FeedbackForm from "../../components/FeedbackForm";
+import {
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    CloseCircleOutlined,
+    ExclamationCircleOutlined,
+    MinusCircleOutlined,
+    SyncOutlined,
+} from '@ant-design/icons';
 
 const { Content, Sider } = Layout;
-
 export default function OrderManagementBuyer() {
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -49,6 +56,9 @@ export default function OrderManagementBuyer() {
             title: 'Số tiền',
             dataIndex: 'totalPrice',
             key: 'totalPrice',
+            render: (totalPrice) => (
+                <Statistic value={totalPrice} />
+            ),
         },
         {
             title: 'Trạng thái đơn hàng',
@@ -56,19 +66,22 @@ export default function OrderManagementBuyer() {
             key: 'status',
             align: 'center',
             render: (status) => (
-                <div className="flex justify-center">
-                    <span
-                        className={`flex items-center justify-center w-32 h-8 px-9 ${statusStyles[status] || 'bg-gray-300 text-black'}`}>
-                        {status}
-                    </span>
-                </div>
+                // <div className="flex justify-center">
+                //     <span
+                //         className={`flex items-center justify-center w-32 h-8 px-9 ${statusStyles[status] || 'bg-gray-300 text-black'}`}>
+                //         {status}
+                //     </span>
+                // </div>
+                <Tag icon={<SyncOutlined spin />} color="processing">
+                    {status}
+                </Tag>
             ),
         },
-        {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
-        },
+        // {
+        //     title: 'Quantity',
+        //     dataIndex: 'quantity',
+        //     key: 'quantity',
+        // },
         {
             title: 'Note',
             dataIndex: 'note',
@@ -96,8 +109,6 @@ export default function OrderManagementBuyer() {
                 </>
             ),
         }
-
-
         ,
     ];
 
