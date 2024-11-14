@@ -100,7 +100,7 @@ function RegisterProductPage() {
         error: errorAuctionType,
         isLoading: isloadingAuctionType,
     } = useGetAuctionTypeQuery()
-    //console.log("DATA AUCTION TYPE: ", auctionTypes)
+
     const {
         data: categories,
         error: errorCategories,
