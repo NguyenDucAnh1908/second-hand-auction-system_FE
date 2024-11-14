@@ -1,13 +1,13 @@
-import {Helmet} from "react-helmet";
-import {Text, Heading, Img, ButtonDH, Slider} from "../../components";
+import { Helmet } from "react-helmet";
+import { Text, Heading, Img, ButtonDH, Slider } from "../../components";
 import Header2 from "../../components/Header2";
 import FeaturedProductsSection from "./FeaturedProductsSection";
 import RecentProductsSection from "./RecentProductsSection";
 import TrendingProductsSection from "./TrendingProductsSection";
-import React, {Suspense} from "react";
+import React, { Suspense } from "react";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {Button, IconButton} from "@material-tailwind/react";
-import {useGetFeatureItemsQuery, useGetMostParticipatingItemsQuery} from "@/services/item.service.js";
+import { Button, IconButton } from "@material-tailwind/react";
+import { useGetFeatureItemsQuery, useGetMostParticipatingItemsQuery } from "@/services/item.service.js";
 import './index.css'
 
 export default function HomePagePage() {
@@ -16,8 +16,8 @@ export default function HomePagePage() {
     const sliderRef1 = React.useRef(null);
     const sliderRef = React.useRef(null);
     // const items = Array.isArray(data) ? data : [];
-    const {data: itemData, isError: itemError, isLoading: itemLoading, refetch} = useGetMostParticipatingItemsQuery();
-    const {data: dataFT, isLoading: loadingFT, isError, error} = useGetFeatureItemsQuery();
+    const { data: itemData, isError: itemError, isLoading: itemLoading, refetch } = useGetMostParticipatingItemsQuery();
+    const { data: dataFT, isLoading: loadingFT, isError, error } = useGetFeatureItemsQuery();
     //console.log("itemData: ", itemData)
 
     const sliderSettings = {
@@ -32,15 +32,15 @@ export default function HomePagePage() {
         responsive: [
             {
                 breakpoint: 1024,
-                settings: {slidesToShow: 3, centerPadding: "50px"},
+                settings: { slidesToShow: 3, centerPadding: "50px" },
             },
             {
                 breakpoint: 768,
-                settings: {slidesToShow: 2, centerPadding: "30px"},
+                settings: { slidesToShow: 2, centerPadding: "30px" },
             },
             {
                 breakpoint: 480,
-                settings: {slidesToShow: 1, centerPadding: "10px"},
+                settings: { slidesToShow: 1, centerPadding: "10px" },
             },
         ],
     };
@@ -54,73 +54,137 @@ export default function HomePagePage() {
             <div className="w-full bg-bg-white">
                 <div className="flex flex-col items-center">
                     <div className="flex flex-col items-center self-stretch ">
-                        <Header2/>
+                        <Header2 />
                         <div className="container-xs relative mt-3 md:px-5">
                             <div
                                 className="relative mr-2.5 h-[450px] content-end rounded-md border-spacing-3 bg-gradient-to-b from-blue-gray-100 to-blue-gray-600 border-gray-600 bg-gray-200 md:mr-0 md:h-auto">
                                 <div className="mx-auto flex w-full px-1">
                                     <Slider {...sliderSettings} ref={sliderRef}>
-                                        <div
-                                            className="flex items-start md:flex-col mt-2 rounded-full object-fill ">
-                                            <div
-                                                className="mt-[62px] flex w-[30%] flex-col items-start gap-6 md:w-full ml-auto">
+                                        {/* Slide 1 */}
+                                        <div className="flex items-start md:flex-col mt-2 rounded-full object-fill">
+                                            <div className="mt-[62px] flex w-[30%] flex-col items-start gap-6 md:w-full ml-auto">
                                                 <div className="flex flex-col items-start self-stretch">
-                                                    <div className="flex flex-col items-start self-stretch">
-                                                    </div>
-                                                    <br/>
                                                     <Heading
                                                         size="heading5xl"
                                                         as="h1"
-                                                        className="text-[48px] font-semibold  uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-blue-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
+                                                        className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
                                                     >
-                                                        {Array.from("ĐẤU GIÁ VINTAGE").map((letter, index) => (
-                                                            <span
-                                                                key={index}
-                                                                className="letter"
-                                                                style={{
-                                                                    animationDelay: `${index * 0.1}s`,
-                                                                    opacity: 1,
-                                                                    animationFillMode: 'forwards',
-                                                                }}
-                                                            >{letter}</span>
-                                                        ))}
+                                                        <span className="inline-block animate-fade-up">ĐẤU GIÁ VIỆT</span>
                                                     </Heading>
-
                                                     <Heading
                                                         as="h2"
-                                                        className="w-[86%] text-[16px] font-normal leading-[150%] text-blue_gray-600 md:w-full"
+                                                        className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
                                                     >
-                                                        Khám phá những món đồ cổ quý giá để sở hữu
+                                                        Nơi giá trị thật sự được khẳng định
                                                     </Heading>
                                                 </div>
-
                                                 <Button
                                                     color="green_A700"
                                                     size="xl"
                                                     shape="round"
-                                                    className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4"
+                                                    className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
+                                                    onClick={() => (e.target)}
                                                 >
                                                     Tham gia ngay
                                                 </Button>
                                             </div>
-                                            <div
-                                                className="relative h-[446px] w-[56%] content-end self-center px-8 md:h-auto md:w-full sm:px-5">
-                                                <div
-                                                    className="mx-auto h-[360px] flex-1 rounded-[318px] bg-green-a700_19"/>
-                                                <div
-                                                    className="absolute bottom-0 left-0 right-0 top-0 m-auto flex h-max flex-1 items-center px-6 sm:relative sm:flex-col sm:px-5">
-                                                    <div
-                                                        className="relative flex-1 content-center md:h-auto sm:w-full sm:flex-none sm:self-stretch">
-                                                        <Img
-                                                            src="https://assets2.htv.com.vn/Images/1/News/118276/34.jpg"
-                                                            alt="Vintage Auction"
-                                                            className="ml-auto w-full h-[300px] rounded-md object-cover mr-auto"
-                                                        />
-                                                    </div>
+                                            <div className="relative h-[446px] w-[56%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <div className="h-[360px] w-[360px] rounded-full bg-green-500 opacity-20" />
+                                                </div>
+                                                <div className="relative w-full max-w-[80%]">
+                                                    <Img
+                                                        src="https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-trang-den-34.jpg"
+                                                        alt="Vintage Auction"
+                                                        className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Slide 2 */}
+                                        <div className="flex items-start md:flex-col mt-2 rounded-full object-fill">
+                                            <div className="mt-[62px] flex w-[30%] flex-col items-start gap-6 md:w-full ml-auto">
+                                                <Heading
+                                                    size="heading5xl"
+                                                    as="h1"
+                                                    className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
+                                                >
+                                                    <span className="inline-block animate-fade-up">ĐẤU GIÁ VIỆT</span>
+                                                </Heading>
+
+                                                <Heading
+                                                    as="h2"
+                                                    className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
+                                                >
+                                                    Đấu giá chinh phục mọi khoảnh khắc
+                                                </Heading>
+                                                <Button
+                                                    color="green_A700"
+                                                    size="xl"
+                                                    shape="round"
+                                                    className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
+                                                    onClick={() => (e.target)}
+                                                >
+                                                    Khám phá ngay
+                                                </Button>
+                                            </div>
+                                            <div className="relative h-[446px] w-[56%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <div className="h-[360px] w-[360px] rounded-full bg-green-500 opacity-20" />
+                                                </div>
+                                                <div className="relative w-full max-w-[80%]">
+                                                    <Img
+                                                        src="https://www.peterainsworth.com/wp-content/uploads/2019/06/cd-cover-template-psd-elegant-cd-cover-template-51-free-psd-eps-word-format-of-cd-cover-template-psd.jpg"
+                                                        alt="Vintage Car Auction"
+                                                        className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Slide 3 */}
+                                        <div className="flex items-start md:flex-col mt-2 rounded-full object-fill">
+                                            <div className="mt-[62px] flex w-[30%] flex-col items-start gap-6 md:w-full ml-auto">
+                                                <Heading
+                                                    size="heading5xl"
+                                                    as="h1"
+                                                    className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl  from-gray-500 to-blue-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
+                                                >
+                                                    <span className="inline-block animate-fade-up">ĐẤU GIÁ VIỆT</span>
+                                                </Heading>
+                                                <Heading
+                                                    as="h2"
+                                                    className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
+                                                >
+                                                    Tìm về quá khứ với những vật phẩm cổ xưa
+                                                </Heading>
+                                                <Button
+                                                    color="green_A700"
+                                                    size="xl"
+                                                    shape="round"
+                                                    className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
+                                                    onClick={() => (e.target)}
+                                                >
+                                                    Xem ngay
+                                                </Button>
+                                            </div>
+                                            <div className="relative h-[446px] w-[56%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <div className="h-[360px] w-[360px] rounded-full bg-red-500 opacity-20" />
+                                                </div>
+                                                <div className="relative w-full max-w-[80%]">
+                                                    <Img
+                                                        src="https://media.licdn.com/dms/image/v2/C5112AQFjH_bYegkVjw/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1587461908891?e=2147483647&v=beta&t=rMSbmci3s-ELsmPnAs4A2rw7HX89BETPt6yYCdljh4Q"
+                                                        alt="Antique Auction"
+                                                        className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
                                     </Slider>
+
+
                                 </div>
                             </div>
                         </div>
@@ -133,14 +197,14 @@ export default function HomePagePage() {
                     {/* trending products section */}
                     <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
                         <div className="mr-3.5 md:mr-0">
-                            <TrendingProductsSection/>
+                            <TrendingProductsSection />
                         </div>
                     </div>
 
                     {/* featured products section */}
                     <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
                         <div className="mr-3.5 md:mr-0">
-                            <FeaturedProductsSection/>
+                            <FeaturedProductsSection />
                         </div>
                     </div>
                     {/*<div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">*/}
@@ -281,7 +345,7 @@ export default function HomePagePage() {
                         </Heading>
                         <div className="mr-3.5 md:mr-0">
                             {/*<FeaturedProducts/>*/}
-                            <RecentProductsSection itemData={dataFT} itemLoading={loadingFT} itemError={isError}/>
+                            <RecentProductsSection itemData={dataFT} itemLoading={loadingFT} itemError={isError} />
                         </div>
                     </div>
 
@@ -295,7 +359,7 @@ export default function HomePagePage() {
                             Sản phẩm tham gia nhiều nhất
                         </Heading>
                         <div className="mr-3.5 md:mr-0">
-                            <RecentProductsSection itemData={itemData} itemLoading={itemLoading} itemError={itemError}/>
+                            <RecentProductsSection itemData={itemData} itemLoading={itemLoading} itemError={itemError} />
                         </div>
                     </div>
 
@@ -309,7 +373,7 @@ export default function HomePagePage() {
                             Sản phẩm
                         </Heading>
                         <div className="mr-3.5 md:mr-0">
-                            <RecentProductsSection itemData={itemData} itemLoading={itemLoading} itemError={itemError}/>
+                            <RecentProductsSection itemData={itemData} itemLoading={itemLoading} itemError={itemError} />
                             {/*<TrustedBrandsSection />*/}
                         </div>
                     </div>
@@ -317,12 +381,12 @@ export default function HomePagePage() {
                     {/* fashion promotion section */}
                     <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
                         <div className="mr-3.5 md:mr-0">
-                            <FeaturedProductsSection/>
+                            <FeaturedProductsSection />
                         </div>
                     </div>
                     {/*<FashionPromotionSection />*/}
                     <div className="mt-[19px] self-stretch">
-                        <FooterBK/>
+                        <FooterBK />
                     </div>
                 </div>
             </div>
