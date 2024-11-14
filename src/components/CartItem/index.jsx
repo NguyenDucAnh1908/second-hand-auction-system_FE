@@ -16,7 +16,7 @@ const {Meta, Grid} = Card;
 export default function CartItem({product, refetchItem}) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedAuctionId, setSelectedAuctionId] = useState(product.itemId);
+    const [selectedAuctionId, setSelectedAuctionId] = useState(product?.auction.auction_id);
     const navigate = useNavigate();
     const formatter = (value) => <CountUp end={value} separator="."/>;
     const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -48,9 +48,10 @@ export default function CartItem({product, refetchItem}) {
     } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? {auctionId: selectedAuctionId} : null, {
         skip: !selectedAuctionId,
     });
-
-    const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.registration_status === "CONFIRMED"
-    // console.log("checkRegister", checkRegister)
+    const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.statusRegistration === true
+    //console.log("checkRegister", checkRegister)
+    // console.log("checkRegister auctionId", checkRegister?.auctionId)
+    // console.log("checkRegister status", isRegistered)
     const [AuctionRegister, {isLoading: isLoadingAuctionRegister, error}] = useAuctionRegisterMutation();
     const handleSubmitAuctionRegister = async (e) => {
         e.preventDefault();
