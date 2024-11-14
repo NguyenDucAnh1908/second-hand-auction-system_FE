@@ -1,24 +1,27 @@
-import {Helmet} from "react-helmet";
-import React, {useState} from "react"; // Import useState
+import { Helmet } from "react-helmet";
+import React, { useState } from "react"; // Import useState
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK";
-import {Breadcrumb, Layout, theme, Table, Spin, Alert, Button, Modal, Skeleton, Empty} from "antd"; // Import Modal
-import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
-import {useGetOrderQuery} from "../../services/order.service";
-import {FaShoppingCart, FaProductHunt, FaGavel} from 'react-icons/fa'; // Importing icons from react-icons
+import { Breadcrumb, Layout, theme, Table, Spin, Alert, Button, Modal, Skeleton, Empty } from "antd"; // Import Modal
+import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
+import { useGetOrderQuery } from "../../services/order.service";
+import { FaShoppingCart, FaProductHunt, FaGavel } from 'react-icons/fa'; // Importing icons from react-icons
+import FeedbackForm from "../../components/FeedbackForm";
 
-const {Content, Sider} = Layout;
+const { Content, Sider } = Layout;
 
 export default function OrderManagementBuyer() {
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
-    const {data, error, isLoading} = useGetOrderQuery({page: 0, limit: 10});
+    const { data, error, isLoading } = useGetOrderQuery({ page: 0, limit: 10 });
     console.log(data);
 
-    const [isModalVisible, setIsModalVisible] = useState(false); // State to manage modal
-    const [selectedOrder, setSelectedOrder] = useState(null); // State to store selected order info
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+
 
     const statusStyles = {
         PENDING: 'bg-gray-500 text-white',
@@ -75,25 +78,47 @@ export default function OrderManagementBuyer() {
             title: 'Action',
             key: 'action',
             render: (text, record) => (
-                <Button
-                    type="primary"
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold"
-                    onClick={() => handleDetailClick(record)} // Pass the entire record to the function
-                >
-                    Detail
-                </Button>
+                <>
+                    <Button
+                        type="primary"
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold mr-2"
+                        onClick={() => handleDetailClick(record)} // Pass the entire record to the function
+                    >
+                        Detail
+                    </Button>
+                    <Button
+                        type="default"
+                        className="bg-green-500 hover:bg-green-600 text-white font-bold"
+                        onClick={() => handleReviewClick(record)} // Function to handle review button click
+                    >
+                        Đánh Giá
+                    </Button>
+                </>
             ),
-        },
+        }
+
+
+        ,
     ];
 
     const handleDetailClick = (order) => {
-        setSelectedOrder(order); // Store order info in state
-        setIsModalVisible(true); // Open modal
+        setSelectedOrder(order);
+        setIsModalVisible(true); // Open the order details modal
+    };
+
+    const handleReviewClick = (order) => {
+        setSelectedOrder(order);
+        setIsFeedbackModalVisible(true); // Open the feedback modal
     };
 
     const handleModalClose = () => {
-        setIsModalVisible(false); // Close modal
-        setSelectedOrder(null); // Reset order info
+        setIsModalVisible(false);
+        setSelectedOrder(null);
+    };
+
+    const handleFeedbackModalClose = () => {
+        setIsFeedbackModalVisible(false);
+        setSelectedOrder(null);
     };
 
     const dataSource = data?.data.map(order => ({
@@ -123,8 +148,8 @@ export default function OrderManagementBuyer() {
             <Helmet>
                 <title>Order Management</title>
             </Helmet>
-            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-                <Header2/>
+            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <Header2 />
                 <Content
                     style={{
                         padding: '0 48px',
@@ -156,7 +181,7 @@ export default function OrderManagementBuyer() {
                             }}
                             width={300}
                         >
-                            <SiderUserBK/>
+                            <SiderUserBK />
                         </Sider>
                         <Content
                             style={{
@@ -170,12 +195,12 @@ export default function OrderManagementBuyer() {
                                 <Skeleton active avatar={true} title={true} round={true} paragraph={true}
                                 />
                             ) : error ? (
-                                <Empty/>
+                                <Empty />
                             ) : (
                                 <Table
                                     dataSource={dataSource}
                                     columns={columns}
-                                    pagination={{pageSize: 10}}
+                                    pagination={{ pageSize: 10 }}
                                     rowClassName="align-middle"
                                 />
                             )}
@@ -195,7 +220,7 @@ export default function OrderManagementBuyer() {
                     onCancel={handleModalClose}
                     footer={null}
                     width={600} // Set a width for the modal
-                    bodyStyle={{padding: '20px'}} // Add padding to modal body
+                    bodyStyle={{ padding: '20px' }} // Add padding to modal body
                 >
                     {selectedOrder && (
                         <div>
@@ -206,31 +231,31 @@ export default function OrderManagementBuyer() {
                                 borderRadius: '5px',
                                 marginBottom: '15px'
                             }}>
-                                <h3 style={{margin: '0 0 10px', display: 'flex', alignItems: 'center'}}>
-                                    <FaShoppingCart style={{marginRight: '10px', color: '#007bff'}}/> {/* Order Icon */}
+                                <h3 style={{ margin: '0 0 10px', display: 'flex', alignItems: 'center' }}>
+                                    <FaShoppingCart style={{ marginRight: '10px', color: '#007bff' }} /> {/* Order Icon */}
                                     Thông tin đơn hàng
                                 </h3>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>ID:</strong>
                                     <span>{selectedOrder.id}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Email:</strong>
                                     <span>{selectedOrder.email}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Số điện thoại:</strong>
                                     <span>{selectedOrder.phoneNumber}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Số tiền:</strong>
                                     <span>{selectedOrder.totalPrice}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Trạng thái:</strong>
                                     <span>{selectedOrder.status}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Ghi chú:</strong>
                                     <span>{selectedOrder.note}</span>
                                 </div>
@@ -243,65 +268,65 @@ export default function OrderManagementBuyer() {
                                 borderRadius: '5px',
                                 marginBottom: '15px'
                             }}>
-                                <h3 style={{margin: '0 0 10px', display: 'flex', alignItems: 'center'}}>
+                                <h3 style={{ margin: '0 0 10px', display: 'flex', alignItems: 'center' }}>
                                     <FaProductHunt
-                                        style={{marginRight: '10px', color: '#ff7f50'}}/> {/* Product Icon */}
+                                        style={{ marginRight: '10px', color: '#ff7f50' }} /> {/* Product Icon */}
                                     Thông tin sản phẩm
                                 </h3>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Số lượng:</strong>
                                     <span>{selectedOrder.quantity}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Phương thức thanh toán:</strong>
                                     <span>{selectedOrder.paymentMethod}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Phương thức vận chuyển:</strong>
                                     <span>{selectedOrder.shippingType}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Mã sản phẩm:</strong>
                                     <span>{selectedOrder.itemId}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Tên sản phẩm:</strong>
                                     <span>{selectedOrder.itemName}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Tên người bán:</strong>
                                     <span>{selectedOrder.sellerName}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <strong>Hình ảnh:</strong>
                                     <img src={selectedOrder.thumbnail} alt="Product thumbnail" width="100"
-                                         style={{borderRadius: '5px', marginLeft: '10px'}}/>
+                                        style={{ borderRadius: '5px', marginLeft: '10px' }} />
                                 </div>
                             </div>
 
                             {/* Auction Details Section */}
-                            <div style={{backgroundColor: '#ffe4e1', padding: '15px', borderRadius: '5px'}}>
-                                <h3 style={{margin: '0 0 10px', display: 'flex', alignItems: 'center'}}>
-                                    <FaGavel style={{marginRight: '10px', color: '#ff4500'}}/> {/* Auction Icon */}
+                            <div style={{ backgroundColor: '#ffe4e1', padding: '15px', borderRadius: '5px' }}>
+                                <h3 style={{ margin: '0 0 10px', display: 'flex', alignItems: 'center' }}>
+                                    <FaGavel style={{ marginRight: '10px', color: '#ff4500' }} /> {/* Auction Icon */}
                                     Thông tin đấu giá
                                 </h3>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Mã đấu giá:</strong>
                                     <span>{selectedOrder.auctionId}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Kiểu dấu giá:</strong>
                                     <span>{selectedOrder.auctionTypeName}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Bước giá:</strong>
                                     <span>{selectedOrder.priceStep}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Trạng thái :</strong>
                                     <span>{selectedOrder.status}</span>
                                 </div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Điều khoản :</strong>
                                     <span>{selectedOrder.termConditions}</span>
                                 </div>
@@ -309,6 +334,53 @@ export default function OrderManagementBuyer() {
                         </div>
                     )}
                 </Modal>
+
+                {/* Modal to handle feedback */}
+                <Modal
+                    title="Đánh giá sản phẩm"
+                    visible={isFeedbackModalVisible}
+                    onCancel={handleFeedbackModalClose}
+                    footer={null}
+                    width={600}
+                    bodyStyle={{ padding: '20px' }}
+                >
+                    {selectedOrder && (
+                        <div>
+
+                            {/* Item Details Section (again) */}
+                            <div style={{
+                                backgroundColor: '#fff8dc',
+                                padding: '15px',
+                                borderRadius: '5px',
+                                marginTop: '20px' // Adding a margin to separate it from the feedback form
+                            }}>
+                                <h3 style={{ margin: '0 0 10px', display: 'flex', alignItems: 'center' }}>
+                                    <FaProductHunt style={{ marginRight: '10px', color: '#ff7f50' }} /> {/* Product Icon */}
+                                    Thông tin sản phẩm
+                                </h3>
+                              
+                               
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <strong>Tên sản phẩm:</strong>
+                                    <span>{selectedOrder.itemName}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <strong>Tên người bán:</strong>
+                                    <span>{selectedOrder.sellerName}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <strong>Hình ảnh:</strong>
+                                    <img src={selectedOrder.thumbnail} alt="Product thumbnail" width="100"
+                                        style={{ borderRadius: '5px', marginLeft: '10px' }} />
+                                </div>
+                            </div>
+
+                            {/* Feedback Form */}
+                            <FeedbackForm order={selectedOrder} />
+                        </div>
+                    )}
+                </Modal>
+
 
 
             </Layout>
