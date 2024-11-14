@@ -11,9 +11,9 @@ const TABLE_HEAD = [
     "Số Đăng Ký",
     "Hình ảnh",
     "Sản phẩm",
-    "Thời gian còn lại",
+    "Thời gian ",
     "Trạng thái",
-    "Giá Hiện Tại",
+    // "Giá Hiện Tại",
     "Giá của bạn",
     "Tùy chỉnh",
     "Thanh toán"
@@ -63,10 +63,10 @@ export default function AuctionListProcessSection() {
             }
         }
 
-        
+
 
         return {
-            number: `#AU-${auction_id}`,
+            number: `${auction_id}`,
             product: itemName || "Không xác định",
             image: thumbnail,
             auctionId: auction_id,
@@ -116,9 +116,10 @@ export default function AuctionListProcessSection() {
             children: (dataAuctionProcessDetail?.auction?.endDate && dataAuctionProcessDetail?.auction?.end_time) ? (
                 <Countdown
                     value={new Date(`${dataAuctionProcessDetail.auction?.endDate}T${dataAuctionProcessDetail.auction?.end_time}`).getTime()}
-                    format="D Ngày H giờ m phút s giây"
+                    format="D [Ngày] H [giờ] m [phút] s [giây]"
                     valueStyle={{ fontWeight: "bolder", fontSize: "15px", color: "green" }}
                 />
+
             ) : (
                 "Không xác định"
             ),
@@ -142,7 +143,6 @@ export default function AuctionListProcessSection() {
         },
     ] : [];
 
-
     const showModal = (itemId) => {
         setSelectedArId(itemId);
         setIsModalOpen(true);
@@ -158,7 +158,7 @@ export default function AuctionListProcessSection() {
             console.error("Auction ID is missing!");
         }
     };
-    
+
 
     return (
         <div>
@@ -183,7 +183,7 @@ export default function AuctionListProcessSection() {
                     ) : (
                         <Skeleton loading={isLoadingAuctionProcess} active>
                             <Card className="h-full w-full overflow-auto">
-                                <table className="w-full min-w-max table-auto text-left">
+                                <table className="w-full min-w-max table-fixed text-left ">
                                     <thead>
                                         <tr>
                                             {TABLE_HEAD.map((head) => (
@@ -199,7 +199,7 @@ export default function AuctionListProcessSection() {
                                             ))}
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody >
                                         {TABLE_ROWS.map((row) => (
                                             <tr key={row.number}>
                                                 <td className="p-4">
@@ -226,31 +226,35 @@ export default function AuctionListProcessSection() {
                                                         {row.status}
                                                     </Tag>
                                                 </td>
-                                                <td className="p-4">
+                                                {/* <td className="p-4">
                                                     <Typography variant="small" className="font-normal text-gray-600">
-                                                        ${row.currentPrice}
+                                                        {row.currentPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                                     </Typography>
-                                                </td>
+                                                </td> */}
                                                 <td className="p-4">
                                                     <Typography
                                                         variant="small"
                                                         className={`font-normal ${row.yourPrice >= row.currentPrice ? 'text-green-500' : 'text-red-500'}`}
                                                     >
-                                                        ${row.yourPrice}
+                                                        {row.yourPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                                     </Typography>
                                                 </td>
 
-                                                <td className="p-4">
+
+                                                <td className="p-3 text-center px-4 py-2 text-xs">
                                                     {row.action}
                                                 </td>
-                                                <td className="p-4">
+                                                <td className="p-3 text-center">
                                                     <Button
                                                         variant="small"
-                                                        onClick={() => handleCreateOrder(row.auctionId)} 
+                                                        className="px-4 py-2 text-xs"
+                                                        onClick={() => handleCreateOrder(row.auctionId)}
                                                     >
-                                                        Thanh toán
+                                                        Xác nhận
                                                     </Button>
                                                 </td>
+
+
                                             </tr>
                                         ))}
                                     </tbody>

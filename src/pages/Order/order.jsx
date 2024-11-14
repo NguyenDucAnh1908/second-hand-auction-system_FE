@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Header2 from '../../components/Header2'
 import FooterBK from '../../components/FooterBK'
-import { useParams } from 'react-router-dom';
-import { stringify } from 'flatted';
+import { useNavigate, useParams } from 'react-router-dom';
+import { message } from 'antd';
 import { useCreateOrderMutation } from '../../services/order.service';
 import { useGetAuctionByIdQuery } from '../../services/auction.service';
 import { useGetAddressOrderQuery } from '../../services/address.service';
@@ -15,52 +15,56 @@ export default function OrderForm() {
         email: '',
         phoneNumber: '',
         address: '',
-        shippingMethod: '',
+        shippingMethod: 'Free ship',
         note: '',
         auctionId: id,
-        paymentMethod: '', // Include paymentMethod in state
+        paymentMethod: '',
     });
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
     const { data: auctionData, error: auctionError, isLoading: auctionLoading } = useGetAuctionByIdQuery(id);
     const userId = JSON.parse(localStorage.getItem('user'))?.id;
-    // const [paymentMethod, setPaymentMethod] = useState('WALLET_PAYMENT'); // Default set to WALLET_PAYMENT
-    const [paymentMethod, setPaymentMethod] = useState(""); // Khởi tạo state
+    const navigate = useNavigate();
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        if (!paymentMethod) {
-            console.error("Payment method is required");
-            return; // Prevent form submission if paymentMethod is empty
+        if (isLoading) {
+            console.log("Order submission in progress...");
+            return;
         }
-    
+
+        console.log(orderDetails);
+
         try {
-            console.log("Creating order with payment method:", paymentMethod);
-            // Ensure you include paymentMethod in your orderDetails
-            const orderDetailsWithPayment = {
-                ...orderDetails,
-                paymentMethod: paymentMethod,
-            };
-    
-            const result = await createOrder(orderDetailsWithPayment).unwrap();
+            const result = await createOrder(orderDetails).unwrap();
             console.log("Order created successfully:", result);
+            message.success('Đơn hàng đã được tạo thành công!');
+
+            setTimeout(() => {
+                navigate('/OrderManagementBuyer'); // Đường dẫn bạn muốn chuyển đến
+            }, 5000);
+
+          
         } catch (error) {
             console.error("Create order error:", error);
+
+            // Lấy thông điệp từ lỗi để hiển thị
+            const errorMessage = error?.data?.message + " Vui lòng kiểm tra lại thông tin ở danh sách đơn hàng" || "An error occurred while creating the order";
+            // Dùng message để hiển thị lỗi
+            message.error(errorMessage);
         }
     };
-    
+
+
+
     const [createOrder, { isLoading }] = useCreateOrderMutation();
     const { data: addressData, error: addressError, isLoading: addressLoading } = useGetAddressOrderQuery(userId);
-    console.log(addressData);
     const auctionAmount = auctionData?.data?.amount || 0; // Nếu không có amount, đặt giá trị mặc định là 0
     const commission = auctionAmount * 0.05; // Hoa hồng là 5% của giá đấu
     const totalAmount = auctionAmount + commission;
-
-
-
-
 
     useEffect(() => {
         if (auctionLoading) {
@@ -190,7 +194,7 @@ export default function OrderForm() {
                             <div className="space-y-4">
                                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Phương thức thanh toán</h3>
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                                
+
 
                                     {/* Phương thức thanh toán Ví hệ thống */}
                                     <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
@@ -200,9 +204,9 @@ export default function OrderForm() {
                                                     id="wallet-payment"
                                                     type="radio"
                                                     name="payment-method"
-                                                    value="WALLET_PAYMENT" // Ensure the value matches what you're setting
-                                                    checked={paymentMethod === "WALLET_PAYMENT"} // Correctly bind to the state
-                                                    onChange={() => setPaymentMethod("WALLET_PAYMENT")} // Set the correct value when selected
+                                                    value="WALLET_PAYMENT"
+                                                    onChange={(e) => setOrderDetails({ ...orderDetails, paymentMethod: e.target.value })}
+
                                                     className="h-4 w-4"
                                                 />
                                                 <label htmlFor="wallet-payment" className="ms-2 font-medium text-gray-900 dark:text-white">
@@ -221,21 +225,24 @@ export default function OrderForm() {
                                     <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
                                         <div className="flex items-start">
                                             <div className="flex h-5 items-center">
-                                                <input id="fedex"
+                                                <input
+                                                    id="fedex"
                                                     aria-describedby="fedex-text"
                                                     type="radio"
                                                     name="delivery-method"
-                                                    value={orderDetails.shippingMethod}
-                                                    onChange={(value) => setOrderDetails({ ...orderDetails, shippingMethod: value })}
-                                                    defaultValue className="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
+                                                    value="Free ship"  // Set a specific value for this radio button
+                                                    onChange={(e) => setOrderDetails({ ...orderDetails, shippingMethod: e.target.value })}
+                                                    checked={orderDetails.shippingMethod === "Free ship"}  // Ensure the correct radio is selected
+                                                    className="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600"
+                                                />
                                             </div>
                                             <div className="ms-4 text-sm">
                                                 <label htmlFor="fedex" className="font-medium leading-none text-gray-900 dark:text-white"> Free ship </label>
-                                                <p id="fedex-text"
-                                                    className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Free ship toàn quốc</p>
+                                                <p id="fedex-text" className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Free ship toàn quốc</p>
                                             </div>
                                         </div>
                                     </div>
+
 
                                 </div>
                             </div>
