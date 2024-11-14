@@ -61,23 +61,23 @@ export default function HomePagePage() {
                                 <div className="mx-auto flex w-full px-1">
                                     <Slider {...sliderSettings} ref={sliderRef}>
                                         {/* Slide 1 */}
+                                
                                         <div className="flex items-start md:flex-col mt-2 rounded-full object-fill">
                                             <div className="mt-[62px] flex w-[30%] flex-col items-start gap-6 md:w-full ml-auto">
-                                                <div className="flex flex-col items-start self-stretch">
-                                                    <Heading
-                                                        size="heading5xl"
-                                                        as="h1"
-                                                        className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
-                                                    >
-                                                        <span className="inline-block animate-fade-up">ĐẤU GIÁ VIỆT</span>
-                                                    </Heading>
-                                                    <Heading
-                                                        as="h2"
-                                                        className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
-                                                    >
-                                                        Nơi giá trị thật sự được khẳng định
-                                                    </Heading>
-                                                </div>
+                                                <Heading
+                                                    size="heading5xl"
+                                                    as="h1"
+                                                    className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
+                                                >
+                                                    <span className="inline-block animate-fade-up">ĐẤU GIÁ VIỆT</span>
+                                                </Heading>
+
+                                                <Heading
+                                                    as="h2"
+                                                    className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
+                                                >
+                                                     Nơi giá trị thật sự được khẳng định
+                                                </Heading>
                                                 <Button
                                                     color="green_A700"
                                                     size="xl"
@@ -85,7 +85,7 @@ export default function HomePagePage() {
                                                     className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
                                                     onClick={() => (e.target)}
                                                 >
-                                                    Tham gia ngay
+                                                    Khám phá ngay
                                                 </Button>
                                             </div>
                                             <div className="relative h-[446px] w-[56%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
@@ -95,7 +95,7 @@ export default function HomePagePage() {
                                                 <div className="relative w-full max-w-[80%]">
                                                     <Img
                                                         src="https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-trang-den-34.jpg"
-                                                        alt="Vintage Auction"
+                                                        alt="Vintage Car Auction"
                                                         className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
                                                     />
                                                 </div>
@@ -117,7 +117,7 @@ export default function HomePagePage() {
                                                     as="h2"
                                                     className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
                                                 >
-                                                    Đấu giá chinh phục mọi khoảnh khắc
+                                                    Tìm về quá khứ với những vật phẩm cổ xưa
                                                 </Heading>
                                                 <Button
                                                     color="green_A700"
@@ -135,7 +135,7 @@ export default function HomePagePage() {
                                                 </div>
                                                 <div className="relative w-full max-w-[80%]">
                                                     <Img
-                                                        src="https://www.peterainsworth.com/wp-content/uploads/2019/06/cd-cover-template-psd-elegant-cd-cover-template-51-free-psd-eps-word-format-of-cd-cover-template-psd.jpg"
+                                                        src="https://ontop.vn/wp-content/uploads/2023/05/image-86.webp"
                                                         alt="Vintage Car Auction"
                                                         className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
                                                     />
@@ -158,6 +158,7 @@ export default function HomePagePage() {
                                                     className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
                                                 >
                                                     Tìm về quá khứ với những vật phẩm cổ xưa
+
                                                 </Heading>
                                                 <Button
                                                     color="green_A700"
@@ -171,11 +172,11 @@ export default function HomePagePage() {
                                             </div>
                                             <div className="relative h-[446px] w-[56%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
                                                 <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="h-[360px] w-[360px] rounded-full bg-red-500 opacity-20" />
+                                                    <div className="h-[360px] w-[360px] rounded-full bg-green-500 opacity-20" />
                                                 </div>
                                                 <div className="relative w-full max-w-[80%]">
                                                     <Img
-                                                        src="https://media.licdn.com/dms/image/v2/C5112AQFjH_bYegkVjw/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1587461908891?e=2147483647&v=beta&t=rMSbmci3s-ELsmPnAs4A2rw7HX89BETPt6yYCdljh4Q"
+                                                        src="https://shop.photozone.com.vn/wp-content/uploads/2016/06/bac-thay-nhiep-anh-duong-pho-fan-ho-vua-qua-doi-o-tuoi-84_photozone-com-vn_-1.jpg"
                                                         alt="Antique Auction"
                                                         className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
                                                     />
