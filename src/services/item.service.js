@@ -178,6 +178,17 @@ export const itemApiSlice = apiSlice.injectEndpoints({
             query: () => "item/top-10-most-participating-products",
             transformResponse: (response) => response.data,
         }),
+
+        getSimilarItemAuction: builder.query({
+            query: (paging) => ({
+                url: "item/similar-item",
+                params: {
+                    mainCategoryId: paging.mainCategoryId,
+                    page: paging.page || 0,
+                    limit: paging.limit || 10,
+                },
+            }),
+        }),
     }),
 });
 
@@ -198,4 +209,5 @@ export const {
     useGetItemPendingAuctionQuery,
     useGetItemsBySellerQuery,
     useGetMostParticipatingItemsQuery,
+    useGetSimilarItemAuctionQuery,
 } = itemApiSlice;

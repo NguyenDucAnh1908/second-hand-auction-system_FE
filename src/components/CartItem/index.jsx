@@ -16,7 +16,7 @@ const {Meta, Grid} = Card;
 export default function CartItem({product, refetchItem}) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedAuctionId, setSelectedAuctionId] = useState(product?.auction.auction_id);
+    const [selectedAuctionId, setSelectedAuctionId] = useState(product?.auction?.auction_id);
     const navigate = useNavigate();
     const formatter = (value) => <CountUp end={value} separator="."/>;
     const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -49,9 +49,6 @@ export default function CartItem({product, refetchItem}) {
         skip: !selectedAuctionId,
     });
     const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.statusRegistration === true
-    //console.log("checkRegister", checkRegister)
-    // console.log("checkRegister auctionId", checkRegister?.auctionId)
-    // console.log("checkRegister status", isRegistered)
     const [AuctionRegister, {isLoading: isLoadingAuctionRegister, error}] = useAuctionRegisterMutation();
     const handleSubmitAuctionRegister = async (e) => {
         e.preventDefault();
@@ -127,11 +124,19 @@ export default function CartItem({product, refetchItem}) {
                         format="D Ngày H giờ m phút s giây"
                         valueStyle={{fontWeight: 'small', fontSize: '15px'}}
                     />
-                } color="rgba(255, 182, 193, 0.6)">
+                } color="rgba(255, 182, 193, 0.6)"
+                              style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  width: '100%'
+                              }}
+                >
                     <Card
                         hoverable
                         style={{
                             width: 270,
+                            margin: '0 auto'
                         }}
                         cover={
                             <div style={{width: '100%', paddingTop: '100%', position: 'relative'}}>

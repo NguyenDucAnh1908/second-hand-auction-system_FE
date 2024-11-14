@@ -40,9 +40,6 @@ export default function RecentProductsSection({itemData, itemLoading, itemError}
 
     return (
         <div className="w-full">
-            {/*{itemLoading ? (*/}
-            {/*    <Empty/>*/}
-            {/*) : (*/}
                 <Skeleton loading={itemLoading} active>
                     <Slider {...sliderSettings} ref={sliderRef}>
                         {/* eslint-disable-next-line react/prop-types */}
@@ -50,7 +47,6 @@ export default function RecentProductsSection({itemData, itemLoading, itemError}
                             <div key={item.id}>
                                 <CartItem
                                     product={item}
-                                    // className="border border-gray-200 bg-white p-3 rounded-lg"
                                 />
                             </div>
                         ))}

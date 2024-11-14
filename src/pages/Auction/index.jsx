@@ -17,7 +17,7 @@ import {Avatar, Breadcrumb, Empty, Layout, Skeleton, theme} from "antd";
 import {AntDesignOutlined} from "@ant-design/icons";
 import {Flex, Rate, Typography, Tabs} from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {useGetItemDetailQuery} from "@/services/item.service.js";
+import {useGetItemDetailQuery, useGetSimilarItemAuctionQuery} from "@/services/item.service.js";
 import {useParams, useLocation, useNavigate} from "react-router-dom";
 import {useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
@@ -27,6 +27,8 @@ import Pagination from "@/components/Pagination/index.jsx";
 import {useGetWinBidQuery} from "@/services/bid.service.js";
 import {selectIsLoggedIn} from "@/redux/auth/authSlice.js";
 import FeedBack from "@/components/FeedBack.jsx";
+import RecentProductsSection from "pages/HomePage/RecentProductsSection.jsx";
+import SliderItem from "@/components/SlilerItem/index.jsx";
 
 
 const {Content} = Layout;
@@ -42,6 +44,19 @@ export default function AuctionPage() {
     } = theme.useToken();
     const {data, error, isLoading, isSuccess, refetch} = useGetItemDetailQuery({id});
 
+    const {
+        data: dataSimilar,
+        isLoading: isLoadingSimilar,
+        isError: isErrorSimilar,
+        error: errorSimilar
+    } = useGetSimilarItemAuctionQuery({
+        mainCategoryId: data?.scId?.sub_category_id || 0,
+        page: 0,
+        limit: 10
+    });
+
+    console.log("dataSimilar", dataSimilar)
+    //console.log("dataSimilar", data?.scId?.sub_category_id)
     const handleToggle = () => {
         setExpanded((prev) => !prev);
     };
@@ -659,9 +674,35 @@ export default function AuctionPage() {
                                 </div>
                             </div>
                             {/*here*/}
-                            <RecommendedProductsSection/>
+                            {/*<RecommendedProductsSection/>*/}
+                            <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
+                                <Heading
+                                    size="text7xl"
+                                    as="h2"
+                                    className="self-center text-[28px] mb-5 font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
+                                >
+                                    Sản phẩm tham gia nhiều nhất
+                                </Heading>
+                                <div className="mr-3.5 md:mr-0">
+                                    <SliderItem itemDatas={dataSimilar} itemLoading={isLoadingSimilar}
+                                                itemError={isErrorSimilar}/>
+                                </div>
+                            </div>
+                            {/*itemData={itemData} itemLoading={itemLoading} itemError={itemError}*/}
                             {/* recommended products section */}
-                            <RecommendedProductsSection/>
+                            <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
+                                <Heading
+                                    size="text7xl"
+                                    as="h2"
+                                    className="self-center text-[28px] mb-5 font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
+                                >
+                                    Sản phẩm tham gia nhiều nhất
+                                </Heading>
+                                <div className="mr-3.5 md:mr-0">
+                                    <SliderItem itemDatas={dataSimilar} itemLoading={isLoadingSimilar}
+                                                itemError={isErrorSimilar}/>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
