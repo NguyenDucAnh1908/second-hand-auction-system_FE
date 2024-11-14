@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header2 from '../../components/Header2'
 import FooterBK from '../../components/FooterBK'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { message } from 'antd';
 import { useCreateOrderMutation } from '../../services/order.service';
 import { useGetAuctionByIdQuery } from '../../services/auction.service';
@@ -25,7 +25,7 @@ export default function OrderForm() {
     };
     const { data: auctionData, error: auctionError, isLoading: auctionLoading } = useGetAuctionByIdQuery(id);
     const userId = JSON.parse(localStorage.getItem('user'))?.id;
-
+    const navigate = useNavigate();
 
 
 
@@ -41,7 +41,13 @@ export default function OrderForm() {
         try {
             const result = await createOrder(orderDetails).unwrap();
             console.log("Order created successfully:", result);
-            // Optionally, redirect or show a success message
+            message.success('Đơn hàng đã được tạo thành công!');
+
+            setTimeout(() => {
+                navigate('/OrderManagementBuyer'); // Đường dẫn bạn muốn chuyển đến
+            }, 5000);
+
+          
         } catch (error) {
             console.error("Create order error:", error);
 
