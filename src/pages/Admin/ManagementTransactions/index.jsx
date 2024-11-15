@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Button, Card, Typography, Select, Option,
     Dialog, DialogHeader, DialogBody, DialogFooter,
 } from "@material-tailwind/react";
-import { Tag } from "antd";
-import { CheckCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import {Empty, Skeleton, Tag} from "antd";
+import {CheckCircleOutlined, ExclamationCircleOutlined, SyncOutlined} from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
-import { useGetTransactionWalletAdminQuery } from '../../../services/transactionWallet.service';
+import {useGetTransactionWalletAdminQuery} from '../../../services/transactionWallet.service';
 import useHookUploadImage from '../../../hooks/useHookUploadImage';
-import { Upload } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { Image } from 'antd';
-import { useUploadImageTransactionMutation } from '../../../services/transactionWallet.service';
+import {Upload} from 'antd';
+import {PlusOutlined} from '@ant-design/icons';
+import {Image} from 'antd';
+import {useUploadImageTransactionMutation} from '../../../services/transactionWallet.service';
 
 const TABLE_HEAD = [
     "Mã giao dịch",
@@ -37,17 +37,18 @@ export default function QuanLyGiaoDich() {
     const [roleFilter, setRoleFilter] = useState(""); // State for role filter
     const [transactionTypeFilter, setTransactionTypeFilter] = useState(""); // State for transactionType filter
 
-    const { data, error, isLoading } = useGetTransactionWalletAdminQuery({
+    const {data, error, isLoading, isError} = useGetTransactionWalletAdminQuery({
         page: trang - 1, limit: 10, role: roleFilter, transactionType: transactionTypeFilter
     });
-    const { UploadImage } = useHookUploadImage();
+    const {UploadImage} = useHookUploadImage();
 
     const moChiTiet = (transaction) => {
         setGiaoDichDuocChon(transaction);
         setMoDialog(!moDialog);
     };
     const danhSachGiaoDich = data?.data?.items || [];
-    console.log(danhSachGiaoDich); console
+    console.log(danhSachGiaoDich);
+    console
     const totalPages1 = data?.data?.totalPages || 0;
 
     const handlePageChange = (newPage) => {
@@ -85,8 +86,8 @@ export default function QuanLyGiaoDich() {
         }
     };
 
-    if (isLoading) return <p>Đang tải...</p>;
-    if (error) return <p>Lỗi khi tải danh sách giao dịch.</p>;
+    // if (isLoading) return <p>Đang tải...</p>;
+    // if (error) return <p>Lỗi khi tải danh sách giao dịch.</p>;
 
     return (
         <>
@@ -96,18 +97,29 @@ export default function QuanLyGiaoDich() {
                 <DialogBody className="p-6 bg-white shadow-lg rounded-lg border border-gray-300 space-y-4">
                     {giaoDichDuocChon && (
                         <div className="space-y-3">
-                            <p><strong className="text-gray-700">Mã giao dịch:</strong> <span className="text-gray-600">{giaoDichDuocChon.transactionWalletCode}</span></p>
-                            <p><strong className="text-gray-700">Số tiền:</strong> <span className="text-green-600">{giaoDichDuocChon.amount.toLocaleString('vi-VN')} VND</span></p>
-                            <p><strong className="text-gray-700">Loại giao dịch:</strong> <span className="text-blue-600">{giaoDichDuocChon.transactionType}</span></p>
-                            <p><strong className="text-gray-700">Người gửi:</strong> <span className="text-gray-600">{giaoDichDuocChon.senderName}</span></p>
-                            <p><strong className="text-gray-700">Người nhận:</strong> <span className="text-gray-600">{giaoDichDuocChon.recipientName}</span></p>
-                            <p><strong className="text-gray-700">Lời nhắn:</strong> <span className="text-gray-600">{giaoDichDuocChon.description || "Không có nội dung"}</span></p>
-                            <p><strong className="text-gray-700">Ngày giao dịch:</strong> <span className="text-gray-600">{dinhDangNgay(giaoDichDuocChon.transactionDate)}</span></p>
-                            <p><strong className="text-gray-700">Trạng thái:</strong> <span className="text-green-600">{giaoDichDuocChon.transactionStatus}</span></p>
+                            <p><strong className="text-gray-700">Mã giao dịch:</strong> <span
+                                className="text-gray-600">{giaoDichDuocChon.transactionWalletCode}</span></p>
+                            <p><strong className="text-gray-700">Số tiền:</strong> <span
+                                className="text-green-600">{giaoDichDuocChon.amount.toLocaleString('vi-VN')} VND</span>
+                            </p>
+                            <p><strong className="text-gray-700">Loại giao dịch:</strong> <span
+                                className="text-blue-600">{giaoDichDuocChon.transactionType}</span></p>
+                            <p><strong className="text-gray-700">Người gửi:</strong> <span
+                                className="text-gray-600">{giaoDichDuocChon.senderName}</span></p>
+                            <p><strong className="text-gray-700">Người nhận:</strong> <span
+                                className="text-gray-600">{giaoDichDuocChon.recipientName}</span></p>
+                            <p><strong className="text-gray-700">Lời nhắn:</strong> <span
+                                className="text-gray-600">{giaoDichDuocChon.description || "Không có nội dung"}</span>
+                            </p>
+                            <p><strong className="text-gray-700">Ngày giao dịch:</strong> <span
+                                className="text-gray-600">{dinhDangNgay(giaoDichDuocChon.transactionDate)}</span></p>
+                            <p><strong className="text-gray-700">Trạng thái:</strong> <span
+                                className="text-green-600">{giaoDichDuocChon.transactionStatus}</span></p>
                             {/* Hình ảnh giao dịch */}
                             <p><strong className="text-gray-700">Hình ảnh:</strong></p>
                             {giaoDichDuocChon.imageUrl ? (
-                                <img src={giaoDichDuocChon.imageUrl} alt="Hình ảnh giao dịch" className="w-full h-auto mt-2" />
+                                <img src={giaoDichDuocChon.imageUrl} alt="Hình ảnh giao dịch"
+                                     className="w-full h-auto mt-2"/>
                             ) : (
                                 <p className="text-gray-500">Không có hình ảnh.</p>
                             )}
@@ -126,8 +138,8 @@ export default function QuanLyGiaoDich() {
                             {/* Xem trước ảnh */}
                             {image && (
                                 <div className="mt-4 flex items-center space-x-4">
-
-                                    <div className="relative w-32 h-32 bg-gray-200 border-2 border-dashed border-gray-300 rounded-md overflow-hidden">
+                                    <div
+                                        className="relative w-32 h-32 bg-gray-200 border-2 border-dashed border-gray-300 rounded-md overflow-hidden">
                                         <img
                                             src={image}
                                             alt="Ảnh tải lên"
@@ -178,69 +190,93 @@ export default function QuanLyGiaoDich() {
             </div>
 
             {/* Danh sách giao dịch */}
-            <Card className="h-full w-full overflow-scroll">
-                <table className="w-full min-w-[640px] table-auto">
-                    <thead>
-                        <tr>
-                            {TABLE_HEAD.map((head) => (
-                                <th key={head} className="p-2 text-left text-sm font-medium">{head}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {danhSachGiaoDich.length > 0 ? (
-                            danhSachGiaoDich.map((giaoDich) => (
-                                <tr key={giaoDich.transactionWalletCode}>
-                                    <td className="p-2">{giaoDich.transactionWalletCode}</td>
-                                    <td className="p-2">{giaoDich.amount.toLocaleString('vi-VN')} VND</td>
-                                    <td className="p-4 w-[50px]">
-                                        {giaoDich.transactionType === "DEPOSIT" && (
-                                            <Tag color="green" className="font-semibold w-[120px] h-[20px] text-center">Nạp tiền</Tag>
-                                        )}
-                                        {giaoDich.transactionType === "WITHDRAWAL" && (
-                                            <Tag color="red" className="font-semibold w-[120px] h-[20px] text-center">Rút tiền</Tag>
-                                        )}
-                                        {giaoDich.transactionType === "REFUND" && (
-                                            <Tag color="geekblue-inverse" className="font-semibold w-[120px] h-[20px] text-center">Hoàn cọc</Tag>
-                                        )}
-                                        {giaoDich.transactionType === "TRANSFER" && (
-                                            <Tag color="green-inverse" className="font-semibold w-[120px] h-[20px] text-center">Chuyển khoản</Tag>
-                                        )}
-                                        {giaoDich.transactionType === "DEPOSIT_AUCTION" && (
-                                            <Tag color="blue" className="font-semibold w-[120px] h-[20px] text-center">Tiền cọc</Tag>
-                                        )}
-                                    </td>
+            {isError ? (
+                <Empty/>
+            ) : (
+                <Skeleton loading={isLoading} active>
+                    <Card className="h-full w-full overflow-scroll">
+                        <table className="w-full min-w-[640px] table-auto">
+                            <thead>
+                            <tr>
+                                {TABLE_HEAD.map((head) => (
+                                    <th key={head} className="p-2 text-left text-sm font-medium">{head}</th>
+                                ))}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {danhSachGiaoDich.length > 0 ? (
+                                danhSachGiaoDich.map((giaoDich) => (
+                                    <tr key={giaoDich.transactionWalletCode}>
+                                        <td className="p-2">{giaoDich.transactionWalletCode}</td>
+                                        <td className="p-2">{giaoDich.amount.toLocaleString('vi-VN')} VND</td>
+                                        <td className="p-4 w-[50px]">
+                                            {giaoDich.transactionType === "DEPOSIT" && (
+                                                <Tag color="green"
+                                                     className="font-semibold w-[120px] h-[20px] text-center">Nạp
+                                                    tiền</Tag>
+                                            )}
+                                            {giaoDich.transactionType === "WITHDRAWAL" && (
+                                                <Tag color="red"
+                                                     className="font-semibold w-[120px] h-[20px] text-center">Rút
+                                                    tiền</Tag>
+                                            )}
+                                            {giaoDich.transactionType === "REFUND" && (
+                                                <Tag color="geekblue-inverse"
+                                                     className="font-semibold w-[120px] h-[20px] text-center">Hoàn
+                                                    cọc</Tag>
+                                            )}
+                                            {giaoDich.transactionType === "TRANSFER" && (
+                                                <Tag color="green-inverse"
+                                                     className="font-semibold w-[120px] h-[20px] text-center">Chuyển
+                                                    khoản</Tag>
+                                            )}
+                                            {giaoDich.transactionType === "DEPOSIT_AUCTION" && (
+                                                <Tag color="blue"
+                                                     className="font-semibold w-[120px] h-[20px] text-center">Tiền
+                                                    cọc</Tag>
+                                            )}
+                                        </td>
 
-                                    <td className="p-2">{giaoDich.description || "Không có"}</td>
-                                    <td className="p-2">{dinhDangNgay(giaoDich.transactionDate)}</td>
-                                    <td className="p-4">
-                                        {giaoDich.transactionStatus === "COMPLETED" && <Tag icon={<CheckCircleOutlined />} color="success">Available</Tag>}
-                                        {giaoDich.transactionStatus === "PENDING" && <Tag icon={<SyncOutlined spin />} color="processing">Pending</Tag>}
-                                        {giaoDich.transactionStatus === "CANCELLED" && <Tag icon={<ExclamationCircleOutlined />} color="error">Unavailable</Tag>}
-                                        {giaoDich.transactionStatus === "FAILED" && <Tag icon={<ExclamationCircleOutlined />} color="warning">Failed</Tag>}
-                                    </td>
+                                        <td className="p-2">{giaoDich.description || "Không có"}</td>
+                                        <td className="p-2">{dinhDangNgay(giaoDich.transactionDate)}</td>
+                                        <td className="p-4">
+                                            {giaoDich.transactionStatus === "COMPLETED" &&
+                                                <Tag icon={<CheckCircleOutlined/>} color="success">Available</Tag>}
+                                            {giaoDich.transactionStatus === "PENDING" &&
+                                                <Tag icon={<SyncOutlined spin/>} color="processing">Pending</Tag>}
+                                            {giaoDich.transactionStatus === "CANCELLED" &&
+                                                <Tag icon={<ExclamationCircleOutlined/>}
+                                                     color="error">Unavailable</Tag>}
+                                            {giaoDich.transactionStatus === "FAILED" &&
+                                                <Tag icon={<ExclamationCircleOutlined/>} color="warning">Failed</Tag>}
+                                        </td>
 
-                                    <td className="p-2">
-                                        <Button onClick={() => moChiTiet(giaoDich)} className="bg-blue-500 text-white">Xem chi tiết</Button>
-                                    </td>
+                                        <td className="p-2">
+                                            <Button onClick={() => moChiTiet(giaoDich)}
+                                                    className="bg-blue-500 text-white">Xem chi tiết</Button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={7} className="text-center p-4">Không có dữ liệu</td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr><td colSpan={7} className="text-center p-4">Không có dữ liệu</td></tr>
-                        )}
-                    </tbody>
-                </table>
-            </Card>
+                            )}
+                            </tbody>
+                        </table>
+                    </Card>
 
 
-            {/* Pagination */}
-            <div className="flex justify-center items-center mt-4">
-                <Pagination
-                    currentPage={trang}
-                    totalPages={totalPages1}
-                    onPageChange={handlePageChange}
-                />
-            </div>
+                    {/* Pagination */}
+                    <div className="flex justify-center items-center mt-4">
+                        <Pagination
+                            currentPage={trang}
+                            totalPages={totalPages1}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
+                </Skeleton>
+            )}
 
         </>
     );

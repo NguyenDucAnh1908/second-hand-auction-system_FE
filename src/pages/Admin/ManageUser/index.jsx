@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Space, Popconfirm, message } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
-import { useGetAllUserQuery, useDeleteUserMutation } from '../../../services/user.service';
+import React, {useState, useEffect} from 'react';
+import {Table, Button, Space, Popconfirm, message, Empty, Skeleton} from 'antd';
+import {DeleteOutlined} from '@ant-design/icons';
+import {useGetAllUserQuery, useDeleteUserMutation} from '../../../services/user.service';
 import Pagination from "@/components/Pagination/index.jsx";
 
 export default function ManageUser() {
@@ -10,8 +10,8 @@ export default function ManageUser() {
     const [total, setTotal] = useState(0);
 
     // Gọi API lấy danh sách người dùng
-    const { data, isLoading, error } = useGetAllUserQuery({ limit: 10, page: page - 1 });
-    const [deleteUser, { isLoading: isLoadingDelete }] = useDeleteUserMutation();
+    const {data, isLoading, isError} = useGetAllUserQuery({limit: 10, page: page - 1});
+    const [deleteUser, {isLoading: isLoadingDelete}] = useDeleteUserMutation();
     const totalPages1 = data?.totalPages || 1;
 
     useEffect(() => {
@@ -64,7 +64,7 @@ export default function ManageUser() {
                 <img
                     src={avatar}
                     alt="Avatar"
-                    style={{ width: 40, height: 40, borderRadius: '50%' }}
+                    style={{width: 40, height: 40, borderRadius: '50%'}}
                 />
             ),
         },
@@ -74,11 +74,11 @@ export default function ManageUser() {
             key: 'role',
             render: (role) => {
                 const roleStyles = {
-                    ADMIN: { backgroundColor: '#F44336', color: '#fff' },
-                    SELLER: { backgroundColor: '#4CAF50', color: '#fff' },
-                    BUYER: { backgroundColor: '#2196F3', color: '#fff' },
-                    STAFF: { backgroundColor: '#FF9800', color: '#fff' },
-                    DEFAULT: { backgroundColor: '#FF5722', color: '#fff' },
+                    ADMIN: {backgroundColor: '#F44336', color: '#fff'},
+                    SELLER: {backgroundColor: '#4CAF50', color: '#fff'},
+                    BUYER: {backgroundColor: '#2196F3', color: '#fff'},
+                    STAFF: {backgroundColor: '#FF9800', color: '#fff'},
+                    DEFAULT: {backgroundColor: '#FF5722', color: '#fff'},
                 };
 
                 const style = roleStyles[role] || roleStyles.DEFAULT;
@@ -110,7 +110,7 @@ export default function ManageUser() {
             dataIndex: 'status',
             key: 'status',
             render: (status) => (
-                <span style={{ color: status ? '#4CAF50' : '#9E9E9E' }}>
+                <span style={{color: status ? '#4CAF50' : '#9E9E9E'}}>
                     {status ? 'Hoạt động' : 'Không hoạt động'}
                 </span>
             ),
@@ -126,7 +126,7 @@ export default function ManageUser() {
                         okText="Xóa"
                         cancelText="Hủy"
                     >
-                        <Button icon={<DeleteOutlined />} type="danger">
+                        <Button icon={<DeleteOutlined/>} type="danger">
                             Xóa
                         </Button>
                     </Popconfirm>
@@ -142,22 +142,29 @@ export default function ManageUser() {
 
     return (
         <div>
-            <h1>Quản lý người dùng</h1>
-            <Table
-                columns={columns}
-                dataSource={users}
-                loading={isLoading}
-                pagination={false} // Sử dụng phân trang tùy chỉnh
-                rowKey="id"
-            />
-            {/* Phân trang tùy chỉnh */}
-            <div className="flex justify-center items-center mt-4">
-                <Pagination
-                    currentPage={page}
-                    totalPages={totalPages1} // Tổng số trang
-                    onPageChange={handlePageChange}
-                />
-            </div>
+
+            {isError ? (
+                <Empty/>
+            ) : (
+                <Skeleton loading={isLoading} active>
+                    <h1>Quản lý người dùng</h1>
+                    <Table
+                        columns={columns}
+                        dataSource={users}
+                        //loading={isLoading}
+                        pagination={false} // Sử dụng phân trang tùy chỉnh
+                        rowKey="id"
+                    />
+                    {/* Phân trang tùy chỉnh */}
+                    <div className="flex justify-center items-center mt-4">
+                        <Pagination
+                            currentPage={page}
+                            totalPages={totalPages1} // Tổng số trang
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
+                </Skeleton>
+            )}
         </div>
     );
 }

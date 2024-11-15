@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button } from 'antd';
-import { useGetKYCItemsQuery } from '../../../services/kyc.service';
-import { useNavigate } from 'react-router-dom';
-import { Client } from '@stomp/stompjs';
+import React, {useEffect, useState} from 'react';
+import {Table, Button, Empty, Skeleton} from 'antd';
+import {useGetKYCItemsQuery} from '../../../services/kyc.service';
+import {useNavigate} from 'react-router-dom';
+import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
 const getStatusStyle = (status) => {
@@ -19,7 +19,7 @@ const getStatusStyle = (status) => {
 };
 
 const ManageKYC = () => {
-    const { data, error, isLoading, refetch } = useGetKYCItemsQuery({ page: 0, limit: 10 });
+    const {data, isError, isLoading, refetch} = useGetKYCItemsQuery({page: 0, limit: 10});
 
     const navigate = useNavigate();
     const [connected, setConnected] = useState(false);
@@ -78,8 +78,8 @@ const ManageKYC = () => {
         };
     }, [data]);
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error loading KYC items: {error.message}</div>;
+    // if (isLoading) return <div>Loading...</div>;
+    // if (error) return <div>Error loading KYC items: {error.message}</div>;
 
     const columns = [
         {
@@ -127,11 +127,17 @@ const ManageKYC = () => {
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">Manage KYC</h2>
-            <Table
-                dataSource={items}
-                rowKey="kycId"
-                columns={columns}
-            />
+            {isError ? (
+                <Empty/>
+            ) : (
+                <Skeleton loading={isLoading} active>
+                    <Table
+                        dataSource={items}
+                        rowKey="kycId"
+                        columns={columns}
+                    />
+                </Skeleton>
+            )}
         </div>
     );
 };
