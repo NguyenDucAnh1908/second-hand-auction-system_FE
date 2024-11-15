@@ -1,14 +1,15 @@
-import {Heading, InputDH} from "../../components/index.jsx";
+import { Heading, InputDH } from "../../components/index.jsx";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import Header2 from "../../components/Header2/index.jsx";
-import React, {useState} from "react";
-import {TabPanel, TabList, Tab, Tabs} from "react-tabs";
-import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
-import {PlusOutlined} from '@ant-design/icons';
-import {useCreateKycMutation} from "../../services/kyc.service.js";
-import {Breadcrumb, Button, Layout, Steps, theme, Image, Upload, DatePicker, message} from 'antd';
+import React, { useState } from "react";
+import { TabPanel, TabList, Tab, Tabs } from "react-tabs";
+import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
+import { PlusOutlined } from '@ant-design/icons';
+import { useCreateKycMutation, useGetKYCByUserQuery } from "../../services/kyc.service.js";
+import { Breadcrumb, Button, Layout, Steps, theme, Image, Upload, DatePicker, message } from 'antd';
 import useHookUploadImage from "../../hooks/useHookUploadImage.js";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import dayjs from 'dayjs';
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -17,32 +18,35 @@ const getBase64 = (file) =>
         reader.onload = () => resolve(reader.result);
         reader.onerror = (error) => reject(error);
     });
-const {Content, Sider} = Layout;
+const { Content, Sider } = Layout;
 
 
 export default function KNCPage() {
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0);
-    const {token} = theme.useToken();
+    const { token } = theme.useToken();
     const [fileList, setFileList] = useState([]);
-    const {UploadImage} = useHookUploadImage();
+    const { UploadImage } = useHookUploadImage();
     const [current, setCurrent] = useState(0);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
-    const [ FormData,setFormData] = useState("");
+    const [FormData, setFormData] = useState("");
+    const { data } = useGetKYCByUserQuery();
+    const dob = data?.data?.dob;
+    console.log(dob);
     const [kycData, setKycData] = useState({
-        dob: "",
-        gender: "",
-        fullName: "",
-        age: 0,
-        phoneNumber: "",
-        email: "",
-        cccdNumber: "",
-        frontDocumentUrl: "",
-        backDocumentUrl: ""
+        dob: data?.data?.dob || "",
+        gender: data?.data?.gender || "",
+        fullName: data?.data?.fullName || "",
+        age: data?.data?.age || 0,
+        phoneNumber: data?.data?.phoneNumber || "",
+        email: data?.data?.email || "",
+        cccdNumber: data?.data?.cccdNumber || "",
+        frontDocumentUrl: data?.data?.frontDocumentUrl || "",
+        backDocumentUrl: data?.data?.backDocumentUrl || "",
 
     });
     const [errors, setErrors] = useState({
@@ -79,11 +83,10 @@ export default function KNCPage() {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0; // Trả về true nếu không có lỗi
     };
-    const handleGenderChange = (e) => {
-        setKycData({...kycData, gender: e.target.value});
-    };
-    const [createKyc, {isLoading, isSuccess, isError, error}] = useCreateKycMutation();
-    const handleChangeImage = async ({fileList: newFileList}) => {
+
+    
+    const [createKyc, { isLoading, isSuccess, isError, error }] = useCreateKycMutation();
+    const handleChangeImage = async ({ fileList: newFileList }) => {
         if (newFileList.length > 2) {
             message.warning("Bạn chỉ có thể tải lên tối đa 2 ảnh!");
             return;
@@ -182,10 +185,17 @@ export default function KNCPage() {
 
 
     const handleDateChange = (date) => {
-        setKycData({
-            ...kycData,
-            dob: date ? date.format("YYYY-MM-DD") : null // Chuyển đổi ngày sang định dạng YYYY-MM-DD
-        });
+        setKycData((prevData) => ({
+            ...prevData,
+            dob: date ? date.format("YYYY-MM-DD") : "" // Chuyển đổi ngày sang định dạng YYYY-MM-DD, hoặc để trống nếu không có ngày
+        }));
+    };
+
+    const handleGenderChange = (event) => {
+        setKycData((prevState) => ({
+            ...prevState,
+            gender: event.target.value,
+        }));
     };
 
     const steps = [
@@ -203,7 +213,7 @@ export default function KNCPage() {
                                 shape="round"
                                 placeholder="Please input name"
                                 value={kycData.fullName}
-                                onChange={(e) => setKycData({...kycData, fullName: e.target.value})}
+                                onChange={(e) => setKycData({ ...kycData, fullName: e.target.value })}
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"
                             />
                             {errors.fullName && <p className="text-red-600">{errors.fullName}</p>} {/* Thông báo lỗi */}
@@ -219,7 +229,7 @@ export default function KNCPage() {
                                 shape="round"
                                 placeholder="example@gmail.com"
                                 value={kycData.email}
-                                onChange={(e) => setKycData({...kycData, email: e.target.value})}
+                                onChange={(e) => setKycData({ ...kycData, email: e.target.value })}
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"
                             />
                             {errors.email && <p className="text-red-600 ml-0">{errors.email}</p>} {/* Thông báo lỗi */}
@@ -228,16 +238,16 @@ export default function KNCPage() {
 
                         {/* Date of Birth Field */}
                         <div className="flex flex-col gap-1.5">
-                            <Heading as="h3" className="text-[16px] font-medium text-blue_gray-900_01 text-left">
+                            <h3 className="text-[16px] font-medium text-blue_gray-900_01 text-left">
                                 Ngày tháng năm sinh
-                            </Heading>
+                            </h3>
                             <DatePicker
-                                style={{width: '100%'}}
+                                style={{ width: '100%' }}
                                 placeholder="Chọn ngày sinh"
-                                format="YYYY-MM-DD" // Định dạng ngày
-                                onChange={handleDateChange} // Gọi hàm cập nhật khi chọn ngày
+                                format="YYYY-MM-DD"
+                                value={kycData.dob ? dayjs(kycData.dob, "YYYY-MM-DD") : null} // Chuyển chuỗi thành đối tượng dayjs
+                                onChange={handleDateChange}
                             />
-                            {errors.email && <p className="text-red-600 ml-0">{errors.dob}</p>} {/* Thông báo lỗi */}
 
                         </div>
                         {/* Phone Number Field */}
@@ -249,7 +259,7 @@ export default function KNCPage() {
                                 shape="round"
                                 placeholder="09xx xxx xxx"
                                 value={kycData.phoneNumber}
-                                onChange={(e) => setKycData({...kycData, phoneNumber: e.target.value})}
+                                onChange={(e) => setKycData({ ...kycData, phoneNumber: e.target.value })}
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"
                             />
                             {errors.phoneNumber &&
@@ -259,33 +269,45 @@ export default function KNCPage() {
 
                         {/* Gender Field */}
                         <div className="flex flex-col gap-1.5">
-                            <Heading as="h4" className="text-[16px] font-medium text-blue_gray-900_01 text-left">
+                            <h4 className="text-[16px] font-medium text-blue_gray-900_01 text-left">
                                 Giới tính
-                            </Heading>
+                            </h4>
                             <div className="flex items-center gap-8">
                                 <label className="flex items-center">
-                                    <input type="radio" name="gender" value="male" className="mr-2"
-                                           checked={kycData.gender === 'male'}
-                                           onChange={handleGenderChange}/>
+                                    <input
+                                        type="radio"
+                                        name="gender"
+                                        value="male"
+                                        className="mr-2"
+                                        checked={kycData.gender === "male"}
+                                        onChange={handleGenderChange}
+                                    />
                                     Nam
                                 </label>
                                 <label className="flex items-center">
-                                    <input type="radio" name="gender" value="female" className="mr-2"
-                                           checked={kycData.gender === 'female'}
-                                           onChange={handleGenderChange}
+                                    <input
+                                        type="radio"
+                                        name="gender"
+                                        value="female"
+                                        className="mr-2"
+                                        checked={kycData.gender === "female"}
+                                        onChange={handleGenderChange}
                                     />
                                     Nữ
                                 </label>
                                 <label className="flex items-center">
-                                    <input type="radio" name="gender" value="other" className="mr-2"
-                                           checked={kycData.gender === 'other'}
-                                           onChange={handleGenderChange}
+                                    <input
+                                        type="radio"
+                                        name="gender"
+                                        value="other"
+                                        className="mr-2"
+                                        checked={kycData.gender === "other"}
+                                        onChange={handleGenderChange}
                                     />
                                     Khác
                                 </label>
                             </div>
                         </div>
-
                         {/* Age Field */}
                         <div className="flex flex-col gap-1.5">
                             <Heading as="h4" className="text-[16px] font-medium text-blue_gray-900_01 text-left">
@@ -295,7 +317,7 @@ export default function KNCPage() {
                                 shape="round"
                                 placeholder="age"
                                 value={kycData.age}
-                                onChange={(e) => setKycData({...kycData, age: e.target.value})}
+                                onChange={(e) => setKycData({ ...kycData, age: e.target.value })}
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"
                             />
                             {errors.age && <p className="text-red-600">{errors.age}</p>} {/* Thông báo lỗi */}
@@ -320,7 +342,7 @@ export default function KNCPage() {
                                 placeholder="012345678"
                                 className="self-stretch rounded-md border border-gray-200 px-4 py-2"
                                 value={kycData.cccdNumber}
-                                onChange={(e) => setKycData({...kycData, cccdNumber: e.target.value})}
+                                onChange={(e) => setKycData({ ...kycData, cccdNumber: e.target.value })}
                             />
                             {errors.cccdNumber &&
                                 <p className="text-red-500 text-sm">{errors.cccdNumber}</p>} {/* Hiển thị lỗi */}
@@ -342,8 +364,8 @@ export default function KNCPage() {
                             >
                                 {fileList.length < 2 ? (
                                     <div>
-                                        <PlusOutlined/>
-                                        <div style={{marginTop: 8}}>Chọn ảnh</div>
+                                        <PlusOutlined />
+                                        <div style={{ marginTop: 8 }}>Chọn ảnh</div>
                                     </div>
                                 ) : null}
                             </Upload>
@@ -385,8 +407,8 @@ export default function KNCPage() {
 
     return (
         <>
-            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-                <Header2/>
+            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <Header2 />
                 <Content
                     style={{
                         padding: '0 48px',
@@ -418,7 +440,7 @@ export default function KNCPage() {
                             }}
                             width={300}
                         >
-                            <SiderUserBK/>
+                            <SiderUserBK />
                         </Sider>
                         <Content
                             style={{
@@ -430,7 +452,7 @@ export default function KNCPage() {
                             <main className="flex flex-1 flex-col gap-6 md:self-stretch">
                                 <header className="text-center">
                                     <Heading size="headinglg"
-                                             className="text-4xl font-semibold uppercase text-blue_gray-900_01">
+                                        className="text-4xl font-semibold uppercase text-blue_gray-900_01">
                                         xác minh danh tính
                                     </Heading>
 
@@ -439,30 +461,30 @@ export default function KNCPage() {
                                             <Tab className="cursor-pointer">Danh tính</Tab>
                                             <Tab className="cursor-pointer">CCCD/Hộ chiếu</Tab>
                                         </TabList>
-                                        <div style={{width: '90%', margin: '0 auto'}}>
+                                        <div style={{ width: '90%', margin: '0 auto' }}>
                                             <Steps current={current}>
                                                 {steps.map((item) => (
-                                                    <Steps.Step key={item.title} title={item.title}/>
+                                                    <Steps.Step key={item.title} title={item.title} />
                                                 ))}
                                             </Steps>
                                             <div className="step-content">
                                                 {steps[current].content(handleChange, fileList, setFileList, previewImage, setPreviewImage, handlePreview)}
                                             </div>
-                                            <div style={{marginTop: 24}}>
+                                            <div style={{ marginTop: 24 }}>
                                                 {current < steps.length - 1 && (
                                                     <Button type="primary" onClick={next}>
                                                         Next
                                                     </Button>
                                                 )}
                                                 {current > 0 && (
-                                                    <Button style={{margin: '0 8px'}} onClick={prev}>
+                                                    <Button style={{ margin: '0 8px' }} onClick={prev}>
                                                         Previous
                                                     </Button>
                                                 )}
                                             </div>
                                         </div>
                                     </Tabs>
-                                    <br/>
+                                    <br />
 
                                 </header>
                             </main>
@@ -470,7 +492,7 @@ export default function KNCPage() {
                     </Layout>
                 </Content>
                 <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
+                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
             </Layout>
         </>
     );

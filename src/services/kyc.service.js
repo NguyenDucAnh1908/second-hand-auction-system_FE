@@ -24,9 +24,11 @@ export const kycApiSlice = apiSlice.injectEndpoints({
         }),
 
         getKYCById: builder.query({
-             query: (id) => `kyc/${id}`
-           
+            query: (id) => `kyc/${id}`
+
         }),
+
+
 
         updateKyc: builder.mutation({
             query: ({ kycId, kycData }) => ({
@@ -42,9 +44,22 @@ export const kycApiSlice = apiSlice.injectEndpoints({
                 method: "POST",
                 body: kycData,
             }),
-        })
+        }),
+
+        getKYCByUser: builder.query({
+            query: () => `kyc/user`
+        }),
+
+        updateKYCByUser: builder.mutation({
+            query: (kycData) => ({
+                url: "/kyc/update-profileKyc",
+                method: "PUT",
+                body: kycData,
+            }),
+        }),
     }),
-});
+})
+
 
 // Xuất hook cho component
-export const { useGetKYCItemsQuery, useGetKYCByIdQuery, useUpdateKycMutation, useCreateKycMutation } = kycApiSlice;
+export const { useGetKYCItemsQuery, useGetKYCByIdQuery, useUpdateKycMutation, useCreateKycMutation, useGetKYCByUserQuery, useUpdateKYCByUserMutation } = kycApiSlice;
