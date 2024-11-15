@@ -44,6 +44,7 @@ import Contact from "./pages/Contact/index.jsx";
 import Policy from "./pages/Policy/index.jsx";
 import AboutAuction from "./pages/Introduce/index.jsx";
 import MenuKyc from "./pages/Kyc/Menu.jsx";
+import UpdateKYC from "./pages/Kyc/UpdateProflie.jsx";
 function App() {
     return (
         <Routes>
@@ -103,6 +104,7 @@ function App() {
                     <Route path="CreateOrder/:id" index element={<CreateOrder/>}/>
                     <Route path="Order/:id" index element={<OrderForm/>}/>
                     <Route path="MenuKyc" index element={<MenuKyc/>}/>
+                    <Route path="UpdateKYC" index element={<UpdateKYC/>}/>
                 </Route>
                 {/*<Route element={<RequireAuth allowedRoles={["STAFF", "ADMIN"]}/>}>*/}
 

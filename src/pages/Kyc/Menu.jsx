@@ -10,7 +10,7 @@ export default function MenuKyc() {
     };
 
     const handleUpdate = () => {
-        navigate('/RegisterKYC');
+        navigate('/UpdateKyc');
     };
 
     return (
