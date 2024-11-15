@@ -103,19 +103,14 @@ export default function OrderForm() {
     //console.log("auctionData?.itemName", orderDetails?.fullName)
     const handleSubmit = async (e) => {
         e.preventDefault();
-        showLoader(); // Start loader immediately
+        showLoader();
 
         try {
-            // First, create the order
             const result = await createOrder(orderDetails).unwrap();
-            //console.log("Order created successfully:", result);
             message.success('Đơn hàng đã được tạo thành công!');
-            // Next, calculate the shipping fee
-            const feeResult = await fetchFee();
-            //console.log("Shipping fee fetched successfully:", feeResult);
+            //const createOrderResult = await fetchFee();
             message.success(result.message)
-            message.success(feeResult.message_display)
-            // Navigate and refetch after success
+            //message.success(createOrderResult.message_display)
             navigate('/OrderManagementBuyer');
             refetch();
         } catch (error) {
@@ -123,7 +118,7 @@ export default function OrderForm() {
             const errorMessage = error?.data?.message + " Vui lòng kiểm tra lại thông tin ở danh sách đơn hàng" || "An error occurred while creating the order";
             message.error(errorMessage);
         } finally {
-            setSpinning(false); // Stop loader after all operations are complete
+            setSpinning(false);
         }
     };
     React.useEffect(() => {
