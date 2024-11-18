@@ -4,10 +4,12 @@ import { Tabs } from "react-tabs";
 import React, {useState} from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import Sidebar from '../../../partials/Sidebar';
-import Header from '../../../partials/Header';
+import Header2 from "../../../components/Header2";
 import Banner from '../../../partials/Banner';
 import { Breadcrumb, Layout, Menu, theme} from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
+import { useGetOrderSellerQuery } from "../../../services/order.service";
+import { Header } from "antd/es/layout/layout";
 const {Content, Sider} = Layout;
 
 export default function OrderManagementSeller() {
@@ -15,7 +17,13 @@ export default function OrderManagementSeller() {
     token: {colorBgContainer, borderRadiusLG},
   } = theme.useToken();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0); // State cho trang hiện tại
+  const { data: dataOrder, error } = useGetOrderSellerQuery({ page: currentPage, limit: 10 });
+  console.log(dataOrder?.data);
+  if (error) return <div>Error loading orders!</div>;
+  if (!dataOrder) return <div>Loading...</div>;
 
+  console.log("Data", dataOrder?.data);
   return (
     <>
       <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
@@ -67,8 +75,8 @@ export default function OrderManagementSeller() {
                     selectedTabClassName=""
                     selectedTabPanelClassName="tab-panel--selected"
                 >
-                  {/*<StatusOrderSeller/>*/}
-                  <OrderManagementSectionSeller/>
+                  {/* <StatusOrderSeller/> */}
+                  <OrderManagementSectionSeller orders={dataOrder?.data?.orders || []}/>
                 </Tabs>
               </div>
             </Content>
