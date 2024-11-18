@@ -2,11 +2,12 @@ import { Helmet } from "react-helmet";
 import React, { useState } from "react"; // Import useState
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK";
-import {Breadcrumb, Layout, theme, Table, Spin, Alert, Button, Modal, Skeleton, Empty, Tag, Statistic} from "antd";
+import { Breadcrumb, Layout, theme, Table, Spin, Alert, Button, Modal, Skeleton, Empty, Tag, Statistic } from "antd";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { useGetOrderQuery } from "../../services/order.service";
 import { FaShoppingCart, FaProductHunt, FaGavel } from 'react-icons/fa';
 import FeedbackForm from "../../components/FeedbackForm";
+import { useCheckFeedbackQuery } from "../../services/feedback.service";
 import {
     CheckCircleOutlined,
     ClockCircleOutlined,
@@ -15,6 +16,7 @@ import {
     MinusCircleOutlined,
     SyncOutlined,
 } from '@ant-design/icons';
+
 
 const { Content, Sider } = Layout;
 export default function OrderManagementBuyer() {
@@ -28,6 +30,8 @@ export default function OrderManagementBuyer() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [isFeedbackSellerModalVisible, setIsFeedbackSellerModalVisible] = useState(false);
+
 
 
     const statusStyles = {
@@ -66,22 +70,11 @@ export default function OrderManagementBuyer() {
             key: 'status',
             align: 'center',
             render: (status) => (
-                // <div className="flex justify-center">
-                //     <span
-                //         className={`flex items-center justify-center w-32 h-8 px-9 ${statusStyles[status] || 'bg-gray-300 text-black'}`}>
-                //         {status}
-                //     </span>
-                // </div>
                 <Tag icon={<SyncOutlined spin />} color="processing">
                     {status}
                 </Tag>
             ),
         },
-        // {
-        //     title: 'Quantity',
-        //     dataIndex: 'quantity',
-        //     key: 'quantity',
-        // },
         {
             title: 'Note',
             dataIndex: 'note',
@@ -95,22 +88,34 @@ export default function OrderManagementBuyer() {
                     <Button
                         type="primary"
                         className="bg-blue-500 hover:bg-blue-600 text-white font-bold mr-2"
-                        onClick={() => handleDetailClick(record)} // Pass the entire record to the function
+                        onClick={() => handleDetailClick(record)}
                     >
-                        Detail
+                        Chi tiết
                     </Button>
-                    <Button
-                        type="default"
-                        className="bg-green-500 hover:bg-green-600 text-white font-bold"
-                        onClick={() => handleReviewClick(record)} // Function to handle review button click
-                    >
-                        Đánh Giá
-                    </Button>
+                    {record.feedback ? (
+                        <Button
+                            type="default"
+                            className="bg-yellow-700 hover:bg-gray-600 text-white font-bold"
+                            onClick={() => handleViewFeedbackClick(record)}
+                        >
+                            Xem Đánh Giá
+                        </Button>
+                    ) : (
+                        record.status === "CONFIRMED" && (
+                            <Button
+                                type="default"
+                                className="bg-green-500 hover:bg-green-600 text-white font-bold"
+                                onClick={() => handleReviewClick(record)}
+                            >
+                                Đánh Giá
+                            </Button>
+                        )
+                    )}
                 </>
             ),
-        }
-        ,
+        },
     ];
+
 
     const handleDetailClick = (order) => {
         setSelectedOrder(order);
@@ -119,7 +124,12 @@ export default function OrderManagementBuyer() {
 
     const handleReviewClick = (order) => {
         setSelectedOrder(order);
-        setIsFeedbackModalVisible(true); // Open the feedback modal
+        setIsFeedbackModalVisible(true);
+    };
+
+    const handleViewFeedbackClick = (order) => {
+        setSelectedOrder(order);
+        setIsFeedbackSellerModalVisible(true);
     };
 
     const handleModalClose = () => {
@@ -129,6 +139,11 @@ export default function OrderManagementBuyer() {
 
     const handleFeedbackModalClose = () => {
         setIsFeedbackModalVisible(false);
+        setSelectedOrder(null);
+    };
+
+    const handleFeedbackSellerModalClose = () => {
+        setIsFeedbackSellerModalVisible(false);
         setSelectedOrder(null);
     };
 
@@ -151,8 +166,13 @@ export default function OrderManagementBuyer() {
         auctionTypeName: order.auctionOrder.auctionTypeName,
         priceStep: order.auctionOrder.priceStep,
         auctionstatus: order.auctionOrder.status,
-        termConditions: order.auctionOrder.termConditions
+        termConditions: order.auctionOrder.termConditions,
+        feedback: order.feedback
     })) || [];
+
+
+
+
 
     return (
         <>
@@ -346,7 +366,7 @@ export default function OrderManagementBuyer() {
                     )}
                 </Modal>
 
-                {/* Modal to handle feedback */}
+                {/* Modal to handle create feedback */}
                 <Modal
                     title="Đánh giá sản phẩm"
                     visible={isFeedbackModalVisible}
@@ -369,8 +389,8 @@ export default function OrderManagementBuyer() {
                                     <FaProductHunt style={{ marginRight: '10px', color: '#ff7f50' }} /> {/* Product Icon */}
                                     Thông tin sản phẩm
                                 </h3>
-                              
-                               
+
+
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Tên sản phẩm:</strong>
                                     <span>{selectedOrder.itemName}</span>
@@ -391,6 +411,116 @@ export default function OrderManagementBuyer() {
                         </div>
                     )}
                 </Modal>
+
+
+                {/* Modal to handle show feedback */}
+                <Modal
+                    title="Xem đánh giá"
+                    visible={isFeedbackSellerModalVisible}
+                    onCancel={handleFeedbackSellerModalClose}
+                    footer={null}
+                    width={600}
+                    bodyStyle={{ padding: '20px', overflowY: 'auto' }}
+                >
+                    {selectedOrder && selectedOrder.feedback ? (
+                        <div>
+                            {/* Feedback Section */}
+                            <div
+                                style={{
+                                    backgroundColor: '#fff',
+                                    padding: '20px',
+                                    borderRadius: '8px',
+                                    marginBottom: '20px',
+                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                                }}
+                            >
+                                {/* User Info Section */}
+                                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
+                                    <img
+                                        src="/images/user.png"
+                                        alt="User Avatar"
+                                        style={{
+                                            width: '40px',
+                                            height: '40px',
+                                            borderRadius: '50%',
+                                            marginRight: '10px',
+                                        }}
+                                    />
+                                    <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#333' }}>
+                                        {selectedOrder.feedback.username}
+                                    </div>
+                                </div>
+
+                                {/* Rating Section - Stars Below Username */}
+                                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
+                                    <div style={{ fontSize: '24px', color: '#ff8c00' }}>
+                                        {/* Display stars based on rating */}
+                                        {Array(selectedOrder.feedback.rating)
+                                            .fill('★')
+                                            .join('')}
+                                        {Array(5 - selectedOrder.feedback.rating)
+                                            .fill('☆')
+                                            .join('')}
+                                    </div>
+                                </div>
+
+                                {/* Comment Section */}
+                                <div style={{ marginBottom: '15px' }}>
+                                    <p style={{ fontStyle: 'italic', color: '#555', fontSize: '14px' }}>
+                                        {selectedOrder.feedback.comment}
+                                    </p>
+                                </div>
+
+                                {/* Timestamp Section */}
+                                <div
+                                    style={{
+                                        marginBottom: '15px',
+                                        fontSize: '12px',
+                                        color: '#888',
+                                        textAlign: 'left',
+                                    }}
+                                >
+                                    {new Date(selectedOrder.feedback.createAt).toLocaleString('vi-VN', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                    })}
+                                </div>
+
+                                {/* Reply from Seller Section */}
+                                {selectedOrder.feedback.replyComment && (
+                                    <div
+                                        style={{
+                                            backgroundColor: '#f1f8ff',
+                                            padding: '15px',
+                                            borderRadius: '8px',
+                                            marginTop: '20px',
+                                            textAlign: 'left',
+                                        }}
+                                    >
+                                        <strong>Phản hồi từ người bán:</strong>
+                                        <p
+                                            style={{
+                                                fontStyle: 'italic',
+                                                color: '#007bff',
+                                                fontSize: '14px',
+                                                marginTop: '5px',
+                                            }}
+                                        >
+                                            {selectedOrder.feedback.replyComment}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <Empty description="Không có đánh giá nào." />
+                    )}
+                </Modal>
+
+
 
 
 

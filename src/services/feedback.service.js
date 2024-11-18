@@ -17,6 +17,9 @@ export const feedbackApiSlice = apiSlice.injectEndpoints({
     }),
 
 
+    checkFeedback: builder.query({
+      query: (orderId) => `/feedback/check-feedback/${orderId}`,
+    }),
 
   }),
 });
@@ -26,5 +29,6 @@ export const feedbackApiSlice = apiSlice.injectEndpoints({
 export const
   {
     useGetFeedbackBySellerUserIdQuery,
-    useCreateFeedbackMutation
+    useCreateFeedbackMutation,
+    useCheckFeedbackQuery
   } = feedbackApiSlice;
