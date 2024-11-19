@@ -45,6 +45,7 @@ import Policy from "./pages/Policy/index.jsx";
 import AboutAuction from "./pages/Introduce/index.jsx";
 import MenuKyc from "./pages/Kyc/Menu.jsx";
 import UpdateKYC from "./pages/Kyc/UpdateProflie.jsx";
+import CRUDSellerInfor from "./pages/Seller/CRUDInfor/index.jsx";
 function App() {
     return (
         <Routes>
@@ -86,6 +87,7 @@ function App() {
                     <Route path="/dashboard-seller/ListOfSellerProduct" index element={<ListOfSellerProductPage/>}/>
                     <Route path="/dashboard-seller/OrderManagementSeller" index element={<OrderManagementSeller/>}/>
                     <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>
+                    <Route path="/dashboard-seller/CRUDInfor" index element={<CRUDSellerInfor/>}/>
                 </Route>
 
                 {/*BUYER*/}
