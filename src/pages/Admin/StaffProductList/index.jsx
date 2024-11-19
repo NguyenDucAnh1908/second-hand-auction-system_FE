@@ -38,9 +38,9 @@ export default function StaffProductListPage() {
         number: item?.itemId,
         product: item?.itemName,
         image: item?.thumbnail || "https://via.placeholder.com/150",
-        time: item?.auction.approved_at,
+        time: item?.auction?.approved_at,
         status: item?.itemStatus,
-        sellerHeader: item?.auction.created_by || "Unknown Seller",
+        sellerHeader: item?.auction?.created_by || "Unknown Seller",
     })) || [];
 
     const showDefaultDrawer = (itemId) => {
