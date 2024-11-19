@@ -2,10 +2,11 @@ import React, {useState} from 'react';
 import {useGetSellerQuery} from "@/services/item.service.js";
 import {useGetUserByIdQuery} from "@/services/user.service.js";
 import {Button, Typography} from "@material-tailwind/react";
-import {Avatar, Descriptions, Image, Modal} from "antd";
+import {Avatar, Descriptions, Image, Modal, Tag} from "antd";
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
 import {Heading} from "@/components/index.jsx";
 import {useGetOrderDetailQuery} from "@/services/order.service.js";
+import {SyncOutlined} from "@ant-design/icons";
 
 function DrawerDetailOrder({orderId}) {
     const [selectedDescription, setSelectedDescription] = useState(null);
@@ -61,7 +62,20 @@ function DrawerDetailOrder({orderId}) {
         {
             key: '5',
             label: 'Trạng thái',
-            children: orderData?.status,
+            children:
+                <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                    <Tag icon={<SyncOutlined spin/>} color="processing">
+                        {orderData?.status}
+                    </Tag>
+                    <Button
+                        type="primary"
+                        // onClick={() => handleUpdateStatus(orderData?.id)}
+                        className="px-2 py-1 text-sm h-auto"
+                    >
+                        Cập nhật
+                    </Button>
+                </div>
+            ,
             span: 3,
         },
         {
