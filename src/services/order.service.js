@@ -48,7 +48,6 @@ export const orderApiSlice = apiSlice.injectEndpoints({
                     limit: paging.limit || 10,
                 },
             }),
-
         }),
 
         getOrderDetail: builder.query({
@@ -68,6 +67,6 @@ export const {
     useGetOrderAdminQuery,
     useGetOrderRevenueQuery,
     useGetOrderSellerQuery,
-    useGetOrderDetailQuery
+    useGetOrderDetailQuery,
 } = orderApiSlice;
  

@@ -44,10 +44,19 @@ class OnlineGatewayService {
     static async create_order_service(data) {
         const response = await axios.post(
             `${api}/v2/shipping-order/create`,
-            data, // Pass data as the request body
-            { headers: headers } // Pass headers as a separate option
+            data,
+            { headers: headers }
         );
         return response;
     }
+
+    // static async detail_order_service(data) {
+    //     const response = await axios.post(
+    //         `${api}/v2/shipping-order/detail`,
+    //         data,
+    //         { headers: headers }
+    //     );
+    //     return response;
+    // }
 }
 export default OnlineGatewayService;

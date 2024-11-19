@@ -20,6 +20,7 @@ export default function OrderForm() {
         note: '',
         auctionId: id,
         paymentMethod: '',
+        orderCode: '',
     });
     const [spinning, setSpinning] = React.useState(false);
     const [percent, setPercent] = React.useState(0);
@@ -37,6 +38,51 @@ export default function OrderForm() {
     const {refetch} = useGetOrderQuery({page: 0, limit: 10});
     const navigate = useNavigate();
     console.log("auctionData", auctionData)
+    // const fetchFee = async () => {
+    //     const data = {
+    //         payment_type_id: 2,
+    //         note: orderDetails.note,
+    //         required_note: "KHONGCHOXEMHANG",
+    //         return_district_id: null,
+    //         return_ward_code: "",
+    //         client_order_code: "",
+    //         to_name: orderDetails?.fullName,
+    //         to_phone: orderDetails?.phoneNumber,
+    //         to_address: "DIA O DAU TU TIM",
+    //         to_ward_name: addressData?.ward_name,
+    //         to_district_name: addressData?.district_name,
+    //         to_province_name: addressData?.province_name,
+    //         cod_amount: 0,
+    //         weight: 5,
+    //         length: 3,
+    //         width: 10,
+    //         height: 5,
+    //         cod_failed_amount: 2000,
+    //         pick_station_id: 1444,
+    //         deliver_station_id: null,
+    //         insurance_value: 1000000,
+    //         service_id: 0,
+    //         service_type_id: 2,
+    //         pick_shift: [2],
+    //         items: [
+    //             {
+    //                 name: auctionData?.data.itemName,
+    //                 quantity: 1,
+    //                 //price: auctionData?.data.amount,
+    //                 price: auctionData?.data.amount,
+    //             },
+    //         ],
+    //     };
+    //
+    //     try {
+    //         const res = await apiGhn.create_order_service(data);
+    //         message.success(res.message_display);
+    //         return res;
+    //     } catch (error) {
+    //         message.error(error.message_display || "Failed to fetch shipping fee.");
+    //         throw error; // Throw lại lỗi để handleSubmit có thể nhận diện
+    //     }
+    // };
     const fetchFee = async () => {
         const data = {
             payment_type_id: 2,
@@ -67,7 +113,6 @@ export default function OrderForm() {
                 {
                     name: auctionData?.data.itemName,
                     quantity: 1,
-                    //price: auctionData?.data.amount,
                     price: auctionData?.data.amount,
                 },
             ],
@@ -76,10 +121,11 @@ export default function OrderForm() {
         try {
             const res = await apiGhn.create_order_service(data);
             message.success(res.message_display);
-            return res;
+            //console.log("Response from GHN:", res);
+            return res?.data?.data;
         } catch (error) {
             message.error(error.message_display || "Failed to fetch shipping fee.");
-            throw error; // Throw lại lỗi để handleSubmit có thể nhận diện
+            throw error;
         }
     };
     const showLoader = () => {
@@ -101,16 +147,41 @@ export default function OrderForm() {
         setIntervalId(id);
     };
     //console.log("auctionData?.itemName", orderDetails?.fullName)
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     showLoader();
+    //
+    //     try {
+    //         const result = await createOrder(orderDetails).unwrap();
+    //         message.success('Đơn hàng đã được tạo thành công!');
+    //         const createOrderResult = await fetchFee();
+    //         message.success(result.message)
+    //         //message.success(createOrderResult.message_display)
+    //         navigate('/OrderManagementBuyer');
+    //         refetch();
+    //     } catch (error) {
+    //         console.error("Create order error:", error);
+    //         const errorMessage = error?.data?.message + " Vui lòng kiểm tra lại thông tin ở danh sách đơn hàng" || "An error occurred while creating the order";
+    //         message.error(errorMessage);
+    //     } finally {
+    //         setSpinning(false);
+    //     }
+    // };
     const handleSubmit = async (e) => {
         e.preventDefault();
         showLoader();
 
         try {
-            const result = await createOrder(orderDetails).unwrap();
+            const createOrderResult = await fetchFee();
+            const orderCode = createOrderResult?.order_code; //
+
+            // Cập nhật orderDetails với orderCode
+            const updatedOrderDetails = {...orderDetails, orderCode};
+            //console.log("orderCode ", orderCode)
+            const result = await createOrder(updatedOrderDetails).unwrap();
             message.success('Đơn hàng đã được tạo thành công!');
-            //const createOrderResult = await fetchFee();
-            message.success(result.message)
-            //message.success(createOrderResult.message_display)
+            message.success(result.message);
+
             navigate('/OrderManagementBuyer');
             refetch();
         } catch (error) {
@@ -126,17 +197,6 @@ export default function OrderForm() {
             if (intervalId) clearInterval(intervalId);
         };
     }, [intervalId]);
-
-    // useEffect(() => {
-    //     if (auctionLoading) {
-    //         console.log("Loading auction data...");
-    //     }
-    //
-    //     if (auctionError) {
-    //         console.error("Error fetching auction data:", auctionError);
-    //     }
-    //
-    // }, [auctionData, auctionError, auctionLoading]);
     return (
         <>
             <Header2/>
