@@ -204,13 +204,43 @@ export default function AuctionPage() {
             ),
         },
         {
-            detailsTitle: "Hướng dẫn bảo quản",
+            detailsTitle: "Hướng dẫn tham gia đấu giá",
             content: (
-                <p>
-                    {data?.itemDescription}
-                </p>
+                <div className="text-base text-gray-800 leading-relaxed">
+                    <p className="mb-4">
+                        Để tham gia đấu giá sản phẩm, bạn cần thực hiện các bước sau:
+                    </p>
+                    <ul className="ml-5 mt-4 space-y-4 text-sm text-gray-700 list-inside">
+                        <li className="flex items-start">
+                            <span className="text-red-600 font-semibold mr-2">1. Đăng ký tài khoản:</span> 
+                            Bạn cần có một tài khoản người dùng trên hệ thống đấu giá để có thể tham gia các phiên đấu giá. Nếu chưa có, bạn hãy đăng ký tài khoản mới.
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-red-600 font-semibold mr-2">2. Chọn sản phẩm đấu giá:</span>
+                            Sau khi đăng nhập vào hệ thống, bạn có thể chọn sản phẩm mà bạn muốn tham gia đấu giá. Đảm bảo rằng bạn đã đọc kỹ thông tin về sản phẩm trước khi tham gia.
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-red-600 font-semibold mr-2">3. Đặt giá đấu:</span>
+                            Trong phiên đấu giá, bạn có thể đặt giá đấu cao hơn mức giá hiện tại để tăng cơ hội sở hữu sản phẩm. Hãy tham gia đấu giá nhanh chóng trước khi phiên đấu giá kết thúc.
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-red-600 font-semibold mr-2">4. Theo dõi kết quả:</span>
+                            Theo dõi tiến trình đấu giá và số tiền đấu giá hiện tại. Phiên đấu giá sẽ kết thúc khi hết thời gian, và người có mức giá cao nhất sẽ thắng cuộc.
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-red-600 font-semibold mr-2">5. Thanh toán và nhận sản phẩm:</span>
+                            Sau khi thắng đấu giá, bạn cần thanh toán số tiền đã đấu giá. Sau khi thanh toán, sản phẩm sẽ được giao đến bạn theo thỏa thuận với người bán.
+                        </li>
+                    </ul>
+                    <p className="mt-4 text-gray-700">
+                        Tham gia đấu giá không chỉ mang lại cơ hội sở hữu sản phẩm với mức giá hấp dẫn mà còn giúp bạn trải nghiệm quy trình đấu giá chuyên nghiệp.
+                    </p>
+                </div>
             ),
-        },
+        }
+        
+        
+        
     ];
 
 

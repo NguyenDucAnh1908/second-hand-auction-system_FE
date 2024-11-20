@@ -46,6 +46,7 @@ import AboutAuction from "./pages/Introduce/index.jsx";
 import MenuKyc from "./pages/Kyc/Menu.jsx";
 import UpdateKYC from "./pages/Kyc/UpdateProflie.jsx";
 import CRUDSellerInfor from "./pages/Seller/CRUDInfor/index.jsx";
+import WebSocketTest from "./pages/test.jsx";
 function App() {
     return (
         <Routes>
@@ -63,6 +64,7 @@ function App() {
                 <Route path="Contact" index element={<Contact/>}/>
                 <Route path="Policy" index element={<Policy/>}/>
                 <Route path="articles" index element={<AboutAuction/>}/>
+                <Route path="socket" index element={<WebSocketTest/>}/>
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>

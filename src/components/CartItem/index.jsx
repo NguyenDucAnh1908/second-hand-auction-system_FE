@@ -1,24 +1,24 @@
-import {Text, Heading, RatingBar, Img} from "./..";
-import React, {useState} from "react";
-import {Button, Input} from "@material-tailwind/react";
-import {Image, Statistic, Col, Row, Checkbox, Modal, message, Card, Badge, Typography} from 'antd';
-import {useNavigate} from "react-router-dom";
-import {useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery} from "@/services/auctionRegistrations.service.js";
-import {selectIsLoggedIn} from "../../redux/auth/authSlice";
-import {setCredentials} from "@/redux/auth/authSlice.js";
-import {setError, setLoading} from "@/redux/user/userSlice.js";
-import {useSelector} from "react-redux";
-import {PlusSquareFilled, CheckCircleFilled} from '@ant-design/icons';
+import { Text, Heading, RatingBar, Img } from "./..";
+import React, { useState } from "react";
+import { Button, Input } from "@material-tailwind/react";
+import { Image, Statistic, Col, Row, Checkbox, Modal, message, Card, Badge, Typography } from 'antd';
+import { useNavigate } from "react-router-dom";
+import { useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery } from "@/services/auctionRegistrations.service.js";
+import { selectIsLoggedIn } from "../../redux/auth/authSlice";
+import { setCredentials } from "@/redux/auth/authSlice.js";
+import { setError, setLoading } from "@/redux/user/userSlice.js";
+import { useSelector } from "react-redux";
+import { PlusSquareFilled, CheckCircleFilled } from '@ant-design/icons';
 import CountUp from 'react-countup';
 import "./indext.css"
 
-const {Meta, Grid} = Card;
-export default function CartItem({product, refetchItem}) {
+const { Meta, Grid } = Card;
+export default function CartItem({ product, refetchItem }) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAuctionId, setSelectedAuctionId] = useState(product?.auction?.auction_id);
     const navigate = useNavigate();
-    const formatter = (value) => <CountUp end={value} separator="."/>;
+    const formatter = (value) => <CountUp end={value} separator="." />;
     const isLoggedIn = useSelector(selectIsLoggedIn);
     const auctionEndDate = product.auction?.endDate || null;
     const auctionEndTime = product.auction?.end_time || null;
@@ -45,11 +45,11 @@ export default function CartItem({product, refetchItem}) {
         isLoading: isLoadingCheckRegister,
         isError: isErrorCheckRegister,
         error: errorCheckRegister
-    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? {auctionId: selectedAuctionId} : null, {
+    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? { auctionId: selectedAuctionId } : null, {
         skip: !selectedAuctionId,
     });
     const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.statusRegistration === true
-    const [AuctionRegister, {isLoading: isLoadingAuctionRegister, error}] = useAuctionRegisterMutation();
+    const [AuctionRegister, { isLoading: isLoadingAuctionRegister, error }] = useAuctionRegisterMutation();
     const handleSubmitAuctionRegister = async (e) => {
         e.preventDefault();
 
@@ -66,7 +66,7 @@ export default function CartItem({product, refetchItem}) {
             message.error("Failed to register auction.");
         }
     };
-    const {Countdown} = Statistic;
+    const { Countdown } = Statistic;
     const showModal = () => {
         if (!isLoggedIn) {
             message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
@@ -117,21 +117,31 @@ export default function CartItem({product, refetchItem}) {
                 </form>
             </Modal>
             <div className="m-4">
-                <Badge.Ribbon text={
-                    <Countdown
-                        title="Auction ends in"
-                        value={deadline}
-                        format="D Ngày H giờ m phút s giây"
-                        valueStyle={{fontWeight: 'small', fontSize: '15px'}}
-                    />
-                } color="rgba(255, 182, 193, 0.6)"
-                              style={{
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  width: '100%'
-                              }}
+                <Badge.Ribbon
+                    text={
+                        <Countdown
+                            title="Phiên đấu giá kết thúc trong"
+                            value={deadline}
+                            format="D Ngày H Giờ m Phút s Giây"
+                            valueStyle={{
+                                fontWeight: 'normal',
+                                fontSize: '14px',
+                                color: 'black', // Màu mới: Màu cam đỏ
+                            }}
+                        />
+
+
+                    }
+                    color="#9DE0AD" // Màu nền với độ trong suốt
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '100%',
+                    }}
                 >
+
+
                     <Card
                         hoverable
                         style={{
@@ -139,7 +149,7 @@ export default function CartItem({product, refetchItem}) {
                             margin: '0 auto'
                         }}
                         cover={
-                            <div style={{width: '100%', paddingTop: '100%', position: 'relative'}}>
+                            <div style={{ width: '100%', paddingTop: '100%', position: 'relative' }}>
                                 <img alt="example" src={product.thumbnail} style={{
                                     position: 'absolute',
                                     top: 0,
@@ -147,16 +157,16 @@ export default function CartItem({product, refetchItem}) {
                                     width: '100%',
                                     height: '100%',
                                     objectFit: 'cover'
-                                }}/>
+                                }} />
                             </div>
                         }
 
                         actions={[
                             isRegistered ? (
-                                <CheckCircleFilled key="regisAuctioned"/>
+                                <CheckCircleFilled key="regisAuctioned" />
                             ) : (
                                 <PlusSquareFilled onClick={showModal}
-                                                  key="regisAuction"/>
+                                    key="regisAuction" />
                             )
                         ]}
 
@@ -189,7 +199,7 @@ export default function CartItem({product, refetchItem}) {
                                     // formatter={(value) => value.toLocaleString()}
                                     value={product.auction?.start_price}
                                     formatter={formatter}
-                                    suffix={<span style={{fontSize: '12px'}}>VND</span>}
+                                    suffix={<span style={{ fontSize: '12px' }}>VND</span>}
                                 />
                             }
                             onClick={() => handleNavigateToAuction(product.itemId, product.auction.auction_id)}

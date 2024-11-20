@@ -1,4 +1,3 @@
-import {Helmet} from "react-helmet";
 import {
     Img,
     Text,
@@ -8,13 +7,10 @@ import {
     SeekBar,
     InputDH,
 } from "../../components";
-import HeaderComponent from "../../components/HeaderComponent";
-import ProductDetails4 from "../../components/ProductDetails4";
-import ProductDetails5 from "../../components/ProductDetails5";
 import FooterBK from "../../components/FooterBK";
 import Header2 from "../../components/Header2";
 import ProductSection from "./ProductSection";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
     Collapse,
     Checkbox,
@@ -30,19 +26,19 @@ import {
     Empty,
     Radio, Space
 } from "antd";
-import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
-import {Input} from "@material-tailwind/react";
-import {CloseCircleOutlined} from "@ant-design/icons";
+import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
+import { Input } from "@material-tailwind/react";
+import { CloseCircleOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
 import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
-import {useGetCategoriesQuery} from "@/services/category.service.js";
-import {useDispatch, useSelector} from "react-redux";
-import {useGetItemsFilterQuery} from "@/services/item.service.js";
-import {setFilters} from "@/redux/item/itemSlice.js";
+import { useGetCategoriesQuery } from "@/services/category.service.js";
+import { useDispatch, useSelector } from "react-redux";
+import { useGetItemsFilterQuery } from "@/services/item.service.js";
+import { setFilters } from "@/redux/item/itemSlice.js";
 import CartItem from "@/components/CartItem/index.jsx";
 
-const {Panel} = Collapse;
-const {Content, Sider} = Layout;
+const { Panel } = Collapse;
+const { Content, Sider } = Layout;
 
 export default function ProductPage() {
     const [selectedBrands, setSelectedBrands] = useState([]);
@@ -53,12 +49,12 @@ export default function ProductPage() {
     const [page, setPage] = useState(1);
     const [selectedPriceFilter, setSelectedPriceFilter] = useState(null);
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const dispatch = useDispatch();
     const filters = useSelector(
         (state) =>
-            state.item || {keyword: "", min: 0, max: 16000000, scIds: []}
+            state.item || { keyword: "", min: 0, max: 16000000, scIds: [] }
     );
     const {
         data, error: errorItem,
@@ -68,7 +64,7 @@ export default function ProductPage() {
     } = useGetItemsFilterQuery(filters);
 
     const handleFilterChange = (newFilters) => {
-        const updatedFilters = {...filters, ...newFilters};
+        const updatedFilters = { ...filters, ...newFilters };
         if (newFilters.page !== undefined) {
             updatedFilters.page = newFilters.page - 1;
         }
@@ -101,12 +97,12 @@ export default function ProductPage() {
         if (checked) {
             // If checked, add to the list of selected IDs
             setSelectedSubCategoryIds([...selectedSubCategoryIds, subCategoryId]);
-            handleFilterChange({scIds: [...selectedSubCategoryIds, subCategoryId]});
+            handleFilterChange({ scIds: [...selectedSubCategoryIds, subCategoryId] });
         } else {
             // If unchecked, remove from the list of selected IDs
             const updatedIds = selectedSubCategoryIds.filter((id) => id !== subCategoryId);
             setSelectedSubCategoryIds(updatedIds);
-            handleFilterChange({scIds: updatedIds});
+            handleFilterChange({ scIds: updatedIds });
         }
     };
 
@@ -136,7 +132,7 @@ export default function ProductPage() {
 
     const onPriceRangeChange = (min, max) => {
         setPriceRange([min, max]);
-        handleFilterChange({min, max});
+        handleFilterChange({ min, max });
     };
     const handlePriceFilterChange = (value) => {
         if (selectedPriceFilter === value) {
@@ -167,8 +163,8 @@ export default function ProductPage() {
     };
     return (
         <>
-            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-                <Header2/>
+            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <Header2 />
                 <Content
                     style={{
                         padding: '0 48px',
@@ -182,9 +178,9 @@ export default function ProductPage() {
                             margin: '16px 0',
                         }}
                     >
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                        <Breadcrumb.Item>List</Breadcrumb.Item>
-                        <Breadcrumb.Item>App</Breadcrumb.Item>
+                        <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+                        <Breadcrumb.Item>Danh sách</Breadcrumb.Item>
+                        <Breadcrumb.Item>Sản phẩm</Breadcrumb.Item>
                     </Breadcrumb>
                     <Layout
                         style={{
@@ -215,7 +211,7 @@ export default function ProductPage() {
 
                                 <div className="w-full overflow-y-auto max-h-[400px]">
                                     {error ? (
-                                        <Empty description={`Error: ${error.message || "Failed to load categories."}`}/>
+                                        <Empty description={`Error: ${error.message || "Failed to load categories."}`} />
                                     ) : (
                                         <Spin spinning={isLoading} tip="Loading...">
                                             <Collapse defaultActiveKey={["1"]} ghost>
@@ -250,7 +246,7 @@ export default function ProductPage() {
                                         </Spin>
                                     )}
                                 </div>
-                                <div className="h-px w-[72%] bg-gray-200"/>
+                                <div className="h-px w-[72%] bg-gray-200" />
 
                                 <InputDH
                                     size="sm"
@@ -297,32 +293,30 @@ export default function ProductPage() {
                                             </Checkbox>
                                         </Space>
                                     </div>
-                                    <div className="h-px w-[72%] bg-gray-200"/>
+                                    <div className="h-px w-[72%] bg-gray-200" />
                                 </div>
 
                                 <div className="flex flex-col items-start gap-6">
                                     <div className="flex items-center justify-between gap-5 self-stretch">
-                                        <h2 className="text-[18px] font-medium text-blue_gray-900_01">
-                                            Tình trạng sản phẩm
-                                        </h2>
+                                        
                                     </div>
-                                    <div className="flex flex-col gap-3 self-stretch">
+                                    {/* <div className="flex flex-col gap-3 self-stretch">
                                         <div className="flex items-center gap-3">
                                             <Checkbox>New</Checkbox>
                                             <Checkbox>Used</Checkbox>
                                         </div>
-                                    </div>
-                                    <div className="h-px w-[72%] bg-gray-200"/>
+                                    </div> */}
+                                    <div className="h-px w-[72%] bg-gray-200" />
                                 </div>
 
                                 <div className="flex flex-col items-start gap-6">
                                     <div className="flex items-center justify-between gap-5 self-stretch">
-                                        <h2 className="text-[18px] font-medium text-blue_gray-900_01">
+                                        {/* <h2 className="text-[18px] font-medium text-blue_gray-900_01">
                                             Giảm giá (%)
-                                        </h2>
+                                        </h2> */}
                                     </div>
                                     <div className="flex flex-col gap-3 self-stretch">
-                                        <div className="flex items-center gap-3">
+                                        {/* <div className="flex items-center gap-3">
                                             <div className="flex w-[46%] flex-col items-start gap-1">
                                                 <InputNumber
                                                     min={0}
@@ -339,8 +333,8 @@ export default function ProductPage() {
                                                     onChange={onHighPercentageChange}
                                                 />
                                             </div>
-                                        </div>
-                                        <div className="flex flex-col items-start gap-3">
+                                        </div> */}
+                                        {/* <div className="flex flex-col items-start gap-3">
                                             <Slider
                                                 range
                                                 min={0}
@@ -350,17 +344,17 @@ export default function ProductPage() {
                                                 className="mr-5 flex self-stretch"
                                             />
                                             <p className="flex text-[14px] font-normal text-blue_gray-900_01">
-                          <span>
-                            {percentageRange[0]?.toLocaleString() || "0"}
-                          </span>
                                                 <span>
-                            &nbsp;-{" "}
+                                                    {percentageRange[0]?.toLocaleString() || "0"}
+                                                </span>
+                                                <span>
+                                                    &nbsp;-{" "}
                                                     {percentageRange[1]?.toLocaleString() || "0"}
-                          </span>
+                                                </span>
                                             </p>
-                                        </div>
+                                        </div> */}
                                     </div>
-                                    <div className="h-px w-[72%] bg-gray-200"/>
+                                    <div className="h-px w-[72%] bg-gray-200" />
                                 </div>
                             </div>
                         </Sider>
@@ -390,7 +384,7 @@ export default function ProductPage() {
                                             </div>
                                             <div>
                                                 <label htmlFor="deposit"
-                                                       className="block text-sm font-medium text-gray-700">
+                                                    className="block text-sm font-medium text-gray-700">
                                                     Tiền cọc
                                                 </label>
                                                 <div className="mt-1">
@@ -406,7 +400,7 @@ export default function ProductPage() {
                                             </div>
                                             <div className="mt-4">
                                                 <label htmlFor="content"
-                                                       className="block text-sm font-medium text-gray-700">
+                                                    className="block text-sm font-medium text-gray-700">
                                                     Nội dung
                                                 </label>
                                                 <div className="mt-1">
@@ -426,7 +420,7 @@ export default function ProductPage() {
                                             {/* Total Amount Field */}
                                             <div className="mt-4">
                                                 <label htmlFor="total"
-                                                       className="block text-sm font-medium text-gray-700">
+                                                    className="block text-sm font-medium text-gray-700">
                                                     Tổng tiền
                                                 </label>
                                                 <div className="mt-1">
@@ -451,8 +445,8 @@ export default function ProductPage() {
                                                         className="h-5 w-5"
                                                     />
                                                     <span className="text-sm leading-5 text-gray-700">
-                                Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
-                            </span>
+                                                        Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
+                                                    </span>
                                                 </div>
                                             </div>
                                             {/* Submit Button */}
@@ -473,12 +467,12 @@ export default function ProductPage() {
                                         </form>
                                     </Modal>
                                     <div className="mt-10 flex flex-col items-center self-stretch">
-                                        <div className="flex items-center justify-between w-full">
-                                            <span className="text-blue_gray-900_01">Filter:</span>
-                                        </div>
+                                        {/* <div className="flex items-center justify-between w-full">
+                                            <span className="text-blue_gray-900_01">Lọc:</span>
+                                        </div> */}
                                         {errorItem ? (
                                             <Empty
-                                                description={`Error: ${errorItem.message || "Failed to load categories."}`}/>
+                                                description={`Error: ${errorItem.message || "Failed to load categories."}`} />
                                         ) : (
                                             <Spin spinning={loadingItem} tip="Loading...">
                                                 <div
@@ -487,11 +481,11 @@ export default function ProductPage() {
                                                         data.item.map((item, index) => (
                                                             <div key={`itemsGrid-${index}`}>
                                                                 <CartItem product={item} refetchItem={refetchItem}
-                                                                                  onBidClick={showModal}/>
+                                                                    onBidClick={showModal} />
                                                             </div>
                                                         ))
                                                     ) : (
-                                                        <Empty description="items"/>
+                                                        <Empty description="items" />
                                                     )}
                                                 </div>
                                             </Spin>
@@ -500,7 +494,7 @@ export default function ProductPage() {
                                             <Pagination
                                                 currentPage={filters.page + 1}
                                                 totalPages={data ? data.totalPages : 1}
-                                                onPageChange={(page) => handleFilterChange({page})}
+                                                onPageChange={(page) => handleFilterChange({ page })}
                                             />
                                         </div>
                                     </div>
@@ -510,7 +504,7 @@ export default function ProductPage() {
                     </Layout>
                 </Content>
                 <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
+                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
             </Layout>
         </>
     );

@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, { useMemo, useState } from "react";
 import {
     Navbar,
     Collapse,
@@ -23,7 +23,7 @@ import {
     DocumentIcon,
     PhoneIcon,
 } from "@heroicons/react/24/outline";
-import {useGetCategoriesQuery} from "@/services/category.service.js";
+import { useGetCategoriesQuery } from "@/services/category.service.js";
 
 
 function NavListMenu() {
@@ -74,24 +74,25 @@ function NavListMenu() {
                         className="mr-4 cursor-pointer py-1.5 lg:ml-2 font-bold"
                     >
                         <ListItem
-                            className="flex items-center gap-2 py-2 pr-4 font-bold text-gray-900"
+                            className="flex items-center gap-2 py-2 pr-4 font-semibold text-gray-900 cursor-pointer"
                             selected={isMenuOpen || isMobileMenuOpen}
                             onClick={() => setIsMobileMenuOpen((cur) => !cur)}
                         >
-                            Danh Mục
+                            <span className="text-xl font-bold text-gray-800 hover:text-green-600">Danh Mục</span>
                             <ChevronDownIcon
                                 strokeWidth={2.5}
-                                className={`hidden h-3 w-3 transition-transform lg:block ${
-                                    isMenuOpen ? "rotate-180" : ""
-                                }`}
+                                className={`hidden h-3 w-3 transition-transform lg:block ${isMenuOpen ? "rotate-180" : ""
+                                    }`}
                             />
                             <ChevronDownIcon
                                 strokeWidth={2.5}
-                                className={`block h-3 w-3 transition-transform lg:hidden ${
-                                    isMobileMenuOpen ? "rotate-180" : ""
-                                }`}
+                                className={`block h-3 w-3 transition-transform lg:hidden ${isMobileMenuOpen ? "rotate-180" : ""
+                                    }`}
                             />
                         </ListItem>
+
+
+
                     </Typography>
                 </MenuHandler>
 
@@ -108,11 +109,11 @@ function NavList() {
     return (
         <List className="mb-6 mt-4 p-0 lg:mb-0 lg:mt-0 lg:flex-row lg:p-1">
             {[
-                {title: "Trang chủ", icon: <HomeIcon className="nav-icon"/>, href: "/"},
-                {title: "Sản phẩm", icon: <ShoppingCartIcon className="nav-icon"/>, href: "/product"},
-                {title: "Liên hệ", icon: <PhoneIcon className="nav-icon"/>, href: "/contact"},
-                {title: "Bài viết", icon: <DocumentIcon className="nav-icon"/>, href: "/articles"},
-                {title: "Chính sách", icon: <InformationCircleIcon className="nav-icon"/>, href: "/policy"},
+                { title: "Trang chủ", icon: <HomeIcon className="nav-icon" />, href: "/" },
+                { title: "Sản phẩm", icon: <ShoppingCartIcon className="nav-icon" />, href: "/product" },
+                { title: "Liên hệ", icon: <PhoneIcon className="nav-icon" />, href: "/contact" },
+                { title: "Bài viết", icon: <DocumentIcon className="nav-icon" />, href: "/articles" },
+                { title: "Chính sách", icon: <InformationCircleIcon className="nav-icon" />, href: "/policy" },
             ].map((item, index) => (
                 <Typography
                     as="a"
@@ -123,17 +124,26 @@ function NavList() {
                     key={index}
                 >
                     <ListItem
-                        className="flex items-center gap-2 py-2 pr-4 transition-transform duration-200 ease-in-out">
-                        <div className="flex items-center justify-center w-6 h-6">
+                        className="flex items-center gap-2 py-2 pr-4 transition-all duration-300 ease-in-out hover:text-green-800 hover:scale-105 hover:shadow-lg hover:border-b-2 hover:border-gray-900 hover:bg-transparent rounded-lg"
+                    >
+                        {/* Icon with hover effect */}
+                        <div className="flex items-center justify-center w-6 h-6 transition-transform duration-300 ease-in-out group-hover:rotate-12 group-hover:scale-110">
                             {item.icon}
                         </div>
-                        <span className="text-base">{item.title}</span>
+                        {/* Title */}
+                        <span className="text-base group-hover:font-semibold">{item.title}</span>
                     </ListItem>
                 </Typography>
             ))}
         </List>
     );
 }
+
+
+
+
+
+
 
 
 function NavBarBK() {
@@ -148,7 +158,7 @@ function NavBarBK() {
 
     return (
         <Navbar
-            className="w-full max-w-[1440px] px-5 py-2 bg-gradient-to-r from-gray-200 to-gray-300 bg-opacity-80 shadow-lg backdrop-blur-md rounded-md border border-gray-700">
+            className="w-full max-w-[1440px] px-5 py-2 bg-gradient-to-r from-gray-200 to-gray bg-opacity-80 shadow-lg backdrop-blur-md rounded-md border border-gray-700">
             <div className="flex items-center justify-between text-white w-full">
                 <Typography
                     as="a"
@@ -156,11 +166,11 @@ function NavBarBK() {
                     variant="h6"
                     className="mr-4 cursor-pointer py-2 lg:ml-2 font-semibold text-xl"
                 >
-                    <NavListMenu/>
+                    <NavListMenu />
                 </Typography>
 
                 <div className="hidden lg:block">
-                    <NavList/>
+                    <NavList />
                 </div>
 
                 <IconButton
@@ -169,9 +179,9 @@ function NavBarBK() {
                     onClick={() => setOpenNav(!openNav)}
                 >
                     {openNav ? (
-                        <XMarkIcon className="h-6 w-6" strokeWidth={2}/>
+                        <XMarkIcon className="h-6 w-6" strokeWidth={2} />
                     ) : (
-                        <Bars3Icon className="h-6 w-6" strokeWidth={2}/>
+                        <Bars3Icon className="h-6 w-6" strokeWidth={2} />
                     )}
                 </IconButton>
             </div>

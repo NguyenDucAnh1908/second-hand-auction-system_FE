@@ -125,9 +125,9 @@ export default function ProductDetails21({ product }) {
                         />
                     </div>
                     <div
-                        className="absolute top-2 right-2 bg-pink-300 bg-opacity-70 text-white px-1.5 py-0.5 rounded-md ">
+                        className="absolute top-2 right-2 bg-green-300 bg-opacity-70 text-white px-1.5 py-0.5 rounded-md ">
                         <Countdown
-                            title="Auction ends in"
+                            title="Phiên đấu giá sẽ kết thúc "
                             value={deadline}
                             format="D Ngày H giờ m phút s giây"
                             valueStyle={{ fontWeight: 'normal', fontSize: '15px' }}
