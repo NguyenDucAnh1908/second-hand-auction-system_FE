@@ -353,7 +353,7 @@ export default function KNCPage() {
                         <div
                             className="flex flex-col gap-4 items-center justify-center p-4 bg-gray-50 rounded-lg shadow-lg">
                             <h3 className="text-lg font-semibold text-blue-gray-900 mb-4">
-                                Tải lên ảnh CCCD/Hộ chiếu
+                                Giấy phép kinh doanh (nếu có)
                             </h3>
                             <Upload
                                 listType="picture-card"
@@ -383,7 +383,7 @@ export default function KNCPage() {
 
                             {/* Thông báo khi chưa tải lên ảnh */}
                             {fileList.length === 0 && (
-                                <p className="text-red-500">Vui lòng tải lên ảnh CCCD/Hộ chiếu.</p>
+                                <p className="text-red-500">Vui lòng tải lên ảnh giấy tờ kinh doanh.</p>
                             )}
                         </div>
 

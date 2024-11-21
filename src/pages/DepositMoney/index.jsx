@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 
 const dropDownOptions = [
     { label: "VN_PAY", value: "paymentMethod" },
-  
+
 ];
 const { Content, Sider } = Layout;
 
@@ -29,6 +29,8 @@ export default function DepositMoneyPage() {
 
     const [depositUser, { isLoading: isLoadingDeposit }] = useDepositUserMutation();
     const { TextArea } = Input;
+
+
 
     useEffect(() => {
         if (userRef.current) {
@@ -47,7 +49,7 @@ export default function DepositMoneyPage() {
             const depositData = await depositUser({
                 paymentMethod, description, amount, returnSuccess, returnError,
             }).unwrap();
-                
+
             console.log("Deposit data:", depositData);
 
             if (depositData.data.paymentUrl) {
@@ -98,9 +100,9 @@ export default function DepositMoneyPage() {
                     }}
                 >
                     <Breadcrumb style={{ margin: '20px 0', fontSize: '1.2rem' }}>
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                        <Breadcrumb.Item>List</Breadcrumb.Item>
-                        <Breadcrumb.Item>App</Breadcrumb.Item>
+                        <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+                        <Breadcrumb.Item>Hồ sơ</Breadcrumb.Item>
+                        <Breadcrumb.Item>Thông tin</Breadcrumb.Item>
                     </Breadcrumb>
                     <Layout
                         style={{
@@ -171,9 +173,15 @@ export default function DepositMoneyPage() {
                                                     </Heading>
                                                     <InputNumber
                                                         value={amount}
-                                                        onChange={onChange}
+                                                        formatter={(value) =>
+                                                            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ" // Thêm đơn vị VNĐ
+                                                        }
+                                                        parser={(value) => value.replace(/\D/g, "")} // Chuyển về số thực (loại bỏ chữ và ký tự không phải số)
+                                                        onChange={(value) => setAmount(value)}
                                                         className="w-[200%] rounded-md border border-gray-300 text-lg"
                                                     />
+
+
                                                 </div>
                                                 <div className="mt-8 flex flex-col items-start justify-center gap-2 w-[200%px]">
                                                     <Heading

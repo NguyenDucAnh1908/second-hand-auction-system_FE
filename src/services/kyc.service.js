@@ -47,7 +47,7 @@ export const kycApiSlice = apiSlice.injectEndpoints({
         }),
 
         getKYCByUser: builder.query({
-            query: () => `kyc/user`
+            query: () => `/kyc/user`, 
         }),
 
         updateKYCByUser: builder.mutation({
@@ -62,4 +62,4 @@ export const kycApiSlice = apiSlice.injectEndpoints({
 
 
 // Xuất hook cho component
-export const { useGetKYCItemsQuery, useGetKYCByIdQuery, useUpdateKycMutation, useCreateKycMutation, useGetKYCByUserQuery, useUpdateKYCByUserMutation } = kycApiSlice;
+export const { useGetKYCItemsQuery, useGetKYCByIdQuery, useUpdateKycMutation, useCreateKycMutation, useGetKYCByUserQuery , useUpdateKYCByUserMutation } = kycApiSlice;

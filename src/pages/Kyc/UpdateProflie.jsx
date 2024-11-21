@@ -10,7 +10,13 @@ import useHookUploadImage from "../../hooks/useHookUploadImage.js";
 import { useNavigate } from 'react-router-dom';
 
 export default function UpdateKYC() {
-    const { data } = useGetKYCByUserQuery();
+    const { data, isLoading, isError } = useGetKYCByUserQuery();
+    console.log("User",data);
+    console.log(data);
+
+
+   
+
     const navigate = useNavigate();
     const [updateKyc] = useUpdateKYCByUserMutation();
     const [formData, setFormData] = useState({
@@ -211,7 +217,7 @@ export default function UpdateKYC() {
                     </div>
 
                     <div className="mt-6">
-                        <h3 className="text-lg font-medium text-gray-700">Tải ảnh CCCD</h3>
+                        <h3 className="text-lg font-medium text-gray-700">Tải ảnh giấy tờ kinh doanh</h3>
                         <Upload
                             fileList={fileList}
                             onChange={handleChangeImage}

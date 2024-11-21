@@ -170,12 +170,12 @@ export function SiderUserBK() {
                                 </ListItemPrefix>
                                 Danh sách đơn hàng
                             </ListItem>
-                            <ListItem>
+                            {/* <ListItem>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
                                 Lịch sử mua hàng
-                            </ListItem>
+                            </ListItem> */}
 
                         </List>
                     </AccordionBody>

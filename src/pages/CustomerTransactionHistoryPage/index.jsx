@@ -1,4 +1,4 @@
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import {
     Img,
     Text,
@@ -7,30 +7,30 @@ import {
     SelectBox,
     InputDH,
 } from "../../components";
-import {CloseSVG} from "../../components/InputDH/close.jsx";
+import { CloseSVG } from "../../components/InputDH/close.jsx";
 import NumberRow from "../../components/NumberRow";
-import React, {useState} from "react";
-import {TabPanel, TabList, Tab, Tabs} from "react-tabs";
+import React, { useState } from "react";
+import { TabPanel, TabList, Tab, Tabs } from "react-tabs";
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {Table, Button, theme, Layout, Breadcrumb, Menu, Empty, Skeleton} from "antd";
-import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
-import {useGetTransactionWalletQuery} from "@/services/transactionWallet.service.js";
+import { Table, Button, theme, Layout, Breadcrumb, Menu, Empty, Skeleton, Modal } from "antd";
+import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
+import { useGetTransactionWalletQuery } from "@/services/transactionWallet.service.js";
 import Pagination from "@/components/Pagination/index.jsx";
 
 
 const dropDownOptions = [
-    {label: "Option1", value: "option1"},
-    {label: "Option2", value: "option2"},
-    {label: "Option3", value: "option3"},
+    { label: "Option1", value: "option1" },
+    { label: "Option2", value: "option2" },
+    { label: "Option3", value: "option3" },
 ];
 
-const {Content, Sider} = Layout;
+const { Content, Sider } = Layout;
 export default function CustomerTransactionHistoryPagePage() {
     const [searchBarValue8, setSearchBarValue8] = React.useState("");
     const [page, setPage] = useState(1);
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const {
         data: dataTransactionWallet,
@@ -42,6 +42,17 @@ export default function CustomerTransactionHistoryPagePage() {
         limit: 8
     });
     console.log("dataTransactionWallet test: ", dataTransactionWallet);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const showModal = (record) => {
+        setSelectedTransaction(record);
+        setIsModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        setSelectedTransaction(null);
+    };
     const columns = [
         {
             title: "ID",
@@ -82,7 +93,7 @@ export default function CustomerTransactionHistoryPagePage() {
                 const isWithdrawalOrAuctionDeposit = record.transactionType === "WITHDRAWAL" || record.transactionType === "DEPOSIT_AUCTION";
 
                 return (
-                    <span style={{color: isWithdrawalOrAuctionDeposit ? "red" : "green"}}>
+                    <span style={{ color: isWithdrawalOrAuctionDeposit ? "red" : "green" }}>
                         {isWithdrawalOrAuctionDeposit ? `-${text}` : text} đ
                     </span>
                 );
@@ -108,13 +119,13 @@ export default function CustomerTransactionHistoryPagePage() {
             dataIndex: "more",
             key: "action",
             render: (_, record) => (
-                <Button type="primary" shape="round">
+                <Button type="primary" shape="round" onClick={() => showModal(record)}>
                     {record.status === "Hoàn thành" ? "Xem chi tiết" : "Hoàn thành"}
                 </Button>
             ),
-            // key: 'more',
-            // width: 150,
+            width: 150,
         },
+
     ];
     const data = dataTransactionWallet?.items?.map((item, index) => ({
         key: index + 1,
@@ -140,8 +151,8 @@ export default function CustomerTransactionHistoryPagePage() {
 
     return (
         <>
-            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-                <Header2/>
+            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <Header2 />
                 <Content
                     style={{
                         padding: '0 48px',
@@ -155,9 +166,9 @@ export default function CustomerTransactionHistoryPagePage() {
                             margin: '16px 0',
                         }}
                     >
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                        <Breadcrumb.Item>List</Breadcrumb.Item>
-                        <Breadcrumb.Item>App</Breadcrumb.Item>
+                        <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+                        <Breadcrumb.Item>Hồ sơ</Breadcrumb.Item>
+                        <Breadcrumb.Item>Lịch sử giao dịch</Breadcrumb.Item>
                     </Breadcrumb>
                     <Layout
                         style={{
@@ -173,7 +184,7 @@ export default function CustomerTransactionHistoryPagePage() {
                             }}
                             width={300}
                         >
-                            <SiderUserBK/>
+                            <SiderUserBK />
                         </Sider>
                         <Content
                             style={{
@@ -190,10 +201,10 @@ export default function CustomerTransactionHistoryPagePage() {
                                 Lịch sử nạp tiền
                             </Heading>
                             {isErrorTransactionWallet ? (
-                                    <Empty/>
-                                ) :
+                                <Empty />
+                            ) :
                                 <Skeleton loading={isLoadingTransactionWallet} active>
-                                    <Table columns={columns} dataSource={data} bordered pagination={false}/>
+                                    <Table columns={columns} dataSource={data} bordered pagination={false} />
                                 </Skeleton>
                             }
 
@@ -205,11 +216,46 @@ export default function CustomerTransactionHistoryPagePage() {
                                     onPageChange={setPage}
                                 />
                             </div>
+                            <Modal
+                                title="Thông tin chi tiết giao dịch"
+                                visible={isModalVisible}
+                                onCancel={handleCancel}
+                                footer={[<Button key="close" onClick={handleCancel}>Đóng</Button>]}
+                            >
+                                {selectedTransaction ? (
+                                    <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-md">
+                                        <p className="text-sm text-gray-700">
+                                            <strong className="font-semibold">Mã giao dịch:</strong> {selectedTransaction.id}
+                                        </p>
+                                        <p className="text-sm text-gray-700">
+                                            <strong className="font-semibold">Thời gian:</strong> {selectedTransaction.time}
+                                        </p>
+                                        <p className="text-sm text-gray-700">
+                                            <strong className="font-semibold">Loại giao dịch:</strong> {selectedTransaction.transactionType}
+                                        </p>
+                                        <p className="text-sm text-gray-700">
+                                            <strong className="font-semibold">Trạng thái:</strong> {selectedTransaction.status}
+                                        </p>
+                                        <p className="text-sm text-gray-700">
+                                            <strong className="font-semibold">Số tiền:</strong> {selectedTransaction.amount} đ
+                                        </p>
+                                        <p className="text-sm text-gray-700">
+                                            <strong className="font-semibold">Người gửi:</strong> {selectedTransaction.sender}
+                                        </p>
+                                        <p className="text-sm text-gray-700">
+                                            <strong className="font-semibold">Người nhận:</strong> {selectedTransaction.recipient}
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <p className="text-center text-gray-500">Không có thông tin giao dịch.</p>
+                                )}
+                            </Modal>
+
                         </Content>
                     </Layout>
                 </Content>
                 <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
+                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
             </Layout>
         </>
     );
