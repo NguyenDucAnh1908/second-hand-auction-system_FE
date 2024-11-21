@@ -24,8 +24,8 @@ import {useEffect, useState} from 'react';
 import {useGetSellerInformationByAuctionIdQuery} from "../../services/sellerinformation.service.js";
 import {useGetFeedbackBySellerUserIdQuery} from "../../services/feedback.service.js";
 import Pagination from "@/components/Pagination/index.jsx";
-import {useGetWinBidQuery} from "@/services/bid.service.js";
-import {selectIsLoggedIn} from "@/redux/auth/authSlice.js";
+import {useGetHighestBidQuery, useGetWinBidQuery} from "@/services/bid.service.js";
+import {selectCurrentUser, selectCurrentUserAPI, selectIsLoggedIn} from "@/redux/auth/authSlice.js";
 import FeedBack from "@/components/FeedBack.jsx";
 import RecentProductsSection from "pages/HomePage/RecentProductsSection.jsx";
 import SliderItem from "@/components/SlilerItem/index.jsx";
@@ -37,6 +37,10 @@ export default function AuctionPage() {
     const sliderRef = React.useRef(null);
     const [expanded, setExpanded] = useState(false);
     const [activeTabKey, setActiveTabKey] = useState("1");
+    const [bidAmount, setBidAmount] = useState([]);
+    const [isHighBidder, setIsHighBidder] = useState(null);
+    const [initialized, setInitialized] = useState(false);
+    const userAPI = useSelector(selectCurrentUserAPI);
     const isLoggedIn = useSelector(selectIsLoggedIn);
     const {id} = useParams();
     const {
@@ -54,8 +58,6 @@ export default function AuctionPage() {
         page: 0,
         limit: 10
     });
-
-    console.log("dataSimilar", dataSimilar)
     //console.log("dataSimilar", data?.scId?.sub_category_id)
     const handleToggle = () => {
         setExpanded((prev) => !prev);
@@ -70,7 +72,7 @@ export default function AuctionPage() {
 
     useEffect(() => {
         const id = localStorage.getItem('auctionItemId');
-        console.log('auction ID from local storage:', id);
+        //console.log('auction ID from local storage:', id);
         if (id) {
             setAuctionId(id);
         }
@@ -81,6 +83,8 @@ export default function AuctionPage() {
         error: sellerInfoError,
         isLoading: loadingSellerInfo
     } = useGetSellerInformationByAuctionIdQuery(data?.auction?.auction_id);
+
+
 // console.log("data", data)
     const {
         data: winningBid,
@@ -88,13 +92,21 @@ export default function AuctionPage() {
         isLoading: loadingWinningBid,
         refetch: isRefetchWinningBid
     } = useGetWinBidQuery(data?.auction?.auction_id);
-    const isHighBidder = winningBid?.data?.winBid === true;
+
+    const {
+        data: highestBid,
+        error: fetchHighestBid,
+        isLoading: loadingHighestBid,
+        refetch: isRefetchHighestBid
+    } = useGetHighestBidQuery(data?.auction?.auction_id);
+    console.log("highestBid", highestBid?.data)
+    //const isHighBidder = winningBid?.data?.winBid === true;
     const [userIdSeller, setUserIdSeller] = useState(null);
 
     useEffect(() => {
         if (sellerInfo) {
             const userId = parseInt(sellerInfo.userId, 10);
-            console.log('Kiểu dữ liệu của userId:', typeof userId);
+            //console.log('Kiểu dữ liệu của userId:', typeof userId);
             if (!isNaN(userId)) {
                 setUserIdSeller(userId);
             } else {
@@ -102,23 +114,6 @@ export default function AuctionPage() {
             }
         }
     }, [sellerInfo]);
-
-    // const { data: feedback, error: feedbackError, isLoading: feedbackLoading } = useGetFeedbackBySellerUserIdQuery(
-    //     userIdSeller !== null ? { userId: userIdSeller, page: 0, size: 10 } : null
-    // );
-
-    const [currentPage, setCurrentPage] = useState(0);
-    const pageSize = 10;
-
-    // const { data: feedbackData } = useGetFeedbackBySellerUserIdQuery(
-    //     userIdSeller !== null ?
-    //         {
-    //             userId: userIdSeller,
-    //             page: currentPage,
-    //             size: pageSize,
-    //         } : null
-    // );
-
 
     const navigate = useNavigate();
 
@@ -131,10 +126,39 @@ export default function AuctionPage() {
         localStorage.setItem('userIdseller', userIdseller);
         navigate(`/SellerDetailPage`);
     };
+    useEffect(() => {
+        if (highestBid?.data || winningBid?.data?.bidAmount) {
+            setBidAmount(highestBid?.data || winningBid?.data?.bidAmount);
+            setIsHighBidder(winningBid?.data?.winBid === true);
+            setInitialized(true);
+        }
+    }, [highestBid, winningBid]);
+    //console.log("user", userAPI?.id)
+    useEffect(() => {
+        const eventSource = new EventSource("http://localhost:8080/api/v1/bids/stream-bids");
 
-    //if (loadingSellerInfo) return <p>Loading seller information...</p>;
-    //if (sellerInfoError) return <p>Error loading seller information: {sellerInfoError.message}</p>;
+        eventSource.addEventListener("bidUpdate", (event) => {
+            const bid = JSON.parse(event.data);
+            //console.log("Updated bid:", bid);
 
+            // Cập nhật trạng thái và giá đấu từ SSE
+            setBidAmount(bid?.bidAmount || null);
+            if (bid?.winBid && bid?.userId === userAPI?.id) {
+                setIsHighBidder(true); // Người dùng hiện tại đang thắng
+            } else {
+                setIsHighBidder(false); // Người dùng hiện tại bị outbid
+            }
+        });
+
+        eventSource.onerror = (error) => {
+            console.error("SSE Error:", error);
+            eventSource.close(); // Đóng kết nối nếu có lỗi
+        };
+
+        return () => {
+            eventSource.close();
+        };
+    }, [userAPI?.id]);
     if (error) return <p>Error loading item details.</p>;
     const accordionData = [
         {
@@ -278,16 +302,50 @@ export default function AuctionPage() {
                         }}
                     >
                         <div className="flex w-full flex-col items-center bg-bg-white">
-                            {isLoggedIn && winningBid && (
-                                <>
-                                    <div
-                                        className={`w-full p-1 flex items-center rounded-lg ${winningBid?.data?.winBid ? 'bg-gradient-to-r from-white to-green-500' : 'bg-gradient-to-r from-white to-red-500'}`}
-                                    >
-                                        <span
-                                            className="text-sm font-semibold">{winningBid?.data?.winBid ? "You're the high bidder" : "You're outbid"} ||</span>
-                                    </div>
-                                </>
+                            {/*{isLoggedIn && winningBid && (*/}
+                            {/*    <>*/}
+                            {/*        <div*/}
+                            {/*            className={`w-full p-1 flex items-center rounded-lg ${winningBid?.data?.winBid ? 'bg-gradient-to-r from-white to-green-500' : 'bg-gradient-to-r from-white to-red-500'}`}*/}
+                            {/*        >*/}
+                            {/*            <span*/}
+                            {/*                className="text-sm font-semibold">{winningBid?.data?.winBid ? "You're the high bidder" : "You're outbid"} ||</span>*/}
+                            {/*        </div>*/}
+                            {/*    </>*/}
+                            {/*)}*/}
+
+                            {isLoggedIn && initialized && (
+                                // Hiển thị dựa trên trạng thái khởi tạo hoặc cập nhật từ SSE
+                                <div
+                                    className={`w-full p-1 flex items-center rounded-lg ${
+                                        isHighBidder === true
+                                            ? 'bg-gradient-to-r from-white to-green-500'
+                                            : 'bg-gradient-to-r from-white to-red-500'
+                                    }`}
+                                >
+                <span className="text-sm font-semibold">
+                    {isHighBidder === true
+                        ? "You're the high bidder"
+                        : "You're outbid"}
+                </span>
+                                </div>
                             )}
+
+        {/*                    {isLoggedIn && (*/}
+        {/*                        <div*/}
+        {/*                            className={`w-full p-1 flex items-center rounded-lg ${*/}
+        {/*                                isHighBidder === true*/}
+        {/*                                    ? 'bg-gradient-to-r from-white to-green-500'*/}
+        {/*                                    : 'bg-gradient-to-r from-white to-red-500'*/}
+        {/*                            }`}*/}
+        {/*                        >*/}
+        {/*<span className="text-sm font-semibold">*/}
+        {/*    {isHighBidder === true*/}
+        {/*        ? "You're the high bidder"*/}
+        {/*        : "You're outbid"}*/}
+        {/*</span>*/}
+        {/*                        </div>*/}
+        {/*                    )}*/}
+
                             <Skeleton loading={isLoading} active>
                                 {isSuccess && data && (
                                     <AuctionSection dataItem={data}
@@ -296,6 +354,7 @@ export default function AuctionPage() {
                                                     winningBid={winningBid}
                                                     isRefetchWinningBid={isRefetchWinningBid}
                                                     isLoggedIn={isLoggedIn}
+                                                    bidAmount={bidAmount}
                                     />
                                 )}
                             </Skeleton>
@@ -585,7 +644,7 @@ export default function AuctionPage() {
                                                             {sellerInfo?.totalFeedbackCount} Đánh giá sản phẩm người bán
                                                         </Heading>
                                                         {sellerInfo?.feedbackList.map(feedback => (
-                                                        
+
                                                             <>
                                                                 <FeedBack feedback={feedback}/>
                                                             </>

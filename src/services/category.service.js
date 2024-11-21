@@ -6,7 +6,12 @@ export const categoryApiSlice = apiSlice.injectEndpoints({
             query: () => "/main-category",
             transformResponse: (response) => response.data,
         }),
+
+        getSCategoriesStream: builder.query({
+            query: () => "/sub-category/stream",
+            //transformResponse: (response) => response.data,
+        }),
     }),
 });
 
-export const { useGetCategoriesQuery } = categoryApiSlice;
+export const { useGetCategoriesQuery, useGetSCategoriesStreamQuery } = categoryApiSlice;

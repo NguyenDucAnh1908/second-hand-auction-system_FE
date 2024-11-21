@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Helmet} from "react-helmet";
 import {
     Img,
@@ -26,6 +26,9 @@ import {
 const {Content, Sider} = Layout;
 // const { Content } = Layout;
 import FaEthereum from "../assets/Ethereum.svg"
+import {useGetCategoriesQuery, useGetSCategoriesStreamQuery} from "@/services/category.service.js";
+import SockJS from "sockjs-client";
+import {Stomp, Client} from "@stomp/stompjs";
 
 // const AuctionItem = ({item}) => {
 //     return (
@@ -92,6 +95,144 @@ export default function TestComponent() {
     const {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
+
+
+    // const eventSource = new EventSource("http://localhost:8080/api/v1/sub-category/stream");
+    //
+    // eventSource.addEventListener("sub-category-updated", (event) => {
+    //     const updatedSubCategories = JSON.parse(event.data);
+    //     console.log("Updated SubCategories:", updatedSubCategories);
+    // });
+    //
+    // eventSource.onerror = (error) => {
+    //     console.error("Error:", error);
+    // };
+
+    const [subCategories, setSubCategories] = useState([]);
+    // const [subCategoriesV2, setSubCategoriesV2] = useState([]);
+    // useEffect(() => {
+    //     const eventSource = new EventSource("http://localhost:8080/api/v1/sub-category/stream-v2");
+    //
+    //     // Lắng nghe sự kiện 'sub-category-updated'
+    //     eventSource.addEventListener("sub-category-updated", (event) => {
+    //         const updatedSubCategories = JSON.parse(event.data);
+    //         console.log("Updated SubCategories-v2:", updatedSubCategories);
+    //         setSubCategoriesV2(updatedSubCategories);
+    //     });
+    //
+    //     // Xử lý lỗi SSE
+    //     eventSource.onerror = (error) => {
+    //         console.error("SSE Error-v2:", error);
+    //         eventSource.close(); // Đóng kết nối nếu có lỗi
+    //     };
+    //
+    //     // Đóng kết nối khi component bị hủy
+    //     return () => {
+    //         eventSource.close();
+    //     };
+    // }, []);
+
+    useEffect(() => {
+        const eventSource = new EventSource("http://localhost:8080/api/v1/sub-category/stream");
+
+        // Lắng nghe sự kiện 'sub-category-updated'
+        eventSource.addEventListener("sub-category-updated", (event) => {
+            const updatedSubCategories = JSON.parse(event.data);
+            console.log("Updated SubCategories:", updatedSubCategories);
+            setSubCategories(updatedSubCategories);
+        });
+
+        // Xử lý lỗi SSE
+        eventSource.onerror = (error) => {
+            console.error("SSE Error:", error);
+            eventSource.close(); // Đóng kết nối nếu có lỗi
+        };
+
+        // Đóng kết nối khi component bị hủy
+        return () => {
+            eventSource.close();
+        };
+    }, []);
+
+
+
+
+
+
+    // const [subCategories, setSubCategories] = useState([]);
+    // const [error, setError] = useState(null);
+    // const [isLoading, setIsLoading] = useState(true);
+    //
+
+    // useEffect(() => {
+    //     // Tạo biến ngoài useEffect để lưu trữ kết nối SSE
+    //     let eventSource = null;
+    //
+    //     // Hàm để khởi tạo kết nối SSE
+    //     const initEventSource = () => {
+    //             // Chỉ khởi tạo kết nối mới nếu chưa có kết nối nào
+    //             eventSource = new EventSource("http://localhost:8080/api/v1/sub-category/stream-v2");
+    //
+    //             // Định nghĩa sự kiện onopen (Kết nối mở thành công)
+    //             eventSource.onopen = () => {
+    //                 console.log("Kết nối SSE đã mở!");
+    //             };
+    //
+    //             // Định nghĩa sự kiện onmessage (Khi nhận được dữ liệu mới)
+    //             eventSource.onmessage = (event) => {
+    //                 try {
+    //                     const data = JSON.parse(event.data); // Giải mã dữ liệu JSON
+    //                     console.log("Dữ liệu nhận được từ SSE:", data); // Kiểm tra dữ liệu
+    //
+    //                     // Kiểm tra nếu dữ liệu là mảng và có dữ liệu hợp lệ
+    //                     if (Array.isArray(data) && data.length > 0) {
+    //                         setSubCategories(data); // Cập nhật dữ liệu vào state
+    //                         //setIsLoading(false); // Đặt trạng thái loading thành false khi nhận dữ liệu
+    //                     } else {
+    //                         //setError("Dữ liệu trả về không hợp lệ.");
+    //                         //setIsLoading(false);
+    //                     }
+    //                 } catch (err) {
+    //                     console.error("Lỗi khi phân tích dữ liệu SSE:", err);
+    //                     //setError("Lỗi khi phân tích dữ liệu SSE");
+    //                     //setIsLoading(false);
+    //                 }
+    //             };
+    //
+    //             // Định nghĩa sự kiện onerror (Xử lý lỗi khi kết nối SSE gặp sự cố)
+    //             // eventSource.onerror = (event) => {
+    //             //     console.error("Lỗi kết nối SSE:", event);
+    //             //     setError("Lỗi kết nối SSE");
+    //             //     setIsLoading(false);
+    //             //     eventSource.close(); // Đảm bảo đóng kết nối khi có lỗi
+    //             // };
+    //
+    //     };
+    //
+    //     // Khởi tạo kết nối SSE khi component được mount lần đầu tiên
+    //     initEventSource();
+    //
+    //     // Đóng kết nối khi component bị unmount
+    //     return () => {
+    //         if (eventSource) {
+    //             eventSource.close();
+    //         }
+    //     };
+    // }, []); // Chạy một lần khi component được mount
+    //
+
+
+    // // Hiển thị trạng thái loading, lỗi hoặc dữ liệu
+    // if (isLoading) return <div>Đang tải...</div>;
+    // if (error) return <div>Lỗi: {error}</div>;
+    // scategories.onmessage = function(event) {
+    //     const subCategories = JSON.parse(event.data); // Parse the received data
+    //     console.log(subCategories); // Do something with the array of subcategories
+    // };
+    //
+    // scategories.onerror = function(error) {
+    //     console.error('Error with SSE:', error);
+    // };
     // const items = [
     //     {
     //         id: 876,
@@ -128,7 +269,7 @@ export default function TestComponent() {
         // </div>
 
         <Layout>
-            <Header2 />
+            <Header2/>
             <Content
                 style={{
                     padding: '0 48px',
@@ -152,9 +293,29 @@ export default function TestComponent() {
                     }}
                 >
                     Content
+                    <div className="flex flex-col">
+                        <h1>Danh sách Subcategories</h1>
+                        {/*<ul>*/}
+                        {/*    {subCategories.map((subCategory, index) => (*/}
+                        {/*        <li key={index}>{subCategory.sub_category}</li>*/}
+                        {/*    ))}*/}
+                        {/*</ul>*/}
+                        <ul>
+                            {subCategories.map((subCategory, index) => (
+                                <li key={index}>{subCategory.sub_category}</li>
+                            ))}
+                        </ul>
+                        <h1>Danh sách Subcategories-v2</h1>
+                        {/*<ul>*/}
+                        {/*    {subCategoriesV2.map((subCategory, index) => (*/}
+                        {/*        <li key={index}>{subCategory.sub_category}</li>*/}
+                        {/*    ))}*/}
+                        {/*</ul>*/}
+                    </div>
                 </div>
             </Content>
-            <FooterBK className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
+            <FooterBK
+                className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
         </Layout>
         // lauout Both the top navigation and the sidebar, commonly used in documentation site.
         // <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

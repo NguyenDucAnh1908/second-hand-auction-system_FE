@@ -25,7 +25,9 @@ export default function AuctionSection(
         isRefetch,
         winningBid,
         isRefetchWinningBid,
-        isLoggedIn
+        isLoggedIn,
+        bidAmount,
+        highestBid
     }
 ) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -261,23 +263,38 @@ export default function AuctionSection(
                         >
                             <span className="font-bold">Giá khởi điểm:</span>
                             <span>&nbsp;{formatPrice(dataItem.auction.start_price)}</span>
-
+                            {/*<span>&nbsp;{bidAmount?.bidAmount ? formatPrice(bidAmount?.bidAmount) : "Chưa có giá đấu"}</span>*/}
                         </Heading>
                         <Heading
                             size="text3xl"
                             as="h4"
-                            className="ml-2 mt-8 flex self-start font-bevietnampro text-lg font-medium text-blue-gray-900 md:ml-0 sm:text-md"
+                            className="ml-1.5 mt-8 flex self-start font-bevietnampro text-[20px] font-medium text-blue_gray-900_01 md:ml-0 md:text-[20px] sm:text-[20px]"
                             style={{
                                 maxWidth: "100%", // Đảm bảo nó không tràn ra ngoài khung
                                 whiteSpace: "nowrap", // Không cho phép nội dung xuống dòng
                                 overflow: "hidden", // Ẩn nội dung thừa (nếu có)
                                 textOverflow: "ellipsis", // Thêm dấu "..." nếu cần thiết
-                                fontSize: "clamp(14px, 4vw, 20px)", // Thu nhỏ font size khi khung bị thu hẹp
+                                fontSize: "clamp(12px, 3vw, 20px)", // Thu nhỏ font size khi khung bị thu hẹp
                             }}
                         >
                             <span className="font-bold">Giá đấu hiện tại:</span>
-                            <span>&nbsp;{winningBid?.data?.bidAmount ? formatPrice(winningBid.data.bidAmount) : "Chưa có giá đấu"}</span>
+                            <span>&nbsp;{bidAmount ? formatPrice(bidAmount) : "Chưa có giá đấu"}</span>
                         </Heading>
+                        {/*<Heading*/}
+                        {/*    size="text3xl"*/}
+                        {/*    as="h4"*/}
+                        {/*    className="ml-2 mt-8 flex self-start font-bevietnampro text-lg font-medium text-blue-gray-900 md:ml-0 sm:text-md"*/}
+                        {/*    style={{*/}
+                        {/*        maxWidth: "100%", // Đảm bảo nó không tràn ra ngoài khung*/}
+                        {/*        whiteSpace: "nowrap", // Không cho phép nội dung xuống dòng*/}
+                        {/*        overflow: "hidden", // Ẩn nội dung thừa (nếu có)*/}
+                        {/*        textOverflow: "ellipsis", // Thêm dấu "..." nếu cần thiết*/}
+                        {/*        fontSize: "clamp(14px, 4vw, 20px)", // Thu nhỏ font size khi khung bị thu hẹp*/}
+                        {/*    }}*/}
+                        {/*>*/}
+                        {/*    <span className="font-bold">Giá đấu hiện tại:</span>*/}
+                        {/*    <span>&nbsp;{winningBid?.data?.bidAmount ? formatPrice(winningBid.data.bidAmount) : "Chưa có giá đấu"}</span>*/}
+                        {/*</Heading>*/}
 
                         <Text
                             as="p"

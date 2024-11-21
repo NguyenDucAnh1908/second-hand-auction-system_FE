@@ -34,6 +34,11 @@ export const bidApiSlice = apiSlice.injectEndpoints({
                 `/bids/detail/${auctionId}`,
             //transformResponse: (response) => response.data,
         }),
+
+        getHighestBid: builder.query({
+            query: (auctionId) =>
+                `/bids/highest-bid/${auctionId}`,
+        }),
     }),
 });
 
@@ -43,4 +48,5 @@ export const {
     useGetWinBidQuery,
     useGetBidInfoQuery,
     useGetBidDetailQuery,
+    useGetHighestBidQuery,
 } = bidApiSlice;
