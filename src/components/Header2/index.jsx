@@ -19,14 +19,17 @@ import {
     Typography,
     IconButton, Input, Button,
 } from "@material-tailwind/react";
-import {AudioOutlined} from '@ant-design/icons';
-import {AutoComplete, Space} from 'antd';
+import {ExclamationCircleFilled} from '@ant-design/icons';
+import {AutoComplete, Badge, Space} from 'antd';
 import {ShopOutlined} from '@ant-design/icons';
 import DrawerChat from "@/components/DrawerChat/index.jsx";
 import {useGetItemsFilterQuery} from "@/services/item.service.js";
 import {setFilters} from "@/redux/item/itemSlice.js";
-import { useGetUserByIdQuery} from "../../services/user.service";
-import { setUser, setLoading, setError } from "../../redux/user/userSlice";
+import {useGetUserByIdQuery} from "../../services/user.service";
+import {setUser, setLoading, setError} from "../../redux/user/userSlice";
+import {BellIcon, ClockIcon, CreditCardIcon} from "@heroicons/react/24/solid/index.js";
+import {useGetCategoriesQuery} from "@/services/category.service.js";
+import {useGetNotificationQuery} from "@/services/notification.service.js";
 
 
 export default function Header2({...props}) {
@@ -34,6 +37,8 @@ export default function Header2({...props}) {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [showResults, setShowResults] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    const [isInitialized, setIsInitialized] = useState(false);
     const searchRef = useRef(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -45,8 +50,8 @@ export default function Header2({...props}) {
     const showDrawer = () => setIsDrawerOpen(true);
     const closeDrawer = () => setIsDrawerOpen(false);
     const onChange = ({target}) => setEmail(target.value);
-    const { data: userHeader, error, isLoading: isUserLoading, refetch  } = useGetUserByIdQuery();
-// console.log("userHeader ", userHeader)
+    const {data: userHeader, error, isLoading: isUserLoading, refetch} = useGetUserByIdQuery();
+
     const filters = useSelector(
         (state) =>
             state.item || {keyword: "", min: 0, max: 1600000000, scIds: []}
@@ -57,6 +62,43 @@ export default function Header2({...props}) {
         isSuccess: isSuccessItem,
         isFetching: isFetchingItem,
     } = useGetItemsFilterQuery(filters);
+
+    const {
+        data: listNotificationResponse,
+        error: listNotificationError,
+        isLoading: listNotificationLoading,
+        isSuccess,
+    } = useGetNotificationQuery();
+    //console.log("listNotification ", listNotificationResponse)
+
+    useEffect(() => {
+        if (isSuccess && listNotificationResponse) {
+            setNotifications(listNotificationResponse);
+            setIsInitialized(true);
+        }
+    }, [isSuccess, listNotificationResponse]);
+
+    useEffect(() => {
+        if (!isInitialized) return;
+
+        const eventSource = new EventSource("http://localhost:8080/api/v1/notifications/stream");
+
+        eventSource.addEventListener("notification-event", (event) => {
+            const newNotification = JSON.parse(event.data);
+            //console.log("New notification:", newNotification);
+            setNotifications(newNotification);
+        });
+
+        eventSource.onerror = (error) => {
+            console.error("SSE Error:", error);
+            eventSource.close(); // Đóng kết nối nếu xảy ra lỗi
+        };
+
+        return () => {
+            eventSource.close(); // Đóng kết nối khi component bị hủy
+        };
+    }, [isInitialized]);
+    const activeNotifications = notifications.filter((notification) => notification.status);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -108,7 +150,7 @@ export default function Header2({...props}) {
         <header
             {...props}
             className={`${props.className} flex self-stretch items-center z-[3] relative bg-gradient-to-b from-[#45ADA8] to-[#9DE0AD]`}
-            >
+        >
             <DrawerChat open={isDrawerOpen} onClose={closeDrawer}/>
             <div className="w-full">
                 <div className="container-md mt-5 flex flex-col gap-9 self-stretch md:px-5">
@@ -283,8 +325,8 @@ export default function Header2({...props}) {
                                                         <Typography variant="small" className="font-medium">
                                                             Edit Profile
                                                         </Typography>
-                                                    </MenuItem>                 
-                                               
+                                                    </MenuItem>
+
                                                     <hr className="my-2 border-blue-gray-50"/>
                                                     <MenuItem className="flex items-center gap-2 ">
                                                         <svg
@@ -308,6 +350,7 @@ export default function Header2({...props}) {
                                                     </MenuItem>
                                                 </MenuList>
                                             </Menu>
+
                                             <Text
                                                 className="font-bevietnampro text-[14px] font-bold leading-[22px] text-blue_gray-900_01">
                                         <span className="text-[13px] font-normal">
@@ -317,6 +360,50 @@ export default function Header2({...props}) {
                                         </span>
                                                 <span className="text-[10px] font-medium">{userHeader?.role}</span>
                                             </Text>
+                                            {/*<Badge count={<ClockCircleOutlined style={{ color: '#f5222d' }} />}>*/}
+                                            {/*<Avatar shape="square" size="large" />*/}
+                                            {/*<MenuHandler>*/}
+                                            {/*    <IconButton variant="text" color="blue-gray">*/}
+                                            {/*        <BellIcon className="h-5 w-5 text-blue-gray-500"/>*/}
+                                            {/*    </IconButton>*/}
+                                            {/*</MenuHandler>*/}
+
+
+                                            <Menu>
+                                                <MenuHandler>
+                                                    <IconButton variant="text" color="blue-gray">
+                                                        {/* Chỉ hiển thị Badge nếu có thông báo `status === true` */}
+                                                        {activeNotifications.length > 0 && (
+                                                            <Badge count={activeNotifications.length}>
+                                                                <BellIcon className="h-5 w-5 text-blue-gray-500" />
+                                                            </Badge>
+                                                        )}
+                                                    </IconButton>
+                                                </MenuHandler>
+                                                <MenuList className="w-max border-0 menu-list">
+                                                    {notifications.map((notification) => (
+                                                        <MenuItem key={notification.notificationId} className="flex items-center gap-3">
+                                                            <div>
+                                                                <Typography
+                                                                    variant="small"
+                                                                    color="blue-gray"
+                                                                    className="mb-1 font-normal"
+                                                                >
+                                                                    <strong>{notification.title}</strong>
+                                                                </Typography>
+                                                                <Typography
+                                                                    variant="small"
+                                                                    color="blue-gray"
+                                                                    className="flex items-center gap-1 text-xs font-normal opacity-60"
+                                                                >
+                                                                    {notification.message}
+                                                                </Typography>
+                                                            </div>
+                                                        </MenuItem>
+                                                    ))}
+                                                </MenuList>
+                                            </Menu>
+
                                         </>
                                     ) : (
                                         <Button onClick={navigateLogin} variant="gradient">LOGIN</Button>

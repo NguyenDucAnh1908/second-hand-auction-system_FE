@@ -12,7 +12,8 @@ export default function BidForm(
         cancelModel,
         isRefetchWinningBid,
         bidIf,
-        isRefetchBidIf
+        isRefetchBidIf,
+        isRefetchHighestBid
     }
 ) {
 
@@ -32,6 +33,7 @@ export default function BidForm(
             message.success(createAuctionBid?.message);
             setMaxBid("");
             isRefetchWinningBid();
+            isRefetchHighestBid();
             isRefetchBidIf();
             cancelModel();
         } catch (error) {

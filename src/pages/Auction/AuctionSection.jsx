@@ -27,7 +27,8 @@ export default function AuctionSection(
         isRefetchWinningBid,
         isLoggedIn,
         bidAmount,
-        highestBid
+        highestBid,
+        isRefetchHighestBid
     }
 ) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -159,6 +160,7 @@ export default function AuctionSection(
                     <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
                         <BidForm dataItem={dataItem} cancelModel={handleCancel}
                             isRefetchWinningBid={isRefetchWinningBid}
+                                 isRefetchHighestBid={isRefetchHighestBid}
                             bidIf={bidInfo}
                             isRefetchBidIf={isRefetchBidInfo}
                         />
