@@ -299,9 +299,9 @@ export default function AuctionPage() {
                             margin: '16px 0',
                         }}
                     >
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                        <Breadcrumb.Item>List</Breadcrumb.Item>
-                        <Breadcrumb.Item>App</Breadcrumb.Item>
+                        <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+                        <Breadcrumb.Item>Sản phẩm</Breadcrumb.Item>
+                        <Breadcrumb.Item>Đấu giá</Breadcrumb.Item>
                     </Breadcrumb>
                     <div
                         style={{
@@ -334,8 +334,8 @@ export default function AuctionPage() {
                                 >
                 <span className="text-sm font-semibold">
                     {isHighBidder === true
-                        ? "You're the high bidder"
-                        : "You're outbid"}
+                        ? "Bạn đã trả mức giá cao nhất"
+                        : "Mức giá bạn đã ra đã bị vượt"}
                 </span>
                                 </div>
                             )}
@@ -484,7 +484,7 @@ export default function AuctionPage() {
                                             Contract
                                         </button>
 
-                                        <button
+                                        {/* <button
                                             type="button"
                                             className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
                                         >
@@ -501,7 +501,7 @@ export default function AuctionPage() {
                                                     d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
                                             </svg>
                                             Save seller
-                                        </button>
+                                        </button> */}
                                     </div>
                                     <Skeleton loading={loadingSellerInfo} active>
                                         <div className="mb-5  flex items-start gap-[30px] self-stretch md:flex-col">

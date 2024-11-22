@@ -41,6 +41,9 @@ export default function AuctionSection(
     const auctionStartTime = dataItem.auction?.start_time || null;
     const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}`).getTime();
     const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
+    
+    const auctionTypeName = dataItem.auctionType?.auction_typeName;
+    console.log(auctionTypeName);
     const now = new Date().getTime();
     const [isAuctionStarted, setIsAuctionStarted] = useState(false);
     useEffect(() => {
@@ -86,7 +89,16 @@ export default function AuctionSection(
             isRefetchCheckRegister();
             message.success(response.message || "Register auction successfully!");
         } catch (error) {
-            message.error("Failed to register auction.");
+            console.error("Error response:", error);
+
+            // Kiểm tra và xử lý lỗi chi tiết
+            if (error?.data?.message) {
+                message.error(error.data.message); // Hiển thị lỗi từ backend
+            } else if (error?.error) {
+                message.error(error.error); // Hiển thị lỗi chung từ RTK Query
+            } else {
+                message.error("An unknown error occurred. Please try again!");
+            }
         }
     };
 
@@ -143,11 +155,14 @@ export default function AuctionSection(
         }).format(price);
     };
 
-
+    const handCreateOrder = (auction_id) => {
+        navigate(`/Order/${auction_id}`);
+    }
 
 
     return (
         <>
+        
             <Modal
                 title={isRegistered ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
                 open={isModalOpen}
@@ -204,11 +219,7 @@ export default function AuctionSection(
                                     Đóng
                                 </Button>
                             </div>
-
-
                         </form>
-
-
                     </Spin>
                 )}
             </Modal>
@@ -222,8 +233,8 @@ export default function AuctionSection(
             </Modal>
             {isSuccessItemDt && dataItem && (
                 <div className="mt-4 flex items-center gap-[50px] px-[22px] md:flex-col sm:px-5">
-                    <div className="flex flex-1 items-start justify-end w-full md:flex-col md:self-stretch">
-                        <div className="w-full" style={{ width: '700px', height: '500px', position: 'relative' }}>
+                    <div className="flex flex-1 pt-0 items-start justify-end w-full md:flex-col md:self-stretch">
+                        <div className="w-full " style={{ height: '960px', position: 'relative', }}>
                             <ImageGallery
                                 items={images}
                                 showFullscreenButton={true}
@@ -234,16 +245,17 @@ export default function AuctionSection(
                                 autoPlay={true}
                                 slideInterval={3000}
                                 showBullets={true}
-                                //onSlide={(currentIndex) => console.log(`Slide hiện tại: ${currentIndex}`)}
                                 additionalClass="w-full h-full"
                                 style={{
                                     objectFit: 'cover',
                                     width: '100%',
-                                    height: '100%',
+                                    height: '2px',  // Chiều cao linh hoạt, có thể điều chỉnh theo nhu cầu
+                                    marginTop: 0,
                                 }}
                             />
                         </div>
                     </div>
+
                     <div
                         className="flex w-[34%] flex-col items-center rounded-md border border-solid border-gray-200 bg-bg-white px-[22px] py-[30px] shadow-sm md:w-full sm:p-5">
                         <div className="ml-1.5 mr-4 flex flex-col gap-[18px] self-stretch md:mx-0">
@@ -263,7 +275,6 @@ export default function AuctionSection(
                         >
                             <span className="font-bold">Giá khởi điểm:</span>
                             <span>&nbsp;{formatPrice(dataItem.auction.start_price)}</span>
-                            {/*<span>&nbsp;{bidAmount?.bidAmount ? formatPrice(bidAmount?.bidAmount) : "Chưa có giá đấu"}</span>*/}
                         </Heading>
                         <Heading
                             size="text3xl"
@@ -280,21 +291,7 @@ export default function AuctionSection(
                             <span className="font-bold">Giá đấu hiện tại:</span>
                             <span>&nbsp;{bidAmount ? formatPrice(bidAmount) : "Chưa có giá đấu"}</span>
                         </Heading>
-                        {/*<Heading*/}
-                        {/*    size="text3xl"*/}
-                        {/*    as="h4"*/}
-                        {/*    className="ml-2 mt-8 flex self-start font-bevietnampro text-lg font-medium text-blue-gray-900 md:ml-0 sm:text-md"*/}
-                        {/*    style={{*/}
-                        {/*        maxWidth: "100%", // Đảm bảo nó không tràn ra ngoài khung*/}
-                        {/*        whiteSpace: "nowrap", // Không cho phép nội dung xuống dòng*/}
-                        {/*        overflow: "hidden", // Ẩn nội dung thừa (nếu có)*/}
-                        {/*        textOverflow: "ellipsis", // Thêm dấu "..." nếu cần thiết*/}
-                        {/*        fontSize: "clamp(14px, 4vw, 20px)", // Thu nhỏ font size khi khung bị thu hẹp*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*    <span className="font-bold">Giá đấu hiện tại:</span>*/}
-                        {/*    <span>&nbsp;{winningBid?.data?.bidAmount ? formatPrice(winningBid.data.bidAmount) : "Chưa có giá đấu"}</span>*/}
-                        {/*</Heading>*/}
+          
 
                         <Text
                             as="p"
@@ -396,6 +393,16 @@ export default function AuctionSection(
                                     className="h-[60px] w-[20%] object-contain"
                                 />
                             </div>
+                             <Heading
+                                size="headingmd"
+                                as="h5"
+                                className="ml-2 mt-6 self-start text-base font-semibold text-blue-gray-900 md:ml-0"
+                            >
+                                Giá mua ngay
+                            </Heading>
+                            <ButtonDH onClick={() => handCreateOrder(dataItem?.auction?.auction_id)} className="bg-red-600 text-white py-2 px-4 rounded-lg text-lg font-semibold transition duration-300 ease-in-out transform hover:bg-blue-700 hover:scale-105 active:bg-red-800 active:scale-95 focus:outline-none focus:ring-4 focus:ring-red-300">
+                                Giá mua ngay: {formatPrice(dataItem?.auction?.buy_now_price)}
+                            </ButtonDH> 
 
                             <Heading
                                 size="headingmd"
