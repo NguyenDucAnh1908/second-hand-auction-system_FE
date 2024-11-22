@@ -109,7 +109,7 @@ export default function AuctionPage() {
         isLoading: loadingHighestBid,
         refetch: isRefetchHighestBid
     } = useGetHighestBidQuery(data?.auction?.auction_id);
-    console.log("highestBid", highestBid?.data)
+    //console.log("highestBid", highestBid?.data)
     //const isHighBidder = winningBid?.data?.winBid === true;
     const [userIdSeller, setUserIdSeller] = useState(null);
 
@@ -150,7 +150,6 @@ export default function AuctionPage() {
         eventSource.addEventListener("bidUpdate", (event) => {
             const bid = JSON.parse(event.data);
             //console.log("Updated bid:", bid);
-
             // Cập nhật trạng thái và giá đấu từ SSE
             setBidAmount(bid?.bidAmount || null);
             if (bid?.winBid && bid?.userId === userAPI?.id) {
@@ -363,6 +362,7 @@ export default function AuctionPage() {
                                                     isRefetch={refetch}
                                                     winningBid={winningBid}
                                                     isRefetchWinningBid={isRefetchWinningBid}
+                                                    isRefetchHighestBid={isRefetchHighestBid}
                                                     isLoggedIn={isLoggedIn}
                                                     bidAmount={bidAmount}
                                     />

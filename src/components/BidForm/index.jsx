@@ -6,6 +6,7 @@ import {Text, ButtonDH, InputDH} from "./..";
 import {message, Spin, theme} from "antd";
 import {Button} from "@material-tailwind/react";
 
+<<<<<<< HEAD
 export default function BidForm({
     dataItem,
     cancelModel,
@@ -13,6 +14,19 @@ export default function BidForm({
     bidIf,
     isRefetchBidIf
 }) {
+=======
+export default function BidForm(
+    {
+        dataItem,
+        cancelModel,
+        isRefetchWinningBid,
+        bidIf,
+        isRefetchBidIf,
+        isRefetchHighestBid
+    }
+) {
+
+>>>>>>> c9d8ca65d8adbcd4b272eede76bd993c36b440c2
     const selectedAuctionId = dataItem.auction.auction_id;
     const [maxBid, setMaxBid] = useState('');
     const [isBidValid, setIsBidValid] = useState(false);
@@ -30,6 +44,7 @@ export default function BidForm({
                 bidAmount: Number(maxBid),
                 auctionId: selectedAuctionId
             }).unwrap();
+<<<<<<< HEAD
             
             // Hiển thị thông báo thành công
             message.success(createAuctionBid?.message || 'Đặt giá thành công!');
@@ -37,6 +52,14 @@ export default function BidForm({
             isRefetchWinningBid(); // Làm mới thông tin đấu giá
             isRefetchBidIf(); // Làm mới thông tin liên quan khác
             cancelModel(); // Đóng modal
+=======
+            message.success(createAuctionBid?.message);
+            setMaxBid("");
+            isRefetchWinningBid();
+            isRefetchHighestBid();
+            isRefetchBidIf();
+            cancelModel();
+>>>>>>> c9d8ca65d8adbcd4b272eede76bd993c36b440c2
         } catch (error) {
             // Log chi tiết lỗi
             console.error("Error response:", error);
