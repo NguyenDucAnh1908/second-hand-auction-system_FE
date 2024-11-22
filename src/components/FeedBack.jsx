@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import {Rate} from "antd";
 
+
+
 function FeedBack({feedback}) {
+
+
+    const [sellerAvatar, setsellerAvatar] = useState(null);
+    const [sellerName, setsellerName] = useState(null);
+
+    useEffect(() => {
+        const id = localStorage.getItem('sellerAvatar');
+        const id2 = localStorage.getItem('sellerName');
+        if (id) {
+            setsellerAvatar(id);
+        }
+        if (id2) {
+            setsellerName(id2);
+        }
+    }, []);
     return (
         <>
             <article key={feedback.feedbackId}
@@ -76,11 +93,11 @@ function FeedBack({feedback}) {
                         <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
                             <img
                                 className="mr-2 w-6 h-6 rounded-full"
-                                src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                                alt="Jese Leos"/>Jese Leos</p>
+                                src={sellerAvatar}
+                                alt="Jese Leos"/>{sellerName}</p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                             <time pubdate dateTime="2022-02-12"
-                                  title="February 12th, 2022">Feb. 12, 2022
+                                  title="February 12th, 2022">
                             </time>
                         </p>
                     </div>
@@ -94,7 +111,7 @@ function FeedBack({feedback}) {
                             <path
                                 d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
                         </svg>
-                        <span className="sr-only">Comment settings</span>
+                        <span className="sr-only"></span>
                     </button>
                     <div id="dropdownComment2"
                          className="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
@@ -115,9 +132,7 @@ function FeedBack({feedback}) {
                         </ul>
                     </div>
                 </footer>
-                <p className="text-gray-500 dark:text-gray-400">Much appreciated! Glad
-                    you liked
-                    it ☺️</p>
+                <p className="text-gray-500 dark:text-gray-400">{feedback.replyComment}</p>
                 <div className="flex items-center mt-4 space-x-4">
                     <button type="button"
                             className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium">

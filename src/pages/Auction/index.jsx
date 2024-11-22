@@ -68,7 +68,7 @@ export default function AuctionPage() {
 
 
     const [auctionId, setAuctionId] = useState(null);
-
+    const [sellerAvatar, setsellerAvatar] = useState(null);
 
     useEffect(() => {
         const id = localStorage.getItem('auctionItemId');
@@ -78,12 +78,22 @@ export default function AuctionPage() {
         }
     }, []);
 
+  
+
     const {
         data: sellerInfo,
         error: sellerInfoError,
         isLoading: loadingSellerInfo
     } = useGetSellerInformationByAuctionIdQuery(data?.auction?.auction_id);
 
+
+    useEffect(() => {
+        if (sellerInfo) { // Kiểm tra sellerInfo có dữ liệu
+            localStorage.setItem('sellerAvatar', sellerInfo.avatar);
+            localStorage.setItem('sellerName', sellerInfo.storeName);
+        }
+    }, [sellerInfo]);
+    
 
 // console.log("data", data)
     const {

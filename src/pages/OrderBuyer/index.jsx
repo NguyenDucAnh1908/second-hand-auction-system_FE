@@ -101,7 +101,7 @@ export default function OrderManagementBuyer() {
                             Xem Đánh Giá
                         </Button>
                     ) : (
-                        record.status === "CONFIRMED" && (
+                        record.status === "delivered" && (
                             <Button
                                 type="default"
                                 className="bg-green-500 hover:bg-green-600 text-white font-bold"
