@@ -22,15 +22,31 @@ import DrawerDetailOrder from "@/components/DrawerDetailItem/DrawerDetailOrder.j
 import apiGhn from "@/services/apiGhn.service.js";
 
 
-// Define your tabs
-const TABS = [
-    {label: "PENDING", value: "PENDING"},
-    {label: "PROCESSING", value: "PROCESSING"},
-    {label: "REJECTED", value: "REJECTED"},
-    {label: "CONFIRMED", value: "CONFIRMED"},
+// // Define your tabs
+// const TABS = [
+//     {label: "READY TO PICK", value: "ready_to_pick"},
+//     {label: "PICKING", value: "picking"},
+//     {label: "MONEY COLLECT PICKING", value: "money_collect_picking"},
+//     {label: "PICKED", value: "picked"},
+//     {label: "STORING", value: "storing"},
+//     {label: "TRANSPORTING", value: "transporting"},
+//     {label: "SORTING", value: "sorting"},
+//     {label: "DELIVERING", value: "delivering"},
+//     {label: "DELIVERED", value: "delivered"},
+//     {label: "MONEY COLLECT DELIVERING", value: "money_collect_delivering"},
+//     {label: "DELIVERY FAIL", value: "delivery_fail"},
+//     {label: "WAITING TO RETURN", value: "waiting_to_return"},
+//     {label: "RETURN TRANSPORTING", value: "return_transporting"},
+//     {label: "RETURN SORTING", value: "return_sorting"},
+//     {label: "RETURNING", value: "returning"},
+//     {label: "RETURN FAIL", value: "return_fail"},
+//     {label: "RETURNED", value: "returned"},
+//     {label: "CANCEL", value: "cancel"},
+//     {label: "EXCEPTION", value: "exception"},
+//     {label: "LOST", value: "lost"},
+//     {label: "DAMAGE", value: "damage"},
+// ];
 
-    {label: "DELIVERED", value: "DELIVERED"},
-];
 
 const TABLE_HEAD = ["Order ID", "Item", "Status", "Payment Method", "Total Price", "Shipping Type", "Bider", "Note"];
 
@@ -45,7 +61,7 @@ export default function StoreOrders() {
 
     // State for pagination and status filtering
     const [trang, setTrang] = useState(1);
-    const [status, setStatus] = useState("picking"); // Default status
+    const [status, setStatus] = useState(""); // Default status
 
     // Pass the `status` to your API query
     const {data: orderResponse, error, isLoading: orderLoading, isError: orderError} = useGetOrderAdminQuery({
@@ -107,7 +123,7 @@ export default function StoreOrders() {
                                         {/* Tabs for filtering orders by status */}
                                         <Tabs value={status} className="w-full md:w-max">
                                             <TabsHeader>
-                                                {TABS.map(({label, value}) => (
+                                                {/* {TABS.map(({label, value}) => (
                                                     <Tab
                                                         key={value}
                                                         value={value}
@@ -115,7 +131,7 @@ export default function StoreOrders() {
                                                     >
                                                         {label}
                                                     </Tab>
-                                                ))}
+                                                ))} */}
                                             </TabsHeader>
                                         </Tabs>
                                     </div>

@@ -122,7 +122,7 @@ export default function AuctionCreationSection1({itemId}) {
                                                     điểm:</label>
                                                 <InputNumber
                                                     defaultValue={1000}
-                                                    formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                    formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',' ) }
                                                     parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
                                                     onChange={(value) => onChange(value, 'start_price')}
                                                     className="border rounded-md mt-2"
@@ -130,7 +130,7 @@ export default function AuctionCreationSection1({itemId}) {
                                                     style={{
                                                         width: 350
                                                     }}
-                                                />
+                                                /> 
                                             </div>
 
                                             <div className="flex flex-col">
@@ -138,7 +138,7 @@ export default function AuctionCreationSection1({itemId}) {
                                                     ngay:</label>
                                                 <InputNumber
                                                     defaultValue={1000}
-                                                    formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                    formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                                     parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
                                                     onChange={(value) => onChange(value, 'buy_now_price')}
                                                     className="border rounded-md mt-2"
@@ -155,7 +155,7 @@ export default function AuctionCreationSection1({itemId}) {
                                                     nhảy:</label>
                                                 <InputNumber
                                                     defaultValue={1000}
-                                                    formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                    formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                                     parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
                                                     onChange={(value) => onChange(value, 'price_step')}
                                                     className="border rounded-md mt-2"

@@ -138,9 +138,12 @@ export default function CustomerTransactionHistoryPagePage() {
             minute: '2-digit',
             second: '2-digit',
         }),
-        transactionType: item.transactionType === "DEPOSIT_AUCTION" ? "Nạp tiền đấu giá" :
-            item.transactionType === "DEPOSIT" ? "Nạp tiền" :
-                item.transactionType === "WITHDRAWAL" ? "Rút tiền" : "Chuyển khoản", // Định dạng loại giao dịch
+        transactionType:
+            item.transactionType === "DEPOSIT_AUCTION" ? "Nạp tiền đấu giá" :
+                item.transactionType === "DEPOSIT" ? "Nạp tiền" :
+                    item.transactionType === "WITHDRAWAL" ? "Rút tiền" :
+                        item.transactionType === "REFUND" ? "Hoàn cọc" : "Chuyển khoản",
+
         method: item.image || "Không xác định",
         status: item.transactionStatus === "COMPLETED" ? "Hoàn thành" : "Đang xử lý",
         amount: item.amount,
