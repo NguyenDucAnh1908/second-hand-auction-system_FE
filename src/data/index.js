@@ -1,4 +1,4 @@
-export { default as StatisticsCardsData } from "./statistics-cards-data";
+export { default as StatisticsCardsData } from "./statistics-cards-data.js";
 export { default as StatisticsChartsData } from "./statistics-charts-data";
 export { default as ProjectsTableData } from "./projects-table-data";
 export { default as OrdersOverviewData } from "./orders-overview-data";

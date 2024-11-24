@@ -17,11 +17,18 @@ export const auctionApiSlice = apiSlice.injectEndpoints({
             }),
         
           }),
+
+        getAuctionCreatedToday: builder.query({
+            query: () => '/auctions/count-today', // Nếu baseUrl đã được cấu hình
+            transformResponse: (response) => response, // Không sửa đổi kết quả trả về
+        }),
+
     }),
 });
 
 export const {
     useAuctionCreateMutation,
-    useGetAuctionByIdQuery
+    useGetAuctionByIdQuery,
+    useGetAuctionCreatedTodayQuery,
 } = auctionApiSlice;
 

@@ -52,6 +52,10 @@ export const userApiSlice = apiSlice.injectEndpoints({
             
         }),
 
+        getUserComparison: builder.query({
+            query: () => "/user/comparison",
+        }),
+
        
     }),
 });
@@ -63,4 +67,5 @@ export const {
     useUpdateUserMutation,
     useGetAllUserQuery,
     useDeleteUserMutation,
+    useGetUserComparisonQuery ,
 } = userApiSlice;
