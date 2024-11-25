@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import FooterBK from '../../../components/FooterBK';
 import Sidebar from '../../../partials/Sidebar';
-import { Breadcrumb, Layout, theme } from 'antd';
+import {Breadcrumb, Layout, theme} from 'antd';
 import Header from "@/partials/Header.jsx";
-import { useCreateWithdrawMutation } from '../../../services/withdrawRequest.Service'; // Update this hook
-const { Content, Sider } = Layout;
+import {message} from "antd"; // Ant Design message for notifications
+import {useNavigate} from "react-router-dom";
+import {useCreateWithdrawMutation} from '../../../services/withdrawRequest.Service'; // Update this hook
+const {Content, Sider} = Layout;
 
 export default function WithdrawMoney() {
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -22,11 +24,12 @@ export default function WithdrawMoney() {
     });
 
     // Use a mutation hook for creating a withdrawal request (POST request)
-    const [createWithdraw, { data, error, isLoading }] = useCreateWithdrawMutation();
+    const [createWithdraw, {data, error, isLoading}] = useCreateWithdrawMutation();
+    const navigate = useNavigate(); // Initialize navigate hook
 
     // Handle form input changes
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
 
         if (name === "requestAmount") {
             // Chuyển đổi giá trị thành số nguyên
@@ -48,17 +51,24 @@ export default function WithdrawMoney() {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
-            // Call the mutation to create a withdrawal
             await createWithdraw(withdraws);
+            // Display success message
+            message.success("Yêu cầu rút tiền đã được gửi thành công!");
+
+            // Navigate to the desired page (e.g., withdrawal history)
+            navigate("/Dashboard-Seller");
         } catch (err) {
             console.error("Error submitting withdrawal:", err);
+            // Display error message
+            message.error("Có lỗi xảy ra khi gửi yêu cầu rút tiền. Vui lòng thử lại.");
         }
     };
 
     return (
-        <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+            <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
             <Content
                 style={{
                     padding: '0 48px',
@@ -67,7 +77,7 @@ export default function WithdrawMoney() {
                     flexDirection: 'column',
                 }}
             >
-                <Breadcrumb style={{ margin: '16px 0' }}>
+                <Breadcrumb style={{margin: '16px 0'}}>
                     <Breadcrumb.Item>Home</Breadcrumb.Item>
                     <Breadcrumb.Item>List</Breadcrumb.Item>
                     <Breadcrumb.Item>App</Breadcrumb.Item>
@@ -80,8 +90,8 @@ export default function WithdrawMoney() {
                         flex: 1,
                     }}
                 >
-                    <Sider style={{ background: colorBgContainer }} width={300}>
-                        <Sidebar />
+                    <Sider style={{background: colorBgContainer}} width={300}>
+                        <Sidebar/>
                     </Sider>
                     <Content
                         style={{
@@ -100,7 +110,8 @@ export default function WithdrawMoney() {
                                     <form onSubmit={handleSubmit}>
                                         {/* Amount Input */}
                                         <div className="mb-6">
-                                            <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Số Tiền</label>
+                                            <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Số
+                                                Tiền</label>
                                             <input
                                                 type="text" // Sử dụng type="text" thay vì number
                                                 id="amount"
@@ -116,7 +127,9 @@ export default function WithdrawMoney() {
 
                                         {/* Payment Method Select */}
                                         <div className="mb-6">
-                                            <label htmlFor="payment-method" className="block text-sm font-medium text-gray-700">Phương Thức Thanh Toán</label>
+                                            <label htmlFor="payment-method"
+                                                   className="block text-sm font-medium text-gray-700">Phương Thức Thanh
+                                                Toán</label>
                                             <select
                                                 id="payment-method"
                                                 name="paymentMethod"
@@ -133,7 +146,9 @@ export default function WithdrawMoney() {
 
                                         {/* Account Number Input */}
                                         <div className="mb-6">
-                                            <label htmlFor="bankNumber" className="block text-sm font-medium text-gray-700">Số Tài Khoản</label>
+                                            <label htmlFor="bankNumber"
+                                                   className="block text-sm font-medium text-gray-700">Số Tài
+                                                Khoản</label>
                                             <input
                                                 type="text"
                                                 id="bankNumber"
@@ -146,7 +161,9 @@ export default function WithdrawMoney() {
                                             />
                                         </div>
                                         <div className="mb-6">
-                                            <label htmlFor="bankName" className="block text-sm font-medium text-gray-700">Tên Ngân Hàng</label>
+                                            <label htmlFor="bankName"
+                                                   className="block text-sm font-medium text-gray-700">Tên Ngân
+                                                Hàng</label>
                                             <input
                                                 type="text"
                                                 id="bankName"
@@ -161,7 +178,8 @@ export default function WithdrawMoney() {
 
                                         {/* Account Account Input */}
                                         <div className="mb-6">
-                                            <label htmlFor="account-number" className="block text-sm font-medium text-gray-700">Chủ Thẻ</label>
+                                            <label htmlFor="account-number"
+                                                   className="block text-sm font-medium text-gray-700">Chủ Thẻ</label>
                                             <input
                                                 type="text"
                                                 id="account-number"
@@ -176,7 +194,8 @@ export default function WithdrawMoney() {
 
                                         {/* Note Input */}
                                         <div className="mb-6">
-                                            <label htmlFor="note" className="block text-sm font-medium text-gray-700">Ghi Chú (Tuỳ Chọn)</label>
+                                            <label htmlFor="note" className="block text-sm font-medium text-gray-700">Ghi
+                                                Chú (Tuỳ Chọn)</label>
                                             <textarea
                                                 id="note"
                                                 name="note"
@@ -221,7 +240,7 @@ export default function WithdrawMoney() {
                     </Content>
                 </Layout>
             </Content>
-            <FooterBK />
+            <FooterBK/>
         </Layout>
     );
 }

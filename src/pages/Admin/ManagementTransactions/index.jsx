@@ -47,8 +47,7 @@ export default function QuanLyGiaoDich() {
         setMoDialog(!moDialog);
     };
     const danhSachGiaoDich = data?.data?.items || [];
-    console.log(danhSachGiaoDich);
-    console
+
     const totalPages1 = data?.data?.totalPages || 0;
 
     const handlePageChange = (newPage) => {

@@ -29,7 +29,7 @@ const icon = {
 
 export const routesAdmin = [
     {
-        title: "Profile",
+        title: "Thông tin",
         layout: "dashboard",
         pages: [
             {
@@ -53,7 +53,7 @@ export const routesAdmin = [
         ],
     },
     {
-        title: "Management item",
+        title: "Quản lý ",
         layout: "dashboard",
         pages: [
             {
@@ -81,12 +81,12 @@ export const routesAdmin = [
                 element: <ManageListCreateAuctionProduct/>,
             },
            
-            {
-                icon: <UserCircleIcon {...icon} />,
-                name: "Quản Lý FeedBack",
-                path: "/ManageFeedback",
-                element: <ManageFeedback/>,
-            },
+            // {
+            //     icon: <UserCircleIcon {...icon} />,
+            //     name: "Quản Lý FeedBack",
+            //     path: "/ManageFeedback",
+            //     element: <ManageFeedback/>,
+            // },
             {
                 icon: <UserCircleIcon {...icon} />,
                 name: "Quản Lý Đơn hàng shop",
@@ -134,7 +134,7 @@ export const routesAdmin = [
     //   {
     // =======
     {
-        title: "Management Transactions",
+        title: "Giao dịch",
         layout: "dashboard",
         pages: [
             {
@@ -154,16 +154,16 @@ export const routesAdmin = [
                 path: "/managementKYC",
                 element: <ManageKYC/>,
             },
+            // {
+            //     icon: <InformationCircleIcon {...icon} />,
+            //     name: "notifications",
+            //     path: "/notifications",
+            //     element: <Notifications/>,
+            // },
             {
-                icon: <InformationCircleIcon {...icon} />,
-                name: "notifications",
-                path: "/notifications",
-                element: <Notifications/>,
-            },
-            {
-                icon: <InformationCircleIcon {...icon} />,
-                name: "Payments",
-                path: "/payments",
+                // icon: <InformationCircleIcon {...icon} />,
+                // name: "Payments",
+                path: "/payments/:id",
                 element: <Payment/>,
             },
         ],

@@ -53,7 +53,7 @@ const SuccessfullyPayment = () => {
     }, [data, error]);
 
     const navigateToTransaction = () => {
-        navigate("/HistoryPage");
+        navigate("");
     };
 
     return (

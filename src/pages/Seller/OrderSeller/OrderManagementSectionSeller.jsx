@@ -88,37 +88,107 @@ export default function OrderManagementSectionSeller({ orders }) {
 
                                         <td className="p-4">
                                             <Typography variant="small" className="font-normal text-center text-gray-600">
-                                                {orderStatus === "PENDING" && (
-                                                    <Tag icon={<SyncOutlined spin />} color="blue" className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center">
+                                                {orderStatus === "ready_to_pick" && (
+                                                    <Tag
+                                                        icon={<SyncOutlined spin />}
+                                                        color="blue"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
                                                         Đang chờ
                                                     </Tag>
                                                 )}
-                                                {orderStatus === "CONFIRMED" && (
-                                                    <Tag icon={<CheckCircleOutlined />} color="green" className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center">
-                                                        Đã xác nhận
+                                                {orderStatus === "picking" && (
+                                                    <Tag
+                                                        icon={<SyncOutlined spin />}
+                                                        color="orange"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
+                                                        Đang lấy hàng
                                                     </Tag>
                                                 )}
-                                                {orderStatus === "REJECTED" && (
-                                                    <Tag icon={<CloseCircleOutlined />} color="red" className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center">
-                                                        Đã từ chối
+                                                {orderStatus === "money_collect_picking" && (
+                                                    <Tag
+                                                        icon={<DollarCircleOutlined />}
+                                                        color="cyan"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
+                                                        Lấy hàng và thu tiền
                                                     </Tag>
                                                 )}
-                                                {orderStatus === "PROCESSING" && (
-                                                    <Tag icon={<SyncOutlined />} color="yellow" className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center">
-                                                        Đang xử lý
+                                                {orderStatus === "picked" && (
+                                                    <Tag
+                                                        icon={<CheckCircleOutlined />}
+                                                        color="green"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
+                                                        Đã lấy hàng
                                                     </Tag>
                                                 )}
-                                                {orderStatus === "DELIVERED" && (
-                                                    <Tag icon={<CheckCircleOutlined />} color="purple" className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center">
+                                                {orderStatus === "delivering" && (
+                                                    <Tag
+                                                        icon={<SyncOutlined spin />}
+                                                        color="yellow"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
+                                                        Đang giao hàng
+                                                    </Tag>
+                                                )}
+                                                {orderStatus === "delivered" && (
+                                                    <Tag
+                                                        icon={<CheckCircleOutlined />}
+                                                        color="purple"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
                                                         Đã giao
                                                     </Tag>
                                                 )}
-                                                {orderStatus === "RETURNED" && (
-                                                    <Tag icon={<ExclamationCircleOutlined />} color="gray" className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center">
+                                                {orderStatus === "delivery_fail" && (
+                                                    <Tag
+                                                        icon={<CloseCircleOutlined />}
+                                                        color="red"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
+                                                        Giao thất bại
+                                                    </Tag>
+                                                )}
+                                                {orderStatus === "returning" && (
+                                                    <Tag
+                                                        icon={<RollbackOutlined />}
+                                                        color="orange"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
+                                                        Đang hoàn trả
+                                                    </Tag>
+                                                )}
+                                                {orderStatus === "returned" && (
+                                                    <Tag
+                                                        icon={<CheckCircleOutlined />}
+                                                        color="gray"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
                                                         Đã trả lại
                                                     </Tag>
                                                 )}
+                                                {orderStatus === "cancel" && (
+                                                    <Tag
+                                                        icon={<CloseCircleOutlined />}
+                                                        color="red"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
+                                                        Đã hủy
+                                                    </Tag>
+                                                )}
+                                                {orderStatus === "exception" && (
+                                                    <Tag
+                                                        icon={<ExclamationCircleOutlined />}
+                                                        color="red"
+                                                        className="text-sm font-semibold px-3 py-1 rounded-md inline-block w-full max-w-[150px] text-center"
+                                                    >
+                                                        Có sự cố
+                                                    </Tag>
+                                                )}
                                             </Typography>
+
                                         </td>
 
                                         <td className="p-4">

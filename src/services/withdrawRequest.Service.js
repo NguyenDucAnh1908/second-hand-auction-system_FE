@@ -26,8 +26,21 @@ export const withdrawApiSlice = apiSlice.injectEndpoints({
                 body: { ...credentials },
             }),
         }),
+
+        withdrawForSeller: builder.mutation({
+            query: ({ withdrawId, body }) => ({
+                url: `/withdrawRequest/transfer/${withdrawId}`,
+                method: "POST",
+                body, // Đẩy toàn bộ object body
+            }),
+        }),
     }),
     
 });
 
-export const { useGetResultVNPayQuery, useGetWithdrawsQuery, useCreateWithdrawMutation   } = withdrawApiSlice;
+export const {
+    useGetResultVNPayQuery,
+    useGetWithdrawsQuery,
+    useCreateWithdrawMutation,
+    useWithdrawForSellerMutation,
+} = withdrawApiSlice;

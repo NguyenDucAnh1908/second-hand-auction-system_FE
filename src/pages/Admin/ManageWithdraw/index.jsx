@@ -4,14 +4,13 @@ import {Card, CardHeader, Typography, CardBody, Chip, Avatar, Input, Button} fro
 import {Drawer, Descriptions, Badge, Space, Empty, Skeleton} from 'antd';
 import Pagination from "@/components/Pagination/index.jsx";
 import {useGetWithdrawsQuery} from '../../../services/withdrawRequest.Service';
+import {useNavigate} from "react-router-dom";
 
 const TABLE_HEAD = ["Name", "Amount", "Date", "Status", "Account", "Reason", "Detail", ""];
 
 const ManagementWithdrawOfSeller = () => {
     const [open, setOpen] = useState(false);
-    const showDrawer = () => {
-        setOpen(true);
-    };
+    const navigate = useNavigate();
     const onClose = () => {
         setOpen(false);
     };
@@ -34,18 +33,56 @@ const ManagementWithdrawOfSeller = () => {
             currency: 'VND',
         }).format(amount);
     };
+
+    const [selectedWithdraw, setSelectedWithdraw] = useState(null);
+    const showDrawer = (withdraw) => {
+        setSelectedWithdraw(withdraw);
+        setOpen(true);
+    };
+
+    const handleCloseDrawer = () => {
+        setOpen(false);
+    }
+
+    const handleCreate = () => {
+        if (selectedWithdraw) {
+            const { withdrawId } = selectedWithdraw;
+            navigate(`/dashboard/payments/${withdrawId}`);
+            console.log(`Navigating to payment page with ID: ${withdrawId}`);
+        }
+    };
+
     return (
         <div className="container mx-auto py-10">
-            <Drawer width={1100} placement="right" closable={false} onClose={onClose} open={open}>
-                <Descriptions
-                    title="Yêu Cầu Rút Tiền"
-                    bordered
-                    items={[]} // You can dynamically add the item descriptions here
-                    extra={<Space>
-                        <Button color="red" danger>Hủy Yêu Cầu</Button>
-                        <Button color="green">Xác Nhận</Button>
-                    </Space>}
-                />
+            <Drawer
+                width={1100}
+                placement="right"
+                closable={false}
+                onClose={onClose}
+                open={open}
+            >
+                {selectedWithdraw && (
+                    <Descriptions
+                        title="Yêu Cầu Rút Tiền"
+                        bordered
+                        column={1}
+                        extra={
+                            <Space>
+                                <Button danger onClick={handleCloseDrawer}>Hủy Yêu Cầu</Button>
+                                <Button type="primary" onClick={handleCreate}>Xác Nhận</Button>
+                            </Space>
+                        }
+                    >
+                        <Descriptions.Item label="Tên Người Rút">{selectedWithdraw.bankAccount}</Descriptions.Item>
+                        <Descriptions.Item label="Số Tài Khoản">{selectedWithdraw.accountNumber}</Descriptions.Item>
+                        <Descriptions.Item label="Số Tiền">{formatCurrency(selectedWithdraw.requestAmount)}</Descriptions.Item>
+                        <Descriptions.Item label="Trạng Thái">{selectedWithdraw.requestStatus}</Descriptions.Item>
+                        <Descriptions.Item label="Ghi Chú">{selectedWithdraw.note}</Descriptions.Item>
+                        <Descriptions.Item label="Phương Thức Thanh Toán">{selectedWithdraw.paymentMethod}</Descriptions.Item>
+                        <Descriptions.Item label="Ngân Hàng">{selectedWithdraw.bankName}</Descriptions.Item>
+                        <Descriptions.Item label="Ngày Rút">{new Date(selectedWithdraw.processAt).toLocaleString()}</Descriptions.Item>
+                    </Descriptions>
+                )}
             </Drawer>
 
             <h1 className="text-3xl font-bold text-center mb-8">Withdrawal Requests Management</h1>
@@ -141,8 +178,13 @@ const ManagementWithdrawOfSeller = () => {
                                                 </Typography>
                                             </td>
                                             <td className={classes}>
-                                                <Button onClick={showDrawer} variant="gradient" color="blue-gray"
-                                                        size="sm">Details</Button>
+                                                <Button
+                                                    key={withdraw.withdrawId}
+                                                    onClick={() => showDrawer(withdraw)}
+                                                    style={{ marginBottom: '10px', display: 'block' }}
+                                                >
+                                                    Xem Chi Tiết
+                                                </Button>
                                             </td>
                                         </tr>
                                     );

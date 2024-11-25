@@ -41,9 +41,9 @@ export default function OrderManagementSeller() {
                 margin: '16px 0',
               }}
           >
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
+            <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+            <Breadcrumb.Item>Danh sách</Breadcrumb.Item>
+            <Breadcrumb.Item>Sản phẩm</Breadcrumb.Item>
           </Breadcrumb>
           <Layout
               style={{
