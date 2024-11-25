@@ -7,6 +7,7 @@ import {useCreateOrderMutation, useGetOrderQuery} from '../../services/order.ser
 import {useGetAuctionByIdQuery} from '../../services/auction.service';
 import {useGetAddressOrderQuery} from '../../services/address.service';
 import apiGhn from "@/services/apiGhn.service.js";
+import {useGetBalanceQuery} from "@/services/walletCustomerService.js";
 
 
 export default function OrderForm() {
@@ -37,52 +38,8 @@ export default function OrderForm() {
     const totalAmount = auctionAmount + commission;
     const {refetch} = useGetOrderQuery({page: 0, limit: 10});
     const navigate = useNavigate();
-    console.log("auctionData", auctionData)
-    // const fetchFee = async () => {
-    //     const data = {
-    //         payment_type_id: 2,
-    //         note: orderDetails.note,
-    //         required_note: "KHONGCHOXEMHANG",
-    //         return_district_id: null,
-    //         return_ward_code: "",
-    //         client_order_code: "",
-    //         to_name: orderDetails?.fullName,
-    //         to_phone: orderDetails?.phoneNumber,
-    //         to_address: "DIA O DAU TU TIM",
-    //         to_ward_name: addressData?.ward_name,
-    //         to_district_name: addressData?.district_name,
-    //         to_province_name: addressData?.province_name,
-    //         cod_amount: 0,
-    //         weight: 5,
-    //         length: 3,
-    //         width: 10,
-    //         height: 5,
-    //         cod_failed_amount: 2000,
-    //         pick_station_id: 1444,
-    //         deliver_station_id: null,
-    //         insurance_value: 1000000,
-    //         service_id: 0,
-    //         service_type_id: 2,
-    //         pick_shift: [2],
-    //         items: [
-    //             {
-    //                 name: auctionData?.data.itemName,
-    //                 quantity: 1,
-    //                 //price: auctionData?.data.amount,
-    //                 price: auctionData?.data.amount,
-    //             },
-    //         ],
-    //     };
-    //
-    //     try {
-    //         const res = await apiGhn.create_order_service(data);
-    //         message.success(res.message_display);
-    //         return res;
-    //     } catch (error) {
-    //         message.error(error.message_display || "Failed to fetch shipping fee.");
-    //         throw error; // Throw lại lỗi để handleSubmit có thể nhận diện
-    //     }
-    // };
+    //console.log("auctionData", auctionData)
+    const {isLoading: isLoadingBalance} = useGetBalanceQuery();
     const fetchFee = async () => {
         const data = {
             payment_type_id: 2,
@@ -181,8 +138,8 @@ export default function OrderForm() {
             const result = await createOrder(updatedOrderDetails).unwrap();
             message.success('Đơn hàng đã được tạo thành công!');
             message.success(result.message);
-
             navigate('/OrderManagementBuyer');
+            isLoadingBalance();
             refetch();
         } catch (error) {
             console.error("Create order error:", error);
