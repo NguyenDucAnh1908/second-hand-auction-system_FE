@@ -57,6 +57,12 @@ export const orderApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+        getOrderUserByMonth: builder.query({
+            query: () => ({
+                url: '/orders/statistics/monthly',
+                method: 'GET',
+            }),
+        }),
     }),
 });
 
@@ -68,5 +74,6 @@ export const {
     useGetOrderRevenueQuery,
     useGetOrderSellerQuery,
     useGetOrderDetailQuery,
+    useGetOrderUserByMonthQuery,
 } = orderApiSlice;
  

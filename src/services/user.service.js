@@ -56,6 +56,9 @@ export const userApiSlice = apiSlice.injectEndpoints({
             query: () => "/user/comparison",
         }),
 
+        getCountUserByWeek: builder.query({
+            query: () => "/user/count-by-week",
+        })
        
     }),
 });
@@ -68,4 +71,5 @@ export const {
     useGetAllUserQuery,
     useDeleteUserMutation,
     useGetUserComparisonQuery ,
+    useGetCountUserByWeekQuery,
 } = userApiSlice;

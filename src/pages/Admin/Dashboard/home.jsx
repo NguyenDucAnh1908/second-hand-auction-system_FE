@@ -1,23 +1,57 @@
 import React, {useEffect, useState} from "react";
-import {useGetOrderRevenueQuery} from "@/services/order.service.js";
-import {useGetUserComparisonQuery} from "@/services/user.service.js";
-import {useGetAuctionCreatedTodayQuery} from "@/services/auction.service.js";
+import {useGetOrderRevenueQuery, useGetOrderUserByMonthQuery} from "@/services/order.service.js";
+import {useGetUserComparisonQuery, useGetCountUserByWeekQuery} from "@/services/user.service.js";
+import {useGetAuctionCreatedTodayQuery, useGetAuctionCreatedMonthQuery} from "@/services/auction.service.js";
 import {BanknotesIcon, PresentationChartBarIcon, UsersIcon, ChartBarIcon} from "@heroicons/react/24/solid";
 import {ArrowUpIcon, ClockIcon} from "@heroicons/react/24/outline";
 import {Card, CardHeader, CardBody, Typography} from "@material-tailwind/react";
 import {StatisticsChart} from "@/widgets/charts/index.js";
+import {chartsConfig} from "@/configs/charts-config";
+import {format} from "date-fns"
 
-import statisticsChartsData from "@/data/statistics-charts-data.js";
+import statisticsChartsData from "@/data/statistics-charts-data.jsx";
 import ordersOverviewData from "../../../data/orders-overview-data";
+
 
 export function Home() {
     const {data: orderRevenueData, isLoading, isError} = useGetOrderRevenueQuery();
     const {data: userData} = useGetUserComparisonQuery();
-    const {data: auctionData} = useGetAuctionCreatedTodayQuery();
+    const {data: auctionData} = useGetAuctionCreatedTodayQuery()
+    const {data: countUser, isLoading: isLoadingCountUser} = useGetCountUserByWeekQuery();
+    const {data: auctionMonth, isLoading: isLoadingAuctionMonth} = useGetAuctionCreatedMonthQuery();
+    const {data: orderMonth} = useGetOrderUserByMonthQuery();
+    const currentDate = format(new Date(), "dd/MM/yyyy"); // Định dạng ngày hiện tại
 
-    console.log("test", auctionData);
+    console.log(orderMonth)
+    const weeklyData = countUser?.data
+        ? ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"].map(
+            (day) => countUser.data[day] || 0
+        )
+        : [];
+    const months1 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+    const orderData = months1.map((months1, index) => {
+        const monthData = orderMonth?.data.find((item) => item.month === index + 1);
+        return monthData ? monthData.totalOrders : 0; // Nếu không có dữ liệu thì trả về 0
+    });
 
+    const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+    const auctionDataMonth = auctionMonth || []; // Dữ liệu từ API
+    const categories = auctionDataMonth.map((item) => months[item.month - 1]); // Lấy tên tháng từ chỉ số
+    const seriesData = auctionDataMonth.map((item) => item.count);
     const [statisticsData, setStatisticsData] = useState([]);
     useEffect(() => {
         if (orderRevenueData) {
@@ -92,7 +126,94 @@ export function Home() {
             ]);
         }
     }, [orderRevenueData]);
+    const statisticsChartsData = [
+        {
+            color: "white",
+            title: "Số lượng người bán",
+            description: "Số người đăng ký theo tuần",
+            footer: `Cập nhật ngày ${currentDate}`,
+            chart: {
+                type: "bar",
+                height: 220,
+                series: [
+                    {
+                        name: "Views",
+                        data: weeklyData || [],
+                    },
+                ],
+                options: {
+                    colors: ["#388e3c"],
+                    plotOptions: {
+                        bar: {
+                            columnWidth: "16%",
+                            borderRadius: 5,
+                        },
+                    },
+                    xaxis: {
+                        categories: ["M", "T", "W", "T", "F", "S", "S"],
+                    },
+                },
+            },
+        },
+        {
+            color: "white",
+            title: "Số lượng đấu giá",
+            description: "Số lượng phiên đấu giá theo tháng",
+            footer: `Cập nhật đến tháng ${months[new Date().getMonth()]}`,
+            chart: {
+                type: "line",
+                height: 220,
+                series: [
+                    {
+                        name: "Số phiên",
+                        data: seriesData, // Dữ liệu `count`
+                    },
+                ],
+                options: {
+                    colors: ["#4ade80"],
+                    stroke: {
+                        curve: "smooth",
+                        width: 2,
+                    },
+                    markers: {
+                        size: 4,
+                    },
+                    xaxis: {
+                        categories: categories.length > 0 ? categories : months, // Tên tháng
+                    },
+                },
+            },
+        },
+        {
+            color: "white",
+            title: "Số lượng đơn hàng",
+            description: "Số lượng đơn hàng theo tháng",
+            footer: `Cập nhật đến tháng ${months[new Date().getMonth()]}`,
+            chart: {
+                type: "line",
+                height: 220,
+                series: [
+                    {
+                        name: "Đơn hàng",
+                        data: orderData, // Dữ liệu số đơn hàng cho mỗi tháng
+                    },
+                ],
+                options: {
+                    colors: ["#388e3c"],
+                    stroke: {
+                        lineCap: "round",
+                    },
+                    markers: {
+                        size: 5,
+                    },
+                    xaxis: {
+                        categories: months1, // Các tháng trong năm
+                    },
+                },
+            },
+        },
 
+    ];
     if (isLoading) return <div>Loading...</div>;
     if (isError) return <div>Error fetching data</div>;
 
@@ -138,62 +259,7 @@ export function Home() {
                 ))}
             </div>
 
-            {/* Revenue Card */}
-            <div className="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
-                {/*<Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">*/}
-                {/*    <CardHeader floated={false} shadow={false} color="transparent"*/}
-                {/*                className="m-0 flex items-center justify-between p-6">*/}
-                {/*        <div>*/}
-                {/*            <Typography variant="h6" color="blue-gray" className="mb-1">*/}
-                {/*                Revenue*/}
-                {/*            </Typography>*/}
-                {/*            <Typography variant="small"*/}
-                {/*                        className="flex items-center gap-1 font-normal text-blue-gray-600">*/}
-                {/*                <ArrowUpIcon strokeWidth={3} className="h-3.5 w-3.5 text-green-500"/>*/}
-                {/*                <strong>+10%</strong> this month*/}
-                {/*            </Typography>*/}
-                {/*        </div>*/}
-                {/*    </CardHeader>*/}
-                {/*    <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">*/}
-                {/*        /!* Revenue info *!/*/}
-                {/*        <Typography variant="h5" color="blue-gray">*/}
-                {/*            Total Revenue: ${orderRevenueData?.data?.totalRevenue ?? "0"}*/}
-                {/*        </Typography>*/}
-                {/*        <Typography variant="small" color="blue-gray">*/}
-                {/*            Total Transactions: {orderRevenueData?.data?.totalTransaction ?? "0"}*/}
-                {/*        </Typography>*/}
-                {/*    </CardBody>*/}
-                {/*</Card>*/}
 
-                {/* Orders Overview Card */}
-                {/*<Card className="border border-blue-gray-100 shadow-sm">*/}
-                {/*    <CardHeader floated={false} shadow={false} color="transparent" className="m-0 p-6">*/}
-                {/*        <Typography variant="h6" color="blue-gray" className="mb-2">*/}
-                {/*            Orders Overview*/}
-                {/*        </Typography>*/}
-                {/*    </CardHeader>*/}
-                {/*    <CardBody className="pt-0">*/}
-                {/*        /!* Orders list *!/*/}
-                {/*        {ordersOverviewData.map(({icon, color, title, description}, key) => (*/}
-                {/*            <div key={title} className="flex items-start gap-4 py-3">*/}
-                {/*                <div*/}
-                {/*                    className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${key === ordersOverviewData.length - 1 ? "after:h-0" : "after:h-4/6"}`}>*/}
-                {/*                    {React.createElement(icon, {className: `!w-5 !h-5 ${color}`})}*/}
-                {/*                </div>*/}
-                {/*                <div>*/}
-                {/*                    <Typography variant="small" color="blue-gray" className="block font-medium">*/}
-                {/*                        {title}*/}
-                {/*                    </Typography>*/}
-                {/*                    <Typography as="span" variant="small"*/}
-                {/*                                className="text-xs font-medium text-blue-gray-500">*/}
-                {/*                        {description}*/}
-                {/*                    </Typography>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*        ))}*/}
-                {/*    </CardBody>*/}
-                {/*</Card>*/}
-            </div>
         </div>
     );
 }

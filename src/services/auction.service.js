@@ -23,6 +23,9 @@ export const auctionApiSlice = apiSlice.injectEndpoints({
             transformResponse: (response) => response, // Không sửa đổi kết quả trả về
         }),
 
+        getAuctionCreatedMonth: builder.query({
+            query: () => '/auctions/count-month',
+        })
     }),
 });
 
@@ -30,5 +33,6 @@ export const {
     useAuctionCreateMutation,
     useGetAuctionByIdQuery,
     useGetAuctionCreatedTodayQuery,
+    useGetAuctionCreatedMonthQuery,
 } = auctionApiSlice;
 
