@@ -450,26 +450,26 @@ function RegisterProductPage() {
             label: <label className="font-bold">Tình trạng</label>,
             children: <div className="w-72 mt-4">
                 <Select
-                    label="Trình trạng"
+                    label="Tình trạng"
                     value={itemCondition} // Truyền giá trị mặc định từ state
                     onChange={(value) => setItemCondition(value)} // Cập nhật state khi thay đổi
                 >
-                    <Option value="AVAILABLE">AVAILABLE</Option>
-                    <Option value="DAMAGED">DAMAGED</Option>
-                    <Option value="NEW">NEW</Option>
-                    <Option value="USED_GOOD">USED_GOOD</Option>
-                    <Option value="USED_FAIR">USED_FAIR</Option>
-                    <Option
-                        value="REFURBISHED">REFURBISHED</Option>
+                    <Option value="AVAILABLE">Còn hàng</Option>
+                    <Option value="DAMAGED">Hư hỏng</Option>
+                    <Option value="NEW">Mới</Option>
+                    <Option value="USED_GOOD">Đã qua sử dụng - Tốt</Option>
+                    <Option value="USED_FAIR">Đã qua sử dụng - Khá</Option>
+                    <Option value="REFURBISHED">Tân trang</Option>
                 </Select>
             </div>,
         },
+
         {
             key: '4',
-            label: <label className="font-bold">Auction type</label>,
+            label: <label className="font-bold">Loại đấu giá</label>,
             children: <div className="w-72 mt-4">
                 <Select
-                    label="Auction type"
+                    label="Loại"
                     value={auctionType}
                     onChange={handleAuctionTypeChange}
                 >
@@ -714,14 +714,6 @@ function RegisterProductPage() {
             key: '5',
             label: <label className="font-bold">Original</label>,
             children:
-            //     <InputDH
-            //     shape="round"
-            //     name="Color Field"
-            //     placeholder={`original sản phẩm`}
-            //     className="w-[88%] rounded-md border px-3.5 font-jost"
-            //     value={itemSpecific.original}
-            //     onChange={(e) => handleItemSpecificChange('original', e.target.value)}
-            // />
                 <Space
                     direction="vertical"
                     style={{
@@ -750,15 +742,6 @@ function RegisterProductPage() {
             key: '6',
             label: <label className="font-bold">Chất liệu</label>,
             children:
-            //     <InputDH
-            //     shape="round"
-            //     name="Color Field"
-            //     placeholder={`material sản phẩm`}
-            //     className="w-[88%] rounded-md border px-3.5 font-jost"
-            //     value={itemSpecific.material}
-            //     onChange={(e) => handleItemSpecificChange('material', e.target.value)}
-            // />
-
                 <Space
                     direction="vertical"
                     style={{
@@ -800,17 +783,24 @@ function RegisterProductPage() {
             />,
         },
         {
-            key: <label className="font-bold">8</label>,
-            label: 'Phần trăm giá trị sử dụng',
-            children: <InputDH
-                shape="round"
-                name="Percentage Field"
-                placeholder={`Phần trăm giá trị sản phẩm`}
-                className="w-[88%] rounded-md border px-3.5 font-jost"
-            />,
-        },
-        {
             key: '9',
+            label: <label className="font-bold">Phan tram gia tri</label>,
+            children: (
+                <InputNumber
+                    min={0}
+                    max={100}
+                    placeholder="Phần trăm"
+                    style={{ width: 200 }}
+                    value={itemSpecific.percent}
+                    onChange={(value) => handleItemSpecificChange('percent', value)}
+                    formatter={(value) => `${value}%`} // Hiển thị dấu %
+                    parser={(value) => value.replace('%', '')} // Loại bỏ dấu % khi nhập
+                />
+            ),
+        },
+
+        {
+            key: '10',
             label: <label className="font-bold">Giá trị định giá</label>,
             children:
                 <InputNumber
@@ -818,8 +808,8 @@ function RegisterProductPage() {
                     placeholder="Giá mua ngay"
                     // className="w-full rounded-md border border-gray-300 px-3.5 font-jost text-blue_gray-900"
                     style={{width: 200}}
-                    value={itemSpecific.percent}
-                    onChange={(value) => handleItemSpecificChange('percent', value)}
+                    value={itemSpecific.price_buy_now}
+                    onChange={(value) => handleItemSpecificChange('price_buy_now', value)}
                     formatter={(value) =>
                         `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ₫'
                     }
@@ -827,7 +817,7 @@ function RegisterProductPage() {
                 />
         },
         {
-            key: '10',
+            key: '11',
             label: <label className="font-bold">Ngày sản xuất</label>,
             children: <DatePicker
                 selected={itemSpecific.manufacture_date}
@@ -837,7 +827,7 @@ function RegisterProductPage() {
                 dateFormat="dd/MM/yyyy"
                 popperPlacement="bottom"
                 isClearable
-            />,
+             showMonthYearDropdown/>,
             span: 2
         },
     ];

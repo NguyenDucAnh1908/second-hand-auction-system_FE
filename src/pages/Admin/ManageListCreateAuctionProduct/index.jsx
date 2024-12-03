@@ -48,12 +48,12 @@ export default function ManageListCreateAuctionProduct() {
             key: 'itemId',
         },
         {
-            title: 'Name',
+            title: 'Tên sản phẩm',
             dataIndex: 'itemName',
             key: 'itemName',
         },
         {
-            title: 'Description',
+            title: 'Mô tả',
             dataIndex: 'itemDescription',
             key: 'itemDescription',
             render: (itemDescription, record) => (
@@ -65,13 +65,13 @@ export default function ManageListCreateAuctionProduct() {
                 </Button>
             ),
         },
+        // {
+        //     title: 'Thương hiệu',
+        //     dataIndex: 'brandName',
+        //     key: 'brand',
+        // },
         {
-            title: 'Brand',
-            dataIndex: 'brandName',
-            key: 'brand',
-        },
-        {
-            title: 'Status',
+            title: 'Trạng thái',
             dataIndex: 'itemStatus',
             key: 'itemStatus',
             render: (status) => {
@@ -93,39 +93,49 @@ export default function ManageListCreateAuctionProduct() {
             },
         },
         {
-            title: 'Thumbnail',
+            title: 'Ảnh thu nhỏ',
             dataIndex: 'thumbnail',
             key: 'thumbnail',
             render: (thumbnail, record) => (
                 thumbnail ? (
-                    <Image width={100} src={thumbnail} alt={record.itemName}/>
+                    <Image width={100} src={thumbnail} alt={record.itemName} />
                 ) : (
-                    <span>No Image</span>
+                    <span>Không có ảnh</span>
                 )
             ),
         },
         {
-            title: 'Created At',
+            title: 'Ngày tạo',
             dataIndex: 'create_at',
             key: 'createAt',
-            render: (text) => text ? new Date(text).toLocaleDateString('vi-VN') : 'N/A',
+            render: (text) => {
+                const date = text ? new Date(text) : new Date(); // Sử dụng ngày hiện tại nếu không có giá trị
+                return date.toLocaleDateString('vi-VN');
+            },
         },
+
         {
-            title: 'Created By',
+            title: 'Người tạo',
             dataIndex: 'createBy',
             key: 'createBy',
         },
         {
-            title: 'Action',
+            title: 'Hành động',
             key: 'action',
             render: (_, record) => (
                 <>
-                    <Button color="blue" onClick={() => handleNavigateToCreateAuction(record.itemId)}
-                            className="bg-green-500 text-white hover:bg-green-700">Tạo Đấu Giá</Button>
+                    <Button
+                        color="blue"
+                        onClick={() => handleNavigateToCreateAuction(record.itemId)}
+                        className="bg-green-500 text-white hover:bg-green-700"
+                    >
+                        Tạo Đấu Giá
+                    </Button>
                 </>
             ),
         },
     ];
+
 
     return (
         <>

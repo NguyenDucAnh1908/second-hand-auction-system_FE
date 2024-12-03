@@ -224,21 +224,21 @@ export default function AuctionCreationSection1({itemId}) {
                                         onChange={handleShipTypeChange} // Use the event handler
                                         className="mt-4 flex flex-col"
                                     >
-                                        <Radio
-                                            value="Thanh toán tiền mặt"
-                                            label="Thanh toán tiền mặt"
-                                            className="gap-2 text-[15px] font-medium text-black-900"
-                                        />
+                                        {/*<Radio*/}
+                                        {/*    value="Thanh toán tiền mặt"*/}
+                                        {/*    label="Thanh toán tiền mặt"*/}
+                                        {/*    className="gap-2 text-[15px] font-medium text-black-900"*/}
+                                        {/*/>*/}
                                         <Radio
                                             value="Thanh toán online qua hệ thống"
                                             label="Thanh toán online qua hệ thống"
                                             className="mt-2 gap-2 text-[15px] font-medium text-black-900"
                                         />
-                                        <Radio
-                                            value="Bên người mua chịu phí ship"
-                                            label="Bên người mua chịu phí ship"
-                                            className="mt-2 gap-2 text-[15px] font-medium text-black-900"
-                                        />
+                                        {/*<Radio*/}
+                                        {/*    value="Bên người mua chịu phí ship"*/}
+                                        {/*    label="Bên người mua chịu phí ship"*/}
+                                        {/*    className="mt-2 gap-2 text-[15px] font-medium text-black-900"*/}
+                                        {/*/>*/}
                                     </RadioGroup>
                                 </div>
                             </div>
