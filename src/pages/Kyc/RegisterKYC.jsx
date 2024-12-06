@@ -1,13 +1,14 @@
-import {Heading, InputDH} from "../../components/index.jsx";
+import {Heading} from "../../components/index.jsx";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import Header2 from "../../components/Header2/index.jsx";
-import React, {useState} from "react";
-import {TabPanel, TabList, Tab, Tabs} from "react-tabs";
+import  {useState} from "react";
+import {TabPanel, Tabs} from "react-tabs";
 import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
 import {PlusOutlined} from '@ant-design/icons';
-import {useCreateKycMutation} from "../../services/kyc.service.js";
+import {useCreateKycMutation} from "@/services/kyc.service.js";
 import {Breadcrumb, Button, Layout, Steps, theme, Image, Upload, message, Select} from 'antd';
 import {useNavigate} from "react-router-dom";
+import useHookUploadImage from "../../hooks/useHookUploadImage.js";
 import axios from "axios";
 
 const getBase64 = (file) =>
@@ -28,9 +29,7 @@ export default function KNCPage() {
     const [fileList, setFileList] = useState([]);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
-    const [kycData, setKycData] = useState({
-        frontDocumentUrl: '',  // Thêm trường frontDocumentUrl vào đây
-    });
+
     const [current, setCurrent] = useState(0); // state để theo dõi bước hiện tại
     const [formData, setFormData] = useState({
         fullName: '',
@@ -40,6 +39,7 @@ export default function KNCPage() {
         nationality: '',
         address: '',
         home: '',
+        imageUrl: '',
     });
 
     const [createKyc] = useCreateKycMutation();
@@ -49,53 +49,80 @@ export default function KNCPage() {
     };
 
 
-    const handleChangeImage = async ({fileList: newFileList}) => {
-        setFileList(newFileList);
+    const handleChangeImage = async ({ fileList: newFileList }) => {
+        try {
+            setFileList(newFileList);
 
-        if (newFileList.length > 0) {
-            const fileToUpload = newFileList[0].originFileObj || newFileList[0];
-
-            if (fileToUpload) {
-                try {
-                    const formData = new FormData();
-                    formData.append('image', fileToUpload);
-
-                    const response = await axios.post('https://api.fpt.ai/vision/idr/vnm', formData, {
-                        headers: {
-                            'api-key': 'x9iMfNa0psqEceogJCZRyzoeqXuA4XQT',
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    });
-
-                    if (response.data.errorCode === 0) {
-                        message.success('Ảnh đã được tải lên thành công!');
-                        const dataFromApi = response.data.data[0];
-
-                        // Chuyển đổi ngày sinh từ "dd/MM/yyyy" thành "yyyy-MM-dd"
-                        const dob = formatDate(dataFromApi.dob);
-
-                        // Cập nhật formData với dữ liệu từ API
-                        setFormData({
-                            ...formData,
-                            fullName: dataFromApi.name,
-                            cccdNumber: dataFromApi.id,
-                            dob: dob, // Đảm bảo ngày sinh đúng định dạng
-                            gender: dataFromApi.sex === 'NAM' ? 'Nam' : (dataFromApi.sex === 'NỮ' ? 'Nữ' : 'Khác'),
-                            nationality: dataFromApi.nationality,
-                            address: dataFromApi.address,
-                            home: dataFromApi.home,
-                        });
-
-                        console.log(dataFromApi); // In dữ liệu từ API ra console để kiểm tra
-                    } else {
-                        message.error(`Lỗi từ API: ${response.data.errorMessage}`);
-                    }
-                } catch (error) {
-                    message.error('Đã có lỗi xảy ra khi upload ảnh.');
-                }
+            // Kiểm tra xem có file nào để tải lên không
+            if (newFileList.length === 0) {
+                message.warning('Vui lòng chọn file để tải lên.');
+                return;
             }
+
+            const fileToUpload = newFileList[0]?.originFileObj || newFileList[0];
+            if (!fileToUpload) {
+                message.warning('Không tìm thấy file hợp lệ để tải lên.');
+                return;
+            }
+
+            // Tải ảnh lên Firebase
+            const { UploadImage } = useHookUploadImage();
+            const uploadResult = await UploadImage(fileToUpload);
+            const imageUrl = uploadResult; // Giả sử UploadImage trả về URL của ảnh
+
+            // In ra URL của ảnh đã tải lên
+            console.log('Ảnh đã tải lên Firebase:', imageUrl);
+
+            // Cập nhật fileList và preview ảnh
+            setFileList([{ ...newFileList[0], url: imageUrl }]);
+            setPreviewImage(imageUrl);
+            setPreviewOpen(true);
+
+            // Gửi ảnh đến FPT API để xử lý
+            const formDataApi = new FormData();
+            formDataApi.append('image', fileToUpload);
+
+            const response = await axios.post('https://api.fpt.ai/vision/idr/vnm', formDataApi, {
+                headers: {
+                    'api-key': '6Nlbth5fE4pbNCUOtAbe5E3RSEinn4xC',
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.data.errorCode === 0) {
+                // Xử lý dữ liệu trả về từ API
+                const dataFromApi = response.data.data[0];
+                message.success('Ảnh đã được tải lên và xử lý thành công!');
+
+                // Định dạng và cập nhật formData
+                const formatDate = (dateString) => {
+                    const [day, month, year] = dateString.split('/');
+                    return `${year}-${month}-${day}`;
+                };
+
+                setFormData((prevData) => ({
+                    ...prevData,
+                    fullName: dataFromApi.name,
+                    cccdNumber: dataFromApi.id,
+                    dob: formatDate(dataFromApi.dob),
+                    gender: dataFromApi.sex === 'NAM' ? 'Nam' : dataFromApi.sex === 'NỮ' ? 'Nữ' : 'Khác',
+                    nationality: dataFromApi.nationality,
+                    address: dataFromApi.address,
+                    home: dataFromApi.home,
+                    imageUrl: imageUrl,  // Cập nhật imageUrl từ Firebase
+                }));
+
+                console.log('Dữ liệu từ API:', dataFromApi);
+            } else {
+                // Xử lý lỗi từ API
+                message.error(`Lỗi từ API: ${response.data.errorMessage}`);
+            }
+        } catch (error) {
+            console.error('Lỗi khi xử lý ảnh:', error);
+            message.error('Đã xảy ra lỗi trong quá trình xử lý.');
         }
     };
+
 
 
     const handleSubmit = async () => {
@@ -108,43 +135,26 @@ export default function KNCPage() {
                 home: formData.home,
                 nationality: formData.nationality,
                 permanentAddress: formData.address,
-
+                image: formData.imageUrl,  // Gửi imageUrl
             };
 
-            console.log("KYC Request Data: ", kycRequest); // Add this line to inspect data
+            console.log("KYC Request Data: ", kycRequest); // In ra dữ liệu để kiểm tra
 
-            // Call the API to create KYC
+            // Gọi API để tạo KYC
             const backendResponse = await createKyc(kycRequest);
 
             if (backendResponse?.data) {
-                // Success message
+                // Thông báo thành công
                 message.success('KYC đã được tạo thành công!');
-                navigate('/');  // Replace '/' with the correct path to your home page
+                navigate('/ProfileDetail');  // Thay thế bằng đường dẫn đúng
             } else {
-                // Error message if API response does not have expected data
-                message.error(backendResponse?.data?.message || 'Không thể tạo KYC');
+                message.error(backendResponse?.data?.message || 'Thông tin của bạn đã được đăng kí');
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Lỗi:', error);
             message.error('Đã có lỗi xảy ra khi gửi yêu cầu tạo KYC.');
         }
     };
-
-
-    // const next = async () => {
-    //     // Gọi hàm handleSubmit và nhận kết quả thành công hoặc thất bại
-    //     const success = await handleSubmit();
-    //
-    //     // Kiểm tra kết quả từ handleSubmit và di chuyển đến bước tiếp theo nếu thành công
-    //     if (success) {
-    //         // Di chuyển đến bước tiếp theo
-    //         setCurrent(prev => prev + 1);
-    //     } else {
-    //         // Nếu thất bại, bạn có thể không cần làm gì hoặc chỉ cần hiển thị thông báo lỗi
-    //         console.log("Không thể tiếp tục do lỗi trong quá trình submit.");
-    //     }
-    // };
-
     const handleChange = (value, field) => {
         setFormData({
             ...formData,
@@ -176,17 +186,17 @@ export default function KNCPage() {
                                     listType="picture-card"
                                     onPreview={handlePreview}
                                     onChange={handleChangeImage}
-
                                     fileList={fileList}
-                                    beforeUpload={() => false}
+                                    beforeUpload={() => false} // Ngăn trình duyệt tải ảnh tự động
                                 >
-                                    {fileList.length < 1 ? (
+                                    {fileList.length < 1 && (
                                         <div className="flex flex-col items-center justify-center">
                                             <PlusOutlined className="text-gray-500 text-3xl"/>
                                             <div className="mt-2 text-gray-500">Chọn ảnh</div>
                                         </div>
-                                    ) : null}
+                                    )}
                                 </Upload>
+
                                 {previewImage && (
                                     <Image
                                         preview={{
@@ -196,18 +206,20 @@ export default function KNCPage() {
                                         src={previewImage}
                                     />
                                 )}
+
                                 {fileList.length === 0 && (
                                     <p className="text-sm text-red-500">Vui lòng tải lên ảnh CCCD.</p>
                                 )}
                             </div>
                         </div>
 
+
                         {/* Phần Form Thông Tin */}
                         <div className="w-full">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                                 {[
                                     {label: 'Họ và Tên', placeholder: 'Nhập họ và tên', field: 'fullName'},
-                                    {label: 'Số CCCD', placeholder: 'Nhập số CCCD', field: 'cccd'},
+                                    {label: 'Số CCCD', placeholder: 'Nhập số CCCD', field: 'cccdNumber'},
                                     {label: 'Ngày sinh', placeholder: 'Chọn ngày sinh', type: 'date', field: 'dob'},
                                     {
                                         label: 'Giới tính',
@@ -257,11 +269,10 @@ export default function KNCPage() {
                                 onClick={handleSubmit}
                                 className="mt-4 p-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:bg-indigo-700 hover:scale-105 active:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
                             >
-                                Tạo KYC
+                                Đăng kí
                             </button>
 
                         </div>
-
 
 
                     </div>
@@ -327,6 +338,7 @@ export default function KNCPage() {
                                             </div>
                                             <div style={{marginTop: 24}}>
                                                 {0 < steps.length - 1 && (
+                                                    // eslint-disable-next-line no-undef
                                                     <Button type="primary" onClick={next}>
                                                         Next
                                                     </Button>

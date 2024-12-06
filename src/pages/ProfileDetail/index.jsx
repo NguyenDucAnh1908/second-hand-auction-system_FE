@@ -220,16 +220,6 @@ export default function ProfileDetailPage() {
                                 <Button icon={<UploadOutlined />}>Upload Avatar</Button>
                             </Upload>
                         </Form.Item>
-
-                        {/*<Form.Item>*/}
-                        {/*    <Button*/}
-                        {/*        type="primary"*/}
-                        {/*        htmlType="submit"*/}
-                        {/*        disabled={isLoadingupdateUser} // Vô hiệu hóa nút khi đang cập nhật*/}
-                        {/*    >*/}
-                        {/*        Update*/}
-                        {/*    </Button>*/}
-                        {/*</Form.Item>*/}
                     </Form>
                 </Spin>
             </Modal>

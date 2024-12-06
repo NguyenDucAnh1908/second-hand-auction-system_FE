@@ -78,8 +78,7 @@ const ManageKYC = () => {
         };
     }, [data]);
 
-    // if (isLoading) return <div>Loading...</div>;
-    // if (error) return <div>Error loading KYC items: {error.message}</div>;
+
 
     const columns = [
         {
@@ -87,33 +86,38 @@ const ManageKYC = () => {
             dataIndex: 'kycId',
         },
         {
-            title: 'Full Name',
+            title: 'Họ và Tên',
             dataIndex: 'fullName',
         },
         {
-            title: 'Age',
-            dataIndex: 'age',
+            title: 'Ngày tạo',
+            dataIndex: 'submitted',
+            render: (date) => {
+                const formattedDate = new Intl.DateTimeFormat('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                }).format(new Date(date));
+                return formattedDate;
+            },
         },
         {
-            title: 'Phone Number',
-            dataIndex: 'phoneNumber',
+            title: 'Quốc gia',
+            dataIndex: 'nationality',
         },
+
         {
-            title: 'Email',
-            dataIndex: 'email',
-        },
-        {
-            title: 'KYC Status',
+            title: 'Trạng thái',
             dataIndex: 'kycStatus',
             render: (text) => (
                 <span className={`${getStatusStyle(text)}`}>{text}</span>
             ),
         },
         {
-            title: 'Action',
+            title: 'Khác',
             render: (record) => (
                 <Button className="bg-blue-500 text-white hover:bg-blue-600" onClick={() => handleDetail(record)}>
-                    Details
+                    Chi tiết
                 </Button>
             ),
         },

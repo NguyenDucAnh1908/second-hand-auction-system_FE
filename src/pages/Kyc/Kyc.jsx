@@ -5,18 +5,21 @@ import {ButtonDH} from "../../components/index.jsx";
 import {useGetKYCByIdQuery, useGetKYCItemsQuery, useUpdateKycMutation} from "../../services/kyc.service.js";
 import {useParams} from 'react-router-dom';
 import {Input, message, Spin, Descriptions, Image,} from 'antd';
-import DatePicker from 'react-flatpickr';
+import { format } from 'date-fns';  // Cài đặt date-fns nếu chưa có
 import {useNavigate} from 'react-router-dom';
 
 export default function KiemduyetStaffPage() {
     const {id} = useParams();
     const {data: kycData, error, isLoading} = useGetKYCByIdQuery(id);
+    console.log(kycData);
     const [updateKyc, {isLoading: isLoadingKyc}] = useUpdateKycMutation();
     const [status, setStatus] = useState(kycData?.data?.kycStatus);
     const [reason, setReason] = useState("");
     const navigate = useNavigate();
     const {data: dataManageKyc, refetch: isRefetchManageKyc} = useGetKYCItemsQuery({page: 0, limit: 10});
-
+    const formatDate = (date) => {
+        return date ? format(new Date(date), 'dd/MM/yyyy') : "Chưa có";
+    };
     const kyc = kycData?.data;
     //if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading KYC details: {error.message}</div>;
@@ -60,76 +63,54 @@ export default function KiemduyetStaffPage() {
         {
             key: '1',
             label: 'Họ tên đầy đủ',
-            children: kyc?.fullName,
+            children: kyc?.fullName || 'Chưa có',
         },
         {
             key: '2',
             label: 'Giới tính',
-            children: kyc?.gender,
+            children: kyc?.gender || 'Không xác định',
         },
         {
             key: '3',
-            label: 'Email',
-            children: kyc?.email,
+            label: 'Quốc gia',
+            children: kyc?.nationality || 'Chưa có',
         },
         {
             key: '4',
-            label: 'Số điện thoại',
-            children: kyc?.phoneNumber,
+            label: 'Ngày tạo',
+            children: formatDate(kyc?.submitted) || 'Chưa có',
         },
         {
             key: '5',
             label: 'Ngày sinh',
-            children: kyc?.dob,
+            children: formatDate(kyc?.dob) || 'Chưa có',
         },
         {
             key: '6',
             label: 'CCCD',
-            children: kyc?.cccdNumber,
+            children: kyc?.cccdNumber || 'Chưa có',
         },
         {
             key: '7',
-            label: 'Thành phố/Tỉnh thành',
-            children: kyc?.address.province_name,
+            label: 'Quê quán',
+            children: kyc?.home || 'Chưa có',
+            // span: 2, // Gộp hàng
         },
         {
             key: '8',
-            label: 'Quận/Huyện',
-            children: kyc?.address.district_name,
+            label: 'Địa chỉ thường trú',
+            children: kyc?.permanentAddress || 'Chưa có',
+            span: 2, // Gộp hàng
         },
-        {
-            key: '9',
-            label: 'Phường/Xã',
-            children: kyc?.address.ward_name,
-        },
-        {
-            key: '10',
-            label: 'Địa chỉ',
-            children: kyc?.address.address_name,
-        },
-        {
-            key: '11',
-            label: 'Ngày tạo',
-            children: kyc?.submited,
-            span: 2,
-        },
-        {
-            key: '12',
-            label: 'Hình ảnh CMND',
-            children: <Image
-                width={200}
-                src={kyc?.frontDocumentUrl}
-            />,
-        },
-        {
-            key: '13',
-            label: 'Hình ảnh CMND',
-            children: <Image
-                width={200}
-                src={kyc?.backDocumentUrl}
-            />,
-        }
+        // {
+        //     key: '9',
+        //     label: 'Địa chỉ thường trú',
+        //     children: kyc?.imageUrl ? <img src={kyc?.imageUrl} alt="Địa chỉ thường trú" style={{ width: '100px', height: 'auto' }} /> : 'Chưa có',
+        //     span: 2, // Gộp hàng
+        // }
+
     ];
+
     return (
         <div className="w-full bg-white-a700">
             <div className="flex flex-col items-center gap-10 bg-white-a700">
@@ -194,106 +175,4 @@ export default function KiemduyetStaffPage() {
     );
 }
 
-// function VerificationSection({kycData}) {
-//     if (!kycData || !kycData.data) return null;
-//
-//     return (
-//         <form className="flex flex-col gap-8 w-full p-6 bg-white rounded-lg shadow-md">
-//             <div className="flex flex-col gap-4">
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                     <Field label="Họ tên đầy đủ" value={kycData.data.fullName} type="text"/>
-//                     <GenderRow gender={kycData.data.gender}/>
-//                 </div>
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                     <Field label="Email" value={kycData.data.email} type="text"/>
-//                     <Field label="Số điện thoại" value={kycData.data.phoneNumber} type="text"/>
-//                 </div>
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                     <Field label="Ngày sinh" value={kycData.data.dob} type="text"/>
-//                     <Field label="CCCD" value={kycData.data.cccdNumber} type="text"/>
-//                 </div>
-//                 <DocumentImages frontUrl={kycData.data.frontDocumentUrl} backUrl={kycData.data.backDocumentUrl}/>
-//                 <AddressSection address={kycData.data.address}/>
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                     <Field label="Ngày tạo" value={kycData.data.submited} type="date"/>
-//                 </div>
-//             </div>
-//         </form>
-//     );
-// }
-//
-// const Field = ({label, value, type}) => (
-//     <div className="flex flex-col gap-2">
-//         <Heading size="textmd" as="h3" className="text-lg font-semibold text-gray-800">
-//             {label}
-//         </Heading>
-//         {type === "date" ? (
-//             <DatePicker
-//                 value={new Date(value)}
-//                 readOnly
-//                 className="border rounded-md p-2"
-//             />
-//         ) : (
-//             <Input className="border rounded-md p-2" value={value || ''} readOnly/>
-//         )}
-//     </div>
-// );
-//
-// const GenderRow = ({gender}) => (
-//     <div className="flex flex-col gap-2">
-//         <Heading size="textmd" as="h3" className="text-lg font-semibold text-gray-800">
-//             Giới tính
-//         </Heading>
-//         <div className="flex gap-3">
-//             <label className="flex items-center gap-1">
-//                 <input type="radio" name="gender" value="male" checked={gender === "MALE"} readOnly
-//                        className="text-blue-600"/>
-//                 Nam
-//             </label>
-//             <label className="flex items-center gap-1">
-//                 <input type="radio" name="gender" value="female" checked={gender === "FEMALE"} readOnly
-//                        className="text-blue-600"/>
-//                 Nữ
-//             </label>
-//         </div>
-//     </div>
-// );
-//
-// const DocumentImages = ({frontUrl, backUrl}) => (
-//     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//         <div className="field">
-//             <label className="block text-sm font-medium text-gray-700">Hình ảnh mặt trước</label>
-//             {frontUrl ? (
-//                 <img src={frontUrl} alt="Hình ảnh mặt trước" className="mt-2 w-full h-auto object-cover"/>
-//             ) : (
-//                 <p className="mt-2 text-gray-500">Không có hình ảnh mặt trước</p>
-//             )}
-//         </div>
-//         <div className="field">
-//             <label className="block text-sm font-medium text-gray-700">Hình ảnh mặt sau</label>
-//             {backUrl ? (
-//                 <img src={backUrl} alt="Hình ảnh mặt sau" className="mt-2 w-full h-auto object-cover"/>
-//             ) : (
-//                 <p className="mt-2 text-gray-500">Không có hình ảnh mặt sau</p>
-//             )}
-//         </div>
-//     </div>
-// );
-//
-// const AddressSection = ({address}) => (
-//     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//         {address ? (
-//             <>
-//                 <Field label="Thành Phố/Tỉnh thành" value={address.province_name || 'N/A'} type="text"/>
-//                 <Field label="Quận/Huyện" value={address.district_name || 'N/A'} type="text"/>
-//                 <Field label="Phường/Xã" value={address.ward_name || 'N/A'} type="text"/>
-//                 <Field label="Địa chỉ" value={address.address_name || 'N/A'} type="text"/>
-//             </>
-//         ) : (
-//             <div className="col-span-2">
-//                 <p className="text-gray-500">Chưa có thông tin địa chỉ</p>
-//             </div>
-//         )}
-//     </div>
-// );
 
