@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { useGetKYCByUserQuery, useUpdateKYCByUserMutation } from '../../services/kyc.service.js';
 import useHookUploadImage from "../../hooks/useHookUploadImage.js";
 import { useNavigate } from 'react-router-dom';
+import {Textarea} from "@material-tailwind/react";
 
 export default function UpdateKYC() {
     const { data, isLoading, isError } = useGetKYCByUserQuery();
@@ -21,11 +22,13 @@ export default function UpdateKYC() {
     const [updateKyc] = useUpdateKYCByUserMutation();
     const [formData, setFormData] = useState({
         fullName: '',
-        age: '',
-        email: '',
+        permanentAddress: '',
+        nationality: '',
         dob: null,
         phoneNumber: '',
         gender: '',
+        home:'',
+        reason: '',
         cccdNumber: '',
         frontDocumentUrl: '',
         backDocumentUrl: '',
@@ -42,14 +45,15 @@ export default function UpdateKYC() {
             const dob = data.data.dob ? dayjs(data.data.dob) : null;
             setFormData({
                 fullName: data.data.fullName || '',
-                email: data.data.email || '',
-                age: data.data.age ,
+                permanentAddress: data.data.permanentAddress || '',
+                nationality: data.data.nationality ,
                 dob: dob && dob.isValid() ? dob : null,
                 phoneNumber: data.data.phoneNumber || '',
+                home: data.data.home ? data.data.home : null,
+                reason: data.data.reason ? data.data.reason : null,
                 gender: data.data.gender || '',
                 cccdNumber: data.data.cccdNumber || '',
-                frontDocumentUrl: data.data.frontDocumentUrl || '',
-                backDocumentUrl: data.data.backDocumentUrl || '',
+                image: data.data.image || '',
             });
         }
     }, [data]);
@@ -76,8 +80,8 @@ export default function UpdateKYC() {
         });
 
     const handleChangeImage = async ({ fileList: newFileList }) => {
-        if (newFileList.length > 2) {
-            message.warning("Bạn chỉ có thể tải lên tối đa 2 ảnh!");
+        if (newFileList.length > 1) {
+            message.warning("Bạn chỉ có thể tải lên tối đa 1 ảnh!");
             return;
         }
 
@@ -154,20 +158,20 @@ export default function UpdateKYC() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Tuổi</label>
+                            <label className="block text-sm font-medium text-gray-700">Địa chỉ</label>
                             <Input
                                 name="age"
-                                value={formData.age}
+                                value={formData.permanentAddress}
                                 onChange={handleInputChange}
                                 placeholder="Tuổi"
                                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Email</label>
+                            <label className="block text-sm font-medium text-gray-700">Quốc gia</label>
                             <Input
                                 name="email"
-                                value={formData.email}
+                                value={formData.nationality}
                                 onChange={handleInputChange}
                                 placeholder="Nhập email"
                                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -183,10 +187,10 @@ export default function UpdateKYC() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Số điện thoại</label>
+                            <label className="block text-sm font-medium text-gray-700">Quê quán</label>
                             <Input
                                 name="phoneNumber"
-                                value={formData.phoneNumber}
+                                value={formData?.home}
                                 onChange={handleInputChange}
                                 placeholder="Nhập số điện thoại"
                                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -214,20 +218,30 @@ export default function UpdateKYC() {
                                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Lý do:</label>
+                            <Textarea
+                                name="reason"
+                                value={formData.reason}
+                                onChange={handleInputChange}
+                                placeholder="Nhập lý do"
+                                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
                     </div>
 
                     <div className="mt-6">
-                        <h3 className="text-lg font-medium text-gray-700">Tải ảnh giấy tờ kinh doanh</h3>
+                        <h3 className="text-lg font-medium text-gray-700">Hình ảnh</h3>
                         <Upload
                             fileList={fileList}
                             onChange={handleChangeImage}
                             onPreview={handlePreview}
                             listType="picture-card"
                             maxCount={2}
-                            showUploadList={{ showPreviewIcon: false }}
+                            showUploadList={{showPreviewIcon: false}}
                             className="w-full mt-4"
                         >
-                            <div>
+                        <div>
                                 <PlusOutlined />
                                 <div className="mt-2 text-sm text-blue-500">Chọn ảnh</div>
                             </div>
