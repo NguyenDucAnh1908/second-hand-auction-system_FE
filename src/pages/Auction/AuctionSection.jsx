@@ -92,6 +92,7 @@ export default function AuctionSection(
             isRefetch();
             isRefetchCheckRegister();
             message.success(response.message || "Register auction successfully!");
+            handleCancel();
         } catch (error) {
             console.error("Error response:", error);
 
@@ -259,6 +260,7 @@ export default function AuctionSection(
                                 }}
                             />
                         </div>
+
                     </div>
 
                     <div
@@ -281,21 +283,24 @@ export default function AuctionSection(
                             <span className="font-bold">Giá khởi điểm:</span>
                             <span>&nbsp;{formatPrice(dataItem.auction.start_price)}</span>
                         </Heading>
-                        <Heading
-                            size="text3xl"
-                            as="h4"
-                            className="ml-1.5 mt-8 flex self-start font-bevietnampro text-[20px] font-medium text-blue_gray-900_01 md:ml-0 md:text-[20px] sm:text-[20px]"
-                            style={{
-                                maxWidth: "100%", // Đảm bảo nó không tràn ra ngoài khung
-                                whiteSpace: "nowrap", // Không cho phép nội dung xuống dòng
-                                overflow: "hidden", // Ẩn nội dung thừa (nếu có)
-                                textOverflow: "ellipsis", // Thêm dấu "..." nếu cần thiết
-                                fontSize: "clamp(12px, 3vw, 20px)", // Thu nhỏ font size khi khung bị thu hẹp
-                            }}
-                        >
-                            <span className="font-bold">Giá đấu hiện tại:</span>
-                            <span>&nbsp;{bidAmount ? formatPrice(bidAmount) : "Chưa có giá đấu"}</span>
-                        </Heading>
+                        {now >= startDateTime && bidAmount > 0 && (
+                            <Heading
+                                size="text3xl"
+                                as="h4"
+                                className="ml-1.5 mt-8 flex self-start font-bevietnampro text-[20px] font-medium text-blue_gray-900_01 md:ml-0 md:text-[20px] sm:text-[20px]"
+                                style={{
+                                    maxWidth: "100%", // Đảm bảo nó không tràn ra ngoài khung
+                                    whiteSpace: "nowrap", // Không cho phép nội dung xuống dòng
+                                    overflow: "hidden", // Ẩn nội dung thừa (nếu có)
+                                    textOverflow: "ellipsis", // Thêm dấu "..." nếu cần thiết
+                                    fontSize: "clamp(12px, 3vw, 20px)", // Thu nhỏ font size khi khung bị thu hẹp
+                                }}
+                            >
+                                <span className="font-bold">Giá đấu hiện tại:</span>
+                                <span>&nbsp;{bidAmount ? formatPrice(bidAmount) : "Chưa có giá đấu"}</span>
+                            </Heading>
+                        )}
+
 
 
                         <Text
@@ -351,9 +356,11 @@ export default function AuctionSection(
                         </Text>
 
 
+
                         <div className="ml-1.5 mt-[18px] flex flex-col gap-3 self-stretch md:ml-0">
                             {!isAuctionEnded && (
                                 <>
+                                    {/* Hiển thị nút nếu chưa đến thời gian bắt đầu */}
                                     {now < startDateTime && (
                                         <ButtonDH
                                             onClick={showModal} // Hiển thị modal khi nhấn
@@ -367,6 +374,7 @@ export default function AuctionSection(
                                         </ButtonDH>
                                     )}
 
+                                    {/* Hiển thị nút khi đang trong khoảng thời gian đấu giá */}
                                     {now >= startDateTime && now <= endDateTime && (
                                         <>
                                             <a href={`/ListOfBuyerBids/${idAuction}`}>
@@ -379,19 +387,61 @@ export default function AuctionSection(
                                                 </ButtonDH>
                                             </a>
 
-                                            <ButtonDH
-                                                onClick={showModal} // Hiển thị modal khi nhấn
-                                                color=""
-                                                size="xl"
-                                                className="self-stretch rounded-[26px] border border-solid border-green-700 px-[33px] !text-gray-100_01 sm:px-5 transition-colors duration-300 hover:bg-green-500 hover:text-white"
-                                            >
-                                                Đặt Giá Thầu
-                                            </ButtonDH>
+                                            {isRegistered ? (
+                                                <ButtonDH
+                                                    onClick={showModal} // Hiển thị modal khi nhấn
+                                                    color=""
+                                                    size="xl"
+                                                    className="self-stretch rounded-[26px] border border-solid border-green-700 px-[33px] !text-gray-100_01 sm:px-5 transition-colors duration-300 hover:bg-green-500 hover:text-white"
+                                                >
+                                                    Đặt Giá Thầu
+                                                </ButtonDH>
+                                            ) : (
+                                                <ButtonDH
+                                                    onClick={showModal} // Hiển thị modal khi nhấn
+                                                    color=""
+                                                    size="xl"
+                                                    className="self-stretch rounded-[26px] border border-solid border-green-700 px-[33px] !text-gray-100_01 sm:px-5 transition-colors duration-300 hover:bg-green-500 hover:text-white"
+                                                >
+                                                    Tham Gia Đấu Giá
+                                                </ButtonDH>
+                                            )}
                                         </>
                                     )}
                                 </>
                             )}
                         </div>
+
+
+                        {!isAuctionEnded && (
+                            <>
+
+                                {/* Hiển thị nếu chưa đến thời gian bắt đầu */}
+                                {now < startDateTime && (
+                                    <div className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
+                                        <i className="fas fa-user-check text-blue-600 text-lg"></i>
+                                        <p className="font-semibold text-sm text-gray-900">
+                                            Hiện có {dataItem.numberParticipant} người đã đăng ký tham gia
+                                        </p>
+                                    </div>
+                                )}
+                                {/* Hiển thị khi đang trong khoảng thời gian đấu giá */}
+                                {now >= startDateTime && now <= endDateTime && (
+                                    <>
+                                        <div className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
+                                        <i className="fas fa-user-check text-blue-600 text-lg"></i>
+                                        <p className="font-semibold text-sm text-gray-900">
+                                           Có {dataItem.numberParticipant} người đang đấu giá phiên này
+                                        </p>
+                                    </div>
+                                    </>
+                                )}
+
+
+                            </>
+                        )}
+
+
 
 
 
@@ -403,13 +453,13 @@ export default function AuctionSection(
                             Thanh toán :
                         </Heading>
                         <div className="mb-4 ml-2 mt-4 flex flex-col gap-4 self-stretch md:ml-0">
-                            <Text
+                            {/* <Text
                                 size="textmd"
                                 as="p"
                                 className="text-sm font-normal text-gray-700"
                             >
                                 Hệ thống có hỗ trợ thanh toán:
-                            </Text>
+                            </Text> */}
                             <div className="flex items-center justify-center gap-8 bg-white p-4 rounded-lg shadow-md">
                                 <Img
                                     src="https://khoahocsinhvien.com/wp-content/uploads/2021/11/Logo-VNPAY-QR.png"
