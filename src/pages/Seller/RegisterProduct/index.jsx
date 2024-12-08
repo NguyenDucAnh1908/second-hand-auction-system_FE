@@ -54,43 +54,29 @@ function RegisterProductPage() {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [manufactureDate, setManufactureDate] = useState(null);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState([]);
     const [itemName, setItemName] = useState("");
-    const [brandError, setBrandError] = useState("");
+    const [priceBuyNow, setPriceBuyNow] = useState(0);
     const [itemDescription, setItemDescription] = useState("");
     const [itemCondition, setItemCondition] = useState("NEW");
-    const [brandName, setBrandName] = useState("");
     const [imgItem, setImgItem] = useState([]);
-    const [itemSpecific, setItemSpecific] = useState({
-        color: '',
-        weight: 0,
-        percent: 0,
-        original: '',
-        dimension: '',
-        manufacture_date: null,
-        material: '',
-        price_buy_now: 0,
-    });
+
     const [itemNameError, setItemNameError] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
     const [scId, setScId] = useState(0);
     const [auctionType, setAuctionType] = useState(null);
+    const [descriptionError, setDescriptionError] = useState(null);
+
     // const [spinning, setSpinning] = React.useState(false);
     // const [percent, setPercent] = React.useState(0);
     const [spinning, setSpinning] = React.useState(false);
     const [percent, setPercent] = React.useState(0);
     const [intervalId, setIntervalId] = React.useState(null);
-    const [colorError, setColorError] = useState("");
-    const [typeError, setTypeError] = useState("");
-    const [materialError, setMaterialError] = useState("");
-    const [weightError, setWeightError] = useState("");
-    const [priceError, setPriceError] = useState("");
-    const [dimensionError, setDimensionError] = useState("");
-    const [originalError, setOriginalError] = useState("");
+    const [priceError, setPriceError] = useState(""); // Quản lý lỗi
+
     const navigate = useNavigate();
     const userRef = useRef();
     const errRef = useRef();
@@ -150,109 +136,39 @@ function RegisterProductPage() {
         setItemNameError(validateItemName(name)); // Kiểm tra ngay khi nhập
     };
 
-    const validateBrand = (brand) => {
-        if (!brand) {
-            return "Thương hiệu phẩm không được để trống.";
-        }
-        if (brand.length < 3 || brand.length > 50) {
-            return "Thương hiệu phải có từ 3 đến 50 ký tự.";
-        }
-        return "";
+    const formatPrice = (value) => {
+        let rawValue = value.replace(/[^\d]/g, "");
+        const numberFormatter = new Intl.NumberFormat();
+        return rawValue ? numberFormatter.format(rawValue) : "";
     };
 
-    const handleBrandChange = (e) => {
-        const brand = e.target.value;
-        setBrandName(brand);
-        setBrandError(validateBrand(brand)); // Kiểm tra ngay khi nhập
-    };
+    const handlePriceChange = (e) => {
+        let value = e.target.value;
+        let rawValue = value.replace(/[^\d]/g, ""); // Giữ lại chỉ các chữ số
 
-    const validateColor = (color) => {
-        if (!color) {
-            return "Màu sắc không được để trống.";
+        if (rawValue && (parseInt(rawValue) < 0 || parseInt(rawValue) > 1000000000)) {
+            setPriceError("Giá trị không hợp lệ (phải lớn hơn 0 và không quá 1 tỷ)");
+        } else {
+            setPriceError("");
         }
-        return "";
+        const formattedValue = formatPrice(rawValue);
+        setPriceBuyNow(formattedValue); // Lưu giá trị đã định dạng vào priceBuyNow
+
+        setPriceBuyNow(formattedValue.replace(/,/g, "")); // Lưu giá trị gốc (không dấu phẩy)
     };
 
-    const validateMaterial = (material) => {
-        if (!material) {
-            return "material không được để trống.";
-        }
-        return "";
-    };
 
-    const validateType = (type) => {
-        if (!type) {
-            return "Thể loại không được để trống.";
-        }
-        return "";
-    };
-
-    const validateWeight = (weight) => {
-        if (isNaN(weight) || weight <= 0) {
-            return "Khối lượng phải là số dương.";
-        }
-        return "";
-    };
-
-    const validatePrice = (price) => {
-        if (isNaN(price) || price <= 0) {
-            return "Giá phải là số dương.";
-        }
-        return "";
-    };
-
-    const validateDimension = (dimension) => {
-        if (!dimension) {
-            return "Kích thước không được để trống.";
-        }
-        return "";
-    };
-
-    const validateOriginal = (original) => {
-        if (!original) {
-            return "Thông tin 'original' không được để trống.";
-        }
-        return "";
-    };
-    const handleItemSpecificChange = (key, value) => {
-        // Update the value in the state
-        setItemSpecific((prevState) => ({
-            ...prevState,
-            [key]: value,
-        }));
-
-        // Validate based on key
-        switch (key) {
-            case 'color':
-                setColorError(validateColor(value));
-                break;
-            case 'type':
-                setTypeError(validateType(value));
-                break;
-            case 'material':
-                setMaterialError(validateMaterial(value));
-                break;
-            case 'weight':
-                setWeightError(validateWeight(value));
-                break;
-            case 'price_buy_now':
-                setPriceError(validatePrice(value));
-                break;
-            case 'dimension':
-                setDimensionError(validateDimension(value));
-                break;
-            case 'original':
-                setOriginalError(validateOriginal(value));
-                break;
-            // Handle other fields...
-            default:
-                break;
+    const handleDescriptionChange = (value) => {
+        setItemDescription(value);
+        // Validate: Kiểm tra độ dài mô tả
+        if (value.length < 20) {
+            setDescriptionError("Mô tả sản phẩm phải ít nhất 20 ký tự.");
+        } else if (value.length >= 1000) {
+            setDescriptionError("Mô tả sản phẩm không được vượt quá 1000 ký tự.");
+        } else {
+            setDescriptionError("");
         }
     };
-
-// You can add other validation functions similarly
-
-
     const handleImgUpload = async () => {
         if (fileList.length === 0) {
             message.warning("No files uploaded.");
@@ -287,12 +203,7 @@ function RegisterProductPage() {
         console.log("Selected auction type:", value);
         setAuctionType(value);
     };
-    // const handleItemSpecificChange = (field, value) => {
-    //     setItemSpecific((prev) => ({
-    //         ...prev,
-    //         [field]: value,
-    //     }));
-    // };
+
 
     const [registerItem, {isLoading, isSuccess, isError, error}] = useRegisterItemMutation();
 
@@ -313,14 +224,12 @@ function RegisterProductPage() {
             item_name: itemName,
             item_description: itemDescription,
             item_condition: itemCondition,
-            brand_name: brandName,
+            price_buy_now: priceBuyNow,
             img_item: uploadedImages,
-            item_specific: {...itemSpecific, manufacture_date: manufactureDate},
             sc_id: scId,
             auction_type: auctionType,
         };
 
-        //console.log("Payload gửi đến API:", payload);
 
         try {
             const userData = await registerItem(payload).unwrap();
@@ -419,32 +328,35 @@ function RegisterProductPage() {
         },
         {
             key: '2',
-            label: <label className="font-bold">Tên thương hiệu</label>,
-            children:
+            label: <label className="font-bold">Giá mua ngay</label>,
+            children: (
                 <Space
                     direction="vertical"
                     style={{
-                        width: '100%',
+                        width: "100%",
                     }}
                 >
                     <Input
-                        //type="text"
-                        placeholder="Nhập tên sản phẩm"
-                        value={brandName}
-                        onChange={handleBrandChange}
-                        status={brandError ? "error" : ""}
+                        type="text" // Chuyển type sang "text"
+                        placeholder="Nhập giá mua ngay"
+                        value={priceBuyNow}
+                        onChange={handlePriceChange}
+                        status={priceError ? "error" : ""}
                         style={{
-                            borderRadius: '8px',
-                            border: brandError ? '1px solid red' : '1px solid #ccc',
-                            padding: '10px',
+                            borderRadius: "8px",
+                            border: priceError ? "1px solid red" : "1px solid #ccc",
+                            padding: "10px",
                         }}
                     />
-                    {brandError && (
-                        <Text type="danger">{brandError}</Text>
+                    {priceError && (
+                        <Text type="danger" style={{marginTop: "5px"}}>
+                            {priceError}
+                        </Text>
                     )}
                 </Space>
-            ,
+            ),
         },
+
         {
             key: '3',
             label: <label className="font-bold">Tình trạng</label>,
@@ -454,9 +366,9 @@ function RegisterProductPage() {
                     value={itemCondition} // Truyền giá trị mặc định từ state
                     onChange={(value) => setItemCondition(value)} // Cập nhật state khi thay đổi
                 >
-                    <Option value="AVAILABLE">Còn hàng</Option>
-                    <Option value="DAMAGED">Hư hỏng</Option>
-                    <Option value="NEW">Mới</Option>
+
+                    {/*<Option value="DAMAGED">Hư hỏng</Option>*/}
+                    <Option value="LIKE_NEW">Như mới</Option>
                     <Option value="USED_GOOD">Đã qua sử dụng - Tốt</Option>
                     <Option value="USED_FAIR">Đã qua sử dụng - Khá</Option>
                     <Option value="REFURBISHED">Tân trang</Option>
@@ -583,254 +495,70 @@ function RegisterProductPage() {
         },
         {
             key: '8',
-            label: <label className="font-bold">Mo tả</label>,
-            children:
-                <TextEditor value={itemDescription} onChange={setItemDescription}/>
-        }
-    ];
-
-    const infoItem = [
-        {
-            key: '1',
-            label: <label className="font-bold">Màu sắc</label>,
-            children:
-            //     <InputDH
-            //     shape="round"
-            //     name="Color Field"
-            //     placeholder={`Màu sắc sản phẩm`}
-            //     className="w-[88%] rounded-md border px-3.5 font-jost"
-            //     value={itemSpecific.color}
-            //     onChange={(e) => handleItemSpecificChange('color', e.target.value)}
-            // />
-                <Space
-                    direction="vertical"
-                    style={{
-                        width: '100%',
-                    }}
-                >
-                    <Input
-                        //type="text"
-                        placeholder="Nhập tên sản phẩm"
-                        value={itemSpecific.color}
-                        onChange={(e) => handleItemSpecificChange('color', e.target.value)}
-                        status={colorError ? "error" : ""}
-                        style={{
-                            borderRadius: '8px',
-                            border: colorError ? '1px solid red' : '1px solid #ccc',
-                            padding: '10px',
-                        }}
-                    />
-                    {colorError && (
-                        <Text type="danger">{colorError}</Text>
-                    )}
-                </Space>
-            ,
-        },
-        {
-            key: '2',
-            label: <label className="font-bold">Kích thước</label>,
-            children:
-            //     <InputDH
-            //     shape="round"
-            //     name="Color Field"
-            //     placeholder={`Kích thước sản phẩm`}
-            //     className="w-[88%] rounded-md border px-3.5 font-jost"
-            //     value={itemSpecific.dimension}
-            //     onChange={(e) => handleItemSpecificChange('dimension', e.target.value)}
-            // />
-                <Space
-                    direction="vertical"
-                    style={{
-                        width: '100%',
-                    }}
-                >
-                    <Input
-                        //type="text"
-                        placeholder={`Kích thước sản phẩm`}
-                        value={itemSpecific.dimension}
-                        onChange={(e) => handleItemSpecificChange('dimension', e.target.value)}
-                        status={dimensionError ? "error" : ""}
-                        style={{
-                            borderRadius: '8px',
-                            border: dimensionError ? '1px solid red' : '1px solid #ccc',
-                            padding: '10px',
-                        }}
-                    />
-                    {dimensionError && (
-                        <Text type="danger">{dimensionError}</Text>
-                    )}
-                </Space>
-            ,
-        },
-        {
-            key: '3',
-            label: <label className="font-bold">Loại</label>,
-            children:
-            //     <InputDH
-            //     shape="round"
-            //     name="Color Field"
-            //     placeholder={`type sản phẩm`}
-            //     className="w-[88%] rounded-md border px-3.5 font-jost"
-            //     value={itemSpecific.type}
-            //     onChange={(e) => handleItemSpecificChange('type', e.target.value)}
-            // />
-                <Space
-                    direction="vertical"
-                    style={{
-                        width: '100%',
-                    }}
-                >
-                    <Input
-                        //type="text"
-                        placeholder={`type sản phẩm`}
-                        value={itemSpecific.type}
-                        onChange={(e) => handleItemSpecificChange('type', e.target.value)}
-                        status={typeError ? "error" : ""}
-                        style={{
-                            borderRadius: '8px',
-                            border: typeError ? '1px solid red' : '1px solid #ccc',
-                            padding: '10px',
-                        }}
-                    />
-                    {typeError && (
-                        <Text type="danger">{typeError}</Text>
-                    )}
-                </Space>
-            ,
-        },
-        {
-            key: '4',
-            label: <label className="font-bold">Khối lượng</label>,
-            children: <InputDH
-                shape="round"
-                name="Weight Field"
-                placeholder={`Khối lượng sản phẩm`}
-                className="w-[88%] rounded-md border px-3.5 font-jost"
-                value={itemSpecific.weight}
-                onChange={(e) => handleItemSpecificChange('weight', parseFloat(e.target.value))}
-            />,
-        },
-        {
-            key: '5',
-            label: <label className="font-bold">Original</label>,
-            children:
-                <Space
-                    direction="vertical"
-                    style={{
-                        width: '100%',
-                    }}
-                >
-                    <Input
-                        //type="text"
-                        placeholder={`original sản phẩm`}
-                        value={itemSpecific.original}
-                        onChange={(e) => handleItemSpecificChange('original', e.target.value)}
-                        status={originalError ? "error" : ""}
-                        style={{
-                            borderRadius: '8px',
-                            border: originalError ? '1px solid red' : '1px solid #ccc',
-                            padding: '10px',
-                        }}
-                    />
-                    {originalError && (
-                        <Text type="danger">{originalError}</Text>
-                    )}
-                </Space>
-            ,
-        },
-        {
-            key: '6',
-            label: <label className="font-bold">Chất liệu</label>,
-            children:
-                <Space
-                    direction="vertical"
-                    style={{
-                        width: '100%',
-                    }}
-                >
-                    <Input
-                        //type="text"
-                        placeholder={`material sản phẩm`}
-                        value={itemSpecific.material}
-                        onChange={(e) => handleItemSpecificChange('material', e.target.value)}
-                        status={materialError ? "error" : ""}
-                        style={{
-                            borderRadius: '8px',
-                            border: materialError ? '1px solid red' : '1px solid #ccc',
-                            padding: '10px',
-                        }}
-                    />
-                    {materialError && (
-                        <Text type="danger">{materialError}</Text>
-                    )}
-                </Space>
-            ,
-        },
-        {
-            key: '7',
-            label: <label className="font-bold">Giá mua ngay</label>,
-            children: <InputNumber
-                min={0}
-                placeholder="Giá mua ngay"
-                // className="w-full rounded-md border border-gray-300 px-3.5 font-jost text-blue_gray-900"
-                style={{width: 200}}
-                value={itemSpecific.price_buy_now}
-                onChange={(value) => handleItemSpecificChange('price_buy_now', value)}
-                formatter={(value) =>
-                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ₫'
-                }
-                parser={(value) => value.replace(/[^\d]/g, '')}
-            />,
-        },
-        {
-            key: '9',
-            label: <label className="font-bold">Phan tram gia tri</label>,
+            label: <label className="font-bold">Mô tả sản phẩm</label>,
             children: (
-                <InputNumber
-                    min={0}
-                    max={100}
-                    placeholder="Phần trăm"
-                    style={{ width: 200 }}
-                    value={itemSpecific.percent}
-                    onChange={(value) => handleItemSpecificChange('percent', value)}
-                    formatter={(value) => `${value}%`} // Hiển thị dấu %
-                    parser={(value) => value.replace('%', '')} // Loại bỏ dấu % khi nhập
-                />
-            ),
-        },
+                <Space
+                    direction="vertical"
+                    style={{
+                        width: "100%",
+                        marginBottom: "20px", // Khoảng cách giữa 2 form
+                    }}
+                >
+                    <div style={{ display: 'flex', width: '100%' }}>
+                        {/* Form mô tả sản phẩm */}
+                        <div style={{ width: '80%', marginRight: '10px' }}>
+                            <TextEditor
+                                value={itemDescription}
+                                placeholder="Gợi ý: Xuất xứ, Màu sắc, Kích thước, Tình trạng sản phẩm..."
+                                onChange={handleDescriptionChange} // Khi thay đổi, sẽ gọi hàm xử lý
+                                style={{
+                                    height: "200px", // Tăng chiều cao của TextEditor
+                                    fontSize: "16px", // Kích thước chữ lớn hơn
+                                    border: "1px solid #ccc", // Viền nhẹ cho TextEditor
+                                    borderRadius: "8px", // Bo tròn góc
+                                    padding: "10px", // Padding cho TextEditor
+                                }}
+                            />
+                            {descriptionError && (
+                                <Text type="danger" style={{ marginTop: "5px" }}>
+                                    {descriptionError}
+                                </Text>
+                            )}
+                        </div>
 
-        {
-            key: '10',
-            label: <label className="font-bold">Giá trị định giá</label>,
-            children:
-                <InputNumber
-                    min={0}
-                    placeholder="Giá mua ngay"
-                    // className="w-full rounded-md border border-gray-300 px-3.5 font-jost text-blue_gray-900"
-                    style={{width: 200}}
-                    value={itemSpecific.price_buy_now}
-                    onChange={(value) => handleItemSpecificChange('price_buy_now', value)}
-                    formatter={(value) =>
-                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ₫'
-                    }
-                    parser={(value) => value.replace(/[^\d]/g, '')}
-                />
-        },
-        {
-            key: '11',
-            label: <label className="font-bold">Ngày sản xuất</label>,
-            children: <DatePicker
-                selected={itemSpecific.manufacture_date}
-                onChange={(date) => handleItemSpecificChange('manufacture_date', date)}
-                placeholderText="Chọn ngày sản xuất"
-                className="gap-4 self-stretch rounded-md border border-solid border-gray-200 px-3 font-jost w-full"
-                dateFormat="dd/MM/yyyy"
-                popperPlacement="bottom"
-                isClearable
-             showMonthYearDropdown/>,
-            span: 2
-        },
+                        {/* Form Gợi ý */}
+                        <div style={{ width: '20%', height: 'auto' }}>
+                            <TextArea
+                                value={`✅ Xuất xứ\n✅ Màu sắc\n✅ Kích thước\n✅ Chất liệu \n✅ Thương hiệu...`}
+                                disabled
+                                rows={6} // Bạn có thể tăng số dòng hiển thị nếu cần
+                                style={{
+                                    borderRadius: "8px", // Bo tròn góc cho input
+                                    padding: "8px 12px", // Điều chỉnh padding cho input
+                                    border: "1px solid #ccc", // Viền nhẹ, dễ nhìn
+                                    backgroundColor: "#f5f5f5", // Nền nhạt, dễ nhìn
+                                    fontSize: "14px", // Kích thước chữ
+                                    color: "#555", // Màu chữ tối để dễ đọc
+                                    fontWeight: "500", // Độ đậm của chữ
+                                    lineHeight: "1.5", // Khoảng cách giữa các dòng
+                                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)", // Tạo bóng mờ nhẹ cho input
+                                    width: '100%', // Đảm bảo input chiếm toàn bộ chiều rộng của 20%
+                                    height: '180px', // Điều chỉnh chiều cao mong muốn
+                                }}
+                            />
+                        </div>
+
+
+                    </div>
+                </Space>
+            ),
+        }
+
+
+
     ];
+
+
     return (
         <>
             <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
@@ -890,11 +618,9 @@ function RegisterProductPage() {
                                         >
                                             Đăng kí sản phẩm
                                         </Heading>
-                                        <Descriptions title="Đăng kí sản phẩm" layout="vertical" bordered
+                                        <Descriptions  layout="vertical" bordered
                                                       items={items}/>
-                                        <Descriptions title="Thông tin chi tiết của sản phẩm" layout="vertical"
-                                                      bordered
-                                                      items={infoItem}/>
+
                                         <div className=" md:ml-0">
                                             <div className="flex flex-col items-center gap-[62px] sm:gap-[31px]">
                                                 <div className="flex flex-col items-center self-stretch">

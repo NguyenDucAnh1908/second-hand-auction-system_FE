@@ -128,7 +128,7 @@ export default function KiemduyetStaffPage() {
                                 <br/>
                                 <Input.TextArea
                                     rows={4}
-                                    value={reason}
+                                    value={kyc?.reason}
                                     onChange={(e) => setReason(e.target.value)}
                                     placeholder="Nhập lý do (nếu có)"
                                 />
@@ -150,7 +150,7 @@ export default function KiemduyetStaffPage() {
                                                 onClick={() => handleUpdateKyc('PENDING')}
                                             >
                 <span className="flex items-center justify-center">
-                    YC Bổ Sung
+                     Bổ Sung
                 </span>
                                             </ButtonDH>
                                             <ButtonDH
