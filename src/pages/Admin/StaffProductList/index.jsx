@@ -1,14 +1,14 @@
-import {Helmet} from "react-helmet";
-import {Img, InputDH} from "../../../components";
-import {CloseSVG} from "../../../components/InputDH/close.jsx";
-import React, {useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {Button, Card, IconButton, Typography} from "@material-tailwind/react";
-import {Empty, Skeleton, Tag, Drawer, Space} from "antd";
-import {CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined} from "@ant-design/icons";
+import { Helmet } from "react-helmet";
+import { Img, InputDH } from "../../../components";
+import { CloseSVG } from "../../../components/InputDH/close.jsx";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, Card, IconButton, Typography } from "@material-tailwind/react";
+import { Empty, Skeleton, Tag, Drawer, Space } from "antd";
+import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
-import {useSelector, useDispatch} from "react-redux";
-import {useGetItemDetailQuery, useGetItemsQuery} from "../../../services/item.service";
+import { useSelector, useDispatch } from "react-redux";
+import { useGetItemDetailQuery, useGetItemsQuery } from "../../../services/item.service";
 import DrawerDetailItem from "@/components/DrawerDetailItem/index.jsx";
 
 const TABLE_HEAD = [
@@ -28,7 +28,7 @@ export default function StaffProductListPage() {
     const [open, setOpen] = useState(false);
     const [size, setSize] = useState();
     const [selectedItemId, setSelectedItemId] = useState(null);
-    const {data = {}, isLoading, isError, error} = useGetItemsQuery({
+    const { data = {}, isLoading, isError, error } = useGetItemsQuery({
         page: page - 1, // API thường dùng chỉ số 0-based
         limit: 10
     });
@@ -56,6 +56,13 @@ export default function StaffProductListPage() {
     const onClose = () => {
         setOpen(false);
     };
+
+    const navigate = useNavigate();
+
+    const handleButtonClick = (itemId) => {
+        navigate(`/ListOfBuyerBidsAdmin/15`); // Dẫn đến URL mới
+      };
+    
     return (
         <>
 
@@ -68,127 +75,136 @@ export default function StaffProductListPage() {
                     suffix={
                         searchBarValue?.length > 0 ? (
                             <CloseSVG onClick={() => setSearchBarValue("")} height={18} width={18}
-                                      fillColor="#626974ff"/>
+                                fillColor="#626974ff" />
                         ) : (
-                            <Img src="/images/img_search.svg" alt="Search" className="h-[18px] w-[18px]"/>
+                            <Img src="/images/img_search.svg" alt="Search" className="h-[18px] w-[18px]" />
                         )
                     }
                     className=" flex h-[40px] w-[24%] items-center justify-center gap-4 rounded bg-bg-white px-4 text-[16px] text-blue_gray-600 shadow-xs md:ml-0"
                 />
                 <div className="w-full md:w-full">
                     {isError ? (
-                        <Empty/>
+                        <Empty />
                     ) : (
                         <Skeleton loading={isLoading} active>
                             <Card className="h-full w-full overflow-scroll">
                                 <table className="w-full min-w-max table-auto text-left">
                                     <thead>
-                                    <tr>
-                                        {TABLE_HEAD.map((head) => (
-                                            <th key={head} className="p-4 pt-10">
-                                                <Typography
-                                                    variant="small"
-                                                    color="blue-gray"
-                                                    className="font-bold leading-none"
-                                                >
-                                                    {head}
-                                                </Typography>
-                                            </th>
-                                        ))}
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {TABLE_ROWS.map(({
-                                                         number,
-                                                         product,
-                                                         image,
-                                                         time,
-                                                         status,
-                                                         sellerHeader
-                                                     }) => {
-                                        return (
-                                            <tr key={number}>
-                                                <td className="p-4">
+                                        <tr>
+                                            {TABLE_HEAD.map((head) => (
+                                                <th key={head} className="p-4 pt-10">
                                                     <Typography
                                                         variant="small"
                                                         color="blue-gray"
-                                                        className="font-bold"
+                                                        className="font-bold leading-none"
                                                     >
-                                                        {number}
+                                                        {head}
                                                     </Typography>
-                                                </td>
-                                                <td className="p-4">
-                                                    <Typography
-                                                        variant="small"
-                                                        className="font-normal text-gray-600"
-                                                    >
-                                                        {product}
-                                                    </Typography>
-                                                </td>
-                                                <td className="p-4">
-                                                    <img
-                                                        src={image}
-                                                        alt={product}
-                                                        className="w-16 h-16 object-cover rounded"
-                                                    />
-                                                </td>
-                                                <td className="p-4">
-                                                    <Typography
-                                                        variant="small"
-                                                        className="font-normal text-gray-600"
-                                                    >
-                                                        {time}
-                                                    </Typography>
-                                                </td>
-                                                <td className="p-4">
-                                                    {status === "ACCEPTED" && (
-                                                        <Tag icon={<CheckCircleOutlined/>}
-                                                             color="success">
-                                                            {status}
-                                                        </Tag>
-                                                    )}
-                                                    {status === "pending" && (
-                                                        <Tag icon={<SyncOutlined spin/>}
-                                                             color="processing">
-                                                            Pending
-                                                        </Tag>
-                                                    )}
-                                                    {status === "UnAvailable" && (
-                                                        <Tag icon={<CloseCircleOutlined/>}
-                                                             color="error">
-                                                            UnAvailable
-                                                        </Tag>
-                                                    )}
-                                                    {status === "Fail" && (
-                                                        <Tag icon={<ExclamationCircleOutlined/>}
-                                                             color="warning">
-                                                            Fail
-                                                        </Tag>
-                                                    )}
-                                                </td>
-                                                <td className="p-4">
-                                                    <Typography
-                                                        variant="small"
-                                                        className="font-normal text-gray-600"
-                                                    >
-                                                        {sellerHeader}
-                                                    </Typography>
-                                                    {/*{sellerHeader === "Available" && (*/}
-                                                    {/*    <Tag icon={<CheckCircleOutlined/>}*/}
-                                                    {/*         color="success">*/}
-                                                    {/*        Available*/}
-                                                    {/*    </Tag>*/}
-                                                    {/*)}*/}
-                                                </td>
-                                                <td className="p-4">
-                                                    <div className="flex items-center gap-2">
-                                                        <Button onClick={() => showDefaultDrawer(number)} color="blue">Chi
-                                                            tiết</Button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {TABLE_ROWS.map(({
+                                            number,
+                                            product,
+                                            image,
+                                            time,
+                                            status,
+                                            sellerHeader
+                                        }) => {
+                                            return (
+                                                <tr key={number}>
+                                                    <td className="p-4">
+                                                        <Typography
+                                                            variant="small"
+                                                            color="blue-gray"
+                                                            className="font-bold"
+                                                        >
+                                                            {number}
+                                                        </Typography>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <Typography
+                                                            variant="small"
+                                                            className="font-normal text-gray-600"
+                                                        >
+                                                            {product}
+                                                        </Typography>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <img
+                                                            src={image}
+                                                            alt={product}
+                                                            className="w-16 h-16 object-cover rounded"
+                                                        />
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <Typography
+                                                            variant="small"
+                                                            className="font-normal text-gray-600"
+                                                        >
+                                                            {time}
+                                                        </Typography>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        {status === "ACCEPTED" && (
+                                                            <Tag icon={<CheckCircleOutlined />}
+                                                                color="success">
+                                                                {status}
+                                                            </Tag>
+                                                        )}
+                                                        {status === "pending" && (
+                                                            <Tag icon={<SyncOutlined spin />}
+                                                                color="processing">
+                                                                Pending
+                                                            </Tag>
+                                                        )}
+                                                        {status === "UnAvailable" && (
+                                                            <Tag icon={<CloseCircleOutlined />}
+                                                                color="error">
+                                                                UnAvailable
+                                                            </Tag>
+                                                        )}
+                                                        {status === "Fail" && (
+                                                            <Tag icon={<ExclamationCircleOutlined />}
+                                                                color="warning">
+                                                                Fail
+                                                            </Tag>
+                                                        )}
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <Typography
+                                                            variant="small"
+                                                            className="font-normal text-gray-600"
+                                                        >
+                                                            {sellerHeader}
+                                                        </Typography>
+                                                        {/*{sellerHeader === "Available" && (*/}
+                                                        {/*    <Tag icon={<CheckCircleOutlined/>}*/}
+                                                        {/*         color="success">*/}
+                                                        {/*        Available*/}
+                                                        {/*    </Tag>*/}
+                                                        {/*)}*/}
+                                                    </td>
+                                                    <td className="p-4">
+
+                                                        <div className="flex items-center gap-2">
+                                                            <Button onClick={() => showDefaultDrawer(number)} color="blue">Chi
+                                                                tiết</Button>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-4">
+
+                                                        <div className="flex items-center gap-2">
+                                                            <Button onClick={handleButtonClick} color="green">
+                                                                Danh sách đấu giá
+                                                            </Button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </Card>
@@ -221,7 +237,7 @@ export default function StaffProductListPage() {
                     </Space>
                 }
             >
-                <DrawerDetailItem itemIds={selectedItemId}/>
+                <DrawerDetailItem itemIds={selectedItemId} />
             </Drawer>
         </>
     );

@@ -47,6 +47,8 @@ import MenuKyc from "./pages/Kyc/Menu.jsx";
 import UpdateKYC from "./pages/Kyc/UpdateProflie.jsx";
 import CRUDSellerInfor from "./pages/Seller/CRUDInfor/index.jsx";
 import WebSocketTest from "./pages/test.jsx";
+import ListOfBuyerBidsAdmin from "./pages/ListOfBuyerBidAdmin/index.jsx";
+
 function App() {
     return (
         <Routes>
@@ -72,6 +74,7 @@ function App() {
                 <Route path="Unauthorized" index element={<Unauthorized/>}/>
                 <Route path="SuccessfullyPayment" index element={<SuccessfullyPayment/>}/>
                 <Route path="FailPayment" index element={<FailPayment/>}/>
+                <Route path="ListOfBuyerBidsAdmin/:id" index element={<ListOfBuyerBidsAdmin/>}/>
 
 
                 {/*ADMIN*/}

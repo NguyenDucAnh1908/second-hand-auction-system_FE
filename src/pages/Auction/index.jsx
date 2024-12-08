@@ -1,4 +1,4 @@
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import {
     ButtonDH,
     Img,
@@ -13,25 +13,25 @@ import Header2 from "../../components/Header2";
 import AuctionSection from "./AuctionSection";
 import RecommendedProductsSection from "./RecommendedProductsSection";
 import React from "react";
-import {Avatar, Breadcrumb, Empty, Layout, Skeleton, theme} from "antd";
-import {AntDesignOutlined} from "@ant-design/icons";
-import {Flex, Rate, Typography, Tabs} from "antd";
+import { Avatar, Breadcrumb, Empty, Layout, Skeleton, theme } from "antd";
+import { AntDesignOutlined } from "@ant-design/icons";
+import { Flex, Rate, Typography, Tabs } from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {useGetItemDetailQuery, useGetSimilarItemAuctionQuery} from "@/services/item.service.js";
-import {useParams, useLocation, useNavigate} from "react-router-dom";
-import {useSelector} from 'react-redux';
-import {useEffect, useState} from 'react';
-import {useGetSellerInformationByAuctionIdQuery} from "../../services/sellerinformation.service.js";
-import {useGetFeedbackBySellerUserIdQuery} from "../../services/feedback.service.js";
+import { useGetItemDetailQuery, useGetSimilarItemAuctionQuery } from "@/services/item.service.js";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useGetSellerInformationByAuctionIdQuery } from "../../services/sellerinformation.service.js";
+import { useGetFeedbackBySellerUserIdQuery } from "../../services/feedback.service.js";
 import Pagination from "@/components/Pagination/index.jsx";
-import {useGetHighestBidQuery, useGetWinBidQuery} from "@/services/bid.service.js";
-import {selectCurrentUser, selectCurrentUserAPI, selectIsLoggedIn} from "@/redux/auth/authSlice.js";
+import { useGetHighestBidQuery, useGetWinBidQuery } from "@/services/bid.service.js";
+import { selectCurrentUser, selectCurrentUserAPI, selectIsLoggedIn } from "@/redux/auth/authSlice.js";
 import FeedBack from "@/components/FeedBack.jsx";
 import RecentProductsSection from "pages/HomePage/RecentProductsSection.jsx";
 import SliderItem from "@/components/SlilerItem/index.jsx";
 
 
-const {Content} = Layout;
+const { Content } = Layout;
 export default function AuctionPage() {
     const [sliderState, setSliderState] = React.useState(0);
     const sliderRef = React.useRef(null);
@@ -42,11 +42,11 @@ export default function AuctionPage() {
     const [initialized, setInitialized] = useState(false);
     const userAPI = useSelector(selectCurrentUserAPI);
     const isLoggedIn = useSelector(selectIsLoggedIn);
-    const {id} = useParams();
+    const { id } = useParams();
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-    const {data, error, isLoading, isSuccess, refetch} = useGetItemDetailQuery({id});
+    const { data, error, isLoading, isSuccess, refetch } = useGetItemDetailQuery({ id });
 
     const {
         data: dataSimilar,
@@ -78,7 +78,7 @@ export default function AuctionPage() {
         }
     }, []);
 
-  
+
 
     const {
         data: sellerInfo,
@@ -93,9 +93,9 @@ export default function AuctionPage() {
             localStorage.setItem('sellerName', sellerInfo.storeName);
         }
     }, [sellerInfo]);
-    
 
-// console.log("data", data)
+
+    // console.log("data", data)
     const {
         data: winningBid,
         error: fetchWinningBid,
@@ -181,15 +181,15 @@ export default function AuctionPage() {
                     {/*    Đặc điểm*/}
                     {/*</Heading>*/}
                     <div className="flex items-start self-stretch md:flex-col">
-                        <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01"/>
+                        <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
                         <Heading
                             as="p"
                             className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
                         >
                             <>
                                 {/*{data?.itemDescription}*/}
-                                <p dangerouslySetInnerHTML={{__html: data?.itemDescription}}/>
-                                <br/>
+                                <p dangerouslySetInnerHTML={{ __html: data?.itemDescription }} />
+                                <br />
                             </>
                         </Heading>
                     </div>
@@ -200,7 +200,7 @@ export default function AuctionPage() {
             detailsTitle: "Thông tin sản phẩm",
             content: (
                 <div className="flex items-start self-stretch md:flex-col">
-                    <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01"/>
+                    <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
                     <Heading
                         as="p"
                         className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
@@ -245,7 +245,7 @@ export default function AuctionPage() {
                     </p>
                     <ul className="ml-5 mt-4 space-y-4 text-sm text-gray-700 list-inside">
                         <li className="flex items-start">
-                            <span className="text-red-600 font-semibold mr-2">1. Đăng ký tài khoản:</span> 
+                            <span className="text-red-600 font-semibold mr-2">1. Đăng ký tài khoản:</span>
                             Bạn cần có một tài khoản người dùng trên hệ thống đấu giá để có thể tham gia các phiên đấu giá. Nếu chưa có, bạn hãy đăng ký tài khoản mới.
                         </li>
                         <li className="flex items-start">
@@ -271,9 +271,9 @@ export default function AuctionPage() {
                 </div>
             ),
         }
-        
-        
-        
+
+
+
     ];
 
 
@@ -287,7 +287,7 @@ export default function AuctionPage() {
                 />
             </Helmet>
             <Layout>
-                <Header2/>
+                <Header2 />
                 <Content
                     style={{
                         padding: '0 20px',
@@ -321,50 +321,52 @@ export default function AuctionPage() {
                             {/*        </div>*/}
                             {/*    </>*/}
                             {/*)}*/}
-
                             {isLoggedIn && initialized && (
-                                // Hiển thị dựa trên trạng thái khởi tạo hoặc cập nhật từ SSE
                                 <div
-                                    className={`w-full p-1 flex items-center rounded-lg ${
-                                        isHighBidder === true
-                                            ? 'bg-gradient-to-r from-white to-green-500'
-                                            : 'bg-gradient-to-r from-white to-red-500'
-                                    }`}
+                                    className={`w-full p-1 flex items-center rounded-lg ${data.auctionType?.act_id === 3
+                                            ? 'bg-gradient-to-r from-blue-500 to-blue-700' // Nền xanh dương cho đấu giá kín
+                                            : isHighBidder === true
+                                                ? 'bg-gradient-to-r from-white to-green-500'
+                                                : 'bg-gradient-to-r from-white to-red-500'
+                                        }`}
                                 >
-                <span className="text-sm font-semibold">
-                    {isHighBidder === true
-                        ? "Bạn đã trả mức giá cao nhất"
-                        : "Mức giá bạn đã ra đã bị vượt"}
-                </span>
+                                    <span className="text-sm font-semibold">
+                                        {data.auctionType?.act_id === 3
+                                            ? "Đấu Giá Kín" // Thay thế thông báo cho đấu giá kín
+                                            : isHighBidder === true
+                                                ? "Bạn đã trả mức giá cao nhất"
+                                                : "Mức giá bạn đã ra đã bị vượt"}
+                                    </span>
                                 </div>
                             )}
 
-        {/*                    {isLoggedIn && (*/}
-        {/*                        <div*/}
-        {/*                            className={`w-full p-1 flex items-center rounded-lg ${*/}
-        {/*                                isHighBidder === true*/}
-        {/*                                    ? 'bg-gradient-to-r from-white to-green-500'*/}
-        {/*                                    : 'bg-gradient-to-r from-white to-red-500'*/}
-        {/*                            }`}*/}
-        {/*                        >*/}
-        {/*<span className="text-sm font-semibold">*/}
-        {/*    {isHighBidder === true*/}
-        {/*        ? "You're the high bidder"*/}
-        {/*        : "You're outbid"}*/}
-        {/*</span>*/}
-        {/*                        </div>*/}
-        {/*                    )}*/}
+
+                            {/*                    {isLoggedIn && (*/}
+                            {/*                        <div*/}
+                            {/*                            className={`w-full p-1 flex items-center rounded-lg ${*/}
+                            {/*                                isHighBidder === true*/}
+                            {/*                                    ? 'bg-gradient-to-r from-white to-green-500'*/}
+                            {/*                                    : 'bg-gradient-to-r from-white to-red-500'*/}
+                            {/*                            }`}*/}
+                            {/*                        >*/}
+                            {/*<span className="text-sm font-semibold">*/}
+                            {/*    {isHighBidder === true*/}
+                            {/*        ? "You're the high bidder"*/}
+                            {/*        : "You're outbid"}*/}
+                            {/*</span>*/}
+                            {/*                        </div>*/}
+                            {/*                    )}*/}
 
                             <Skeleton loading={isLoading} active>
                                 {isSuccess && data && (
                                     <AuctionSection dataItem={data}
-                                                    isSuccessItemDt={isSuccess}
-                                                    isRefetch={refetch}
-                                                    winningBid={winningBid}
-                                                    isRefetchWinningBid={isRefetchWinningBid}
-                                                    isRefetchHighestBid={isRefetchHighestBid}
-                                                    isLoggedIn={isLoggedIn}
-                                                    bidAmount={bidAmount}
+                                        isSuccessItemDt={isSuccess}
+                                        isRefetch={refetch}
+                                        winningBid={winningBid}
+                                        isRefetchWinningBid={isRefetchWinningBid}
+                                        isRefetchHighestBid={isRefetchHighestBid}
+                                        isLoggedIn={isLoggedIn}
+                                        bidAmount={bidAmount}
                                     />
                                 )}
                             </Skeleton>
@@ -387,7 +389,7 @@ export default function AuctionPage() {
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-col items-start gap-6">
-                                                    <div className="h-px w-[72%] bg-gray-200"/>
+                                                    <div className="h-px w-[72%] bg-gray-200" />
                                                     <Tabs onChange={onChange} type="card" activeKey={activeTabKey}>
                                                         {accordionData.map((d, i) => (
                                                             <Tabs.TabPane
@@ -396,7 +398,7 @@ export default function AuctionPage() {
                                                                         className={`text-[20px] font-medium ${activeTabKey === String(i + 1)
                                                                             ? "text-green-500"
                                                                             : "text-blue_gray-900_01"
-                                                                        }`}
+                                                                            }`}
                                                                     >
                                                                         {d.detailsTitle}
                                                                     </span>
@@ -424,7 +426,7 @@ export default function AuctionPage() {
                                         </Text>
                                         <div className="flex items-center my-8 gap-6">
                                             <Avatar
-                                                size={{xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100}}
+                                                size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
                                                 src={sellerInfo?.avatar}
                                                 onClick={() => handleNavigateToUserIdSeller(sellerInfo?.userId)}
 
@@ -457,7 +459,7 @@ export default function AuctionPage() {
                                                 viewBox="0 0 20 20"
                                             >
                                                 <path
-                                                    d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+                                                    d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
                                             </svg>
                                             Visit store
                                         </button>
@@ -519,7 +521,7 @@ export default function AuctionPage() {
                                                         <div className="flex w-[64%] flex-col items-start gap-3.5">
                                                             <Flex gap="middle">
                                                                 <Rate disabled value={sellerInfo?.totalStars}
-                                                                      allowHalf/>
+                                                                    allowHalf />
                                                             </Flex>
 
                                                         </div>
@@ -541,13 +543,13 @@ export default function AuctionPage() {
                                                                 {" "}
                                                                 <div
                                                                     className="h-5 bg-yellow-300 rounded"
-                                                                    style={{width: `${sellerInfo?.rating5Percentage}%`}}
+                                                                    style={{ width: `${sellerInfo?.rating5Percentage}%` }}
                                                                 ></div>
                                                             </div>
                                                             <span
                                                                 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                                                            {sellerInfo?.rating5Percentage.toFixed(0)}%
-                                                        </span>
+                                                                {sellerInfo?.rating5Percentage.toFixed(0)}%
+                                                            </span>
 
                                                         </div>
                                                         <div className="flex items-center mt-4">
@@ -563,13 +565,13 @@ export default function AuctionPage() {
                                                                 {/* Giảm khoảng cách ngang */}
                                                                 <div
                                                                     className="h-5 bg-yellow-300 rounded"
-                                                                    style={{width: `${sellerInfo?.rating4Percentage}%`}}
+                                                                    style={{ width: `${sellerInfo?.rating4Percentage}%` }}
                                                                 ></div>
                                                             </div>
                                                             <span
                                                                 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                                                            {sellerInfo?.rating4Percentage.toFixed(0)}%
-                                                        </span>
+                                                                {sellerInfo?.rating4Percentage.toFixed(0)}%
+                                                            </span>
                                                         </div>
 
                                                         <div className="flex items-center mt-4">
@@ -583,13 +585,13 @@ export default function AuctionPage() {
                                                                 className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
                                                                 <div
                                                                     className="h-5 bg-yellow-300 rounded"
-                                                                    style={{width: `${sellerInfo?.rating3Percentage}%`}}
+                                                                    style={{ width: `${sellerInfo?.rating3Percentage}%` }}
                                                                 ></div>
                                                             </div>
                                                             <span
                                                                 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                                                            {sellerInfo?.rating3Percentage.toFixed(0)}%
-                                                        </span>
+                                                                {sellerInfo?.rating3Percentage.toFixed(0)}%
+                                                            </span>
                                                         </div>
 
                                                         <div className="flex items-center mt-4">
@@ -603,13 +605,13 @@ export default function AuctionPage() {
                                                                 className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
                                                                 <div
                                                                     className="h-5 bg-yellow-300 rounded"
-                                                                    style={{width: `${sellerInfo?.rating2Percentage}%`}}
+                                                                    style={{ width: `${sellerInfo?.rating2Percentage}%` }}
                                                                 ></div>
                                                             </div>
                                                             <span
                                                                 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                                                            {sellerInfo?.rating2Percentage.toFixed(0)}%
-                                                        </span>
+                                                                {sellerInfo?.rating2Percentage.toFixed(0)}%
+                                                            </span>
                                                         </div>
 
                                                         <div className="flex items-center mt-4">
@@ -623,13 +625,13 @@ export default function AuctionPage() {
                                                                 className="w-full h-5 mx-2 bg-gray-200 rounded dark:bg-gray-700">
                                                                 <div
                                                                     className="h-5 bg-yellow-300 rounded"
-                                                                    style={{width: `${sellerInfo?.rating1Percentage}%`}}
+                                                                    style={{ width: `${sellerInfo?.rating1Percentage}%` }}
                                                                 ></div>
                                                             </div>
                                                             <span
                                                                 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">
-                                                            {sellerInfo?.rating1Percentage.toFixed(0)}%
-                                                        </span>
+                                                                {sellerInfo?.rating1Percentage.toFixed(0)}%
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -649,14 +651,14 @@ export default function AuctionPage() {
                                                             size="text2xl"
                                                             as="p"
                                                             className="text-[18px] font-medium leading-[22px] text-blue_gray-900_01"
-                                                            style={{margin: 0, padding: 0}}
+                                                            style={{ margin: 0, padding: 0 }}
                                                         >
                                                             {sellerInfo?.totalFeedbackCount} Đánh giá sản phẩm người bán
                                                         </Heading>
                                                         {sellerInfo?.feedbackList.map(feedback => (
 
                                                             <>
-                                                                <FeedBack feedback={feedback}/>
+                                                                <FeedBack feedback={feedback} />
                                                             </>
                                                         ))}
                                                     </div>
@@ -689,7 +691,7 @@ export default function AuctionPage() {
                                 </Heading>
                                 <div className="mr-3.5 md:mr-0">
                                     <SliderItem itemDatas={dataSimilar} itemLoading={isLoadingSimilar}
-                                                itemError={isErrorSimilar}/>
+                                        itemError={isErrorSimilar} />
                                 </div>
                             </div>
                             {/*itemData={itemData} itemLoading={itemLoading} itemError={itemError}*/}
@@ -704,7 +706,7 @@ export default function AuctionPage() {
                                 </Heading>
                                 <div className="mr-3.5 md:mr-0">
                                     <SliderItem itemDatas={dataSimilar} itemLoading={isLoadingSimilar}
-                                                itemError={isErrorSimilar}/>
+                                        itemError={isErrorSimilar} />
                                 </div>
                             </div>
 
@@ -712,7 +714,7 @@ export default function AuctionPage() {
                     </div>
                 </Content>
                 <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto"/>
+                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
             </Layout>
         </>
     );

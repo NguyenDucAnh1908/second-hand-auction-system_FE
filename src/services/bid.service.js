@@ -39,6 +39,16 @@ export const bidApiSlice = apiSlice.injectEndpoints({
             query: (auctionId) =>
                 `/bids/highest-bid/${auctionId}`,
         }),
+
+
+        createBidSealed: builder.mutation({
+            query: (bidData) => ({
+                url: "/bids/create/Sealed",
+                method: "POST",
+                body: bidData,
+            }),
+        }),
+        
     }),
 });
 
@@ -49,4 +59,5 @@ export const {
     useGetBidInfoQuery,
     useGetBidDetailQuery,
     useGetHighestBidQuery,
+    useCreateBidSealedMutation,
 } = bidApiSlice;
