@@ -48,6 +48,7 @@ import UpdateKYC from "./pages/Kyc/UpdateProflie.jsx";
 import CRUDSellerInfor from "./pages/Seller/CRUDInfor/index.jsx";
 import WebSocketTest from "./pages/test.jsx";
 import ListOfBuyerBidsAdmin from "./pages/ListOfBuyerBidAdmin/index.jsx";
+import UpdateProduct from "pages/Seller/ListOfSellerProducts/UpdateProduct.jsx";
 
 function App() {
     return (
@@ -93,6 +94,7 @@ function App() {
                     <Route path="/dashboard-seller/OrderManagementSeller" index element={<OrderManagementSeller/>}/>
                     <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>
                     <Route path="/dashboard-seller/CRUDInfor" index element={<CRUDSellerInfor/>}/>
+                    <Route path="/dashboard-seller/UpdateProduct/:id" element={<UpdateProduct />} />
                 </Route>
 
                 {/*BUYER*/}

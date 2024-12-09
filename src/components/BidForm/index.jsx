@@ -1,8 +1,6 @@
 import {Helmet} from "react-helmet";
 import React, {useState} from "react";
-import {useSelector} from 'react-redux';
 import {useCreateBidMutation} from "@/services/bid.service.js";
-import {Text, ButtonDH, InputDH} from "./..";
 import {message, Spin, theme} from "antd";
 import {Button} from "@material-tailwind/react";
 

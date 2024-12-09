@@ -1,33 +1,23 @@
 import { Helmet } from "react-helmet";
 import {
     ButtonDH,
-    Img,
-    Slider,
     Heading,
-    InputDH,
-    TextArea,
-    RatingBar,
     Text,
 } from "../../components";
 import Header2 from "../../components/Header2";
 import AuctionSection from "./AuctionSection";
-import RecommendedProductsSection from "./RecommendedProductsSection";
 import React from "react";
-import { Avatar, Breadcrumb, Empty, Layout, Skeleton, theme } from "antd";
-import { AntDesignOutlined } from "@ant-design/icons";
-import { Flex, Rate, Typography, Tabs } from "antd";
+import { Avatar, Breadcrumb, Layout, Skeleton, theme } from "antd";
+import { Flex, Rate, Tabs } from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
 import { useGetItemDetailQuery, useGetSimilarItemAuctionQuery } from "@/services/item.service.js";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams,  useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useGetSellerInformationByAuctionIdQuery } from "../../services/sellerinformation.service.js";
-import { useGetFeedbackBySellerUserIdQuery } from "../../services/feedback.service.js";
-import Pagination from "@/components/Pagination/index.jsx";
 import { useGetHighestBidQuery, useGetWinBidQuery } from "@/services/bid.service.js";
-import { selectCurrentUser, selectCurrentUserAPI, selectIsLoggedIn } from "@/redux/auth/authSlice.js";
+import {  selectCurrentUserAPI, selectIsLoggedIn } from "@/redux/auth/authSlice.js";
 import FeedBack from "@/components/FeedBack.jsx";
-import RecentProductsSection from "pages/HomePage/RecentProductsSection.jsx";
 import SliderItem from "@/components/SlilerItem/index.jsx";
 
 
@@ -174,12 +164,6 @@ export default function AuctionPage() {
             detailsTitle: "Thông tin sản phẩm",
             content: (
                 <>
-                    {/*<Heading*/}
-                    {/*    as="h6"*/}
-                    {/*    className="text-[16px] font-medium text-blue_gray-900_01"*/}
-                    {/*>*/}
-                    {/*    Đặc điểm*/}
-                    {/*</Heading>*/}
                     <div className="flex items-start self-stretch md:flex-col">
                         <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
                         <Heading

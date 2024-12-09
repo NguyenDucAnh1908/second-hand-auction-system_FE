@@ -55,7 +55,7 @@ export default function CustomerTransactionHistoryPagePage() {
     };
     const columns = [
         {
-            title: "CODE",
+            title: "Mã giao dịch",
             dataIndex: "id",
             key: "id",
             width: 150,
@@ -89,17 +89,41 @@ export default function CustomerTransactionHistoryPagePage() {
             dataIndex: "amount",
             key: "amount",
             render: (text, record) => {
-                // Kiểm tra loại giao dịch là "WITHDRAWAL" hoặc "DEPOSIT_AUCTION" để áp dụng màu đỏ
-                const isWithdrawalOrAuctionDeposit = record.transactionType === "WITHDRAWAL" || record.transactionType === "DEPOSIT_AUCTION";
+                // Phân loại giao dịch tiêu cực (âm) và tích cực (dương)
+                const negativeTransactionTypes = ["WITHDRAWAL", "TRANSFER", "REFUND", "DEPOSIT_AUCTION"];
+                const positiveTransactionTypes = ["DEPOSIT"];
+
+                // Xác định giao dịch là âm hay dương
+                const isNegativeTransaction = negativeTransactionTypes.includes(record.transactionType);
+
+                // Xác định số tiền hiển thị
+                const formattedAmount = isNegativeTransaction ? `${Math.abs(text)}` : `+${Math.abs(text)}`;
+
+                // Định nghĩa CSS
+                const amountStyle = {
+                    color: isNegativeTransaction ? "red" : "green", // Đỏ nếu âm, xanh nếu dương
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                };
+
+                const containerStyle = {
+                    backgroundColor: isNegativeTransaction ? "#ffe6e6" : "#e6ffe6", // Nền đỏ nhạt hoặc xanh nhạt
+                    padding: "5px 10px",
+                    borderRadius: "5px",
+                    display: "inline-block",
+                };
 
                 return (
-                    <span style={{ color: isWithdrawalOrAuctionDeposit ? "red" : "green" }}>
-                        {isWithdrawalOrAuctionDeposit ? `-${text}` : text} đ
-                    </span>
+                    <span style={containerStyle}>
+                <span style={amountStyle}>{formattedAmount} đ</span>
+            </span>
                 );
             },
             width: 150,
         },
+
+
+
 
 
         {

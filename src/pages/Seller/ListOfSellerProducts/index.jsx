@@ -4,7 +4,7 @@ import React, {useState} from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {DocumentIcon} from "@heroicons/react/24/solid";
 import {ArrowDownTrayIcon} from "@heroicons/react/24/outline";
 import {Card, IconButton, Typography} from "@material-tailwind/react";
@@ -32,7 +32,7 @@ export default function ListOfSellerProductPage() {
     const {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
-
+    const navigate = useNavigate();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isModalDescriptionVisible, setIsModalDescriptionVisible] = useState(false);
     const [selectedAuction, setSelectedAuction] = useState(null);
@@ -75,6 +75,12 @@ export default function ListOfSellerProductPage() {
         setSelectedDescription(null);
     };
 
+    const handleUpdateItem = (itemId) => {
+        console.log("Navigating to item with ID:", itemId); // Kiểm tra xem itemId có đúng không
+        navigate(`/dashboard-seller/UpdateProduct/${itemId}`);
+    };
+
+
 
     const renderTableRows = () => {
 
@@ -106,23 +112,23 @@ export default function ListOfSellerProductPage() {
                 </td>
                 <td className="p-4">
                     {itemStatus === "ACCEPTED" && (
-                        <Tag icon={<CheckCircleOutlined />} color="success">Có sẵn</Tag>
+                        <Tag icon={<CheckCircleOutlined />} color="success">Hợp lệ</Tag>
                     )}
                     {itemStatus === "PENDING" && (
                         <Tag icon={<SyncOutlined spin />} color="processing">Đang chờ</Tag>
                     )}
                     {itemStatus === "REJECTED" && (
-                        <Tag icon={<CloseCircleOutlined />} color="error">Không có sẵn</Tag>
+                        <Tag icon={<CloseCircleOutlined />} color="error">Từ chối</Tag>
                     )}
                     {itemStatus === "PENDING_AUCTION" && (
-                        <Tag icon={<HourglassOutlined />} color="warning">Đang đấu giá</Tag>
+                        <Tag icon={<HourglassOutlined />} color="warning">Đang tạo phiên</Tag>
                     )}
                 </td>
 
                 <td className="p-4">
                     <div className="flex items-center gap-2">
                         <IconButton variant="text" size="sm">
-                            <DocumentIcon className="h-4 w-4 text-gray-900"/>
+                            <DocumentIcon onClick={() => handleUpdateItem(itemId)}  className="h-4 w-4 text-gray-900"/>
                         </IconButton>
                         <IconButton variant="text" size="sm">
                             <ArrowDownTrayIcon strokeWidth={3} className="h-4 w-4 text-gray-900"/>

@@ -18,7 +18,6 @@ import {
 import { Button } from "@material-tailwind/react";
 import { useGetBidInfoQuery, useCreateBidSealedMutation } from "../../services/bid.service";
 
-// eslint-disable-next-line react/prop-types
 export default function AuctionSection(
     {
         dataItem,
@@ -246,7 +245,7 @@ export default function AuctionSection(
                                             Chi phí cọc cho phiên đấu:
                                         </span>
                                         <div className="text-lg font-bold text-red-600 mt-2">
-                                            {formatPrice(dataItem?.auction.start_price * 0.1)}
+                                            {formatPrice((dataItem?.auction?.buy_now_price * dataItem?.auction?.percent_deposit) / 100)}
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
