@@ -131,11 +131,16 @@ function RegisterProductPage() {
         const value = e.target.value;
         if (!/^\d*\.?\d+$/.test(value) || parseFloat(value) <= 0) {
             setPriceError("Giá mua ngay phải là số dương hợp lệ.");
-        } else {
-            setPriceError(""); // Xóa lỗi nếu nhập đúng
         }
-        setPriceBuyNow(value); // Cập nhật giá trị giá
+        else if (parseFloat(value) > 10000000000) {
+            setPriceError("Giá mua ngay không được vượt quá 2 tỷ.");
+        }
+        else {
+            setPriceError("");
+        }
+        setPriceBuyNow(value);
     };
+
 
 
 

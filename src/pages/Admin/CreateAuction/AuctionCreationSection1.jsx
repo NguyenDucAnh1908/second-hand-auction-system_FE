@@ -29,9 +29,11 @@ export default function AuctionCreationSection1({itemId}) {
         end_time: "",
         start_price: null,
         description: "",
-        terms_conditions: "DIEU khoan",
+        terms_conditions: "Điều khoản hợp lệ",
         buy_now_price: null,
         price_step: null,
+        number_participant :2,
+        percent_deposit: 10,
         ship_type: "",
         comment: "Đã chấp thuận đấu giá",
         item: +itemId,
@@ -122,7 +124,7 @@ export default function AuctionCreationSection1({itemId}) {
                                                     điểm:</label>
                                                 <InputNumber
                                                     defaultValue={1000}
-                                                    formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',' ) }
+                                                    formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                                     parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
                                                     onChange={(value) => onChange(value, 'start_price')}
                                                     className="border rounded-md mt-2"
@@ -130,12 +132,11 @@ export default function AuctionCreationSection1({itemId}) {
                                                     style={{
                                                         width: 350
                                                     }}
-                                                /> 
+                                                />
                                             </div>
 
                                             <div className="flex flex-col">
-                                                <label className="text-[15px] font-medium text-black-900">Giá mua
-                                                    ngay:</label>
+                                                <label className="text-[15px] font-medium text-black-900">Giá mong muốn:</label>
                                                 <InputNumber
                                                     defaultValue={1000}
                                                     formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
@@ -170,7 +171,7 @@ export default function AuctionCreationSection1({itemId}) {
                                                 <label className="text-[15px] font-medium text-black-900">Loại đấu
                                                     giá:</label>
                                                 <Select
-                                                    defaultValue="Select loại đấu giá"
+                                                    defaultValue="Chọn loại đấu giá"
                                                     style={{width: 350}}
                                                     onChange={handleChange}
                                                     options={
@@ -190,7 +191,35 @@ export default function AuctionCreationSection1({itemId}) {
                                                     size="large"
                                                     className="border rounded-md mt-2"
                                                 />
-
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <label className="text-[15px] font-medium text-black-900">Số lượng người
+                                                    tham gia :</label>
+                                                <Select
+                                                    defaultValue={2}
+                                                    style={{width: 350}}
+                                                    onChange={handleChange}
+                                                    options={Array.from({length: 99}, (_, index) => ({
+                                                        value: index + 2,  // Tạo các giá trị từ 2 đến 100
+                                                        label: (index + 2).toString(),
+                                                    }))}
+                                                    size="large"
+                                                    className="border rounded-md mt-2"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <label className="text-[15px] font-medium text-black-900">Phần trăm giá cọc</label>
+                                                <Select
+                                                    defaultValue={10} // Đặt giá trị mặc định là 10%
+                                                    style={{width: 350}}
+                                                    onChange={handleChange} // Hàm xử lý khi giá trị thay đổi
+                                                    options={Array.from({length: 99}, (_, index) => ({
+                                                        value: index + 2,  // Tạo các giá trị từ 2 đến 100
+                                                        label: `${index + 2}%`, // Hiển thị giá trị phần trăm
+                                                    }))}
+                                                    size="large"
+                                                    className="border rounded-md mt-2"
+                                                />
                                             </div>
 
                                         </div>
@@ -199,12 +228,13 @@ export default function AuctionCreationSection1({itemId}) {
                                 </div>
                                 <div className="flex flex-col items-center">
                                     <div className="flex flex-col items-center w-full">
-                                        <label className="text-[15px] font-medium text-black-900 mb-1">Mô tả:</label>
+                                        <label className="text-[15px] font-medium text-black-900 mb-1">Mô tả phiên đấu
+                                            giá:</label>
                                         <TextArea
                                             showCount
                                             value={formData.description}  // Bind the TextArea to formData.description
                                             onChange={(e) => onChange(e, 'description')}  // Correctly pass the event to onChange
-                                            placeholder="disable resize"
+                                            placeholder="Nhập thông tin mô tả"
                                             style={{height: 200, resize: 'none'}}
                                             className="rounded-md !border !border-black-900 px-3 w-[65%] min-h-[100px] py-2"
                                         />
@@ -214,7 +244,7 @@ export default function AuctionCreationSection1({itemId}) {
                                     <Heading
                                         size="headingxs"
                                         as="h4"
-                                        className="ml-[26px] text-[25px] font-bold text-black-900 md:ml-0 md:text-[23px] sm:text-[21px]"
+                                        className="ml-[26px] text-[25px] font-bold text-black-900 md:ml-0 md:text-[23px] xl:text-[21px]"
                                     >
                                         Phương thức thanh toán
                                     </Heading>
@@ -224,26 +254,15 @@ export default function AuctionCreationSection1({itemId}) {
                                         onChange={handleShipTypeChange} // Use the event handler
                                         className="mt-4 flex flex-col"
                                     >
-                                        {/*<Radio*/}
-                                        {/*    value="Thanh toán tiền mặt"*/}
-                                        {/*    label="Thanh toán tiền mặt"*/}
-                                        {/*    className="gap-2 text-[15px] font-medium text-black-900"*/}
-                                        {/*/>*/}
                                         <Radio
                                             value="Thanh toán online qua hệ thống"
                                             label="Thanh toán online qua hệ thống"
                                             className="mt-2 gap-2 text-[15px] font-medium text-black-900"
                                         />
-                                        {/*<Radio*/}
-                                        {/*    value="Bên người mua chịu phí ship"*/}
-                                        {/*    label="Bên người mua chịu phí ship"*/}
-                                        {/*    className="mt-2 gap-2 text-[15px] font-medium text-black-900"*/}
-                                        {/*/>*/}
                                     </RadioGroup>
                                 </div>
                             </div>
 
-                            {/* Buttons for auction actions */}
                             <div className="mt-8 flex justify-center mr-[450px]">
                                 <div className="flex gap-4">
                                     <Button onClick={handleSubmit}

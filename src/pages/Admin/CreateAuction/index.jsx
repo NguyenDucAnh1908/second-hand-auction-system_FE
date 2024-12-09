@@ -23,10 +23,6 @@ export default function CreateAuction() {
         {/*/!* auction creation section *!/*/}
         <AuctionCreationSection  itemDetail={itemDetail} />
 
-        {/*/!* product details section *!/*/}
-        {/*<ProductDetailsSection />*/}
-
-        {/*/!* auction creation section *!/*/}
         <AuctionCreationSection1 itemId={itemId}/>
       </div>
     </>

@@ -53,7 +53,7 @@ const SuccessfullyPayment = () => {
     }, [data, error]);
 
     const navigateToTransaction = () => {
-        navigate("");
+        navigate('/');
     };
 
     return (
@@ -70,7 +70,7 @@ const SuccessfullyPayment = () => {
                     subTitle="Thông tin giao dịch đã được cập nhật."
                     extra={[
                         <Button onClick={navigateToTransaction} type="primary" key="console">
-                            Go to Transaction History
+                            Xem lai thông tin giao dịch
                         </Button>
                     ]}
                 />

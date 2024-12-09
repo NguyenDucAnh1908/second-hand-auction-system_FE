@@ -55,7 +55,7 @@ export default function CustomerTransactionHistoryPagePage() {
     };
     const columns = [
         {
-            title: "ID",
+            title: "CODE",
             dataIndex: "id",
             key: "id",
             width: 150,
@@ -72,12 +72,12 @@ export default function CustomerTransactionHistoryPagePage() {
             key: "transactionType",
             width: 200,
         },
-        {
-            title: "Hình ảnh",
-            dataIndex: "method",
-            key: "method",
-            width: 200,
-        },
+        // {
+        //     title: "Hình ảnh",
+        //     dataIndex: "method",
+        //     key: "method",
+        //     width: 200,
+        // },
         {
             title: "Trạng thái",
             dataIndex: "status",
@@ -129,7 +129,7 @@ export default function CustomerTransactionHistoryPagePage() {
     ];
     const data = dataTransactionWallet?.items?.map((item, index) => ({
         key: index + 1,
-        id: `#${item.transactionWalletCode}`,
+        id: `${item.transactionWalletCode}`,
         time: new Date(item.transactionDate).toLocaleString('vi-VN', {
             day: '2-digit',
             month: '2-digit',

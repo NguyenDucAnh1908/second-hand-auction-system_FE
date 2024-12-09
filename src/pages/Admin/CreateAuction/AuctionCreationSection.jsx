@@ -24,6 +24,52 @@ export default function AuctionCreationSection({itemDetail}) {
         setIsModalDescriptionVisible(false); // Đóng modal
         setSelectedDescription(null); // Reset thông tin đấu giá
     };
+
+    const formatCurrency = (value) => {
+        if (!value) return 'N/A';
+
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        }).format(value);
+    };
+
+    const getItemStatusClass = (status) => {
+        switch (status) {
+            case 'PENDING':
+                return 'text-blue-500 bg-blue-100 border border-blue-400 rounded-md px-3 py-1 text-sm font-medium'; // Xanh cho "Đang chờ"
+            case 'PENDING_AUCTION':
+                return 'text-orange-500 bg-orange-100 border border-orange-400 rounded-md px-3 py-1 text-sm font-medium'; // Cam cho "Đang đấu giá"
+            case 'ACCEPTED':
+                return 'text-green-500 bg-green-100 border border-green-400 rounded-md px-3 py-1 text-sm font-medium'; // Xanh lá cho "Đã chấp nhận"
+            case 'REJECTED':
+                return 'text-red-500 bg-red-100 border border-red-400 rounded-md px-3 py-1 text-sm font-medium'; // Đỏ cho "Bị từ chối"
+            case 'INACTIVE':
+                return 'text-gray-500 bg-gray-100 border border-gray-400 rounded-md px-3 py-1 text-sm font-medium'; // Xám cho "Không hoạt động"
+            default:
+                return 'text-gray-600 bg-gray-100 border border-gray-400 rounded-md px-3 py-1 text-sm font-medium'; // Xám nếu không xác định trạng thái
+        }
+    };
+
+
+
+    const formatItemStatus = (status) => {
+        switch (status) {
+            case 'PENDING':
+                return 'Đang chờ';
+            case 'PENDING_AUCTION':
+                return 'Đang tao phien dau gia';
+            case 'ACCEPTED':
+                return 'Đã chấp nhận';
+            case 'REJECTED':
+                return 'Bị từ chối';
+            case 'INACTIVE':
+                return 'Không hoạt động';
+            default:
+                return 'N/A';
+        }
+    };
+
     const items = [
         {
             key: '1',
@@ -40,32 +86,36 @@ export default function AuctionCreationSection({itemDetail}) {
         {
             key: '3',
             label: <span className="font-bold text-lg text-gray-800">Trạng thái sản phẩm</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.itemStatus || 'N/A'}</span>,
+            children: (
+                <span className={`text-base ${getItemStatusClass(itemDetail?.itemStatus)}`}>
+            {itemDetail?.itemStatus ? formatItemStatus(itemDetail.itemStatus) : 'N/A'}
+        </span>
+            ),
             span: 2
         },
+
         {
             key: '4',
+            label: <span className="font-bold text-lg text-gray-800">Mức giá mong muốn</span>,
+            children: <span className="text-base text-gray-600">{formatCurrency(itemDetail?.priceBuyNow) || 'N/A'}</span>,
+            span: 2
+        },
+
+        {
+            key: '5',
             label: <span className="font-bold text-lg text-gray-800">Mô tả sản phẩm</span>,
-            children: <Button
-                onClick={() => handleOpenDescriptionModal(itemDetail?.itemDescription)}
-                className="ql-bg-blue-500 text-white hover:bg-yellow-600"
-            >
-                Xem mô tả
-            </Button>,
+            children:
+                <Button
+                    onClick={() => handleOpenDescriptionModal(itemDetail?.itemDescription)}
+                    className="ql-bg-blue-500 text-white hover:bg-yellow-600"
+                >
+                    Xem mô tả
+                </Button>,
             span: 4
         }
     ];
 
-    const itemDescription = [
-        {key: '4', label: 'Phần trăm', children: itemDetail?.itemSpecific.percent || 'N/A', span: 2},
-        {key: '5', label: 'Loại', children: itemDetail?.itemSpecific.type || 'N/A', span: 2},
-        {key: '6', label: 'Màu sắc', children: itemDetail?.itemSpecific.color || 'N/A', span: 2},
-        {key: '7', label: 'Trọng lượng', children: itemDetail?.itemSpecific.weight || 'N/A', span: 2},
-        {key: '8', label: 'Kích thước', children: itemDetail?.itemSpecific.dimension || 'N/A', span: 2},
-        {key: '9', label: 'Xuất xứ', children: itemDetail?.itemSpecific.original || 'N/A', span: 2},
-        {key: '10', label: 'Ngày sản xuất', children: itemDetail?.itemSpecific.manufactureDate || 'N/A', span: 2},
-        {key: '11', label: 'Chất liệu', children: itemDetail?.itemSpecific.material || 'N/A', span: 2}
-    ];
+
 
 
     return (
@@ -98,37 +148,12 @@ export default function AuctionCreationSection({itemDetail}) {
                         TẠO PHIÊN ĐẤU GIÁ
                     </Heading>
                     <div className="self-stretch">
-                        {/*<div className="flex items-center gap-[34px] md:flex-col">*/}
-                        {/*    <div style={{width: '51%', margin: '0 auto'}}> /!* Điều chỉnh chiều rộng Carousel *!/*/}
-                        {/*        <Carousel arrows infinite={false}>*/}
-                        {/*            {itemDetail?.images.map((images, index) => (*/}
-                        {/*                <div key={index}>*/}
-                        {/*                    <Img*/}
-                        {/*                        src={images.image}*/}
-                        {/*                        alt="Main Product Image"*/}
-                        {/*                        className="rounded-lg"*/}
-                        {/*                    />*/}
-                        {/*                </div>*/}
-                        {/*            ))}*/}
-                        {/*        </Carousel>*/}
-                        {/*    </div>*/}
-                        {/*    <div*/}
-                        {/*        className="flex-row w-[50%] justify-center rounded-[20px] bg-green-400 p-3.5 md:w-full">*/}
-                        {/*        <Descriptions title={<div className="w-full text-center">Item infomation</div>}*/}
-                        {/*                      layout="vertical" items={items}/>*/}
-                        {/*        <Descriptions title={<div className="w-full text-center">Item Description</div>}*/}
-                        {/*                      items={itemDescription} className="mt-4"/>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
                         <div className="flex items-center w-full gap-[34px] md:flex-col">
                             <div className="flex-1 bg-green-50 rounded-2xl p-6 flex flex-col gap-4">
                                 <Descriptions
                                     title={<div className="w-full text-center text-xl font-semibold">Thông tin sản
                                         phẩm</div>} layout="vertical" items={items}/>
-                                <Descriptions
-                                    title={<div className="w-full text-center text-xl font-semibold">Mô tả sản
-                                        phẩm</div>}
-                                    items={itemDescription} className="mt-4"/>
+
                             </div>
 
                             <div className=" mx-auto bg-green-50 rounded-2xl p-6 ">
@@ -139,13 +164,13 @@ export default function AuctionCreationSection({itemDetail}) {
                                         }}
                                     >
                                         <div className="grid grid-cols-2 gap-4">
-                                            {itemDetail?.images?.map((images, index) => (
+                                            {(itemDetail?.images || []).map((images, index) => (
                                                 <div key={index} className="flex justify-center items-center">
-                                                    <Image width={400}
-                                                           src={images.image}/>
+                                                    <Image width={400} src={images.image}/>
                                                 </div>
                                             ))}
                                         </div>
+
                                     </Image.PreviewGroup>
                                 </div>
                             </div>
