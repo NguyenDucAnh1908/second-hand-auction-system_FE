@@ -47,12 +47,12 @@ export default function ProductPending() {
             key: 'itemId',
         },
         {
-            title: 'Name',
+            title: 'Tên sản phẩm',
             dataIndex: 'itemName',
             key: 'itemName',
         },
         {
-            title: 'Description',
+            title: 'Mô tả',
             dataIndex: 'itemDescription',
             key: 'itemDescription',
             render: (itemDescription, record) => (
@@ -65,12 +65,19 @@ export default function ProductPending() {
             ),
         },
         {
-            title: 'Brand',
-            dataIndex: 'brandName',
-            key: 'brand',
+            title: 'Giá mua ngay',
+            dataIndex: 'priceBuyNow',
+            key: 'priceBuyNow',
+            render: (priceBuyNow) => {
+                return new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND',
+                }).format(priceBuyNow);
+            },
         },
+
         {
-            title: 'Status',
+            title: 'Trang thái',
             dataIndex: 'itemStatus',
             key: 'itemStatus',
             render: (status) => {
@@ -92,7 +99,7 @@ export default function ProductPending() {
             },
         },
         {
-            title: 'Thumbnail',
+            title: 'Hình ảnh',
             dataIndex: 'thumbnail',
             key: 'thumbnail',
             render: (thumbnail, record) => (
@@ -104,18 +111,18 @@ export default function ProductPending() {
             ),
         },
         {
-            title: 'Created At',
+            title: 'Ngày đăng kí',
             dataIndex: 'create_at',
             key: 'createAt',
             render: (text) => text ? new Date(text).toLocaleDateString('vi-VN') : 'N/A',
         },
         {
-            title: 'Created By',
+            title: 'Người đăng kí',
             dataIndex: 'createBy',
             key: 'createBy',
         },
         {
-            title: 'Action',
+            title: 'Hành động',
             key: 'action',
             render: (_, record) => (
                 <>

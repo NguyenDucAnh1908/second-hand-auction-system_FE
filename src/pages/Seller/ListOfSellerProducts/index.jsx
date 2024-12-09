@@ -10,7 +10,7 @@ import {ArrowDownTrayIcon} from "@heroicons/react/24/outline";
 import {Card, IconButton, Typography} from "@material-tailwind/react";
 import Pagination from "@/components/Pagination/index.jsx";
 import {useGetItemByUserQuery} from "../../../services/item.service.js";
-import {CheckCircleOutlined, CloseCircleOutlined, SyncOutlined} from '@ant-design/icons';
+import {CheckCircleOutlined, CloseCircleOutlined, SyncOutlined, HourglassOutlined} from '@ant-design/icons';
 import {Tag, Breadcrumb, Layout, theme, Button, Empty, Skeleton} from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
 import {Modal} from 'antd';
@@ -106,15 +106,19 @@ export default function ListOfSellerProductPage() {
                 </td>
                 <td className="p-4">
                     {itemStatus === "ACCEPTED" && (
-                        <Tag icon={<CheckCircleOutlined/>} color="success">Available</Tag>
+                        <Tag icon={<CheckCircleOutlined />} color="success">Có sẵn</Tag>
                     )}
                     {itemStatus === "PENDING" && (
-                        <Tag icon={<SyncOutlined spin/>} color="processing">Pending</Tag>
+                        <Tag icon={<SyncOutlined spin />} color="processing">Đang chờ</Tag>
                     )}
                     {itemStatus === "REJECTED" && (
-                        <Tag icon={<CloseCircleOutlined/>} color="error">UnAvailable</Tag>
+                        <Tag icon={<CloseCircleOutlined />} color="error">Không có sẵn</Tag>
+                    )}
+                    {itemStatus === "PENDING_AUCTION" && (
+                        <Tag icon={<HourglassOutlined />} color="warning">Đang đấu giá</Tag>
                     )}
                 </td>
+
                 <td className="p-4">
                     <div className="flex items-center gap-2">
                         <IconButton variant="text" size="sm">
