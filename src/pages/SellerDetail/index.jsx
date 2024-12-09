@@ -28,6 +28,11 @@ export default function SellerDetailPage() {
     const activeTab = searchParams.get("activeTab") || "shop";
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+    
+
+    useEffect(() => {
         if (activeTab === "reviews") {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }

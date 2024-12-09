@@ -70,6 +70,8 @@ export default function AuctionSection(
     };
 
 
+  
+
     const {
         data: checkRegister,
         isLoading: isLoadingCheckRegister,
@@ -539,9 +541,9 @@ export default function AuctionSection(
 
                                             {now >= startDateTime && now <= endDateTime && (
                                                 <>
-                                                    {dataItem.checkBid === "true" ? (
-                                                        <div className="text-green-600 font-semibold">
-                                                            Bạn đã đặt giá thầu
+                                                    {dataItem.bidAmountUserToken != null && dataItem.bidAmountUserToken !=='0' ? (
+                                                        <div className="text-blue-600 font-semibold">
+                                                            Bạn đã đặt giá thầu với giá {formatPrice(dataItem.bidAmountUserToken)}
                                                         </div>
                                                     ) : (
                                                         isRegistered && (
@@ -733,23 +735,6 @@ export default function AuctionSection(
         </>
     );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

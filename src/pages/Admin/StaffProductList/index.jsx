@@ -66,7 +66,8 @@ export default function StaffProductListPage() {
     return (
         <>
 
-            <div className="flex w-full flex-col items-start justify-center gap-10 bg-bg-white md:p-5">
+            <div className="flex w-full flex-col items-start justify-center gap-10 bg-
+            bg-white md:p-5">
                 <InputDH
                     name="Search Box"
                     placeholder={`Tìm kiếm theo ID`}

@@ -43,10 +43,15 @@ export default function AuctionPage() {
     const userAPI = useSelector(selectCurrentUserAPI);
     const isLoggedIn = useSelector(selectIsLoggedIn);
     const { id } = useParams();
+
+
+
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const { data, error, isLoading, isSuccess, refetch } = useGetItemDetailQuery({ id });
+    console.log("data", data)
 
     const {
         data: dataSimilar,
@@ -195,7 +200,8 @@ export default function AuctionPage() {
                     </div>
                 </>
             ),
-        },
+        }
+        ,
         {
             detailsTitle: "Thông tin sản phẩm",
             content: (
