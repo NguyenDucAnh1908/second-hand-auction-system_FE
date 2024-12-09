@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet";
 import ProductReviewSection from "./ProductReviewSection";
 import StaffAssessmentSection from "./StaffAssessmentSection";
-import React from "react";
+
 import { useGetItemDetailQuery,useApproveItemAdminMutation, useGetSellerQuery } from "../../../services/item.service";
 import { useParams } from "react-router-dom";
 
@@ -11,7 +11,7 @@ export default function ThmnhcaStaffPage() {
     const { data: itemDetail, isLoading, isError } = useGetItemDetailQuery({ id: itemId }); // Gọi API với itemId
     const { data: sellerDetail, isLoading: isSellerLoading, isError: isSellerError } = useGetSellerQuery({ id: itemId });
     
-    // console.log("Data ne", data);
+    console.log("Data ne", itemDetail);
     // console.log("Data seller", sellerDetail);
     if (isLoading) {
         return <div>Loading...</div>; // Hiển thị loading khi đang tải dữ liệu
@@ -32,11 +32,9 @@ export default function ThmnhcaStaffPage() {
             </Helmet>
             <div className="w-full bg-white-a700 py-[88px] md:py-5">
                 <div className="mt-2 flex flex-col items-center">
-                    {/* product review section */}
-                    <ProductReviewSection itemDetail={itemDetail}/>
+\                    <ProductReviewSection itemDetail={itemDetail}/>
 
-                    {/* staff assessment section */}
-                    <StaffAssessmentSection itemId={itemId} />
+\                    <StaffAssessmentSection itemId={itemId} />
                 </div>
             </div>
         </>

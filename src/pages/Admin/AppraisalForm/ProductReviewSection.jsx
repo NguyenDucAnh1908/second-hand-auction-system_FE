@@ -24,7 +24,54 @@ export default function ProductReviewSection({itemDetail}) {
         setSelectedDescription(itemDescription);
         setIsModalDescriptionVisible(true);
     };
+    const formatCurrency = (value) => {
+        if (!value) return 'N/A';
 
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        }).format(value);
+    };
+
+    const getItemStatusClass = (status) => {
+        switch (status) {
+            case 'PENDING':
+                return 'text-blue-500 bg-blue-100 border-2 border-blue-400 rounded-lg px-6 py-3 text-xl font-semibold'; // Xanh cho "Đang chờ"
+            case 'PENDING_AUCTION':
+                return 'text-orange-500 bg-orange-100 border-2 border-orange-400 rounded-lg px-6 py-3 text-xl font-semibold'; // Cam cho "Đang đấu giá"
+            case 'ACCEPTED':
+                return 'text-green-500 bg-green-100 border-2 border-green-400 rounded-lg px-6 py-3 text-xl font-semibold'; // Xanh lá cho "Đã chấp nhận"
+            case 'REJECTED':
+                return 'text-red-500 bg-red-100 border-2 border-red-400 rounded-lg px-6 py-3 text-xl font-semibold'; // Đỏ cho "Bị từ chối"
+            case 'INACTIVE':
+                return 'text-gray-500 bg-gray-100 border-2 border-gray-400 rounded-lg px-6 py-3 text-xl font-semibold'; // Xám cho "Không hoạt động"
+            default:
+                return 'text-gray-600 bg-gray-100 border-2 border-gray-400 rounded-lg px-6 py-3 text-xl font-semibold'; // Xám nếu không xác định trạng thái
+        }
+    };
+
+
+
+
+
+
+
+    const formatItemStatus = (status) => {
+        switch (status) {
+            case 'PENDING':
+                return 'Đang chờ';
+            case 'PENDING_AUCTION':
+                return 'Đang đấu giá';
+            case 'ACCEPTED':
+                return 'Đã chấp nhận';
+            case 'REJECTED':
+                return 'Bị từ chối';
+            case 'INACTIVE':
+                return 'Không hoạt động';
+            default:
+                return 'N/A';
+        }
+    };
 
     const handleCloseDescriptionModal = () => {
         setIsModalDescriptionVisible(false); // Đóng modal
@@ -34,7 +81,7 @@ export default function ProductReviewSection({itemDetail}) {
         {
             key: '1',
             label: <span className="font-bold text-lg text-gray-800">Tên sản phẩm</span>,
-            children: <span className="text-base text-gray-600">{itemDetail.itemName || 'N/A'}</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.itemName || 'N/A'}</span>,
             span: 4
         },
         {
@@ -46,11 +93,23 @@ export default function ProductReviewSection({itemDetail}) {
         {
             key: '3',
             label: <span className="font-bold text-lg text-gray-800">Trạng thái sản phẩm</span>,
-            children: <span className="text-base text-gray-600">{itemDetail.itemStatus || 'N/A'}</span>,
+            children: (
+                <span className={`text-base ${getItemStatusClass(itemDetail.itemStatus)}`}>
+            {itemDetail.itemStatus ? formatItemStatus(itemDetail.itemStatus) : 'N/A'}
+        </span>
+            ),
             span: 2
         },
+
         {
             key: '4',
+            label: <span className="font-bold text-lg text-gray-800">Mức giá mong muốn</span>,
+            children: <span className="text-base text-gray-600">{formatCurrency(itemDetail.priceBuyNow) || 'N/A'}</span>,
+            span: 2
+        },
+
+        {
+            key: '5',
             label: <span className="font-bold text-lg text-gray-800">Mô tả sản phẩm</span>,
             children:
                 <Button
@@ -60,20 +119,9 @@ export default function ProductReviewSection({itemDetail}) {
                     Xem mô tả
                 </Button>,
             span: 4
-
         }
     ];
 
-    const itemDescription = [
-        {key: '4', label: 'Phần trăm', children: itemDetail.itemSpecific.percent || 'N/A', span: 2},
-        {key: '5', label: 'Loại', children: itemDetail.itemSpecific.type || 'N/A', span: 2},
-        {key: '6', label: 'Màu sắc', children: itemDetail.itemSpecific.color || 'N/A', span: 2},
-        {key: '7', label: 'Trọng lượng', children: itemDetail.itemSpecific.weight || 'N/A', span: 2},
-        {key: '8', label: 'Kích thước', children: itemDetail.itemSpecific.dimension || 'N/A', span: 2},
-        {key: '9', label: 'Xuất xứ', children: itemDetail.itemSpecific.original || 'N/A', span: 2},
-        {key: '10', label: 'Ngày sản xuất', children: itemDetail.itemSpecific.manufactureDate || 'N/A', span: 2},
-        {key: '11', label: 'Chất liệu', children: itemDetail.itemSpecific.material || 'N/A', span: 2}
-    ];
 
 
     return (
@@ -109,9 +157,7 @@ export default function ProductReviewSection({itemDetail}) {
                         <div className="flex-1 bg-blue-200 rounded-2xl p-6 flex flex-col gap-4">
                             <Descriptions title={<div className="w-full text-center text-xl font-semibold">Thông tin sản
                                 phẩm</div>} layout="vertical" items={items}/>
-                            <Descriptions
-                                title={<div className="w-full text-center text-xl font-semibold">Mô tả sản phẩm</div>}
-                                items={itemDescription} className="mt-4"/>
+
                         </div>
 
                         <div className=" mx-auto bg-blue-200 rounded-2xl p-6 ">

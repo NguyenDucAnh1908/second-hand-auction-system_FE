@@ -1,37 +1,26 @@
-import {Helmet} from "react-helmet";
 import 'react-datepicker/dist/react-datepicker.css';
-import DatePicker from 'react-datepicker';
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
-import Banner from '../../../partials/Banner';
-import {
-    ButtonDH,
-    Img,
-    Heading,
-    SelectBox,
-    InputDH,
-    TextArea,
-} from "../../../components";
+import {ButtonDH, Heading, TextArea,} from "../../../components";
 import React, {useEffect, useRef, useState} from "react";
-import {Select, Option} from "@material-tailwind/react";
-import {UploadOutlined, PlusOutlined} from '@ant-design/icons';
+import {Option, Select} from "@material-tailwind/react";
+import {PlusOutlined} from '@ant-design/icons';
 import {
-    Button,
-    message,
-    Upload,
-    InputNumber,
-    Image,
     Breadcrumb,
+    Checkbox,
+    Descriptions,
+    Image,
+    Input,
     Layout,
-    Menu,
-    theme,
+    message,
+    Space,
     Spin,
-    Badge,
-    Descriptions, Checkbox, Input, Typography, Space
+    theme,
+    Typography,
+    Upload
 } from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
 import {useRegisterItemMutation} from "@/services/item.service.js";
-import {toast} from "react-toastify";
 import useHookUploadImage from "@/hooks/useHookUploadImage.js";
 import {useGetAuctionTypeQuery} from "@/services/auctionType.service.js";
 import {useGetCategoriesQuery} from "@/services/category.service.js";
@@ -136,26 +125,18 @@ function RegisterProductPage() {
         setItemNameError(validateItemName(name)); // Kiểm tra ngay khi nhập
     };
 
-    const formatPrice = (value) => {
-        let rawValue = value.replace(/[^\d]/g, "");
-        const numberFormatter = new Intl.NumberFormat();
-        return rawValue ? numberFormatter.format(rawValue) : "";
-    };
+
 
     const handlePriceChange = (e) => {
-        let value = e.target.value;
-        let rawValue = value.replace(/[^\d]/g, ""); // Giữ lại chỉ các chữ số
-
-        if (rawValue && (parseInt(rawValue) < 0 || parseInt(rawValue) > 1000000000)) {
-            setPriceError("Giá trị không hợp lệ (phải lớn hơn 0 và không quá 1 tỷ)");
+        const value = e.target.value;
+        if (!/^\d*\.?\d+$/.test(value) || parseFloat(value) <= 0) {
+            setPriceError("Giá mua ngay phải là số dương hợp lệ.");
         } else {
-            setPriceError("");
+            setPriceError(""); // Xóa lỗi nếu nhập đúng
         }
-        const formattedValue = formatPrice(rawValue);
-        setPriceBuyNow(formattedValue); // Lưu giá trị đã định dạng vào priceBuyNow
-
-        setPriceBuyNow(formattedValue.replace(/,/g, "")); // Lưu giá trị gốc (không dấu phẩy)
+        setPriceBuyNow(value); // Cập nhật giá trị giá
     };
+
 
 
     const handleDescriptionChange = (value) => {
@@ -230,12 +211,12 @@ function RegisterProductPage() {
             auction_type: auctionType,
         };
 
-
+        console.log(payload);
         try {
             const userData = await registerItem(payload).unwrap();
             message.success(userData.message);
             navigate("/Dashboard-seller/ListOfSellerProduct");
-            //console.log("Kết quả:", userData.message);
+            // console.log("Kết quả:", userData.message);
         } catch (err) {
             const errorMessage = err?.data?.message || "Lỗi đăng ký sản phẩm";
             message.error(errorMessage);
@@ -337,7 +318,7 @@ function RegisterProductPage() {
                     }}
                 >
                     <Input
-                        type="text" // Chuyển type sang "text"
+                        type="text"
                         placeholder="Nhập giá mua ngay"
                         value={priceBuyNow}
                         onChange={handlePriceChange}
@@ -347,9 +328,10 @@ function RegisterProductPage() {
                             border: priceError ? "1px solid red" : "1px solid #ccc",
                             padding: "10px",
                         }}
+                        suffix="VND" // Hiển thị "VND" bên phải ô nhập liệu
                     />
                     {priceError && (
-                        <Text type="danger" style={{marginTop: "5px"}}>
+                        <Text type="danger" style={{ marginTop: "5px" }}>
                             {priceError}
                         </Text>
                     )}
