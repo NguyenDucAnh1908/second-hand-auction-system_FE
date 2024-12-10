@@ -189,6 +189,15 @@ export const itemApiSlice = apiSlice.injectEndpoints({
                 },
             }),
         }),
+
+        getUpdateItem: builder.mutation({
+            query: ({ id, body }) => ({
+                url: `item/${id}`,
+                method: "PUT",
+                body: body,
+            }),
+        }),
+
     }),
 });
 
@@ -210,4 +219,5 @@ export const {
     useGetItemsBySellerQuery,
     useGetMostParticipatingItemsQuery,
     useGetSimilarItemAuctionQuery,
+    useGetUpdateItemMutation
 } = itemApiSlice;
