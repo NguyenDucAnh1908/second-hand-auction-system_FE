@@ -1,13 +1,14 @@
 import {Img, InputDH} from "../../components/index.jsx";
 import {Button, Card, Typography, Select, Option} from "@material-tailwind/react";
-import {Tag, Badge, Descriptions, Modal, Skeleton, Empty} from "antd";
+import {Tag, Badge, Descriptions, Modal, Skeleton, Empty, Divider, Table} from "antd";
 import {CheckCircleOutlined, CloseCircleOutlined} from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
 import React, {useState} from 'react';
 import {useGetAuctionRegisterQuery, useGetAuctionRegisterDetailQuery} from "@/services/auctionRegistrations.service.js";
+import {useGetAllBidsQuery} from "@/services/bid.service.js";
 
 const TABLE_HEAD = [
-    "Số Đăng Ký",
+    "ID",
     "Hình ảnh",
     "Sản phẩm",
     "Thời gian đấu giá",
@@ -52,14 +53,20 @@ export default function ListRegisterAuctionSection() {
         setIsModalOpen(false);
     };
 
+    const {data: historyBid} = useGetAllBidsQuery({
+        auctionId: selectedArId,
+        page: 0,
+    });
+    console.log(historyBid);
+    const bidData = historyBid?.data || [];
     const TABLE_ROWS = data.items?.map((item) => ({
-        number: `#AU-${item.ar_id}`,
+        number: `${item.ar_id}`,
         product: item.auctionItem.itemName,
         image: item.auctionItem.thumbnail,
         time: item.auctionItem.auction.startDate,
         status: item.auctionItem.auction.status,
         sellerHeader: item.auctionItem.auction.created_by,
-        totalHeader: `$${(item.auctionItem.auction.start_price)}`,
+        totalHeader: `${item.auctionItem.auction.start_price.toLocaleString('vi-VN')}đ`,
         action: <Button color="blue" onClick={() => showModal(item.ar_id)}>Chi tiết</Button>,
         //.toFixed(2)<Button color="blue" onClick={showModal((record.ar_id)}>Chi tiết</Button>
     })) || [];
@@ -86,8 +93,8 @@ export default function ListRegisterAuctionSection() {
         },
         {
             key: '3',
-            label: 'Số Đăng Ký',
-            children: `#AU-${dataAuctionRegisterDetail?.ar_id}`,
+            label: 'ID',
+            children: `${dataAuctionRegisterDetail?.ar_id}`,
         },
         {
             key: '4',
@@ -98,9 +105,29 @@ export default function ListRegisterAuctionSection() {
         {
             key: '5',
             label: 'Trạng Thái',
-            children: <Badge status="processing" text={dataAuctionRegisterDetail?.status}/>,
+            children: (
+                <Badge
+                    status={
+                        dataAuctionRegisterDetail?.auctionItem?.auction?.status === 'CANCELLED' ? 'error' :
+                            dataAuctionRegisterDetail?.auctionItem?.auction?.status === 'CLOSED' ? 'default' :
+                                dataAuctionRegisterDetail?.auctionItem?.auction?.status === 'COMPLETED' ? 'success' :
+                                    dataAuctionRegisterDetail?.auctionItem?.auction?.status === 'OPEN' ? 'processing' :
+                                        dataAuctionRegisterDetail?.auctionItem?.auction?.status === 'PENDING' ? 'warning' :
+                                            'default'
+                    }
+                    text={
+                        dataAuctionRegisterDetail?.auctionItem?.auction?.status === 'CANCELLED' ? 'Đã hủy' :
+                            dataAuctionRegisterDetail?.auctionItem?.auction?.status === 'CLOSED' ? 'Đã đóng' :
+                                dataAuctionRegisterDetail?.auctionItem?.auction?.status === 'COMPLETED' ? 'Hoàn thành' :
+                                    dataAuctionRegisterDetail?.auctionItem?.auction?.status === 'OPEN' ? 'Đang mở' :
+                                        dataAuctionRegisterDetail?.auctionItem?.auction?.status === 'PENDING' ? 'Đang chờ' :
+                                            'Không xác định'
+                    }
+                />
+            ),
             span: 3,
         },
+
         {
             key: '6',
             label: 'Người Bán',
@@ -109,8 +136,12 @@ export default function ListRegisterAuctionSection() {
         {
             key: '7',
             label: 'Tiền Cọc',
-            children: `$${dataAuctionRegisterDetail?.deposite_amount}`,
+            children: `${new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format((dataAuctionRegisterDetail?.auctionItem?.auction?.buy_now_price) * (dataAuctionRegisterDetail?.auctionItem?.auction?.percent_deposit) / 100)}`,
         },
+
     ] : [];
     // if (isLoading) return <div>Loading...</div>;
     if (isErrorAutionRegister) return <div>Error: {isErrorAutionRegister?.message || "API request failed."}</div>;
@@ -186,7 +217,7 @@ export default function ListRegisterAuctionSection() {
                                             {row.status === "OPEN" ? (
                                                 <Tag icon={<CheckCircleOutlined/>} color="success">Đã đăng kí</Tag>
                                             ) : (
-                                                <Tag icon={<CloseCircleOutlined/>} color="error">Đã hủy</Tag>
+                                                <Tag icon={<CloseCircleOutlined/>} color="error">Đã kết thúc</Tag>
                                             )}
                                         </td>
                                         <td className="p-4">
@@ -218,14 +249,82 @@ export default function ListRegisterAuctionSection() {
                     </div>
                 </div>
             </div>
-            <Modal footer={null} width={1000} title="Register Auction Detail" open={isModalOpen} onOk={handleOk}
-                   onCancel={handleCancel}>
+            <Modal
+                footer={null}
+                width={1000}
+                title="Thông tin đấu giá"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            >
                 {isLoadingAuctionRegisterDetail ? (
                     <p>Loading details...</p>
                 ) : (
-                    <Descriptions title="Infomation Info" layout="vertical" bordered items={items}/>
+                    <>
+                        <Descriptions layout="vertical" bordered items={items}/>
+
+                        <Divider/>
+
+                        <h3>Danh sách người tham gia</h3>
+                        <Table
+                            columns={[
+                                {
+                                    title: 'Họ và Tên',
+                                    dataIndex: 'username', // Thay vì 'name', ta dùng 'username' trong dữ liệu
+                                    key: 'username',
+                                },
+                                {
+                                    title: 'Email',
+                                    dataIndex: 'email', // Nếu email là username trong dữ liệu
+                                    key: 'email',
+                                },
+                                {
+                                    title: 'Số Tiền ',
+                                    dataIndex: 'bidAmount', // Dùng 'bidAmount' thay vì 'depositeAmount'
+                                    key: 'depositeAmount',
+                                    render: (amount) =>
+                                        new Intl.NumberFormat('vi-VN', {
+                                            style: 'currency',
+                                            currency: 'VND'
+                                        }).format(amount),
+                                },
+                                {
+                                    title: 'Trạng Thái',
+                                    dataIndex: 'winBid',
+                                    key: 'status',
+                                    render: (status) => (
+                                        <span
+                                            style={{
+                                                height: 24,
+                                                width: 100,
+                                                backgroundColor: status ? '#38A169' : '#E53E3E', // Màu nền xanh lá hoặc đỏ
+                                                color: 'white', // Màu chữ trắng
+                                                padding: '0.25rem 0.75rem', // Padding cho phần tử
+                                                borderRadius: '9999px', // Bo tròn góc
+                                                fontWeight: 'bold', // Làm cho chữ đậm
+                                                textAlign: 'center', // Căn giữa nội dung
+                                                display: 'inline-block', // Đảm bảo phần tử không chiếm hết chiều rộng
+                                                transition: 'background-color 0.3s ease, transform 0.2s ease', // Thêm hiệu ứng chuyển màu nền và chuyển động
+                                                transform: 'scale(1)', // Hiệu ứng khi ở trạng thái ban đầu
+                                            }}
+                                            className={`transition-all ${status ? 'bg-green-500' : 'bg-red-500'} text-white rounded-full px-3 py-1`}
+                                        >
+            {status ? 'Thắng' : 'Thua'}
+        </span>
+                                    ),
+                                }
+
+
+                            ]}
+                            dataSource={bidData} // Truyền dữ liệu vào dataSource của bảng
+                            pagination={false}
+                            rowKey="userId" // Chọn 'userId' làm khóa duy nhất
+                        />
+
+                    </>
                 )}
             </Modal>
+
         </div>
     );
 }
