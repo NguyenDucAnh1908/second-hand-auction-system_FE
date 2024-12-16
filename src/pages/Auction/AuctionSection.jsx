@@ -540,9 +540,9 @@ export default function AuctionSection(
 
                                             {now >= startDateTime && now <= endDateTime && (
                                                 <>
-                                                    {dataItem.bidAmountUserToken != null && dataItem.bidAmountUserToken !=='0' ? (
+                                                    {dataItem.checkBid != null && dataItem.checkBid !== null ? (
                                                         <div className="text-blue-600 font-semibold">
-                                                            Bạn đã đặt giá thầu với giá {formatPrice(dataItem.bidAmountUserToken)}
+                                                            Bạn đã đặt giá thầu kín với giá {formatPrice(dataItem.checkBid)}
                                                         </div>
                                                     ) : (
                                                         isRegistered && (
