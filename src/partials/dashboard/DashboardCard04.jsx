@@ -5,18 +5,25 @@ import BarChart from '../../charts/BarChart01';
 import { tailwindConfig } from '../../utils/Utils';
 
 function DashboardCard04() {
+  // Function to format currency in VNĐ
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    }).format(value);
+  };
 
+  // Data for the bar chart
   const chartData = {
     labels: [
-      '12-01-2022', '01-01-2023', '02-01-2023',
-      '03-01-2023', '04-01-2023', '05-01-2023',
+      '12-01-2024', '01-01-2024', '02-01-2024',
+      '03-01-2024', '04-01-2024', '05-01-2024',
     ],
     datasets: [
-      // Light blue bars
       {
-        label: 'Direct',
+        label: 'Chưa thanh toán (VNĐ)',
         data: [
-          800, 1600, 900, 1300, 1950, 1700,
+          800000, 1600000, 900000, 1300000, 1950000, 1700000,
         ],
         backgroundColor: tailwindConfig().theme.colors.sky[500],
         hoverBackgroundColor: tailwindConfig().theme.colors.sky[600],
@@ -24,11 +31,10 @@ function DashboardCard04() {
         categoryPercentage: 0.7,
         borderRadius: 4,
       },
-      // Blue bars
       {
-        label: 'Indirect',
+        label: 'Thanh toán (VNĐ)',
         data: [
-          4900, 2600, 5350, 4800, 5200, 4800,
+          4900000, 2600000, 5350000, 4800000, 5200000, 4800000, 4800000
         ],
         backgroundColor: tailwindConfig().theme.colors.violet[500],
         hoverBackgroundColor: tailwindConfig().theme.colors.violet[600],
@@ -39,15 +45,44 @@ function DashboardCard04() {
     ],
   };
 
+  // Options for the bar chart
+  const chartOptions = {
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.raw !== null) {
+              label += formatCurrency(context.raw);
+            }
+            return label;
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          callback: function (value) {
+            return formatCurrency(value);
+          },
+        },
+      },
+    },
+  };
+
   return (
-    <div className="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
-      <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
-        <h2 className="font-semibold text-gray-800 dark:text-gray-100">Direct VS Indirect</h2>
-      </header>
-      {/* Chart built with Chart.js 3 */}
-      {/* Change the height attribute to adjust the chart height */}
-      <BarChart data={chartData} width={595} height={248} />
-    </div>
+      <div className="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
+        <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
+          <h2 className="font-semibold text-gray-800 dark:text-gray-100">Số order</h2>
+        </header>
+        {/* Chart built with Chart.js 3 */}
+        {/* Change the height attribute to adjust the chart height */}
+        <BarChart data={chartData} options={chartOptions} width={595} height={248} />
+      </div>
   );
 }
 

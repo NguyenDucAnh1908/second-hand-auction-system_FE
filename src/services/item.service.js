@@ -198,6 +198,13 @@ export const itemApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+        getDeleteItem: builder.mutation({
+            query: ({ id}) => ({
+                url: `item/${id}`,
+                method: "DELETE",
+            })
+        })
+
     }),
 });
 
@@ -219,5 +226,6 @@ export const {
     useGetItemsBySellerQuery,
     useGetMostParticipatingItemsQuery,
     useGetSimilarItemAuctionQuery,
-    useGetUpdateItemMutation
+    useGetUpdateItemMutation,
+    useGetDeleteItemMutation,
 } = itemApiSlice;

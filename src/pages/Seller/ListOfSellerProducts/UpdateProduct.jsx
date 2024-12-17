@@ -86,20 +86,17 @@ export default function UpdateProduct() {
                     console.error('No image URL found for file', file);
                     return null; // Tránh lưu ảnh không có URL
                 }
-
                 if (file.idImage) {
                     return {
                         idImage: file.idImage,
                         image: imageUrl, // Giữ URL hoặc nhận URL mới
                     };
                 }
-
                 return {
                     idImage: null, // Mặc định cho ảnh mới
                     image: imageUrl,
                 };
             }).filter(Boolean); // Loại bỏ các phần tử null nếu không có URL
-
             return {
                 ...prevData,
                 images: updatedImages, // Cập nhật danh sách ảnh
@@ -190,11 +187,11 @@ export default function UpdateProduct() {
         if (e) e.preventDefault();
 
         const uploadedImages = await handleImgUpload(); // Start image upload
-        if (uploadedImages.length === 0) {
-            message.error("Please upload at least one image.");
-            setSpinning(false); // Stop loader if no images uploaded successfully
-            return;
-        }
+        // if (uploadedImages.length === 0) {
+        //     message.error("Please upload at least one image.");
+        //     setSpinning(false); // Stop loader if no images uploaded successfully
+        //     return;
+        // }
 
         // Lấy các giá trị từ trạng thái (updatedData)
         const {
@@ -208,11 +205,11 @@ export default function UpdateProduct() {
 
         // Ensure priceBuyNow is a valid number
         const parsedPrice = parseFloat(priceBuyNow);
-        if (isNaN(parsedPrice)) {
-            message.error("Please provide a valid number for price.");
-            setSpinning(false); // Stop loader if price is invalid
-            return;
-        }
+        // if (isNaN(parsedPrice)) {
+        //     message.error("Please provide a valid number for price.");
+        //     setSpinning(false); // Stop loader if price is invalid
+        //     return;
+        // }
 
         // Prepare payload with form data
         const payload = {
@@ -455,7 +452,7 @@ export default function UpdateProduct() {
                                 {/* Category and Auction Type */}
                                 <div>
                                     <label htmlFor="sub_category" className="block text-lg font-semibold text-gray-600">
-                                        Subcategory
+                                        Danh mục
                                     </label>
                                     <select
                                         id="sub_category"
@@ -464,7 +461,7 @@ export default function UpdateProduct() {
                                         onChange={handleChange}
                                         className="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
-                                        <option value="">Select Subcategory</option>
+                                        <option value="">Chọn danh mục</option>
                                         <option value="1">Điện thoại</option>
                                         <option value="2">Máy tính</option>
                                         {/* Add other options here */}
@@ -473,7 +470,7 @@ export default function UpdateProduct() {
 
                                 <div>
                                     <label htmlFor="auction_type" className="block text-lg font-semibold text-gray-600">
-                                        Auction Type
+                                        Loại đấu giá
                                     </label>
                                     <select
                                         id="auction_type"
@@ -482,9 +479,9 @@ export default function UpdateProduct() {
                                         onChange={handleChange}
                                         className="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
-                                        <option value="">Select Auction Type</option>
-                                        <option value="1">TRADITIONAL</option>
-                                        <option value="2">ANONYMOUS</option>
+                                        <option value="">Chọn kiểu đấu giá</option>
+                                        <option value="1">Đấu giá truyền thống</option>
+                                        <option value="2">Đấu giá kín</option>
                                         {/* Add other options here */}
                                     </select>
                                 </div>
