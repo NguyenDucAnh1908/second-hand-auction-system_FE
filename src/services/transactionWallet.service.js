@@ -32,13 +32,12 @@ export const transactionWalletApiSlice = apiSlice.injectEndpoints({
         }),
 
         uploadImageTransaction: builder.mutation({
-            query: (id) => ({
-                url: "transactionWallet/upload-evidence/{id}",
+            query: ({ id, credentials }) => ({
+                url: `transactionWallet/upload-evidence/${id}`,
                 method: "PUT",
-                
+                body: { ...credentials },
             }),
-        })
-
+        }),
 
     })
 })
