@@ -14,6 +14,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
-const api = "http://localhost:8080/api/v1";
+const api = "https://auction-system-fpt-2024-production.azurewebsites.net/api/v1";
 export {api, storage};
 export {default as chartsConfig} from "./charts-config";
