@@ -48,22 +48,44 @@ export default function ListRegisterAuctionSection() {
     });
 
     const showModal = (ar_id, auction_id) => {
-        setSelectedArId(ar_id); // Lưu ar_id đã chọn
+        setSelectedArId(ar_id);
         setIsModalOpen(true);
-        setAuctionId1(auction_id || 0);
+        setAuctionId1(auction_id);
+        setBidData([]); 
     };
     const handleOk = () => {
         setIsModalOpen(false);
     };
+
     const handleCancel = () => {
         setIsModalOpen(false);
+        setBidData([]); 
+        window.location.reload();
     };
+
+    const [bidData, setBidData] = useState([]); // State riêng biệt lưu bid data
 
     const { data: historyBid } = useGetAllBidsQuery({
         auctionId: parseInt(auction1, 10) || 0,
         page: 0,
     });
-    const bidData = historyBid?.data || [];
+
+
+    useEffect(() => {
+        if (historyBid?.data) {
+            setBidData(historyBid.data);
+        } else {
+            setBidData([]); 
+        }
+    }, [historyBid?.data]);
+
+    useEffect(() => {
+        if (isModalOpen && historyBid?.data) {
+            setBidData(historyBid.data);
+        } else if (isModalOpen) {
+            setBidData([]); 
+        }
+    }, [historyBid?.data, isModalOpen]); 
 
 
     const TABLE_ROWS = useMemo(() => {
@@ -79,8 +101,8 @@ export default function ListRegisterAuctionSection() {
                 status: item.auctionItem.auction.status,
                 sellerHeader: item.auctionItem.auction.created_by,
                 totalHeader: `${item.auctionItem.auction.start_price.toLocaleString('vi-VN')}đ`,
-                action: <Button  color="blue"  onClick={() => showModal(item.ar_id, item.auctionItem.auction.auction_id)}   >
-                Chi tiết </Button>
+                action: <Button color="blue" onClick={() => showModal(item.ar_id, item.auctionItem.auction.auction_id)}   >
+                    Chi tiết </Button>
             };
         }) || [];
     }, [data.items]);
