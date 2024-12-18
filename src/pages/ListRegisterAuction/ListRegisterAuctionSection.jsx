@@ -1,9 +1,9 @@
 import { Img, InputDH } from "../../components/index.jsx";
 import { Button, Card, Typography, Select, Option } from "@material-tailwind/react";
 import { Tag, Badge, Descriptions, Modal, Skeleton, Empty, Divider, Table, Spin } from "antd";
-import { CheckCircleOutlined, CloseCircleOutlined, LoadingOutlined  } from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined, LoadingOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
-import React, { useState, useEffect, useMemo, useRef  } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useGetAuctionRegisterQuery, useGetAuctionRegisterDetailQuery } from "@/services/auctionRegistrations.service.js";
 import { useGetAllBidsQuery } from "@/services/bid.service.js";
 import dayjs from 'dayjs';
@@ -26,9 +26,10 @@ export default function ListRegisterAuctionSection() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [page, setPage] = useState(1);
     const [selectedArId, setSelectedArId] = useState(null);
+    const [auction1, setAuctionId1] = useState(null);
     const [timeLefts, setTimeLefts] = useState({});
-    const intervalRef = useRef(null);   
-     const {
+    const intervalRef = useRef(null);
+    const {
         data = {},
         isLoading: isLoadingAutionRegister,
         isError: isErrorAutionRegister,
@@ -46,9 +47,10 @@ export default function ListRegisterAuctionSection() {
         skip: !selectedArId,
     });
 
-    const showModal = (ar_id) => {
+    const showModal = (ar_id, auction_id) => {
         setSelectedArId(ar_id); // Lưu ar_id đã chọn
         setIsModalOpen(true);
+        setAuctionId1(auction_id || 0);
     };
     const handleOk = () => {
         setIsModalOpen(false);
@@ -58,10 +60,9 @@ export default function ListRegisterAuctionSection() {
     };
 
     const { data: historyBid } = useGetAllBidsQuery({
-        auctionId: selectedArId,
+        auctionId: parseInt(auction1, 10) || 0,
         page: 0,
     });
-    console.log(historyBid);
     const bidData = historyBid?.data || [];
 
 
@@ -70,7 +71,7 @@ export default function ListRegisterAuctionSection() {
             const startDateTime = new Date(`${item.auctionItem.auction.startDate}T${item.auctionItem.auction.start_time}`);
             const endDateTime = new Date(`${item.auctionItem.auction.endDate}T${item.auctionItem.auction.end_time}`);
             return {
-                number: `${item.ar_id}`,
+                number: `${item.auctionItem.auction.auction_id}`,
                 product: item.auctionItem.itemName,
                 image: item.auctionItem.thumbnail,
                 Starttime: startDateTime,
@@ -78,15 +79,16 @@ export default function ListRegisterAuctionSection() {
                 status: item.auctionItem.auction.status,
                 sellerHeader: item.auctionItem.auction.created_by,
                 totalHeader: `${item.auctionItem.auction.start_price.toLocaleString('vi-VN')}đ`,
-                action: <Button color="blue" onClick={() => showModal(item.ar_id)}>Chi tiết</Button>
+                action: <Button  color="blue"  onClick={() => showModal(item.ar_id, item.auctionItem.auction.auction_id)}   >
+                Chi tiết </Button>
             };
         }) || [];
     }, [data.items]);
-    
 
 
 
-  
+
+
     const startCountdown = () => {
         const calculateTimeLeft = () => {
             const now = new Date();
@@ -128,9 +130,9 @@ export default function ListRegisterAuctionSection() {
         startCountdown();
         return () => stopCountdown(); // Cleanup khi component unmount
     }, [TABLE_ROWS]);
-    
-    
-    
+
+
+
 
     const items = dataAuctionRegisterDetail ? [
         {
@@ -289,30 +291,30 @@ export default function ListRegisterAuctionSection() {
                                             </td>
 
                                             <td className="p-4">
-    <Typography variant="small" className="font-normal text-gray-600">
-        {row.status === "OPEN" ? (
-            <span style={{ color: "#1890ff" }}>
-                {timeLefts[row.number] ? (
-                    timeLefts[row.number] // Hiển thị thời gian đếm ngược
-                ) : (
-                    "Loading..." // Trong khi đợi dữ liệu
-                )}
-            </span>
-        ) : row.status === "PENDING" ? (
-            <span style={{ color: "green" }}>
-                {row.Starttime
-                    ? new Date(row.Starttime).toLocaleString("vi-VN") // Định dạng thời gian bắt đầu
-                    : "N/A"}
-            </span>
-        ) : row.status === "CLOSED" ? (
-            <span style={{ color: "red" }}>
-                {row.EndTime
-                    ? new Date(row.EndTime).toLocaleString("vi-VN") // Định dạng thời gian kết thúc
-                    : "N/A"}
-            </span>
-        ) : null}
-    </Typography>
-</td>
+                                                <Typography variant="small" className="font-normal text-gray-600">
+                                                    {row.status === "OPEN" ? (
+                                                        <span style={{ color: "#1890ff" }}>
+                                                            {timeLefts[row.number] ? (
+                                                                timeLefts[row.number] // Hiển thị thời gian đếm ngược
+                                                            ) : (
+                                                                "Loading..." // Trong khi đợi dữ liệu
+                                                            )}
+                                                        </span>
+                                                    ) : row.status === "PENDING" ? (
+                                                        <span style={{ color: "green" }}>
+                                                            {row.Starttime
+                                                                ? new Date(row.Starttime).toLocaleString("vi-VN") // Định dạng thời gian bắt đầu
+                                                                : "N/A"}
+                                                        </span>
+                                                    ) : row.status === "CLOSED" ? (
+                                                        <span style={{ color: "red" }}>
+                                                            {row.EndTime
+                                                                ? new Date(row.EndTime).toLocaleString("vi-VN") // Định dạng thời gian kết thúc
+                                                                : "N/A"}
+                                                        </span>
+                                                    ) : null}
+                                                </Typography>
+                                            </td>
 
 
 
@@ -361,7 +363,7 @@ export default function ListRegisterAuctionSection() {
 
                         <Divider />
 
-                        <h3>Danh sách người tham gia</h3>
+
                         <Table
                             columns={[
                                 {
