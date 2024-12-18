@@ -1,17 +1,22 @@
 import {Img, Heading, InputDH} from "../../../components";
 import {CloseSVG} from "../../../components/InputDH/close.jsx";
-import React, {useState} from "react";
+import  {useState} from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
 import {Link, useNavigate} from 'react-router-dom';
-import {DocumentIcon} from "@heroicons/react/24/solid";
-import {ArrowDownTrayIcon} from "@heroicons/react/24/outline";
+import {DocumentIcon, TrashIcon} from "@heroicons/react/24/solid";
 import {Card, IconButton, Typography} from "@material-tailwind/react";
 import Pagination from "@/components/Pagination/index.jsx";
-import {useGetItemByUserQuery} from "../../../services/item.service.js";
-import {CheckCircleOutlined, CloseCircleOutlined, SyncOutlined, HourglassOutlined} from '@ant-design/icons';
-import {Tag, Breadcrumb, Layout, theme, Button, Empty, Skeleton} from 'antd';
+import {useGetItemByUserQuery,useGetDeleteItemMutation} from "../../../services/item.service.js";
+import {
+    CheckCircleOutlined,
+    CloseCircleOutlined,
+    SyncOutlined,
+    HourglassOutlined,
+    DeleteOutlined
+} from '@ant-design/icons';
+import {Tag, Breadcrumb, Layout, theme, Button, Empty, Skeleton, message} from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
 import {Modal} from 'antd';
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
@@ -19,12 +24,12 @@ import DescriptionItem from "@/components/DescriptionItem/index.jsx";
 const {Content, Sider} = Layout;
 
 const TABLE_HEAD = [
-    "Number",
+    "ID",
     "Sản phẩm",
     "Hình ảnh",
     "Mô tả",
-    "Trạng thái",
     "Thông tin đấu giá",
+    "Trạng thái",
     "Tùy chỉnh"
 ];
 
@@ -40,6 +45,7 @@ export default function ListOfSellerProductPage() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [searchBarValue1, setSearchBarValue1] = useState("");
     const [page, setPage] = useState(1);
+    const [deleteItemMutation] = useGetDeleteItemMutation();
 
     const pageSize = 10;
     const formatDate = (dateString) => {
@@ -75,10 +81,54 @@ export default function ListOfSellerProductPage() {
         setSelectedDescription(null);
     };
 
-    const handleUpdateItem = (itemId) => {
-        console.log("Navigating to item with ID:", itemId); // Kiểm tra xem itemId có đúng không
+    const handleUpdateItem = (itemId, itemStatus) => {
+        // Kiểm tra nếu itemStatus là "ACCEPTED"
+        if (itemStatus === "ACCEPTED") {
+            message.error("Không thể cập nhật sản phẩm vì sản phẩm đã được chấp thuận.");
+            return;  // Nếu trạng thái là ACCEPTED, dừng việc điều hướng
+        }
+
+        // Nếu không phải trạng thái ACCEPTED, tiếp tục điều hướng tới trang cập nhật sản phẩm
+        console.log("Navigating to item with ID:", itemId);
         navigate(`/dashboard-seller/UpdateProduct/${itemId}`);
     };
+
+
+    const handleDeleteItem = async (itemId) => {
+        // Kiểm tra nếu itemId không hợp lệ
+        if (!itemId) {
+            console.error("ID sản phẩm không hợp lệ");
+            message.error("ID sản phẩm không hợp lệ. Vui lòng thử lại.");
+            return;
+        }
+
+        // Hiển thị Modal xác nhận thay vì window.confirm
+        Modal.confirm({
+            title: "Bạn có chắc chắn muốn xóa sản phẩm này?",
+            content: "Hành động này không thể hoàn tác.",
+            okText: "Xóa",
+            cancelText: "Hủy",
+            onOk: async () => {
+                try {
+                    const response = await deleteItemMutation({ id: itemId }).unwrap();
+                    console.log("Sản phẩm đã được xóa thành công:", response);
+                    message.success("Sản phẩm đã được xóa thành công!");
+                } catch (error) {
+                    console.error("Xóa sản phẩm thất bại:", error);
+                    const errorMessage =
+                        error?.data?.message || error?.message || "Đã xảy ra lỗi không xác định.";
+
+                    message.error(`Xóa sản phẩm thất bại. Lý do: ${errorMessage}`);
+                }
+            },
+            onCancel: () => {
+                console.log("Hủy xóa sản phẩm.");
+            }
+        });
+    };
+
+
+
 
 
 
@@ -110,29 +160,37 @@ export default function ListOfSellerProductPage() {
                         <Button onClick={() => handleOpenModal(auction)}>Thông tin đấu giá</Button>
                     </Typography>
                 </td>
-                <td className="p-4">
+                <td className="p-4 mt-5 flex items-center justify-center w-[180px]">
                     {itemStatus === "ACCEPTED" && (
-                        <Tag icon={<CheckCircleOutlined />} color="success">Hợp lệ</Tag>
+                        <Tag icon={<CheckCircleOutlined/>} color="success" className="w-full text-center">Hợp lệ</Tag>
                     )}
                     {itemStatus === "PENDING" && (
-                        <Tag icon={<SyncOutlined spin />} color="processing">Đang chờ</Tag>
+                        <Tag icon={<SyncOutlined spin/>} color="processing" className="w-full text-center">Đang
+                            chờ</Tag>
                     )}
                     {itemStatus === "REJECTED" && (
-                        <Tag icon={<CloseCircleOutlined />} color="error">Từ chối</Tag>
+                        <Tag icon={<CloseCircleOutlined/>} color="error" className="w-full text-center">Từ chối</Tag>
+                    )}
+                    {itemStatus === "INACTIVE" && (
+                        <Tag icon={<DeleteOutlined/>} color="error" className="w-full text-center">Hủy bỏ</Tag>
                     )}
                     {itemStatus === "PENDING_AUCTION" && (
-                        <Tag icon={<HourglassOutlined />} color="warning">Đang tạo phiên</Tag>
+                        <Tag icon={<HourglassOutlined/>} color="warning" className="w-full text-center">Đang tạo
+                            phiên</Tag>
                     )}
                 </td>
+
 
                 <td className="p-4">
                     <div className="flex items-center gap-2">
                         <IconButton variant="text" size="sm">
-                            <DocumentIcon onClick={() => handleUpdateItem(itemId)}  className="h-4 w-4 text-gray-900"/>
+                            <DocumentIcon onClick={() => handleUpdateItem(itemId,itemStatus)} className="h-4 w-4 text-gray-900"/>
                         </IconButton>
-                        <IconButton variant="text" size="sm">
-                            <ArrowDownTrayIcon strokeWidth={3} className="h-4 w-4 text-gray-900"/>
+                        <IconButton onClick={() => handleDeleteItem(itemId)} variant="text" size="sm">
+                            <TrashIcon strokeWidth={3} className="h-4 w-4 text-gray-900"/>
                         </IconButton>
+
+
                     </div>
                 </td>
             </tr>

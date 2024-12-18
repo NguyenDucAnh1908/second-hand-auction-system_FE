@@ -180,46 +180,7 @@ export default function AuctionPage() {
                 </>
             ),
         },
-        // {
-        //     detailsTitle: "Thông tin sản phẩm",
-        //     content: (
-        //         <div className="flex items-start self-stretch md:flex-col">
-        //             <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
-        //             <Heading
-        //                 as="p"
-        //                 className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
-        //             >
-        //                 <div className="flex flex-wrap gap-4">
-        //                     <div className="w-1/4 p-2">
-        //                         <strong>Percent:</strong> {data?.itemSpecific?.percent}
-        //                     </div>
-        //                     <div className="w-1/4 p-2">
-        //                         <strong>Type:</strong> {data?.itemSpecific?.type}
-        //                     </div>
-        //                     <div className="w-1/4 p-2">
-        //                         <strong>Color:</strong> {data?.itemSpecific?.color}
-        //                     </div>
-        //                     <div className="w-1/4 p-2">
-        //                         <strong>Weight:</strong> {data?.itemSpecific?.weight} kg
-        //                     </div>
-        //                     <div className="w-1/4 p-2">
-        //                         <strong>Dimension:</strong> {data?.itemSpecific?.dimension} cm
-        //                     </div>
-        //                     <div className="w-1/4 p-2">
-        //                         <strong>Original:</strong> {data?.itemSpecific?.original}
-        //                     </div>
-        //                     <div className="w-1/4 p-2">
-        //                         <strong>Manufacture Date:</strong> {data?.itemSpecific?.manufactureDate || 'N/A'}
-        //                     </div>
-        //                     <div className="w-1/4 p-2">
-        //                         <strong>Material:</strong> {data?.itemSpecific?.material}
-        //                     </div>
-        //                 </div>
-        //
-        //             </Heading>
-        //         </div>
-        //     ),
-        // },
+
         {
             detailsTitle: "Hướng dẫn tham gia đấu giá",
             content: (
@@ -295,16 +256,7 @@ export default function AuctionPage() {
                         }}
                     >
                         <div className="flex w-full flex-col items-center bg-bg-white">
-                            {/*{isLoggedIn && winningBid && (*/}
-                            {/*    <>*/}
-                            {/*        <div*/}
-                            {/*            className={`w-full p-1 flex items-center rounded-lg ${winningBid?.data?.winBid ? 'bg-gradient-to-r from-white to-green-500' : 'bg-gradient-to-r from-white to-red-500'}`}*/}
-                            {/*        >*/}
-                            {/*            <span*/}
-                            {/*                className="text-sm font-semibold">{winningBid?.data?.winBid ? "You're the high bidder" : "You're outbid"} ||</span>*/}
-                            {/*        </div>*/}
-                            {/*    </>*/}
-                            {/*)}*/}
+
                             {isLoggedIn && initialized && (
                                 <div
                                     className={`w-full p-1 flex items-center rounded-lg ${data.auctionType?.act_id === 3
@@ -323,24 +275,6 @@ export default function AuctionPage() {
                                     </span>
                                 </div>
                             )}
-
-
-                            {/*                    {isLoggedIn && (*/}
-                            {/*                        <div*/}
-                            {/*                            className={`w-full p-1 flex items-center rounded-lg ${*/}
-                            {/*                                isHighBidder === true*/}
-                            {/*                                    ? 'bg-gradient-to-r from-white to-green-500'*/}
-                            {/*                                    : 'bg-gradient-to-r from-white to-red-500'*/}
-                            {/*                            }`}*/}
-                            {/*                        >*/}
-                            {/*<span className="text-sm font-semibold">*/}
-                            {/*    {isHighBidder === true*/}
-                            {/*        ? "You're the high bidder"*/}
-                            {/*        : "You're outbid"}*/}
-                            {/*</span>*/}
-                            {/*                        </div>*/}
-                            {/*                    )}*/}
-
                             <Skeleton loading={isLoading} active>
                                 {isSuccess && data && (
                                     <AuctionSection dataItem={data}
@@ -678,21 +612,7 @@ export default function AuctionPage() {
                                         itemError={isErrorSimilar} />
                                 </div>
                             </div>
-                            {/*itemData={itemData} itemLoading={itemLoading} itemError={itemError}*/}
-                            {/* recommended products section */}
-                            {/*<div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">*/}
-                            {/*    <Heading*/}
-                            {/*        size="text7xl"*/}
-                            {/*        as="h2"*/}
-                            {/*        className="self-center text-[28px] mb-5 font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"*/}
-                            {/*    >*/}
-                            {/*        Sản phẩm tham gia nhiều nhất*/}
-                            {/*    </Heading>*/}
-                            {/*    <div className="mr-3.5 md:mr-0">*/}
-                            {/*        <SliderItem itemDatas={dataSimilar} itemLoading={isLoadingSimilar}*/}
-                            {/*            itemError={isErrorSimilar} />*/}
-                            {/*    </div>*/}
-                            {/*</div>*/}
+
 
                         </div>
                     </div>
