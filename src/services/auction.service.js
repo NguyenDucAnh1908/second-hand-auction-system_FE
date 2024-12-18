@@ -1,4 +1,4 @@
-import {apiSlice} from "../redux/api/apiSlice";
+import { apiSlice } from "../redux/api/apiSlice";
 
 export const auctionApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -7,16 +7,16 @@ export const auctionApiSlice = apiSlice.injectEndpoints({
             query: (credentials) => ({
                 url: "/auctions",
                 method: "POST",
-                body: {...credentials},
+                body: { ...credentials },
             }),
         }),
 
         getAuctionById: builder.query({
             query: (id) => ({
-              url: `/auctions/${encodeURIComponent(id)}`,
+                url: `/auctions/${encodeURIComponent(id)}`,
             }),
-        
-          }),
+
+        }),
 
         getAuctionCreatedToday: builder.query({
             query: () => '/auctions/count-today', // Nếu baseUrl đã được cấu hình
@@ -25,7 +25,17 @@ export const auctionApiSlice = apiSlice.injectEndpoints({
 
         getAuctionCreatedMonth: builder.query({
             query: () => '/auctions/count-month',
-        })
+        }),
+
+
+        updateAuction: builder.mutation({
+            query: ({ auctionId, auctionData }) => ({
+                url: `/auctions/${auctionId}`,
+                method: "PUT",
+                body: auctionData,
+            }),
+        }),
+
     }),
 });
 
@@ -34,5 +44,6 @@ export const {
     useGetAuctionByIdQuery,
     useGetAuctionCreatedTodayQuery,
     useGetAuctionCreatedMonthQuery,
+    useUpdateAuctionMutation,
 } = auctionApiSlice;
 
