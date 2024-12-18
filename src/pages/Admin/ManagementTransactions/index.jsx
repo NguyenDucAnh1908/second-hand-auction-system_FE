@@ -3,7 +3,7 @@ import {
     Button, Card, Typography, Select, Option,
     Dialog, DialogHeader, DialogBody, DialogFooter,
 } from "@material-tailwind/react";
-import {Empty, Skeleton, Tag} from "antd";
+import {Empty, message, Skeleton, Tag} from "antd";
 import {CheckCircleOutlined, ExclamationCircleOutlined, SyncOutlined} from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
 import {useGetTransactionWalletAdminQuery} from '../../../services/transactionWallet.service';
@@ -32,11 +32,11 @@ export default function QuanLyGiaoDich() {
     const [moDialog, setMoDialog] = useState(false);
     const [giaoDichDuocChon, setGiaoDichDuocChon] = useState(null);
     const [trang, setTrang] = useState(1);
-    const [image, setImage] = useState(null); // state để lưu hình ảnh tải lên
-
+    const [image, setImage] = useState(null);
+    const [file, setFile] = useState(null);
     const [roleFilter, setRoleFilter] = useState(""); // State for role filter
     const [transactionTypeFilter, setTransactionTypeFilter] = useState(""); // State for transactionType filter
-
+    const [uploadImageTransaction] = useUploadImageTransactionMutation();
     const {data, error, isLoading, isError} = useGetTransactionWalletAdminQuery({
         page: trang - 1, limit: 10, role: roleFilter, transactionType: transactionTypeFilter
     });
@@ -47,7 +47,6 @@ export default function QuanLyGiaoDich() {
         setMoDialog(!moDialog);
     };
     const danhSachGiaoDich = data?.data?.items || [];
-
     const totalPages1 = data?.data?.totalPages || 0;
 
     const handlePageChange = (newPage) => {
@@ -75,19 +74,43 @@ export default function QuanLyGiaoDich() {
 
     // Function to handle image upload
     const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            setFile(selectedFile);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImage(reader.result);
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(selectedFile);
         }
     };
+    const handleConfirmUpload = async () => {
+        if (!file) {
+            alert("Vui lòng chọn một hình ảnh để tải lên.");
+            return;
+        }
 
+        try {
+            // Tải ảnh lên Firebase
+            const imageUrl = await UploadImage(file);
+
+            // Gửi URL ảnh đến API uploadImageTransaction
+            await uploadImageTransaction({
+                id: giaoDichDuocChon?.transactionId, // Truyền ID giao dịch vào đây
+                credentials: { imageUrl },
+            });
+
+            message.success("Tải ảnh lên thành công!");
+            setImage(null); // Xóa preview ảnh sau khi upload
+            setFile(null); // Xóa file đã chọn
+            // eslint-disable-next-line no-unused-vars
+        } catch (error) {
+            message.error("Đã xảy ra lỗi khi tải ảnh lên.");
+        }
+    };
     // if (isLoading) return <p>Đang tải...</p>;
     // if (error) return <p>Lỗi khi tải danh sách giao dịch.</p>;
-
+    console.log("giaoDichDuocChon", giaoDichDuocChon)
     return (
         <>
             {/* Dialog chi tiết giao dịch */}
@@ -116,44 +139,65 @@ export default function QuanLyGiaoDich() {
                                 className="text-green-600">{giaoDichDuocChon.transactionStatus}</span></p>
                             {/* Hình ảnh giao dịch */}
                             <p><strong className="text-gray-700">Hình ảnh:</strong></p>
-                            {giaoDichDuocChon.imageUrl ? (
-                                <img src={giaoDichDuocChon.imageUrl} alt="Hình ảnh giao dịch"
-                                     className="w-full h-auto mt-2"/>
-                            ) : (
-                                <p className="text-gray-500">Không có hình ảnh.</p>
-                            )}
+                            <div className="mt-4">
+                                {/* Hiển thị ảnh giao dịch (nếu có) */}
+                                {giaoDichDuocChon.imageUrl ? (
+                                    <img
+                                        src={giaoDichDuocChon.image}
+                                        alt="Hình ảnh giao dịch"
+                                        className="w-full h-auto mt-2"
+                                    />
+                                ) : (
+                                    <p className="text-gray-500">Không có hình ảnh.</p>
+                                )}
 
-                            {/* Phần thêm ảnh */}
-                            <div className="relative mt-4">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="block w-full text-sm text-gray-700 border border-gray-300 rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:text-sm file:text-white file:bg-blue-500 file:hover:bg-blue-400"
-                                />
-                                <p className="mt-2 text-sm text-gray-500">Chọn một hình ảnh để tải lên</p>
-                            </div>
-
-                            {/* Xem trước ảnh */}
-                            {image && (
-                                <div className="mt-4 flex items-center space-x-4">
-                                    <div
-                                        className="relative w-32 h-32 bg-gray-200 border-2 border-dashed border-gray-300 rounded-md overflow-hidden">
-                                        <img
-                                            src={image}
-                                            alt="Ảnh tải lên"
-                                            className="w-full h-full object-cover object-center"
-                                        />
-                                    </div>
-                                    {/* Nút xóa ảnh */}
-                                    <button
-                                        onClick={() => setImage(null)}
-                                        className="mt-4 text-sm text-red-500 hover:text-red-700"
-                                    >
-                                        Xóa ảnh
-                                    </button>
+                                {/* Phần thêm ảnh */}
+                                <div className="relative mt-4">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="block w-full text-sm text-gray-700 border border-gray-300 rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:text-sm file:text-white file:bg-blue-500 file:hover:bg-blue-400"
+                                    />
+                                    <p className="mt-2 text-sm text-gray-500">
+                                        Chọn một hình ảnh để tải lên
+                                    </p>
                                 </div>
-                            )}
+
+                                {/* Hiển thị preview ảnh */}
+                                {image && (
+                                    <div className="mt-4 flex items-center space-x-4">
+                                        <div
+                                            className="relative w-32 h-32 bg-gray-200 border-2 border-dashed border-gray-300 rounded-md overflow-hidden">
+                                            <img
+                                                src={image}
+                                                alt="Ảnh tải lên"
+                                                className="w-full h-full object-cover object-center"
+                                            />
+                                        </div>
+                                        {/* Nút xóa ảnh */}
+                                        <button
+                                            onClick={() => {
+                                                setImage(null);
+                                                setFile(null);
+                                            }}
+                                            className="mt-4 text-sm text-red-500 hover:text-red-700"
+                                        >
+                                            Xóa ảnh
+                                        </button>
+                                    </div>
+                                )}
+
+                                {/* Nút xác nhận tải ảnh */}
+                                {file && (
+                                    <button
+                                        onClick={handleConfirmUpload}
+                                        className="mt-4 px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-400"
+                                    >
+                                        Xác nhận tải ảnh lên
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     )}
                 </DialogBody>
