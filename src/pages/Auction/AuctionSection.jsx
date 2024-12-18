@@ -481,7 +481,18 @@ export default function AuctionSection(
                                     <p className="mt-2 text-gray-700">
                                         Kết thúc vào lúc: <strong>{formatDate(endDateTime)}</strong>
                                     </p>
+                                    <a href={`/ListOfBuyerBids/${idAuction}`}>
+                                                        <ButtonDH
+                                                            color="green_50"
+                                                            size="xl"
+                                                            className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5 w-full"
+                                                        >
+                                                            Kết quả đấu giá
+                                                        </ButtonDH>
+                                                    </a>
                                 </div>
+
+
                             ) : isAuctionStarted ? (
                                 <div>
                                     <span className="font-semibold">Thời gian kết thúc đấu giá sau: </span>

@@ -7,7 +7,7 @@ import { Button, Card, IconButton, Typography } from "@material-tailwind/react";
 import {
     Empty, Skeleton, Tag, Drawer, Space,
     Modal, Descriptions, Divider,
-    DatePicker, Input, Form, TimePicker, message 
+    DatePicker, Input, Form, TimePicker, message
 } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
@@ -16,7 +16,7 @@ import { useUpdateAuctionMutation } from "../../../services/auction.service";
 import DrawerDetailItem from "@/components/DrawerDetailItem/index.jsx";
 import dayjs from "dayjs";
 import AuctionFormModal from "../../../components/AuctionFormModal/AuctionFormModal.jsx";
-import { useForm } from 'antd/es/form/Form'; 
+import { useForm } from 'antd/es/form/Form';
 
 
 
@@ -103,11 +103,25 @@ export default function StaffProductListPage() {
     };
 
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false); // Đóng modal
-        setSelectedAuction(null); // Reset selectedAuction
-        form.resetFields(); // Reset các trường trong form
+    const handleCloseModal = async () => {
+        try {
+            await refetch();
+            const updatedAuction = await refetch();
+            if (updatedAuction?.data?.items) {
+                const newSelectedAuction = updatedAuction?.data?.items.find(
+                    (item) => item.auction_id === selectedAuction?.auction_id
+                );
+                setSelectedAuction(newSelectedAuction);
+            }
+            form.resetFields();
+        } catch (error) {
+            console.error("Lỗi khi làm mới dữ liệu: ", error);
+        } finally {
+            setIsModalOpen(false); // Đảm bảo luôn đóng modal
+        }
     };
+    
+
 
 
     return (
@@ -117,6 +131,7 @@ export default function StaffProductListPage() {
                 title="Thông tin phiên đấu giá"
                 open={isModalOpen}
                 onCancel={handleCloseModal}
+                maskClosable={true}
                 footer={null} // Ẩn footer mặc định
             >
                 {selectedAuction ? (
