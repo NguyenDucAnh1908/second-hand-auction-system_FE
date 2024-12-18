@@ -81,6 +81,7 @@ export default function StaffProductListPage() {
 
     const showModal = (auctionData) => {
         setSelectedAuction(auctionData);
+        form.resetFields();
         setIsModalOpen(true);
     };
 
@@ -169,9 +170,12 @@ export default function StaffProductListPage() {
                                 }).unwrap();
 
 
-                                // Thêm thông báo thành công và đóng modal
                                 message.success("Cập nhật thông tin thành công!");
                                 setIsModalOpen(false); // Đảm bảo tắt modal
+                                setTimeout(() => {
+                                    window.location.reload(); // Reload after 2 seconds
+                                }, 2000); // Delay in milliseconds
+                                
                             } catch (error) {
                                 console.error("Lỗi trong quá trình gửi request: ", error);
                                 message.error("Cập nhật thất bại!");

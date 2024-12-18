@@ -11,10 +11,10 @@ const TABLE_HEAD = [
     "Số Đăng Ký",
     "Hình ảnh",
     "Sản phẩm",
-    "Thời gian ",
+    "Thời hạn ",
     "Trạng thái",
     // "Giá Hiện Tại",
-    "Giá của bạn",
+    "Số tiền",
     "Tùy chỉnh",
     "Thanh toán"
 ];
@@ -70,16 +70,13 @@ export default function AuctionListProcessSection() {
             product: itemName || "Không xác định",
             image: thumbnail,
             auctionId: auction_id,
-            endTime: deadline ? (
-                <Countdown
-                    value={deadline}
-                    format="D Ngày H giờ m phút s giây"
-                    valueStyle={{ fontWeight: "bolder", fontSize: "15px", color: "green" }}
-                />
-            ) : (
-                "Không xác định"
-            ),
-            status: status === "PENDING" ? "Đang đấu giá" : "Đã kết thúc",
+            endTime: new Date(new Date(`${endDate}T${end_time}`).getTime() + 24 * 60 * 60 * 1000).toLocaleString('vi-VN', { hour12: false }),
+            status: status === "CLOSED" 
+            ? "Chờ thanh toán" 
+            : status === "CANCELLED" 
+              ? "Đã bị hủy" 
+              : "Đã kết thúc",
+          
             currentPrice: start_price,
             yourPrice: start_price,
             action: <Button color="blue" onClick={() => showModal(itemId)}>Chi tiết</Button>,
