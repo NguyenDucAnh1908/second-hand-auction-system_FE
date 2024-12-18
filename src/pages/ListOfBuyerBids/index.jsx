@@ -21,7 +21,7 @@ const {Countdown} = Statistic;
 const TABLE_HEAD = [
     {head: "Khách hàng", customeStyle: "!text-left"},
     {head: "Giá thầu", customeStyle: "text-right"},
-    {head: "Ngày", customeStyle: "text-right"},
+    {head: "Thời gian", customeStyle: "text-right"},
     {head: "Trạng thái", customeStyle: "text-right"},
 ];
 const {Content, Sider} = Layout;
@@ -38,14 +38,35 @@ export default function ListOfBuyerBids() {
         isLoading: loadingBidInfo,
         refetch: isRefetchBidInfo
     } = useGetBidDetailQuery(id);
-    const auctionEndDate = bidInfo?.data?.endDate || null;
-    const auctionEndTime = bidInfo?.data?.end_time || null;
     const auctionStartDate = bidInfo?.data?.startDate || null;
-    const auctionStartTime = bidInfo?.data?.start_time || null;
-    const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}`).getTime();
-    const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
-    const now = new Date().getTime();
+    const auctionStartTime = bidInfo?.data?.startTime || null; // Đảm bảo 'startTime' là đúng
+    const auctionEndDate = bidInfo?.data?.endDate || null;
+    const auctionEndTime = bidInfo?.data?.endTime || null;
     const [isAuctionStarted, setIsAuctionStarted] = useState(false);
+
+// Kiểm tra lại giá trị ngày và giờ của startDateTime và endDateTime
+    const startDateTime = auctionStartDate && auctionStartTime
+        ? new Date(`${auctionStartDate.substring(0, 10)}T${auctionStartTime}`).getTime()
+        : null;
+
+    const endDateTime = auctionEndDate && auctionEndTime
+        ? new Date(`${auctionEndDate.substring(0, 10)}T${auctionEndTime}`).getTime()
+        : null;
+
+    const now = new Date().getTime();
+
+//     console.log('Start Time:', startDateTime);
+//     console.log('End Time:', endDateTime);
+//     console.log('Current Time:', now);
+
+    const isAuctionEnded = now >= endDateTime; // Kiểm tra nếu phiên đấu giá đã kết thúc
+
+// Thêm kiểm tra để đảm bảo Countdown hiển thị đúng
+    const countdownValue = isAuctionEnded ? endDateTime : (isAuctionStarted ? endDateTime : startDateTime);
+    const formatPrice = (price) => {
+        if (price === undefined || price === null) return "N/A"; // Xử lý nếu giá trị bị null hoặc undefined
+        return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(price);
+    };
     useEffect(() => {
         setIsAuctionStarted(now >= startDateTime);
     }, [now, startDateTime]);
@@ -72,16 +93,16 @@ export default function ListOfBuyerBids() {
         {
             key: '1',
             label: 'Giá thầu hiện tại',
-            children: bidIF?.priceCurrent,
+            children: formatPrice(bidIF?.priceCurrent),
         },
         {
             key: '2',
-            label: 'Mã Mặt hàng',
+            label: 'Mã sản phẩm',
             children: bidIF?.itemId,
         },
         {
             key: '3',
-            label: 'số giá đã được đặt',
+            label: 'Số giá đã được đặt',
             children: bidIF?.numberOfBid,
         },
         {
@@ -91,37 +112,41 @@ export default function ListOfBuyerBids() {
         },
         {
             key: '5',
-            label: 'Rút lại',
-            children: 'CHUA CO DU LIEU',
-        },
-        {
-            key: '5',
             label: 'Thời gian kết thúc',
-            children:
-                <>
+            children: (
+                <div className="py-3">
                     {isAuctionStarted ? (
-                        <div>
-                            Thời gian kết thúc đấu giá sau:{" "}
+                        <div className="bg-green-100 border border-green-500 p-4 rounded-md">
                             <Countdown
-                                value={endDateTime}
-                                format="D Ngày H giờ m phút s giây"
-                                valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "green"}}
+                                value={countdownValue}
+                                format="D [Ngày] H [giờ] m [phút] s [giây]"
+                                valueStyle={{
+                                    fontWeight: "bolder",
+                                    fontSize: "12px",  // Tăng kích thước chữ
+                                    color: "green",
+                                }}
                             />
                         </div>
                     ) : (
-                        <div>
-                            Thời gian bắt đầu đấu giá sau:{" "}
+                        <div className="bg-yellow-100 border border-yellow-500 p-4 rounded-md">
+                            Phiên đấu giá sẽ bắt đầu sau:{" "}
                             <Countdown
-                                value={startDateTime}
-                                format="D Ngày H giờ m phút s giây"
-                                valueStyle={{fontWeight: "bolder", fontSize: "15px", color: "#CD853F"}}
+                                value={countdownValue}
+                                format="D [Ngày] H [giờ] m [phút] s [giây]"
+                                valueStyle={{
+                                    fontWeight: "bolder",
+                                    fontSize: "12px",  // Tăng kích thước chữ
+                                    color: "#CD853F",
+                                }}
                             />
                         </div>
                     )}
-                </>
-            ,
+                </div>
+            ),
         },
     ];
+
+
     return (
         <>
             <Helmet>
@@ -143,9 +168,9 @@ export default function ListOfBuyerBids() {
                             margin: '16px 0',
                         }}
                     >
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                        <Breadcrumb.Item>List</Breadcrumb.Item>
-                        <Breadcrumb.Item>App</Breadcrumb.Item>
+                        <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+                        <Breadcrumb.Item>Đấu giá</Breadcrumb.Item>
+                        <Breadcrumb.Item>Danh sách đấu</Breadcrumb.Item>
                     </Breadcrumb>
                     <div
                         style={{

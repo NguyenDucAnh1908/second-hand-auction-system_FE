@@ -1,22 +1,16 @@
-import { Helmet } from "react-helmet";
-import {
-    ButtonDH,
-    Heading,
-    Text,
-} from "../../components";
+import {Helmet} from "react-helmet";
+import {ButtonDH, Heading, Text,} from "../../components";
 import Header2 from "../../components/Header2";
 import AuctionSection from "./AuctionSection";
-import React from "react";
-import { Avatar, Breadcrumb, Layout, Skeleton, theme } from "antd";
-import { Flex, Rate, Tabs } from "antd";
+import React, {useEffect, useState} from "react";
+import {Avatar, Breadcrumb, Flex, Layout, Rate, Skeleton, Tabs, theme} from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import { useGetItemDetailQuery, useGetSimilarItemAuctionQuery } from "@/services/item.service.js";
-import { useParams,  useNavigate } from "react-router-dom";
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { useGetSellerInformationByAuctionIdQuery } from "../../services/sellerinformation.service.js";
-import { useGetHighestBidQuery, useGetWinBidQuery } from "@/services/bid.service.js";
-import {  selectCurrentUserAPI, selectIsLoggedIn } from "@/redux/auth/authSlice.js";
+import {useGetItemDetailQuery, useGetSimilarItemAuctionQuery} from "@/services/item.service.js";
+import {useNavigate, useParams} from "react-router-dom";
+import {useSelector} from 'react-redux';
+import {useGetSellerInformationByAuctionIdQuery} from "../../services/sellerinformation.service.js";
+import {useGetHighestBidQuery, useGetWinBidQuery} from "@/services/bid.service.js";
+import {selectCurrentUserAPI, selectIsLoggedIn} from "@/redux/auth/authSlice.js";
 import FeedBack from "@/components/FeedBack.jsx";
 import SliderItem from "@/components/SlilerItem/index.jsx";
 
