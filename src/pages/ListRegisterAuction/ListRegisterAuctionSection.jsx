@@ -1,18 +1,20 @@
-import {Img, InputDH} from "../../components/index.jsx";
-import {Button, Card, Typography, Select, Option} from "@material-tailwind/react";
-import {Tag, Badge, Descriptions, Modal, Skeleton, Empty, Divider, Table} from "antd";
-import {CheckCircleOutlined, CloseCircleOutlined} from "@ant-design/icons";
+import { Img, InputDH } from "../../components/index.jsx";
+import { Button, Card, Typography, Select, Option } from "@material-tailwind/react";
+import { Tag, Badge, Descriptions, Modal, Skeleton, Empty, Divider, Table, Spin } from "antd";
+import { CheckCircleOutlined, CloseCircleOutlined, LoadingOutlined  } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
-import React, {useState} from 'react';
-import {useGetAuctionRegisterQuery, useGetAuctionRegisterDetailQuery} from "@/services/auctionRegistrations.service.js";
-import {useGetAllBidsQuery} from "@/services/bid.service.js";
+import React, { useState, useEffect, useMemo, useRef  } from 'react';
+import { useGetAuctionRegisterQuery, useGetAuctionRegisterDetailQuery } from "@/services/auctionRegistrations.service.js";
+import { useGetAllBidsQuery } from "@/services/bid.service.js";
+import dayjs from 'dayjs';
+
 
 const TABLE_HEAD = [
     "ID",
     "Hình ảnh",
     "Sản phẩm",
-    "Thời gian đấu giá",
     "Trạng thái",
+    "",
     "Người bán",
     "Tiền cọc",
     "Tùy chỉnh"
@@ -24,7 +26,9 @@ export default function ListRegisterAuctionSection() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [page, setPage] = useState(1);
     const [selectedArId, setSelectedArId] = useState(null);
-    const {
+    const [timeLefts, setTimeLefts] = useState({});
+    const intervalRef = useRef(null);   
+     const {
         data = {},
         isLoading: isLoadingAutionRegister,
         isError: isErrorAutionRegister,
@@ -38,7 +42,7 @@ export default function ListRegisterAuctionSection() {
         isLoading: isLoadingAuctionRegisterDetail,
         isError: isErrorAuctionRegisterDetail,
         error: errorAuctionRegisterDetail,
-    } = useGetAuctionRegisterDetailQuery(selectedArId ? {id: selectedArId} : null, {
+    } = useGetAuctionRegisterDetailQuery(selectedArId ? { id: selectedArId } : null, {
         skip: !selectedArId,
     });
 
@@ -53,24 +57,80 @@ export default function ListRegisterAuctionSection() {
         setIsModalOpen(false);
     };
 
-    const {data: historyBid} = useGetAllBidsQuery({
+    const { data: historyBid } = useGetAllBidsQuery({
         auctionId: selectedArId,
         page: 0,
     });
     console.log(historyBid);
     const bidData = historyBid?.data || [];
-    const TABLE_ROWS = data.items?.map((item) => ({
-        number: `${item.ar_id}`,
-        product: item.auctionItem.itemName,
-        image: item.auctionItem.thumbnail,
-        time: item.auctionItem.auction.startDate,
-        status: item.auctionItem.auction.status,
-        sellerHeader: item.auctionItem.auction.created_by,
-        totalHeader: `${item.auctionItem.auction.start_price.toLocaleString('vi-VN')}đ`,
-        action: <Button color="blue" onClick={() => showModal(item.ar_id)}>Chi tiết</Button>,
-        //.toFixed(2)<Button color="blue" onClick={showModal((record.ar_id)}>Chi tiết</Button>
-    })) || [];
-    // console.log("data",data);
+
+
+    const TABLE_ROWS = useMemo(() => {
+        return data.items?.map((item) => {
+            const startDateTime = new Date(`${item.auctionItem.auction.startDate}T${item.auctionItem.auction.start_time}`);
+            const endDateTime = new Date(`${item.auctionItem.auction.endDate}T${item.auctionItem.auction.end_time}`);
+            return {
+                number: `${item.ar_id}`,
+                product: item.auctionItem.itemName,
+                image: item.auctionItem.thumbnail,
+                Starttime: startDateTime,
+                EndTime: endDateTime,
+                status: item.auctionItem.auction.status,
+                sellerHeader: item.auctionItem.auction.created_by,
+                totalHeader: `${item.auctionItem.auction.start_price.toLocaleString('vi-VN')}đ`,
+                action: <Button color="blue" onClick={() => showModal(item.ar_id)}>Chi tiết</Button>
+            };
+        }) || [];
+    }, [data.items]);
+    
+
+
+
+  
+    const startCountdown = () => {
+        const calculateTimeLeft = () => {
+            const now = new Date();
+            const updatedTimeLefts = {};
+
+            TABLE_ROWS.forEach(row => {
+                if (row.status === "OPEN" && row.EndTime) {
+                    const endTime = new Date(row.EndTime);
+                    const timeDiff = Math.max(0, endTime - now);
+
+                    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
+                    const minutes = Math.floor((timeDiff / (1000 * 60)) % 60);
+                    const seconds = Math.floor((timeDiff / 1000) % 60);
+
+                    updatedTimeLefts[row.number] = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                }
+            });
+
+            setTimeLefts(updatedTimeLefts);
+        };
+
+        // Tính toán ngay lập tức
+        calculateTimeLeft();
+
+        // Thiết lập interval
+        intervalRef.current = setInterval(calculateTimeLeft, 1000);
+    };
+
+    // Dọn dẹp khi component unmount
+    const stopCountdown = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+    };
+
+    // Khởi chạy đếm ngược khi component được render
+    React.useLayoutEffect(() => {
+        startCountdown();
+        return () => stopCountdown(); // Cleanup khi component unmount
+    }, [TABLE_ROWS]);
+    
+    
+    
 
     const items = dataAuctionRegisterDetail ? [
         {
@@ -170,72 +230,108 @@ export default function ListRegisterAuctionSection() {
                     <Card className="h-full w-full overflow-auto">
                         {isLoadingAutionRegister ? (
                             <Skeleton loading={isLoadingAutionRegister}
-                                      active avatar={true} title={true} round={true} paragraph={true}
+                                active avatar={true} title={true} round={true} paragraph={true}
                             />
                         ) : isErrorAutionRegister ? (
-                            <Empty/>
+                            <Empty />
                         ) : (
                             <table className="w-full min-w-max table-auto text-left">
                                 <thead>
-                                <tr>
-                                    {TABLE_HEAD.map((head) => (
-                                        <th key={head} className="p-4 pt-10">
-                                            <Typography
-                                                variant="small"
-                                                color="blue-gray"
-                                                className="font-bold leading-none"
-                                            >
-                                                {head}
-                                            </Typography>
-                                        </th>
-                                    ))}
-                                </tr>
+                                    <tr>
+                                        {TABLE_HEAD.map((head) => (
+                                            <th key={head} className="p-4 pt-10">
+                                                <Typography
+                                                    variant="small"
+                                                    color="blue-gray"
+                                                    className="font-bold leading-none"
+                                                >
+                                                    {head}
+                                                </Typography>
+                                            </th>
+                                        ))}
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                {TABLE_ROWS.map((row) => (
-                                    <tr key={row.number}>
-                                        <td className="p-4">
-                                            <Typography variant="small" color="blue-gray" className="font-bold">
-                                                {row.number}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <img src={row.image} alt={row.product}
-                                                 className="w-16 h-16 object-cover rounded"/>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" className="font-normal text-gray-600">
-                                                {row.product}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" className="font-normal text-gray-600">
-                                                {row.time}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            {row.status === "OPEN" ? (
-                                                <Tag icon={<CheckCircleOutlined/>} color="success">Đã đăng kí</Tag>
-                                            ) : (
-                                                <Tag icon={<CloseCircleOutlined/>} color="error">Đã kết thúc</Tag>
-                                            )}
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" className="font-normal text-gray-600">
-                                                {row.sellerHeader}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            <Typography variant="small" className="font-normal text-gray-600">
-                                                {row.totalHeader}
-                                            </Typography>
-                                        </td>
-                                        <td className="p-4">
-                                            {/*<Button color="blue" onClick={showModal}>Chi tiết</Button>*/}
-                                            {row.action}
-                                        </td>
-                                    </tr>
-                                ))}
+                                    {TABLE_ROWS.map((row) => (
+                                        <tr key={row.number}>
+                                            <td className="p-4">
+                                                <Typography variant="small" color="blue-gray" className="font-bold">
+                                                    {row.number}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                <img src={row.image} alt={row.product}
+                                                    className="w-16 h-16 object-cover rounded" />
+                                            </td>
+                                            <td className="p-4">
+                                                <Typography variant="small" className="font-normal text-gray-600">
+                                                    {row.product}
+                                                </Typography>
+                                            </td>
+
+                                            <td className="p-4">
+                                                {row.status === "PENDING" ? (
+                                                    <Tag icon={<CheckCircleOutlined />} color="success">
+                                                        Mở phiên vào
+                                                    </Tag>
+                                                ) : row.status === "OPEN" ? (
+                                                    <Tag
+                                                        icon={<Spin indicator={<LoadingOutlined style={{ fontSize: 14 }} spin />} />}
+                                                        color="processing"
+                                                    >
+                                                        Đang đấu giá
+                                                    </Tag>
+                                                ) : (
+                                                    <Tag icon={<CloseCircleOutlined />} color="error">
+                                                        Đã kết thúc
+                                                    </Tag>
+                                                )}
+                                            </td>
+
+                                            <td className="p-4">
+    <Typography variant="small" className="font-normal text-gray-600">
+        {row.status === "OPEN" ? (
+            <span style={{ color: "#1890ff" }}>
+                {timeLefts[row.number] ? (
+                    timeLefts[row.number] // Hiển thị thời gian đếm ngược
+                ) : (
+                    "Loading..." // Trong khi đợi dữ liệu
+                )}
+            </span>
+        ) : row.status === "PENDING" ? (
+            <span style={{ color: "green" }}>
+                {row.Starttime
+                    ? new Date(row.Starttime).toLocaleString("vi-VN") // Định dạng thời gian bắt đầu
+                    : "N/A"}
+            </span>
+        ) : row.status === "CLOSED" ? (
+            <span style={{ color: "red" }}>
+                {row.EndTime
+                    ? new Date(row.EndTime).toLocaleString("vi-VN") // Định dạng thời gian kết thúc
+                    : "N/A"}
+            </span>
+        ) : null}
+    </Typography>
+</td>
+
+
+
+                                            <td className="p-4">
+                                                <Typography variant="small" className="font-normal text-gray-600">
+                                                    {row.sellerHeader}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                <Typography variant="small" className="font-normal text-gray-600">
+                                                    {row.totalHeader}
+                                                </Typography>
+                                            </td>
+                                            <td className="p-4">
+                                                {/*<Button color="blue" onClick={showModal}>Chi tiết</Button>*/}
+                                                {row.action}
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         )}
@@ -261,9 +357,9 @@ export default function ListRegisterAuctionSection() {
                     <p>Loading details...</p>
                 ) : (
                     <>
-                        <Descriptions layout="vertical" bordered items={items}/>
+                        <Descriptions layout="vertical" bordered items={items} />
 
-                        <Divider/>
+                        <Divider />
 
                         <h3>Danh sách người tham gia</h3>
                         <Table
@@ -309,8 +405,8 @@ export default function ListRegisterAuctionSection() {
                                             }}
                                             className={`transition-all ${status ? 'bg-green-500' : 'bg-red-500'} text-white rounded-full px-3 py-1`}
                                         >
-            {status ? 'Thắng' : 'Thua'}
-        </span>
+                                            {status ? 'Thắng' : 'Thua'}
+                                        </span>
                                     ),
                                 }
 
