@@ -205,14 +205,6 @@ export default function AuctionSection(
 
 
 
-
-
-
-
-
-
-
-
     const [isSealedBidModalOpen, setIsSealedBidModalOpen] = useState(false);
 
     const showSealedBidModal = () => setIsSealedBidModalOpen(true);

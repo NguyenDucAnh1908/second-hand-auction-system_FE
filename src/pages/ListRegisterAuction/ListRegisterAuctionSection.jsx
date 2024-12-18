@@ -7,6 +7,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useGetAuctionRegisterQuery, useGetAuctionRegisterDetailQuery } from "@/services/auctionRegistrations.service.js";
 import { useGetAllBidsQuery } from "@/services/bid.service.js";
 import dayjs from 'dayjs';
+import { useNavigate } from "react-router-dom";
 
 
 const TABLE_HEAD = [
@@ -14,10 +15,11 @@ const TABLE_HEAD = [
     "Hình ảnh",
     "Sản phẩm",
     "Trạng thái",
-    "",
+    "Thời gian",
     "Người bán",
     "Tiền cọc",
-    "Tùy chỉnh"
+    "Thông tin",
+    "Xem trực tiếp"
 ];
 
 
@@ -51,7 +53,7 @@ export default function ListRegisterAuctionSection() {
         setSelectedArId(ar_id);
         setIsModalOpen(true);
         setAuctionId1(auction_id);
-        setBidData([]); 
+        setBidData([]);
     };
     const handleOk = () => {
         setIsModalOpen(false);
@@ -59,7 +61,7 @@ export default function ListRegisterAuctionSection() {
 
     const handleCancel = () => {
         setIsModalOpen(false);
-        setBidData([]); 
+        setBidData([]);
         window.location.reload();
     };
 
@@ -75,7 +77,7 @@ export default function ListRegisterAuctionSection() {
         if (historyBid?.data) {
             setBidData(historyBid.data);
         } else {
-            setBidData([]); 
+            setBidData([]);
         }
     }, [historyBid?.data]);
 
@@ -83,9 +85,9 @@ export default function ListRegisterAuctionSection() {
         if (isModalOpen && historyBid?.data) {
             setBidData(historyBid.data);
         } else if (isModalOpen) {
-            setBidData([]); 
+            setBidData([]);
         }
-    }, [historyBid?.data, isModalOpen]); 
+    }, [historyBid?.data, isModalOpen]);
 
 
     const TABLE_ROWS = useMemo(() => {
@@ -102,12 +104,20 @@ export default function ListRegisterAuctionSection() {
                 sellerHeader: item.auctionItem.auction.created_by,
                 totalHeader: `${item.auctionItem.auction.start_price.toLocaleString('vi-VN')}đ`,
                 action: <Button color="blue" onClick={() => showModal(item.ar_id, item.auctionItem.auction.auction_id)}   >
-                    Chi tiết </Button>
+                    Chi tiết </Button>,
+                action2: <Button color="blue" onClick={() => handleButtonClick(item.auctionItem.itemId)}   >
+                    Mở </Button>
             };
         }) || [];
     }, [data.items]);
 
 
+    const navigate = useNavigate();
+
+    const handleButtonClick = (itemId) => {
+        window.open(`/Auction/${itemId}`, '_blank');
+        window.scrollTo(0, 0); // Cuộn trang về đầu trang
+    };
 
 
 
@@ -353,6 +363,10 @@ export default function ListRegisterAuctionSection() {
                                             <td className="p-4">
                                                 {/*<Button color="blue" onClick={showModal}>Chi tiết</Button>*/}
                                                 {row.action}
+                                            </td>
+                                            <td className="p-4">
+                                                {/*<Button color="blue" onClick={showModal}>Chi tiết</Button>*/}
+                                                {row.action2}
                                             </td>
                                         </tr>
                                     ))}

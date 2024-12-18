@@ -26,38 +26,82 @@ export default function BidForm(
             currency: 'VND'
         }).format(value);
     };
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         const createAuctionBid = await createBid({
+    //             bidAmount: Number(maxBid),
+    //             auctionId: selectedAuctionId
+    //         }).unwrap();
+
+    //         message.success(createAuctionBid?.message);
+    //         setMaxBid("");
+    //         isRefetchWinningBid();
+    //         isRefetchHighestBid();
+    //         isRefetchBidIf();
+    //         cancelModel();
+    //     } catch (error) {
+    //         // Log chi tiết lỗi
+    //         console.error("Error response:", error);
+        
+    //         // Xử lý lỗi chi tiết
+    //         if (error.data?.status === 'BAD_REQUEST') {
+    //             if (error.data?.message.includes('insufficient')) {
+    //                 message.warning('Số dư ví của bạn không đủ để đặt giá. Vui lòng nạp thêm tiền.');
+    //             } else {
+    //                 message.warning(error.data?.message || 'Yêu cầu không hợp lệ. Vui lòng kiểm tra lại.');
+    //             }
+    //         } else if (error.data?.message) {
+    //             message.warning(error.data.message); // Hiển thị lỗi từ backend
+    //         } else {
+    //             message.warning('Đã xảy ra lỗi không xác định. Vui lòng thử lại!');
+    //         }
+    //     }
+        
+    // };
+    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const createAuctionBid = await createBid({
+            const createAuctionBidResponse = await createBid({
                 bidAmount: Number(maxBid),
                 auctionId: selectedAuctionId
             }).unwrap();
-
-            message.success(createAuctionBid?.message);
+            
+            console.log('Response từ backend:', createAuctionBidResponse); // Debug dữ liệu từ backend
+    
+            if (createAuctionBidResponse?.message) {
+                message.success(createAuctionBidResponse.message);
+            } else {
+                console.error('Backend không trả về message hoặc message không hợp lệ.');
+                message.error('Không thể xử lý thông tin trả về.');
+            }
+    
             setMaxBid("");
             isRefetchWinningBid();
             isRefetchHighestBid();
             isRefetchBidIf();
             cancelModel();
         } catch (error) {
-            // Log chi tiết lỗi
             console.error("Error response:", error);
-        
-            // Xử lý lỗi chi tiết
-            if (error.data?.status === 'BAD_REQUEST') {
-                if (error.data?.message.includes('insufficient')) {
-                    message.warning('Số dư ví của bạn không đủ để đặt giá. Vui lòng nạp thêm tiền.');
+    
+            // Log lỗi đầy đủ nếu backend trả về lỗi
+            if (error?.data) {
+                console.error('Error data từ backend:', error.data);
+                if (error.data?.status === 'BAD_REQUEST') {
+                    if (error.data?.message.includes('insufficient')) {
+                        message.warning('Số dư ví của bạn không đủ để đặt giá. Vui lòng nạp thêm tiền.');
+                    } else {
+                        message.warning(error.data?.message || 'Yêu cầu không hợp lệ. Vui lòng kiểm tra lại.');
+                    }
                 } else {
-                    message.warning(error.data?.message || 'Yêu cầu không hợp lệ. Vui lòng kiểm tra lại.');
+                    message.error(error.data?.message || 'Đã xảy ra lỗi không xác định.');
                 }
-            } else if (error.data?.message) {
-                message.warning(error.data.message); // Hiển thị lỗi từ backend
             } else {
-                message.warning('Đã xảy ra lỗi không xác định. Vui lòng thử lại!');
+                message.error('Đã xảy ra lỗi không xác định.');
             }
         }
-        
     };
     
     
