@@ -48,6 +48,7 @@ function RegisterProductPage() {
     const [fileList, setFileList] = useState([]);
     const [itemName, setItemName] = useState("");
     const [priceBuyNow, setPriceBuyNow] = useState(0);
+    const [priceStepItem, setPriceStepItem] = useState(0);
     const [itemDescription, setItemDescription] = useState("");
     const [itemCondition, setItemCondition] = useState("NEW");
     const [imgItem, setImgItem] = useState([]);
@@ -64,7 +65,8 @@ function RegisterProductPage() {
     const [spinning, setSpinning] = React.useState(false);
     const [percent, setPercent] = React.useState(0);
     const [intervalId, setIntervalId] = React.useState(null);
-    const [priceError, setPriceError] = useState(""); // Quản lý lỗi
+    const [priceError, setPriceError] = useState("");
+    const [priceStepError, setPriceStepError] = useState("");
 
     const navigate = useNavigate();
     const userRef = useRef();
@@ -141,6 +143,20 @@ function RegisterProductPage() {
         setPriceBuyNow(value);
     };
 
+    const handlePriceStep = (e) => {
+        const value = e.target.value;
+        if (!/^\d*\.?\d+$/.test(value) || parseFloat(value) <= 0) {
+            setPriceStepError("Giá mua ngay phải là số dương hợp lệ.");
+        }
+        else if (parseFloat(value) > 100000000) {
+            setPriceStepError("Giá mua ngay không được vượt quá 100 triệu.");
+        }
+        else {
+            setPriceStepError("");
+        }
+        setPriceStepItem(value);
+    };
+
 
 
 
@@ -211,6 +227,7 @@ function RegisterProductPage() {
             item_description: itemDescription,
             item_condition: itemCondition,
             price_buy_now: priceBuyNow,
+            price_step_item: priceStepItem,
             img_item: uploadedImages,
             sc_id: scId,
             auction_type: auctionType,
@@ -314,7 +331,7 @@ function RegisterProductPage() {
         },
         {
             key: '2',
-            label: <label className="font-bold">Giá mua ngay</label>,
+            label: <label className="font-bold">Giá mong muốn</label>,
             children: (
                 <Space
                     direction="vertical"
@@ -343,9 +360,40 @@ function RegisterProductPage() {
                 </Space>
             ),
         },
-
         {
             key: '3',
+            label: <label className="font-bold">Bước giá mong muốn</label>,
+            children: (
+                <Space
+                    direction="vertical"
+                    style={{
+                        width: "100%",
+                    }}
+                >
+                    <Input
+                        type="text"
+                        placeholder="Nhập bước giá mong muốn"
+                        value={priceStepItem}
+                        onChange={handlePriceStep}
+                        status={priceStepError ? "error" : ""}
+                        style={{
+                            borderRadius: "8px",
+                            border: priceStepError ? "1px solid red" : "1px solid #ccc",
+                            padding: "10px",
+                        }}
+                        suffix="VND" // Hiển thị "VND" bên phải ô nhập liệu
+                    />
+                    {priceStepError && (
+                        <Text type="danger" style={{ marginTop: "5px" }}>
+                            {priceStepError}
+                        </Text>
+                    )}
+                </Space>
+            ),
+        },
+
+        {
+            key: '4',
             label: <label className="font-bold">Tình trạng</label>,
             children: <div className="w-72 mt-4">
                 <Select
@@ -364,7 +412,7 @@ function RegisterProductPage() {
         },
 
         {
-            key: '4',
+            key: '5',
             label: <label className="font-bold">Loại đấu giá</label>,
             children: <div className="w-72 mt-4">
                 <Select
@@ -391,7 +439,7 @@ function RegisterProductPage() {
             </div>,
         },
         {
-            key: '5',
+            key: '6',
             label: <label className="font-bold">Danh mục</label>,
             // span: 2,
             children: <div className="w-72 mt-4 text-black">
@@ -426,7 +474,7 @@ function RegisterProductPage() {
             </div>,
         },
         {
-            key: '6',
+            key: '7',
             label: <label className="font-bold">Danh mục phụ</label>,
             //span: 3,
             children: <div className="w-72 mt-4">
@@ -449,7 +497,7 @@ function RegisterProductPage() {
             </div>,
         },
         {
-            key: '7',
+            key: '8',
             label: <label className="font-bold">Hình ảnh</label>,
             children: <div
                 className="mr-1.5 mt-2 flex flex-col items-start gap-5 self-stretch rounded-[20px] bg-blue-200 px-[52px] py-[30px] md:mr-0 md:px-5 sm:p-5">
@@ -481,7 +529,7 @@ function RegisterProductPage() {
             span: 4,
         },
         {
-            key: '8',
+            key: '9',
             label: <label className="font-bold">Mô tả sản phẩm</label>,
             children: (
                 <Space
@@ -619,42 +667,34 @@ function RegisterProductPage() {
                                                         Chính sách của hệ thống
                                                     </Heading>
 
-                                                    <div
-                                                        className="mt-2 flex items-center justify-center gap-3 self-stretch md:flex-col">
-                                                        <Checkbox onChange={onChange}>
-                                                            Tôi xác nhận rằng tất cả thông tin, hình ảnh và mô tả
-                                                            sản
-                                                            phẩm mà tôi cung cấp là chính xác, đầy đủ và không gây
-                                                            hiểu
-                                                            nhầm cho người mua. Tôi sẽ chịu trách nhiệm về tính
-                                                            chính
-                                                            xác của thông tin này.
-                                                        </Checkbox>
+                                                    <div className="flex items-center gap-3 mt-2 max-w-4xl mx-auto">
+                                                        <Checkbox onChange={onChange}/>
+                                                        <span className="flex-1">
+        Tôi xác nhận rằng tất cả thông tin, hình ảnh và mô tả sản phẩm mà tôi cung cấp là chính xác, đầy đủ,
+        và không gây hiểu nhầm cho người mua. Tôi đồng ý chịu trách nhiệm về tính chính xác của thông tin này.
+        Vui lòng tham khảo thêm <a href="/Policy"
+                                   className="text-blue-500 hover:underline">Điều khoản dịch vụ</a>.
+    </span>
                                                     </div>
 
-                                                    <div
-                                                        className="mt-2 flex items-center justify-center gap-3 self-stretch md:flex-col">
-                                                        <Checkbox onChange={onChange}>
-                                                            Tôi xác nhận rằng tất cả thông tin, hình ảnh và mô tả
-                                                            sản
-                                                            phẩm mà tôi cung cấp là chính xác, đầy đủ và không gây
-                                                            hiểu
-                                                            nhầm cho người mua. Tôi sẽ chịu trách nhiệm về tính
-                                                            chính
-                                                            xác của thông tin này.
-                                                        </Checkbox>
+                                                    <div className="flex items-center gap-3 mt-2 max-w-4xl mx-auto">
+                                                        <Checkbox onChange={onChange}/>
+                                                        <span className="flex-1">
+        Tôi đồng ý rằng mọi hành vi vi phạm quy định về thông tin sản phẩm hoặc quy trình giao dịch có thể dẫn đến
+        các hình phạt do hệ thống áp dụng. Chi tiết có thể xem tại
+        <a href="/Policy" className="text-blue-500 hover:underline"> Chính sách đăng bán sản phẩm</a>.
+    </span>
                                                     </div>
 
-                                                    <div
-                                                        className="mt-6 flex items-center justify-center gap-3 self-stretch md:flex-col">
-                                                        <Checkbox onChange={onChange}>Tôi cam kết tuân thủ tất cả
-                                                            các quy định và điều khoản
-                                                            mà hệ
-                                                            thống đặt ra, bao gồm nhưng không giới hạn ở quy trình
-                                                            đăng
-                                                            bán, thẩm định sản phẩm và quy trình giao
-                                                            dịch.</Checkbox>
+                                                    <div className="flex items-center gap-3 mt-6 max-w-4xl mx-auto">
+                                                        <Checkbox onChange={onChange}/>
+                                                        <span className="flex-1">
+        Tôi cam kết tuân thủ tất cả các quy định và điều khoản mà hệ thống đặt ra, bao gồm nhưng không giới hạn ở
+        quy trình đăng bán, thẩm định sản phẩm, và quy trình giao dịch.
+        Đọc thêm tại <a href="/Policy" className="text-blue-500 hover:underline">Hướng dẫn sử dụng hệ thống</a>.
+    </span>
                                                     </div>
+
                                                 </div>
                                                 <div className="flex w-[38%] justify-between gap-5 md:w-full">
                                                     <ButtonDH

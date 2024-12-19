@@ -30,19 +30,19 @@ export default function SellerDetailHeader({ ...props }) {
 
 
     const data = [
-        { label: "Sản Phẩm", value: "chưa có", img: "images/san_pham.png" },
-        { label: "Tỉ lệ phản hồi", value: "chưa có", img: "images/ti_le_phan_hoi.png" },
-        { label: "Tỷ lệ shop hủy đơn", value: "chưa có", img: "images/huy_don.png" },
-        { label: "Người theo dõi", value: "chưa có  ", img: "images/nguoi_theo_doi.png" },
+        { label: "Sản Phẩm", value: "14", img: "images/san_pham.png" },
+        { label: "Tỉ lệ phản hồi", value: "98%", img: "images/ti_le_phan_hoi.png" },
+        { label: "Tỷ lệ shop hủy đơn", value: "0%", img: "images/huy_don.png" },
+        { label: "Người theo dõi", value: "12  ", img: "images/nguoi_theo_doi.png" },
         {
             label: "Đánh giá",
             value: `${sellerInforData?.totalStars || 'N/A'} (${sellerInforData?.totalFeedbackCount || '0'} Đánh giá)`,
             img: "images/danh_gia.png"
         },
         {
-            label: "Đánh giá",
+            label: "Ngày tham gia",
             value: `${sellerInforData?.sellerCreateAt?.substring(0,10) || 'N/A'}` ,
-            img: "images/danh_gia.png"
+            img: "images/nguoi_theo_doi.png"
         },
     ];
 

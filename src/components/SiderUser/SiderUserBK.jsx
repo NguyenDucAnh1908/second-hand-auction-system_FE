@@ -135,12 +135,12 @@ export function SiderUserBK() {
                                 </ListItemPrefix>
                                Chờ thanh toán 
                             </ListItem>
-                            <ListItem onClick={() => handleNavigate('/AuctionListCompleted')}>
+                            {/* <ListItem onClick={() => handleNavigate('/AuctionListCompleted')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
                                Hoàn thành
-                            </ListItem>
+                            </ListItem> */}
                         </List>
                     </AccordionBody>
                 </Accordion>

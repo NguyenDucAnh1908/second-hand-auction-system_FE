@@ -48,7 +48,7 @@ import apiGhn from "@/services/apiGhn.service.js";
 // ];
 
 
-const TABLE_HEAD = ["Order ID", "Item", "Status", "Payment Method", "Total Price", "Shipping Type", "Bider", "Note"];
+const TABLE_HEAD = ["Mã đơn hàng", "Sản phẩm", "Trạng thái", "Thanh toán", "Tổng tiền", "Giao hàng", "Người đấu", "Ghi chú"];
 
 export default function StoreOrders() {
     const [size, setSize] = useState();

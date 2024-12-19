@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
-import {ArrowDownTrayIcon, MagnifyingGlassIcon} from "@heroicons/react/24/outline";
-import {Card, CardHeader, Typography, CardBody, Chip, Avatar, Input, Button} from "@material-tailwind/react";
-import {Drawer, Descriptions, Badge, Space, Empty, Skeleton} from 'antd';
+import {Avatar, Button, Card, CardBody, CardHeader, Chip, Typography} from "@material-tailwind/react";
+import {Descriptions, Drawer, Empty, Skeleton, Space} from 'antd';
 import Pagination from "@/components/Pagination/index.jsx";
 import {useGetWithdrawsQuery} from '../../../services/withdrawRequest.Service';
 import {useNavigate} from "react-router-dom";
 
-const TABLE_HEAD = ["Name", "Amount", "Date", "Status", "Account", "Reason", "Detail", ""];
+const TABLE_HEAD = ["Họ và tên", "Số tiền", "Ngày yêu cầu", "Trạng thái", "Số tài khoản", "Lý do", "Chi tiết", ""];
 
 const ManagementWithdrawOfSeller = () => {
     const [open, setOpen] = useState(false);
@@ -85,29 +84,12 @@ const ManagementWithdrawOfSeller = () => {
                 )}
             </Drawer>
 
-            <h1 className="text-3xl font-bold text-center mb-8">Withdrawal Requests Management</h1>
+            <h1 className="text-3xl font-bold text-center mb-8">Đơn rút tiền của shop</h1>
             {withdrawError ? (
                 <Empty/>
             ) : (
                 <Skeleton loading={withdrawLoading} active>
                     <Card className="h-full w-full">
-                        <CardHeader floated={false} shadow={false} className="rounded-none">
-                            <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
-                                <div>
-                                    <Typography variant="h5" color="blue-gray">Recent Transactions</Typography>
-                                    <Typography color="gray" className="mt-1 font-normal">These are details about the
-                                        last transactions</Typography>
-                                </div>
-                                <div className="flex w-full shrink-0 gap-2 md:w-max">
-                                    <div className="w-full md:w-72">
-                                        <Input label="Search" icon={<MagnifyingGlassIcon className="h-5 w-5"/>}/>
-                                    </div>
-                                    <Button variant="gradient" className="flex items-center gap-3" size="sm">
-                                        <ArrowDownTrayIcon strokeWidth={2} className="h-4 w-4"/> Download
-                                    </Button>
-                                </div>
-                            </div>
-                        </CardHeader>
                         <CardBody className="overflow-scroll px-0">
                             <table className="w-full min-w-max table-auto text-left">
                                 <thead>
@@ -164,7 +146,7 @@ const ManagementWithdrawOfSeller = () => {
                                             </td>
                                             <td className={classes}>
                                                 <Typography variant="small" color="blue-gray"
-                                                            className="font-normal capitalize">{bankAccount}</Typography>
+                                                            className="font-normal capitalize">{accountNumber}</Typography>
                                             </td>
                                             <td className={classes}>
                                                 <Typography variant="small" color="blue-gray"
