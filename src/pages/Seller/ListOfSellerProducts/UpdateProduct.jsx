@@ -88,6 +88,15 @@ export default function UpdateProduct() {
         refetch: refetchImage
     } = useGetImageItemsQuery({id});
 
+    console.log("itemImage", itemImage)
+
+    const convertImagesToFileList = (images) =>
+        images.map((img) => ({
+            uid: img.idImage,
+            name: `Image-${img.idImage}`,
+            status: 'done',
+            url: img.image,
+        }));
     React.useEffect(() => {
         if (itemImage) {
             const initialFileList = convertImagesToFileList(itemImage);
@@ -217,9 +226,9 @@ export default function UpdateProduct() {
         return <div>Error fetching auction data</div>;
     }
 
-    if (!data) {
-        return <div>No data available for this product</div>;
-    }
+    // if (!data) {
+    //     return <div>No data available for this product</div>;
+    // }
 
     const items = [
         {
@@ -446,13 +455,6 @@ export default function UpdateProduct() {
         }
     };
 
-    const convertImagesToFileList = (images) =>
-        images.map((img) => ({
-            uid: img.idImage,
-            name: `Image-${img.idImage}`,
-            status: 'done',
-            url: img.image,
-        }));
 
     const handleBeforeUpload = (file) => {
         if (fileList.length >= 5) {
