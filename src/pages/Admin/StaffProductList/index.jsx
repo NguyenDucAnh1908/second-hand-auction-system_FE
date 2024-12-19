@@ -121,7 +121,7 @@ export default function StaffProductListPage() {
             setIsModalOpen(false); // Đảm bảo luôn đóng modal
         }
     };
-    
+
 
 
 
@@ -150,6 +150,18 @@ export default function StaffProductListPage() {
 
 
                         onFinish={async (values) => {
+
+
+                            // Kiểm tra điều kiện ngày
+                            const startDate = dayjs(values.startDate);
+                            const endDate = dayjs(values.endDate);
+
+                            if (startDate.isAfter(endDate)) {
+                                message.error("Ngày bắt đầu không được sau ngày kết thúc!");
+                                return; // Dừng lại nếu điều kiện không hợp lệ
+                            }
+
+
                             try {
                                 const updatedData = {
                                     ...selectedAuction,
@@ -175,7 +187,7 @@ export default function StaffProductListPage() {
                                 setTimeout(() => {
                                     window.location.reload(); // Reload after 2 seconds
                                 }, 2000); // Delay in milliseconds
-                                
+
                             } catch (error) {
                                 console.error("Lỗi trong quá trình gửi request: ", error);
                                 message.error("Cập nhật thất bại!");
