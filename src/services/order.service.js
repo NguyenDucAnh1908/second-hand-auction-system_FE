@@ -63,6 +63,13 @@ export const orderApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
             }),
         }),
+
+        getOrderByMonth: builder.query({
+            query: () => ({
+                url: '/orders/getTotalMoneyByMonth',
+                method: 'GET',
+            }),
+        }),
     }),
 });
 
@@ -75,5 +82,6 @@ export const {
     useGetOrderSellerQuery,
     useGetOrderDetailQuery,
     useGetOrderUserByMonthQuery,
+    useGetOrderByMonthQuery,
 } = orderApiSlice;
  

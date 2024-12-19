@@ -1,88 +1,65 @@
-import React from 'react';
-import BarChart from '../../charts/BarChart01';
-import { useGetOrderUserByMonthQuery } from "@/services/order.service.js";
-// Import utilities
+import React, { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useGetOrderByMonthQuery } from '@/services/order.service.js';
 import { tailwindConfig } from '../../utils/Utils';
 
 function DashboardCard04() {
-  // Function to format currency in VNĐ
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(value);
-  };
+    // Function to format currency in VNĐ
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        }).format(value).replace('₫', ' VNĐ'); // Thay đổi ký hiệu ₫ thành VNĐ
+    };
 
-  // Fetch data from API
-  const { data, isLoading, isError } = useGetOrderUserByMonthQuery();
-  console.log("Data",data)
-  // Check if the data is loading or there is an error
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading data</div>;
+    const [dataResults, setDataResults] = useState([]);
 
-  // Assuming that the `data` is an object with labels and two sets of data: 'chuaThanhToan' and 'thanhToan'
-  const chartData = {
-    labels: data.labels || [],  // Ensure labels are from the API response
-    datasets: [
-      {
-        label: 'Chưa thanh toán (VNĐ)',
-        data: data.chuaThanhToan || [],  // 'chuaThanhToan' should be an array of amounts
-        backgroundColor: tailwindConfig().theme.colors.sky[500],
-        hoverBackgroundColor: tailwindConfig().theme.colors.sky[600],
-        barPercentage: 0.7,
-        categoryPercentage: 0.7,
-        borderRadius: 4,
-      },
-      {
-        label: 'Thanh toán (VNĐ)',
-        data: data.thanhToan || [],  // 'thanhToan' should be an array of amounts
-        backgroundColor: tailwindConfig().theme.colors.violet[500],
-        hoverBackgroundColor: tailwindConfig().theme.colors.violet[600],
-        barPercentage: 0.7,
-        categoryPercentage: 0.7,
-        borderRadius: 4,
-      },
-    ],
-  };
+    const { data } = useGetOrderByMonthQuery();
 
-  // Options for the bar chart
-  const chartOptions = {
-    plugins: {
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            let label = context.dataset.label || '';
-            if (label) {
-              label += ': ';
-            }
-            if (context.raw !== null) {
-              label += formatCurrency(context.raw);
-            }
-            return label;
-          },
-        },
-      },
-    },
-    scales: {
-      y: {
-        ticks: {
-          callback: function (value) {
-            return formatCurrency(value);
-          },
-        },
-      },
-    },
-  };
+    useEffect(() => {
+        if (data?.data) {
+            // Chắc chắn rằng dữ liệu trả về là hợp lệ
+            setDataResults(data.data);
+        }
+    }, [data]);
 
-  return (
-      <div className="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
-        <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
-          <h2 className="font-semibold text-gray-800 dark:text-gray-100">Số order</h2>
-        </header>
-        {/* Chart built with Chart.js 3 */}
-        <BarChart data={chartData} options={chartOptions} width={595} height={248} />
-      </div>
-  );
+    // Kiểm tra dữ liệu trả về từ API
+    console.log('Data res', dataResults);
+
+    // Tạo một danh sách tháng từ 1 đến 12
+    const allMonths = Array.from({ length: 12 }, (_, index) => index + 1);
+
+    // Tạo dữ liệu cho biểu đồ, với mỗi tháng có giá trị 0 nếu không có dữ liệu
+    const chartData = allMonths.map((month) => {
+        const monthData = dataResults.find(item => item.month === month);
+        return {
+            month: `Tháng ${month}`,
+            totalAmount: monthData ? monthData.totalAmount : 0, // Nếu không có dữ liệu cho tháng này, set là 0
+        };
+    });
+
+    return (
+        <div className="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
+            <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
+                <h2 className="font-semibold text-gray-800 dark:text-gray-100">Số order</h2>
+            </header>
+            {/* Recharts BarChart */}
+            <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis
+                        tickFormatter={(value) => formatCurrency(value)}
+                        tick={{ fontSize: 12 }} // Giảm kích thước chữ trục Y nếu cần thiết
+                        width={140} // Tăng chiều rộng của trục Y để không bị cắt
+                    />
+                    <Tooltip formatter={(value) => formatCurrency(value)} />
+                    <Legend />
+                    <Bar dataKey="totalAmount" fill={tailwindConfig().theme.colors.violet[500]} />
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    );
 }
 
 export default DashboardCard04;

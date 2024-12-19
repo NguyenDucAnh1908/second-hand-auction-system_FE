@@ -320,219 +320,189 @@ function RegisterProductPage() {
         {
             key: '1',
             label: <label className="font-bold">Tên sản phẩm</label>,
-            children:
-                <Space
-                    direction="vertical"
-                    style={{
-                        width: '100%',
-                    }}
-                >
+            children: (
+                <div className="w-full space-y-4">
                     <Input
-                        //type="text"
                         placeholder="Nhập tên sản phẩm"
                         value={itemName}
                         onChange={handleItemNameChange}
-                        status={itemNameError ? "error" : ""}
-                        style={{
-                            borderRadius: '8px',
-                            border: itemNameError ? '1px solid red' : '1px solid #ccc',
-                            padding: '10px',
-                        }}
+                        status={itemNameError ? 'error' : ''}
+                        className={`rounded-md border p-3 w-full ${itemNameError ? 'border-red-500' : 'border-gray-300'}`}
                     />
                     {itemNameError && (
-                        <Text type="danger">{itemNameError}</Text>
+                        <Text type="danger" className="text-red-500">{itemNameError}</Text>
                     )}
-                </Space>
-            ,
+                </div>
+            ),
         },
         {
             key: '2',
             label: <label className="font-bold">Giá mong muốn</label>,
             children: (
-                <Space
-                    direction="vertical"
-                    style={{
-                        width: "100%",
-                    }}
-                >
+                <div className="w-full space-y-4">
                     <Input
                         type="text"
                         placeholder="Nhập giá mua ngay"
                         value={priceBuyNow}
                         onChange={handlePriceChange}
-                        status={priceError ? "error" : ""}
-                        style={{
-                            borderRadius: "8px",
-                            border: priceError ? "1px solid red" : "1px solid #ccc",
-                            padding: "10px",
-                        }}
-                        suffix="VND" // Hiển thị "VND" bên phải ô nhập liệu
+                        status={priceError ? 'error' : ''}
+                        className={`rounded-md border p-3 w-full ${priceError ? 'border-red-500' : 'border-gray-300'}`}
+                        suffix="VND"
                     />
                     {priceError && (
-                        <Text type="danger" style={{ marginTop: "5px" }}>
-                            {priceError}
-                        </Text>
+                        <Text type="danger" className="text-red-500">{priceError}</Text>
                     )}
-                </Space>
+                </div>
             ),
         },
         {
             key: '3',
             label: <label className="font-bold">Bước giá mong muốn</label>,
             children: (
-                <Space
-                    direction="vertical"
-                    style={{
-                        width: "100%",
-                    }}
-                >
+                <div className="w-full space-y-4">
                     <Input
                         type="text"
                         placeholder="Nhập bước giá mong muốn"
                         value={priceStepItem}
                         onChange={handlePriceStep}
-                        status={priceStepError ? "error" : ""}
-                        style={{
-                            borderRadius: "8px",
-                            border: priceStepError ? "1px solid red" : "1px solid #ccc",
-                            padding: "10px",
-                        }}
-                        suffix="VND" // Hiển thị "VND" bên phải ô nhập liệu
+                        status={priceStepError ? 'error' : ''}
+                        className={`rounded-md border p-3 w-full ${priceStepError ? 'border-red-500' : 'border-gray-300'}`}
+                        suffix="VND"
                     />
                     {priceStepError && (
-                        <Text type="danger" style={{ marginTop: "5px" }}>
-                            {priceStepError}
-                        </Text>
+                        <Text type="danger" className="text-red-500">{priceStepError}</Text>
                     )}
-                </Space>
+                </div>
             ),
         },
-
         {
             key: '4',
             label: <label className="font-bold">Tình trạng</label>,
-            children: <div className="w-72 mt-4">
-                <Select
-                    label="Tình trạng"
-                    value={itemCondition} // Truyền giá trị mặc định từ state
-                    onChange={(value) => setItemCondition(value)} // Cập nhật state khi thay đổi
-                >
-
-                    {/*<Option value="DAMAGED">Hư hỏng</Option>*/}
-                    <Option value="LIKE_NEW">Như mới</Option>
-                    <Option value="USED_GOOD">Đã qua sử dụng - Tốt</Option>
-                    <Option value="USED_FAIR">Đã qua sử dụng - Khá</Option>
-                    <Option value="REFURBISHED">Tân trang</Option>
-                </Select>
-            </div>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={itemCondition}
+                        onChange={(value) => setItemCondition(value)}
+                        className="w-full"
+                    >
+                        <Option value="LIKE_NEW">Như mới</Option>
+                        <Option value="USED_GOOD">Đã qua sử dụng - Tốt</Option>
+                        <Option value="USED_FAIR">Đã qua sử dụng - Khá</Option>
+                        <Option value="REFURBISHED">Tân trang</Option>
+                    </Select>
+                </div>
+            ),
         },
-
         {
             key: '5',
             label: <label className="font-bold">Loại đấu giá</label>,
-            children: <div className="w-72 mt-4">
-                <Select
-                    label="Loại"
-                    value={auctionType}
-                    onChange={handleAuctionTypeChange}
-                >
-                    {isloadingAuctionType ? (
-                        <Option disabled>
-                            <Spin/> {/* Spinner shown while loading */}
-                        </Option>
-                    ) : errorAuctionType ? (
-                        <Option disabled>Error loading
-                            types</Option>
-                    ) : (
-                        auctionTypes?.map((type) => (
-                            <Option key={type.act_id}
-                                    value={type.act_id}>
-                                {type.auction_typeName}
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={auctionType}
+                        onChange={handleAuctionTypeChange}
+                        className="w-full"
+                    >
+                        {isloadingAuctionType ? (
+                            <Option disabled>
+                                <Spin />
                             </Option>
-                        ))
-                    )}
-                </Select>
-            </div>,
+                        ) : errorAuctionType ? (
+                            <Option disabled>Error loading types</Option>
+                        ) : (
+                            auctionTypes?.map((type) => (
+                                <Option key={type.act_id} value={type.act_id}>
+                                    {type.auction_typeName}
+                                </Option>
+                            ))
+                        )}
+                    </Select>
+                </div>
+            ),
         },
         {
             key: '6',
             label: <label className="font-bold">Danh mục</label>,
-            // span: 2,
-            children: <div className="w-72 mt-4 text-black">
-                <Select
-                    value={selectedCategory || undefined}
-                    onChange={(value) => {
-                        //console.log("Selected Category ID:", value); // Kiểm tra giá trị đã chọn
-                        setSelectedCategory(value);
-                        setSelectedSubCategory(null);
-                    }}
-                    placeholder="Chọn danh mục"
-                    loading={isloadingCategories}
-                    style={{width: "100%"}}
-                >
-                    {isloadingCategories ? (
-                        <Select.Option disabled>
-                            <Spin/>
-                        </Select.Option>
-                    ) : errorCategories ? (
-                        <Select.Option disabled>Error loading
-                            categories</Select.Option>
-                    ) : (
-                        categories?.map((category) => (
-                            <Select.Option
-                                key={category.categoryId}
-                                value={category.categoryId}>
-                                {category.categoryName}
-                            </Select.Option>
-                        ))
-                    )}
-                </Select>
-            </div>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={selectedCategory || undefined}
+                        onChange={(value) => {
+                            setSelectedCategory(value);
+                            setSelectedSubCategory(null);
+                        }}
+                        placeholder="Chọn danh mục"
+                        loading={isloadingCategories}
+                        className="w-full"
+                    >
+                        {isloadingCategories ? (
+                            <Option disabled>
+                                <Spin />
+                            </Option>
+                        ) : errorCategories ? (
+                            <Option disabled>Error loading categories</Option>
+                        ) : (
+                            categories?.map((category) => (
+                                <Option key={category.categoryId} value={category.categoryId}>
+                                    {category.categoryName}
+                                </Option>
+                            ))
+                        )}
+                    </Select>
+                </div>
+            ),
         },
         {
             key: '7',
             label: <label className="font-bold">Danh mục phụ</label>,
-            //span: 3,
-            children: <div className="w-72 mt-4">
-                <Select
-                    value={selectedSubCategory || undefined} // Gán giá trị mặc định nếu có
-                    onChange={(value) => {
-                        setSelectedSubCategory(value);
-                    }}
-                    placeholder="Chọn danh mục phụ"
-                    disabled={!selectedCategory} // Vô hiệu hóa nếu không có danh mục nào được chọn
-                    style={{width: "100%"}}
-                >
-                    {filteredSubCategories.map((subCategory) => (
-                        <Option key={subCategory.scId}
-                                value={subCategory.scId}>
-                            {subCategory.sub_category}
-                        </Option>
-                    ))}
-                </Select>
-            </div>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={selectedSubCategory || undefined}
+                        onChange={(value) => setSelectedSubCategory(value)}
+                        placeholder="Chọn danh mục phụ"
+                        disabled={!selectedCategory}
+                        className="w-full"
+                    >
+                        {filteredSubCategories.map((subCategory) => (
+                            <Option key={subCategory.scId} value={subCategory.scId}>
+                                {subCategory.sub_category}
+                            </Option>
+                        ))}
+                    </Select>
+                </div>
+            ),
         },
         {
             key: '8',
             label: <label className="font-bold">Upload File</label>,
-            children: <div
-                className="mr-1.5 mt-2 flex flex-col items-start gap-5 self-stretch rounded-[20px] bg-blue-200 px-[52px] py-[30px] md:mr-0 md:px-5 sm:p-5">
-                <>
+            children: (
+                <div className="w-72 mt-4">
                     <input
                         type="file"
                         onChange={handleFileItemChange}
+                        id="upload-file"
+                        className="hidden"
                     />
-
-                </>
-            </div>,
-            span: 4,
+                    {!itemDocument && (
+                        <label htmlFor="upload-file" className="cursor-pointer bg-indigo-500 text-white py-2 px-6 rounded-[10px] hover:bg-indigo-600 transition duration-300">
+                            Chọn file
+                        </label>
+                    )}
+                    {itemDocument && (
+                        <div className="mt-2 text-gray-800">
+                            <strong>Tên file: </strong>{itemDocument}
+                        </div>
+                    )}
+                </div>
+            ),
+            // span: 2,
         },
         {
             key: '9',
             label: <label className="font-bold">Hình ảnh</label>,
-            children: <div
-                className="mr-1.5 mt-2 flex flex-col items-start gap-5 self-stretch rounded-[20px] bg-blue-200 px-[52px] py-[30px] md:mr-0 md:px-5 sm:p-5">
-                <>
+            children: (
+                <div className="w-72 mt-4">
                     <Upload
                         action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                         listType="picture-card"
@@ -555,74 +525,44 @@ function RegisterProductPage() {
                             src={previewImage}
                         />
                     )}
-                </>
-            </div>,
+                </div>
+            ),
             span: 4,
         },
+
         {
             key: '10',
             label: <label className="font-bold">Mô tả sản phẩm</label>,
             children: (
-                <Space
-                    direction="vertical"
-                    style={{
-                        width: "100%",
-                        marginBottom: "20px", // Khoảng cách giữa 2 form
-                    }}
-                >
-                    <div style={{ display: 'flex', width: '100%' }}>
-                        {/* Form mô tả sản phẩm */}
-                        <div style={{ width: '80%', marginRight: '10px' }}>
+                <div className="w-full space-y-4">
+                    <div className="flex w-full space-x-4">
+                        <div className="w-4/5">
                             <TextEditor
                                 value={itemDescription}
                                 placeholder="Gợi ý: Xuất xứ, Màu sắc, Kích thước, Tình trạng sản phẩm..."
-                                onChange={handleDescriptionChange} // Khi thay đổi, sẽ gọi hàm xử lý
-                                style={{
-                                    height: "200px", // Tăng chiều cao của TextEditor
-                                    fontSize: "16px", // Kích thước chữ lớn hơn
-                                    border: "1px solid #ccc", // Viền nhẹ cho TextEditor
-                                    borderRadius: "8px", // Bo tròn góc
-                                    padding: "10px", // Padding cho TextEditor
-                                }}
+                                onChange={handleDescriptionChange}
+                                className="h-48 border border-gray-300 rounded-lg p-3 text-base"
                             />
                             {descriptionError && (
-                                <Text type="danger" style={{ marginTop: "5px" }}>
+                                <Text type="danger" className="text-red-500 mt-2">
                                     {descriptionError}
                                 </Text>
                             )}
                         </div>
-
-                        {/* Form Gợi ý */}
-                        <div style={{ width: '20%', height: 'auto' }}>
+                        <div className="w-1/5 h-auto">
                             <TextArea
                                 value={`✅ Xuất xứ\n✅ Màu sắc\n✅ Kích thước\n✅ Chất liệu \n✅ Thương hiệu...`}
                                 disabled
-                                rows={6} // Bạn có thể tăng số dòng hiển thị nếu cần
-                                style={{
-                                    borderRadius: "8px", // Bo tròn góc cho input
-                                    padding: "8px 12px", // Điều chỉnh padding cho input
-                                    border: "1px solid #ccc", // Viền nhẹ, dễ nhìn
-                                    backgroundColor: "#f5f5f5", // Nền nhạt, dễ nhìn
-                                    fontSize: "14px", // Kích thước chữ
-                                    color: "#555", // Màu chữ tối để dễ đọc
-                                    fontWeight: "500", // Độ đậm của chữ
-                                    lineHeight: "1.5", // Khoảng cách giữa các dòng
-                                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)", // Tạo bóng mờ nhẹ cho input
-                                    width: '100%', // Đảm bảo input chiếm toàn bộ chiều rộng của 20%
-                                    height: '180px', // Điều chỉnh chiều cao mong muốn
-                                }}
+                                rows={6}
+                                className="border border-gray-300 rounded-lg p-3 bg-gray-100 text-gray-500"
                             />
                         </div>
-
-
                     </div>
-                </Space>
+                </div>
             ),
-        }
-
-
-
+        },
     ];
+
 
 
     return (
