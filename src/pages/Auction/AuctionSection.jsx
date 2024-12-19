@@ -31,6 +31,7 @@ export default function AuctionSection(
     const [showMessage, setShowMessage] = useState(false);
 
     // const isLoggedIn = useSelector(selectIsLoggedIn);
+    //console.log("dataItem", dataItem?.auction?.auction_id)
     const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
     const auctionEndTime = dataItem.auction?.end_time || null;
@@ -40,7 +41,7 @@ export default function AuctionSection(
     const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
 
     const auctionTypeName = dataItem.auctionType?.auction_typeName;
-    console.log(auctionTypeName);
+    //console.log(auctionTypeName);
     const now = new Date().getTime();
     const [isAuctionStarted, setIsAuctionStarted] = useState(false);
     useEffect(() => {
@@ -166,7 +167,7 @@ export default function AuctionSection(
             message.error("Giá mua ngay không hợp lệ!", 3);
             return;
         }
-
+        //console.log("dataItem", dataItem)
         if (!auction_id) {
             message.error("ID phiên đấu giá không hợp lệ!", 3);
             return;
@@ -185,10 +186,10 @@ export default function AuctionSection(
                 bidAmount: dataItem?.auction?.buy_now_price
             }).unwrap();
 
-            console.log("Phản hồi từ API:", response);
+            //console.log("Phản hồi từ API:", response);
 
             if (response.status === 'OK') {
-                console.log("Tạo bid thành công:", response);
+                //console.log("Tạo bid thành công:", response);
                 message.success("Đặt giá mua ngay thành công!", 3);
             } else {
                 console.error("Lỗi khi tạo bid:", response);
@@ -196,7 +197,8 @@ export default function AuctionSection(
                 message.error(errorMessage, 3);
             }
         } catch (error) {
-            const errorMessage = error.response?.data?.message;
+            const errorMessage = error.data.message;
+            //console.log("errorMessage",errorMessage)
             message.error(errorMessage, 3);
         } finally {
             setIsLoading(false);
@@ -211,7 +213,7 @@ export default function AuctionSection(
     const handleSealedBidModalCancel = () => setIsSealedBidModalOpen(false);
 
     const showModal2 = () => {
-        console.log("showModal called");
+        //console.log("showModal called");
         setIsSealedBidModalOpen(true);
     };
 

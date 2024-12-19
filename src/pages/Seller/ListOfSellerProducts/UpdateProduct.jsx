@@ -68,8 +68,8 @@ export default function UpdateProduct() {
         auction_type: data?.auctionType?.act_id || "",
     });
 
-console.log("updatedData", updatedData)
-    console.log("data", data)
+//console.log("updatedData", updatedData)
+    //console.log("data", data)
     const {
         data: categories,
         error: categoriesError,
