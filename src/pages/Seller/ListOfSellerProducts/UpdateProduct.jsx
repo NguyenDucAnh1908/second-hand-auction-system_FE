@@ -61,6 +61,7 @@ export default function UpdateProduct() {
         itemName: "",
         itemDescription: "",
         priceBuyNow: "",
+        priceStepItem:"",
         itemCondition: "",
         itemStatus: data?.itemStatus,
         //images: [],
@@ -87,6 +88,15 @@ export default function UpdateProduct() {
         refetch: refetchImage
     } = useGetImageItemsQuery({id});
 
+    console.log("itemImage", itemImage)
+
+    const convertImagesToFileList = (images) =>
+        images.map((img) => ({
+            uid: img.idImage,
+            name: `Image-${img.idImage}`,
+            status: 'done',
+            url: img.image,
+        }));
     React.useEffect(() => {
         if (itemImage) {
             const initialFileList = convertImagesToFileList(itemImage);
@@ -101,6 +111,7 @@ export default function UpdateProduct() {
                 itemDescription: data?.itemDescription || "",
                 priceBuyNow: data?.priceBuyNow || "",
                 itemCondition: data?.itemCondition || "",
+                priceStepItem: data?.priceStepItem || "",
                 //itemStatus: data?.itemStatus || "",
                 sub_category: data?.scId?.sub_category_id || 0,
                 auction_type: data?.auctionType?.act_id || "",
@@ -147,6 +158,7 @@ export default function UpdateProduct() {
             itemDescription,
             itemCondition,
             priceBuyNow,
+            priceStepItem,
             sc_id,
             auctionType,
         } = updatedData;
@@ -159,6 +171,7 @@ export default function UpdateProduct() {
             item_description: itemDescription,
             item_condition: itemCondition,
             price_buy_now: parsedPrice,
+            price_step_item: priceStepItem,
             sc_id: sc_id || 0, // Đảm bảo sc_id luôn có giá trị mặc định
             auction_type: auctionType,
         };
@@ -213,9 +226,9 @@ export default function UpdateProduct() {
         return <div>Error fetching auction data</div>;
     }
 
-    if (!data) {
-        return <div>No data available for this product</div>;
-    }
+    // if (!data) {
+    //     return <div>No data available for this product</div>;
+    // }
 
     const items = [
         {
@@ -227,9 +240,9 @@ export default function UpdateProduct() {
                 name="itemName" // Thêm thuộc tính `name`
                 value={updatedData.itemName}
                 onChange={handleChange} // Gọi hàm `handleChange`
-                className="mt-2 p-3 w-3/5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-2 p-3 w-5/5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />,
-            span: 2,
+            span: 4,
         },
         {
             key: '2',
@@ -246,7 +259,7 @@ export default function UpdateProduct() {
                 <option value="USED_FAIR">Đã qua sử dụng-Chấp nhận</option>
                 <option value="REFURBISHED">Hàng tân trang</option>
             </select>,
-            span: 2,
+            span: 1,
         },
         {
             key: '6',
@@ -327,13 +340,27 @@ export default function UpdateProduct() {
                 name="priceBuyNow"
                 value={updatedData.priceBuyNow || ""} // Giá trị định dạng
                 onChange={handleChange}  // Gọi hàm xử lý
-                className="mt-2 p-3 w-3/5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-2 p-3 w-5/5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập giá tiền"
             />,
-            span: 4,
+            span: 1,
         },
         {
             key: '4',
+            label: 'Bước giá mong muốn',
+            children: <input
+                type="text"
+                id="priceStepItem"
+                name="priceStepItem"
+                value={updatedData.priceStepItem || ""} // Giá trị định dạng
+                onChange={handleChange}  // Gọi hàm xử lý
+                className="mt-2 p-3 w-5/5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Nhập giá tiền"
+            />,
+            span: 2,
+        },
+        {
+            key: '5',
             label: 'Mô tả',
             span: 2,
             children: <div className="space-y-4 w-full">
@@ -428,13 +455,6 @@ export default function UpdateProduct() {
         }
     };
 
-    const convertImagesToFileList = (images) =>
-        images.map((img) => ({
-            uid: img.idImage,
-            name: `Image-${img.idImage}`,
-            status: 'done',
-            url: img.image,
-        }));
 
     const handleBeforeUpload = (file) => {
         if (fileList.length >= 5) {
@@ -554,6 +574,37 @@ export default function UpdateProduct() {
                                 </Skeleton>
                             </>
                         </Splitter.Panel>
+                        {/*<Splitter.Panel>*/}
+                        {/*    <>*/}
+                        {/*        <Skeleton loading={updateLoading} active>*/}
+                        {/*            /!*{itemImageLoading && <p>Đang tải ảnh...</p>}*!/*/}
+                        {/*            /!*{itemImageError && <p>Không thể tải ảnh!</p>}*!/*/}
+                        {/*            <input*/}
+                        {/*                type="file"*/}
+                        {/*                onChange={handleFileItemChange}*/}
+                        {/*                id="upload-file"*/}
+                        {/*                className="hidden"*/}
+                        {/*            />*/}
+
+
+                        {/*            <Button onClick={handleUpdateImages}>Upload file</Button>*/}
+
+                        {/*            {previewImage && (*/}
+                        {/*                <Image*/}
+                        {/*                    wrapperStyle={{*/}
+                        {/*                        display: 'none',*/}
+                        {/*                    }}*/}
+                        {/*                    preview={{*/}
+                        {/*                        visible: previewOpen,*/}
+                        {/*                        onVisibleChange: (visible) => setPreviewOpen(visible),*/}
+                        {/*                        afterOpenChange: (visible) => !visible && setPreviewImage(''),*/}
+                        {/*                    }}*/}
+                        {/*                    src={previewImage}*/}
+                        {/*                />*/}
+                        {/*            )}*/}
+                        {/*        </Skeleton>*/}
+                        {/*    </>*/}
+                        {/*</Splitter.Panel>*/}
                     </Splitter>
 
                 </Layout>
