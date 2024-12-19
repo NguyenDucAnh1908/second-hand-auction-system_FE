@@ -79,7 +79,7 @@ function App() {
 
 
                 {/*ADMIN*/}
-                <Route element={<RequireAuth allowedRoles={["ADMIN"]}/>}>
+                <Route element={<RequireAuth allowedRoles={["ADMIN", "STAFF"]}/>}>
                     <Route path="/dashboard/*" element={<Dashboard/>}/>
                     <Route path="/auth/*" element={<Auth/>}/>
                     <Route path="/dashboard/*" element={<Navigate to="/dashboard/home" replace/>}/>
