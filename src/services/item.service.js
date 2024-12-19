@@ -203,7 +203,20 @@ export const itemApiSlice = apiSlice.injectEndpoints({
                 url: `item/${id}`,
                 method: "DELETE",
             })
-        })
+        }),
+
+        getImageItems: builder.query({
+            query: ({ id}) => `item/image-item/${id}`,
+            transformResponse: (response) => response.data,
+        }),
+
+        getUpdateImageItem: builder.mutation({
+            query: ({ id, body }) => ({
+                url: `item/image-item/${id}`,
+                method: "PUT",
+                body: body,
+            }),
+        }),
 
     }),
 });
@@ -228,4 +241,6 @@ export const {
     useGetSimilarItemAuctionQuery,
     useGetUpdateItemMutation,
     useGetDeleteItemMutation,
+    useGetImageItemsQuery,
+    useGetUpdateImageItemMutation
 } = itemApiSlice;

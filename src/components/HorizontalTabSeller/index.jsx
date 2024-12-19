@@ -78,7 +78,7 @@ const TabContent = ({activeTab}) => {
         isFetching,
         isSuccess,
     } = useGetCategoriesQuery();
-    console.log("categories", categories)
+    //console.log("categories", categories)
 
     useEffect(() => {
         if (userIdSeller) {
