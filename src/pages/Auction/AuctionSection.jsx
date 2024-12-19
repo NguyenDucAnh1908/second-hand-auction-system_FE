@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 import {useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery} from "@/services/auctionRegistrations.service.js";
 import {Button} from "@material-tailwind/react";
 import {useCreateBidMutation, useGetBidInfoQuery} from "@/services/bid.service.js";
+import {useUpdateStatusAuctionMutation} from "@/services/auction.service.js";
 
 export default function AuctionSection(
     {
@@ -31,7 +32,6 @@ export default function AuctionSection(
     const [showMessage, setShowMessage] = useState(false);
 
     // const isLoggedIn = useSelector(selectIsLoggedIn);
-    //console.log("dataItem", dataItem?.auction?.auction_id)
     const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
     const auctionEndTime = dataItem.auction?.end_time || null;
@@ -41,7 +41,7 @@ export default function AuctionSection(
     const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
 
     const auctionTypeName = dataItem.auctionType?.auction_typeName;
-    //console.log(auctionTypeName);
+    console.log(auctionTypeName);
     const now = new Date().getTime();
     const [isAuctionStarted, setIsAuctionStarted] = useState(false);
     useEffect(() => {
@@ -51,7 +51,6 @@ export default function AuctionSection(
     //console.log("idAuction", idAuction)
 
     const isAuctionEnded = endDateTime < now; // Kiểm tra nếu thời gian kết thúc đã qua
-
 
     const [auctionStatus, setAuctionStatus] = useState("");
 
@@ -67,6 +66,7 @@ export default function AuctionSection(
 
     //createBid theo gia mua ngay
     const [createBid] = useCreateBidMutation();
+    const [updateTime] = useUpdateStatusAuctionMutation();
 
 
     const {
@@ -163,16 +163,15 @@ export default function AuctionSection(
     };
 
     const handleCreateOrder = async (auction_id) => {
+        console.log(auction_id);
         if (!dataItem?.auction?.buy_now_price) {
             message.error("Giá mua ngay không hợp lệ!", 3);
             return;
         }
-        //console.log("dataItem", dataItem)
         if (!auction_id) {
             message.error("ID phiên đấu giá không hợp lệ!", 3);
             return;
         }
-
         // Ẩn nút ngay khi người dùng nhấn
         setIsButtonVisible(false);
 
@@ -185,21 +184,17 @@ export default function AuctionSection(
                 auctionId: auction_id,
                 bidAmount: dataItem?.auction?.buy_now_price
             }).unwrap();
-
-            //console.log("Phản hồi từ API:", response);
-
+            console.log("Phản hồi từ API:", response);
             if (response.status === 'OK') {
-                //console.log("Tạo bid thành công:", response);
+                console.log("Tạo bid thành công:", response);
                 message.success("Đặt giá mua ngay thành công!", 3);
             } else {
                 console.error("Lỗi khi tạo bid:", response);
                 const errorMessage = response.message || response.error || "Đã xảy ra lỗi, vui lòng thử lại.";
-                message.error(errorMessage, 3);
+                message.error(errorMessage, "Lỗi");
             }
         } catch (error) {
-            const errorMessage = error.data.message;
-            //console.log("errorMessage",errorMessage)
-            message.error(errorMessage, 3);
+            message.error(error.data.message(), "Lỗi");
         } finally {
             setIsLoading(false);
         }
@@ -213,12 +208,22 @@ export default function AuctionSection(
     const handleSealedBidModalCancel = () => setIsSealedBidModalOpen(false);
 
     const showModal2 = () => {
-        //console.log("showModal called");
+        console.log("showModal called");
         setIsSealedBidModalOpen(true);
     };
 
 
     // ẩn danh
+    const handleAuctionEnd = async () => {
+        try {
+            const response = await updateTime({
+                auctionId: dataItem.auction?.auction_id,
+            }).unwrap();
+            console.log("Phản hồi từ API:", response);
+        } catch (error) {
+            message.error(error.data.message(), "Lỗi");
+        }
+    };
 
 
     // Hàm xử lý Đấu Giá Ẩn Danh
@@ -499,7 +504,9 @@ export default function AuctionSection(
                                             color: "green",
                                             textTransform: "uppercase",
                                         }}
+                                        onFinish={handleAuctionEnd}
                                     />
+
                                 </div>
                             ) : (
                                 <div>
@@ -513,6 +520,8 @@ export default function AuctionSection(
                                             color: "#CD853F",
                                             textTransform: "uppercase",
                                         }}
+                                        onFinish={handleAuctionEnd} // Gọi API khi Countdown kết thúc
+
                                     />
                                 </div>
                             )}

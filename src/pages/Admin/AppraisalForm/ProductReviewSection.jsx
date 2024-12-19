@@ -51,11 +51,6 @@ export default function ProductReviewSection({itemDetail}) {
     };
 
 
-
-
-
-
-
     const formatItemStatus = (status) => {
         switch (status) {
             case 'PENDING':
@@ -92,6 +87,12 @@ export default function ProductReviewSection({itemDetail}) {
         },
         {
             key: '3',
+            label: <span className="font-bold text-lg text-gray-800">Bước giá mong muốn</span>,
+            children: <span className="text-base text-gray-600">{itemDetail.priceStepItem || 'N/A'}</span>,
+            span: 2
+        },
+        {
+            key: '4',
             label: <span className="font-bold text-lg text-gray-800">Trạng thái sản phẩm</span>,
             children: (
                 <span className={`text-base ${getItemStatusClass(itemDetail.itemStatus)}`}>
@@ -102,14 +103,15 @@ export default function ProductReviewSection({itemDetail}) {
         },
 
         {
-            key: '4',
+            key: '5',
             label: <span className="font-bold text-lg text-gray-800">Mức giá mong muốn</span>,
-            children: <span className="text-base text-gray-600">{formatCurrency(itemDetail.priceBuyNow) || 'N/A'}</span>,
+            children: <span
+                className="text-base text-gray-600">{formatCurrency(itemDetail.priceBuyNow) || 'N/A'}</span>,
             span: 2
         },
 
         {
-            key: '5',
+            key: '6',
             label: <span className="font-bold text-lg text-gray-800">Mô tả sản phẩm</span>,
             children:
                 <Button
@@ -121,7 +123,6 @@ export default function ProductReviewSection({itemDetail}) {
             span: 4
         }
     ];
-
 
 
     return (
@@ -239,6 +240,24 @@ export default function ProductReviewSection({itemDetail}) {
                         </div>
 
                     </div>
+
+                    {(itemDetail.itemDocument) && (
+                        <>
+                            <Heading size="textxs" as="p" className="text-xl font-medium text-black-900 mb-5">Giấy tờ thẩm định</Heading>
+                            <div style={{width: '100%', height: '50vh', border: '1px solid #ddd'}}>
+                                <iframe
+                                    src={itemDetail.itemDocument}
+                                    title="PDF Viewer"
+                                    width="100%"
+                                    height="100%"
+                                    style={{border: 'none'}}
+                                />
+                            </div>
+                        </>
+
+
+                    )}
+
                     <div
                         className="flex items-center justify-between w-full p-3 bg-white shadow-md rounded-2xl border border-gray-200">
                         <Heading size="textxs" as="p" className="text-xl font-semibold text-black-900 mb-2">
@@ -256,5 +275,6 @@ export default function ProductReviewSection({itemDetail}) {
                 </div>
             </div>
         </>
-    );
+    )
+        ;
 }

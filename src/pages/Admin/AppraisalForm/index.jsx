@@ -1,9 +1,9 @@
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 import ProductReviewSection from "./ProductReviewSection";
 import StaffAssessmentSection from "./StaffAssessmentSection";
 
-import { useGetItemDetailQuery,useApproveItemAdminMutation, useGetSellerQuery } from "../../../services/item.service";
-import { useParams } from "react-router-dom";
+import {useGetItemDetailQuery, useGetSellerQuery} from "../../../services/item.service";
+import {useParams} from "react-router-dom";
 
 export default function ThmnhcaStaffPage() {
     const { itemId } = useParams(); // Khai báo itemId từ URL trước
@@ -32,9 +32,9 @@ export default function ThmnhcaStaffPage() {
             </Helmet>
             <div className="w-full bg-white-a700 py-[88px] md:py-5">
                 <div className="mt-2 flex flex-col items-center">
-\                    <ProductReviewSection itemDetail={itemDetail}/>
+                   <ProductReviewSection itemDetail={itemDetail}/>
 
-\                    <StaffAssessmentSection itemId={itemId} />
+                  <StaffAssessmentSection itemId={itemId} />
                 </div>
             </div>
         </>
