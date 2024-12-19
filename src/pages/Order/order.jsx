@@ -371,11 +371,10 @@ export default function OrderForm() {
                                             </div>
                                             <div className="ms-4 text-sm">
                                                 <label htmlFor="fedex"
-                                                       className="font-medium leading-none text-gray-900 dark:text-white"> Free
-                                                    ship </label>
-                                                <p id="fedex-text"
-                                                   className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Free
-                                                    ship toàn quốc</p>
+                                                       className="font-medium leading-none text-gray-900 dark:text-white"> Giao hàng nhanh </label>
+                                                {/*<p id="fedex-text"*/}
+                                                {/*   className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Free*/}
+                                                {/*    ship toàn quốc</p>*/}
                                             </div>
                                         </div>
                                     </div>

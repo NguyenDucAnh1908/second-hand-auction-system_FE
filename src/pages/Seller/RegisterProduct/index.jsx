@@ -50,8 +50,10 @@ function RegisterProductPage() {
     const [priceBuyNow, setPriceBuyNow] = useState(0);
     const [priceStepItem, setPriceStepItem] = useState(0);
     const [itemDescription, setItemDescription] = useState("");
+    const [itemDocument,setItemDocument] = useState("");
     const [itemCondition, setItemCondition] = useState("NEW");
     const [imgItem, setImgItem] = useState([]);
+    const [file, setFile] = useState(null);
 
     const [itemNameError, setItemNameError] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -59,7 +61,7 @@ function RegisterProductPage() {
     const [scId, setScId] = useState(0);
     const [auctionType, setAuctionType] = useState(null);
     const [descriptionError, setDescriptionError] = useState(null);
-
+    const [FileUpload,setFileUpload] = useState(null);
     // const [spinning, setSpinning] = React.useState(false);
     // const [percent, setPercent] = React.useState(0);
     const [spinning, setSpinning] = React.useState(false);
@@ -171,6 +173,7 @@ function RegisterProductPage() {
             setDescriptionError("");
         }
     };
+
     const handleImgUpload = async () => {
         if (fileList.length === 0) {
             message.warning("No files uploaded.");
@@ -200,7 +203,14 @@ function RegisterProductPage() {
         return uploadedImages;
     };
 
-
+    const handleFileItemChange = (event) => {
+        const file = event.target.files[0];
+        console.log("File",file);
+        if (file) {
+            setItemDocument(file.name);
+            setFileUpload(file)// Cập nhật tên file vào state
+        }
+    };
     const handleAuctionTypeChange = (value) => {
         console.log("Selected auction type:", value);
         setAuctionType(value);
@@ -222,6 +232,11 @@ function RegisterProductPage() {
             return;
         }
 
+        const fileUrl = await UploadImage(FileUpload);
+        if(!fileUrl ){
+            message.error("Lỗi upload file");
+        }
+
         const payload = {
             item_name: itemName,
             item_description: itemDescription,
@@ -229,6 +244,7 @@ function RegisterProductPage() {
             price_buy_now: priceBuyNow,
             price_step_item: priceStepItem,
             img_item: uploadedImages,
+            item_document:fileUrl,
             sc_id: scId,
             auction_type: auctionType,
         };
@@ -498,6 +514,21 @@ function RegisterProductPage() {
         },
         {
             key: '8',
+            label: <label className="font-bold">Upload File</label>,
+            children: <div
+                className="mr-1.5 mt-2 flex flex-col items-start gap-5 self-stretch rounded-[20px] bg-blue-200 px-[52px] py-[30px] md:mr-0 md:px-5 sm:p-5">
+                <>
+                    <input
+                        type="file"
+                        onChange={handleFileItemChange}
+                    />
+
+                </>
+            </div>,
+            span: 4,
+        },
+        {
+            key: '9',
             label: <label className="font-bold">Hình ảnh</label>,
             children: <div
                 className="mr-1.5 mt-2 flex flex-col items-start gap-5 self-stretch rounded-[20px] bg-blue-200 px-[52px] py-[30px] md:mr-0 md:px-5 sm:p-5">
@@ -529,7 +560,7 @@ function RegisterProductPage() {
             span: 4,
         },
         {
-            key: '9',
+            key: '10',
             label: <label className="font-bold">Mô tả sản phẩm</label>,
             children: (
                 <Space
