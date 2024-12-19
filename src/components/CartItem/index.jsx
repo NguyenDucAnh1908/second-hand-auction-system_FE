@@ -54,7 +54,7 @@ export default function CartItem({ product, refetchItem }) {
   } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? { auctionId: selectedAuctionId } : null, {
     skip: !selectedAuctionId,
   });
-  const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.statusRegistration === true
+  //const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.statusRegistration === true
   const [AuctionRegister, { isLoading: isLoadingAuctionRegister, error }] = useAuctionRegisterMutation();
   const handleSubmitAuctionRegister = async (e) => {
     e.preventDefault();
@@ -99,36 +99,36 @@ export default function CartItem({ product, refetchItem }) {
 
   return (
     <>
-      <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
-        <form>
-          <div className="mt-4">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="agreement"
-                className="h-5 w-5"
-              />
-              <span className="text-sm leading-5 text-gray-700">
-                Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
-              </span>
-            </div>
-          </div>
-          <div className="mt-4">
-            <button
-              type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-indigo-200 focus:shadow-outline-indigo active:bg-indigo-200 transition duration-150 ease-in-out"
-              onClick={handleSubmitAuctionRegister}
-            >
-              ĐĂNG KÝ THAM GIA ĐẤU GIÁ CC
-            </button>
-            <Button
-              onClick={handleCancel}
-              className="mt-4 w-full text-gray-600 hover:text-gray-800"
-            >
-              Đóng
-            </Button>
-          </div>
-        </form>
-      </Modal>
+      {/*<Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>*/}
+      {/*  <form>*/}
+      {/*    <div className="mt-4">*/}
+      {/*      <div className="flex items-center gap-2">*/}
+      {/*        <Checkbox*/}
+      {/*          id="agreement"*/}
+      {/*          className="h-5 w-5"*/}
+      {/*        />*/}
+      {/*        <span className="text-sm leading-5 text-gray-700">*/}
+      {/*          Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.*/}
+      {/*        </span>*/}
+      {/*      </div>*/}
+      {/*    </div>*/}
+      {/*    <div className="mt-4">*/}
+      {/*      <button*/}
+      {/*        type="submit"*/}
+      {/*        className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-indigo-200 focus:shadow-outline-indigo active:bg-indigo-200 transition duration-150 ease-in-out"*/}
+      {/*        onClick={handleSubmitAuctionRegister}*/}
+      {/*      >*/}
+      {/*        ĐĂNG KÝ THAM GIA ĐẤU GIÁ CC*/}
+      {/*      </button>*/}
+      {/*      <Button*/}
+      {/*        onClick={handleCancel}*/}
+      {/*        className="mt-4 w-full text-gray-600 hover:text-gray-800"*/}
+      {/*      >*/}
+      {/*        Đóng*/}
+      {/*      </Button>*/}
+      {/*    </div>*/}
+      {/*  </form>*/}
+      {/*</Modal>*/}
 
       <div className="m-4">
         {/* Hiển thị countdown hoặc thông báo nếu phiên đã kết thúc */}
@@ -181,13 +181,13 @@ export default function CartItem({ product, refetchItem }) {
                 />
               </div>
             }
-            actions={[
-              isRegistered ? (
-                <CheckCircleFilled key="regisAuctioned" />
-              ) : (
-                <PlusSquareFilled onClick={showModal} key="regisAuction" />
-              )
-            ]}
+            // actions={[
+            //   isRegistered ? (
+            //     <CheckCircleFilled key="regisAuctioned" />
+            //   ) : (
+            //     <PlusSquareFilled onClick={showModal} key="regisAuction" />
+            //   )
+            // ]}
           >
             <Meta
               description={

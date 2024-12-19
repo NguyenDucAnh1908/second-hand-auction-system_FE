@@ -41,7 +41,7 @@ export default function AuctionSection(
     const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
 
     const auctionTypeName = dataItem.auctionType?.auction_typeName;
-    console.log(auctionTypeName);
+    //console.log(auctionTypeName);
     const now = new Date().getTime();
     const [isAuctionStarted, setIsAuctionStarted] = useState(false);
     useEffect(() => {
@@ -173,18 +173,18 @@ export default function AuctionSection(
             return;
         }
         // Ẩn nút ngay khi người dùng nhấn
-        setIsButtonVisible(false);
-
-        // Vô hiệu hóa nút và hiển thị loading spinner
-        setIsButtonDisabled(true);
-        setIsLoading(true);
+        // setIsButtonVisible(false);
+        //
+        // // Vô hiệu hóa nút và hiển thị loading spinner
+        // setIsButtonDisabled(true);
+        // setIsLoading(true);
 
         try {
             const response = await createBid({
                 auctionId: auction_id,
                 bidAmount: dataItem?.auction?.buy_now_price
             }).unwrap();
-            console.log("Phản hồi từ API:", response);
+            //console.log("Phản hồi từ API:", response);
             if (response.status === 'OK') {
                 console.log("Tạo bid thành công:", response);
                 message.success("Đặt giá mua ngay thành công!", 3);
@@ -194,10 +194,14 @@ export default function AuctionSection(
                 message.error(errorMessage, "Lỗi");
             }
         } catch (error) {
-            message.error(error.data.message(), "Lỗi");
-        } finally {
-            setIsLoading(false);
+            const errorMessage = error?.data?.message || "Đã xảy ra lỗi không xác định, vui lòng thử lại.";
+            message.destroy()
+            message.error(errorMessage, 3);
         }
+
+        // finally {
+        //     setIsLoading(false);
+        // }
     };
 
 
@@ -698,10 +702,10 @@ export default function AuctionSection(
                                         Giá mua ngay
                                     </Heading>
                                     <ButtonDH
-                                        onClick={() => handleCreateOrder(dataItem?.auction?.auction_id)} // Truyền auction_id vào hàm
+                                        onClick={() => handleCreateOrder(dataItem?.auction?.auction_id)}
                                         className="bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 text-white py-2 px-4 rounded-lg text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-300"
-                                        disabled={isButtonDisabled} // Vô hiệu hóa nút khi đã nhấn
-                                        loading={isLoading} // Hiển thị loading spinner khi đang chờ phản hồi từ API
+                                        disabled={isButtonDisabled}
+                                        loading={isLoading}
                                     >
                                         Giá mua ngay: {formatPrice(dataItem?.auction?.buy_now_price)}
                                     </ButtonDH>
