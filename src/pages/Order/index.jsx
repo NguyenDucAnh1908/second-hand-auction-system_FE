@@ -59,8 +59,6 @@ export default function CreateOrder() {
 
     // Kiểm tra auctionData và amount để tính hoa hồng và tổng số tiền
     const auctionAmount = auctionData?.data?.amount || 0; // Nếu không có amount, đặt giá trị mặc định là 0
-    const commission = auctionAmount * 0.05; // Hoa hồng là 5% của giá đấu
-    const totalAmount = auctionAmount + commission; // Tổng số tiền là giá đấu cộng hoa hồng
 
     const handleSubmit = async () => {
         try {
@@ -78,8 +76,7 @@ export default function CreateOrder() {
             }, 5000);
 
         } catch (error) {
-            message.error('Lỗi khi tạo đơn hàng. Vui lòng thử lại.');
-            console.error("Create order error:", error);
+            message.error(error.data.message);
         }
     };
 
@@ -163,24 +160,24 @@ export default function CreateOrder() {
                 {/* Bên phải - Hình ảnh sản phẩm và phương thức thanh toán */}
                 <div className="w-full lg:w-1/2 p-6 bg-white rounded-lg shadow-lg">
                     {/* Thông tin sản phẩm */}
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Thông tin sản phẩm</h3>
-                        <div className="flex flex-wrap sm:flex-nowrap mb-6 border-b pb-6 border-gray-200">
-                            <div className="w-full sm:w-1/3 lg:w-1/4 mb-4 sm:mb-0">
-                                <img
-                                    src={auctionData?.data.thumbnail}
-                                    alt={auctionData?.data.itemName}
-                                    className="w-full h-auto object-cover rounded-lg shadow-md"
-                                />
-                            </div>
-                            <div className="w-full sm:w-2/3 lg:w-3/4 pl-0 sm:pl-6">
-                                <h4 className="text-xl font-semibold text-gray-800 mb-2">{auctionData?.data.itemName}</h4>
-                                <p className="text-sm text-gray-600 mb-4">{auctionData?.data.description}</p>
-                                <p className="text-gray-700 font-medium mb-2">Người bán: {auctionData?.data.seller}</p>
-                                <p className="text-gray-700 font-medium">{formatCurrency(auctionAmount)}</p>
-                            </div>
-                        </div>
-                    </div>
+                    {/*<div className="mb-6">*/}
+                    {/*    <h3 className="text-lg font-semibold text-gray-900 mb-4">Thông tin sản phẩm</h3>*/}
+                    {/*    <div className="flex flex-wrap sm:flex-nowrap mb-6 border-b pb-6 border-gray-200">*/}
+                    {/*        <div className="w-full sm:w-1/3 lg:w-1/4 mb-4 sm:mb-0">*/}
+                    {/*            <img*/}
+                    {/*                src={auctionData?.data.thumbnail}*/}
+                    {/*                alt={auctionData?.data.itemName}*/}
+                    {/*                className="w-full h-auto object-cover rounded-lg shadow-md"*/}
+                    {/*            />*/}
+                    {/*        </div>*/}
+                    {/*        <div className="w-full sm:w-2/3 lg:w-3/4 pl-0 sm:pl-6">*/}
+                    {/*            <h4 className="text-xl font-semibold text-gray-800 mb-2">{auctionData?.data.itemName}</h4>*/}
+                    {/*            <p className="text-sm text-gray-600 mb-4">{auctionData?.data.description}</p>*/}
+                    {/*            <p className="text-gray-700 font-medium mb-2">Người bán: {auctionData?.data.seller}</p>*/}
+                    {/*            <p className="text-gray-700 font-medium">{formatCurrency(auctionAmount)}</p>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Chọn phương thức thanh toán</h3>
                     <div className="mb-6">
                         <Select
@@ -194,12 +191,12 @@ export default function CreateOrder() {
                             </Select.Option>
                         </Select>
                     </div>
-                    <div className="mb-6">
-                        <div className="flex justify-between items-center mt-2">
-                            <span className="text-lg text-gray-800">Tổng số tiền</span>
-                            <span className="font-semibold text-gray-900">{formatCurrency(totalAmount)}</span>
-                        </div>
-                    </div>
+                    {/*<div className="mb-6">*/}
+                    {/*    <div className="flex justify-between items-center mt-2">*/}
+                    {/*        <span className="text-lg text-gray-800">Tổng số tiền</span>*/}
+                    {/*        <span className="font-semibold text-gray-900">{formatCurrency(auctionAmount)}</span>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
 
                     {/* Thanh toán */}
                     <div className="flex items-center gap-4">

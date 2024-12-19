@@ -34,8 +34,8 @@ export default function OrderForm() {
     const [createOrder, {isLoading}] = useCreateOrderMutation();
     const {data: addressData, error: addressError, isLoading: addressLoading} = useGetAddressOrderQuery(userId);
     const auctionAmount = auctionData?.data?.amount || 0; // Nếu không có amount, đặt giá trị mặc định là 0
-    const commission = auctionAmount * 0.05; // Hoa hồng là 5% của giá đấu
-    const totalAmount = auctionAmount + commission;
+    // const commission = auctionAmount * 0.05; // Hoa hồng là 5% của giá đấu
+    const totalAmount = auctionAmount ;
     const {refetch} = useGetOrderQuery({page: 0, limit: 10});
     const navigate = useNavigate();
     //console.log("auctionData", auctionData)
@@ -192,7 +192,7 @@ export default function OrderForm() {
                                                    fullName: e.target.value
                                                })}
                                                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                               placeholder="Bonnie Green" required/>
+                                               placeholder="Nguyen Van A" required/>
                                     </div>
                                     <div>
                                         <label htmlFor="phone-input-3"
@@ -227,7 +227,7 @@ export default function OrderForm() {
                                                     id="phone-input"
                                                     className="z-20 block w-full rounded-e-lg border border-s-0 border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:border-s-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500"
                                                     pattern="(0|\+84)[3|5|7|8|9][0-9]{8}"
-                                                    placeholder="0123-456-789"
+                                                    placeholder=""
                                                     required
                                                     value={orderDetails.phoneNumber}
                                                     onChange={(e) => setOrderDetails({
@@ -249,7 +249,7 @@ export default function OrderForm() {
                                                    email: e.target.value
                                                })}
                                                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                               placeholder="name@flowbite.com" required/>
+                                               placeholder="email@gmail.com" required/>
                                     </div>
                                     <div>
                                         <label htmlFor="company_name"
