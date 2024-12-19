@@ -52,7 +52,7 @@ export default function AuctionListProcessSection() {
 
     const TABLE_ROWS = auctionItems.map((item) => {
         const { auction, itemName, thumbnail, itemId } = item;
-        const { auction_id, endDate, end_time, status, start_price } = auction || {};
+        const { auction_id, endDate, end_time, status, winBid } = auction || {};
 
         let deadline = null;
         if (endDate && end_time) {
@@ -77,8 +77,8 @@ export default function AuctionListProcessSection() {
               ? "Đã bị hủy" 
               : "Đã kết thúc",
           
-            currentPrice: start_price,
-            yourPrice: start_price,
+            currentPrice: winBid,
+            yourPrice: winBid,
             action: <Button color="blue" onClick={() => showModal(itemId)}>Chi tiết</Button>,
         };
     });
@@ -109,25 +109,23 @@ export default function AuctionListProcessSection() {
         },
         {
             key: '4',
-            label: 'Thời Gian Đấu Giá',
-            children: (dataAuctionProcessDetail?.auction?.endDate && dataAuctionProcessDetail?.auction?.end_time) ? (
-                <Countdown
-                    value={new Date(`${dataAuctionProcessDetail.auction?.endDate}T${dataAuctionProcessDetail.auction?.end_time}`).getTime()}
-                    format="D [Ngày] H [giờ] m [phút] s [giây]"
-                    valueStyle={{ fontWeight: "bolder", fontSize: "15px", color: "green" }}
-                />
-
-            ) : (
-                "Không xác định"
-            ),
-            span: 2,
+            label: 'Thời Gian kết thúc',
+            children: (dataAuctionProcessDetail?.auction?.endDate) 
+             
+          
         },
         {
             key: '5',
             label: 'Trạng Thái',
-            children: <Badge status="processing" text={dataAuctionProcessDetail?.auction?.status || "Chưa đăng ký"} />,
+            children: (
+                <Badge 
+                    status={dataAuctionProcessDetail?.auction?.status === "CLOSED" ? "default" : "processing"} 
+                    text={dataAuctionProcessDetail?.auction?.status === "CLOSED" ? "Đã đóng" : (dataAuctionProcessDetail?.auction?.status || "Chưa đăng ký")} 
+                />
+            ),
             span: 3,
         },
+        
         {
             key: '6',
             label: 'Người Bán',
@@ -135,7 +133,7 @@ export default function AuctionListProcessSection() {
         },
         {
             key: '7',
-            label: 'Tiền Cọc',
+            label: 'Giá khởi điểm',
             children: `$${dataAuctionProcessDetail?.auction?.start_price || "0"}`,
         },
     ] : [];
