@@ -79,7 +79,7 @@ function App() {
 
 
                 {/*ADMIN*/}
-                <Route element={<RequireAuth allowedRoles={["ADMIN"]}/>}>
+                <Route element={<RequireAuth allowedRoles={["ADMIN", "STAFF"]}/>}>
                     <Route path="/dashboard/*" element={<Dashboard/>}/>
                     <Route path="/auth/*" element={<Auth/>}/>
                     <Route path="/dashboard/*" element={<Navigate to="/dashboard/home" replace/>}/>
@@ -110,7 +110,7 @@ function App() {
                     <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
                     <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
                     <Route path="AuctionListCompleted" index element={<AuctionListCompleted/>}/>
-                    <Route path="CreateOrder/:id" index element={<CreateOrder/>}/>
+                    {/*<Route path="CreateOrder/:id" index element={<CreateOrder/>}/>*/}
                     <Route path="Order/:id" index element={<OrderForm/>}/>
                     <Route path="MenuKyc" index element={<MenuKyc/>}/>
                     <Route path="UpdateKYC" index element={<UpdateKYC/>}/>

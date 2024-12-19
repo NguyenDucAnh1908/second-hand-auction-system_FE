@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {Table, Image, Spin, Alert, Tag, Modal, Skeleton} from 'antd';
+import {useState, useEffect} from 'react';
+import {Table, Image, Alert, Tag, Modal, Skeleton} from 'antd';
 import Pagination from "@/components/Pagination/index.jsx";
 import {useNavigate} from 'react-router-dom';
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
-import {Button, Typography} from "@material-tailwind/react";
+import {Button, } from "@material-tailwind/react";
 import {useGetItemPendingAuctionQuery} from "@/services/item.service.js";
 
 export default function ManageListCreateAuctionProduct() {
@@ -150,23 +150,22 @@ export default function ManageListCreateAuctionProduct() {
                         Đóng
                     </Button>,
                 ]}
-                className="rounded-lg shadow-lg"
-                width={1000}
+                className="rounded-lg "
             >
                 <DescriptionItem selectedDescription={selectedDescription}/>
             </Modal>
 
-            <div className="container mx-auto p-4">
-                <h1 className="text-2xl font-bold mb-4">Product Pending</h1>
-                <div className="flex items-center justify-center w-full h-full">
+            <div className="container mx-auto px-0">
+                <div className="flex justify-center w-full">
                     {isLoading ? (
-                        <Skeleton active/>
+                        <Skeleton active />
                     ) : (
                         <Table
                             dataSource={pendingProducts}
                             columns={columns}
                             rowKey="itemId"
                             pagination={false}
+                            className="w-full table-fixed border border-gray-300"
                         />
                     )}
                 </div>
@@ -178,6 +177,7 @@ export default function ManageListCreateAuctionProduct() {
                     />
                 </div>
             </div>
+
         </>
     );
 }

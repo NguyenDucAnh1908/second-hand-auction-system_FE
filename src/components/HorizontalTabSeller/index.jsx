@@ -78,7 +78,7 @@ const TabContent = ({activeTab}) => {
         isFetching,
         isSuccess,
     } = useGetCategoriesQuery();
-    console.log("categories", categories)
+    //console.log("categories", categories)
 
     useEffect(() => {
         if (userIdSeller) {
@@ -197,49 +197,7 @@ const TabContent = ({activeTab}) => {
                                 borderRadius: borderRadiusLG,
                             }}
                         >
-                            {/*<div className="w-full h-full ml-[200px] mr-[200px]">*/}
-                            {/*    {feedbackData?.content?.map(feedback => (*/}
-                            {/*        <article key={feedback.feedbackId}>*/}
-                            {/*            <div className="flex items-center my-6">*/}
-                            {/*                <img className="w-10 h-10 me-4 rounded-full" src="/images/user.png"*/}
-                            {/*                     alt="User Avatar"/>*/}
-                            {/*                <div className="font-medium dark:text-white">*/}
-                            {/*                    {feedback.username} <br/>*/}
-                            {/*                    <span style={{color: 'rgba(0, 0, 0, 0.5)'}}>*/}
-                            {/*            {feedback.createAt.substring(0, 10)}*/}
-                            {/*        </span>*/}
-                            {/*                </div>*/}
-                            {/*            </div>*/}
-                            {/*            <div className="flex items-center mb-1 space-x-1 rtl:space-x-reverse">*/}
-                            {/*                {[...Array(feedback.rating)].map((_, index) => (*/}
-                            {/*                    <svg key={index} className="w-4 h-4 text-yellow-300"/>*/}
-                            {/*                ))}*/}
-                            {/*                {[...Array(5 - feedback.rating)].map((_, index) => (*/}
-                            {/*                    <svg key={index + feedback.rating}*/}
-                            {/*                         className="w-4 h-4 text-gray-300 dark:text-gray-500"/>*/}
-                            {/*                ))}*/}
-                            {/*            </div>*/}
-                            {/*            <footer className="mb-5 text-sm text-gray-500 dark:text-gray-400">*/}
-                            {/*                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">*/}
-                            {/*                    {feedback.comment}*/}
-                            {/*                </h3>*/}
-                            {/*            </footer>*/}
-                            {/*            <aside>*/}
-                            {/*                <div className="flex items-center mt-3">*/}
-                            {/*                    <a href="#" className="px-2 py-1.5 text-xs font-medium">Hữu ích</a>*/}
-                            {/*                    <a href="#" className="ps-4 text-sm font-medium text-blue-600">Báo*/}
-                            {/*                        cáo</a>*/}
-                            {/*                </div>*/}
-                            {/*            </aside>*/}
-                            {/*            <hr className="my-6 border-gray-300 dark:border-gray-600 mx-auto w-[60%] ml-[0]"/>*/}
-                            {/*        </article>*/}
-                            {/*    ))}*/}
-                            {/*    <Pagination*/}
-                            {/*        currentPage={currentPage + 1}*/}
-                            {/*        totalPages={feedbackData ? Math.ceil(feedbackData.totalElements / pageSize) : 1}*/}
-                            {/*        onPageChange={(page) => setCurrentPage(page - 1)}*/}
-                            {/*    />*/}
-                            {/*</div>*/}
+                       
                             <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
                                 <div className="max-w-2xl mx-auto px-4">
                                     <div className="flex justify-between items-center mb-6">
@@ -262,19 +220,7 @@ const TabContent = ({activeTab}) => {
                                         />
                                     </div>
                                     {/*endfeedback*/}
-                                    <form className="my-6 ">
-                                        <div
-                                            className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                                            <label htmlFor="comment" className="sr-only">Your comment</label>
-                                            <textarea id="comment" rows="6"
-                                                      className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
-                                                      placeholder="Write a comment..." required></textarea>
-                                        </div>
-                                        <button type="submit"
-                                                className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
-                                            Post comment
-                                        </button>
-                                    </form>
+                                   
                                 </div>
                             </section>
                         </div>
@@ -439,68 +385,8 @@ const TabContent = ({activeTab}) => {
                                             <div className="h-px w-[72%] bg-gray-200"/>
                                         </div>
 
-                                        <div className="flex flex-col items-start gap-6">
-                                            <div className="flex items-center justify-between gap-5 self-stretch">
-                                                <h2 className="text-[18px] font-medium text-blue_gray-900_01">
-                                                    Tình trạng sản phẩm
-                                                </h2>
-                                            </div>
-                                            <div className="flex flex-col gap-3 self-stretch">
-                                                <div className="flex items-center gap-3">
-                                                    <Checkbox>New</Checkbox>
-                                                    <Checkbox>Used</Checkbox>
-                                                </div>
-                                            </div>
-                                            <div className="h-px w-[72%] bg-gray-200"/>
-                                        </div>
-
-                                        <div className="flex flex-col items-start gap-6">
-                                            <div className="flex items-center justify-between gap-5 self-stretch">
-                                                <h2 className="text-[18px] font-medium text-blue_gray-900_01">
-                                                    Giảm giá (%)
-                                                </h2>
-                                            </div>
-                                            <div className="flex flex-col gap-3 self-stretch">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex w-[46%] flex-col items-start gap-1">
-                                                        <InputNumber
-                                                            min={0}
-                                                            max={100}
-                                                            value={percentageRange[0]}
-                                                            onChange={onLowPercentageChange}
-                                                        />
-                                                    </div>
-                                                    <div className="flex flex-1 flex-col items-start gap-1.5">
-                                                        <InputNumber
-                                                            min={0}
-                                                            max={100}
-                                                            value={percentageRange[1]}
-                                                            onChange={onHighPercentageChange}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col items-start gap-3">
-                                                    <Slider
-                                                        range
-                                                        min={0}
-                                                        max={100}
-                                                        value={percentageRange}
-                                                        onChange={onPercentageSliderChange}
-                                                        className="mr-5 flex self-stretch"
-                                                    />
-                                                    <p className="flex text-[14px] font-normal text-blue_gray-900_01">
-                          <span>
-                            {percentageRange[0]?.toLocaleString() || "0"}
-                          </span>
-                                                        <span>
-                            &nbsp;-{" "}
-                                                            {percentageRange[1]?.toLocaleString() || "0"}
-                          </span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="h-px w-[72%] bg-gray-200"/>
-                                        </div>
+                                    
+                                      
                                     </div>
                                 </Sider>
                                 <Content
@@ -533,25 +419,7 @@ const TabContent = ({activeTab}) => {
                                                 </div>
                                             </Spin>
                                         )}
-                                        {/*<div className="my-10">*/}
-                                        {/*    <Pagination*/}
-                                        {/*        currentPage={filters.page + 1}*/}
-                                        {/*        totalPages={data ? data.data.totalPages : 1}*/}
-                                        {/*        onPageChange={(page) => handleFilterChange({page})}*/}
-                                        {/*    />*/}
-                                        {/*</div>*/}
-
-
-                                        {/*<div className="flex justify-center items-center mt-4">*/}
-                                        {/*    <Pagination*/}
-                                        {/*        // currentPage={page}*/}
-                                        {/*        // totalPages={data?.data.totalPages || 1}*/}
-                                        {/*        // onPageChange={setPage}*/}
-                                        {/*                currentPage={filters.page + 1}*/}
-                                        {/*                totalPages={data ? data.data.totalPages : 1}*/}
-                                        {/*                onPageChange={(page) => handleFilterChange({page})}*/}
-                                        {/*    />*/}
-                                        {/*</div>*/}
+                                 
                                     </div>
                                 </Content>
                             </Layout>

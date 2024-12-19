@@ -36,6 +36,13 @@ export const auctionApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+        updateStatusAuction: builder.mutation({
+            query: ({ auctionId }) => ({
+                url: `/auctions/update/${auctionId}`,
+                method: "PUT",
+            }),
+        })
+
     }),
 });
 
@@ -45,5 +52,6 @@ export const {
     useGetAuctionCreatedTodayQuery,
     useGetAuctionCreatedMonthQuery,
     useUpdateAuctionMutation,
+    useUpdateStatusAuctionMutation,
 } = auctionApiSlice;
 

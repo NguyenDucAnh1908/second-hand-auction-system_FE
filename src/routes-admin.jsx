@@ -5,6 +5,15 @@ import {
     InformationCircleIcon,
     ServerStackIcon,
     RectangleStackIcon,
+    DocumentMagnifyingGlassIcon,
+    ArrowDownOnSquareStackIcon,
+    ClipboardDocumentCheckIcon,
+    ShoppingBagIcon,
+    ShoppingCartIcon,
+    CheckBadgeIcon,
+    PlusIcon,
+    PlusCircleIcon,
+    CreditCardIcon,
 } from "@heroicons/react/24/solid";
 import {Home, Profile, Tables, Notifications} from "./pages/Admin/Dashboard";
 import {SignIn, SignUp} from "./pages/Admin/auth";
@@ -22,33 +31,28 @@ import ManageKYC from "./pages/Admin/ManageKYC/index.jsx";
 import ProductPending from "./pages/Admin/ManageProduct/index.jsx";
 import ManageUser from "./pages/Admin/ManageUser/index.jsx";
 import ManageListCreateAuctionProduct from "pages/Admin/ManageListCreateAuctionProduct/index.jsx";
+import { DocumentCurrencyBangladeshiIcon, PhoneArrowDownLeftIcon } from "@heroicons/react/24/outline";
+import { CheckCircleOutlined } from "@ant-design/icons";
+import { CreditCardOutlined, IdcardOutlined } from '@ant-design/icons';
+import RequireAuth from "@/routers/RequireAuth.jsx";
 
 const icon = {
     className: "w-5 h-5 text-inherit",
 };
 
+
+
 export const routesAdmin = [
     {
-        title: "Thông tin",
-        layout: "dashboard",
-        pages: [
-            {
-                icon: <UserCircleIcon {...icon} />,
-                name: "profile",
-                path: "/profile",
-                element: <Profile/>,
-            }
-        ],
-    },
-    {
-        title: "dashboard",
+        title: "Tổng quan hệ thống",
         layout: "dashboard",
         pages: [
             {
                 icon: <HomeIcon {...icon} />,
-                name: "dashboard của admin",
+                name: "Thống kê",
                 path: "/home",
-                element: <Home/>,
+                element: <Home />,
+                allowedRoles: ["ADMIN", "STAFF"],
             }
         ],
     },
@@ -58,27 +62,32 @@ export const routesAdmin = [
         pages: [
             {
                 icon: <UserCircleIcon {...icon} />,
-                name: "Danh dách người dùng",
+                name: "Người dùng",
                 path: "/ManageUsers",
                 element: <ManageUser/>,
+                //element: <ManageUser />,
+                allowedRoles: ["ADMIN"],
             },
             {
-                icon: <UserCircleIcon {...icon} />,
-                name: "Các phiên đấu giá",
+                icon: <ShoppingBagIcon  {...icon} />,
+                name: "Phiên đấu giá",
                 path: "/StaffProductList",
                 element: <StaffProductListPage/>,
+                allowedRoles: ["ADMIN", "STAFF"],
             },
             {
-                icon: <UserCircleIcon {...icon} />,
-                name: "Danh sách thẩm định",
+                icon: <CheckBadgeIcon {...icon} />,
+                name: "Thẩm định",
                 path: "/ProductPending",
                 element: <ProductPending/>,
+                allowedRoles: ["ADMIN", "STAFF"],
             },
             {
-                icon: <UserCircleIcon {...icon} />,
-                name: "Danh sách tạo đấu giá",
+                icon: <PlusCircleIcon {...icon} />,
+                name: "Tạo phiên đấu giá",
                 path: "/auction-create-list",
                 element: <ManageListCreateAuctionProduct/>,
+                allowedRoles: ["ADMIN", "STAFF"],
             },
            
             // {
@@ -88,71 +97,58 @@ export const routesAdmin = [
             //     element: <ManageFeedback/>,
             // },
             {
-                icon: <UserCircleIcon {...icon} />,
-                name: "Quản Lý Đơn hàng shop",
+                icon: <ShoppingCartIcon {...icon} />,
+                name: "Đơn hàng",
                 path: "/StoreOrders",
                 //element: <OrderManagementAdmin />,
                 element: <StoreOrders/>,
+                allowedRoles: ["ADMIN", "STAFF"],
             },
             {
                 // icon: <UserCircleIcon {...icon} />,
                 // name: "Thẩm định sản phẩm",
                 path: "/AppraisalForm/:itemId",
                 element: <AppraisalFormPage/>,
+                allowedRoles: ["ADMIN", "STAFF"],
             },
             {
 
                 path: "/KiemduyetStaffPage/:id",
                 element: <KiemduyetStaffPage/>,
+                allowedRoles: ["ADMIN", "STAFF"],
             },
             {
                 // icon: <UserCircleIcon {...icon} />,
                 // name: "Tạo phiên đấu giá",
                 path: "/CreateAuction/:itemId",
                 element: <CreateAuction/>,
+                allowedRoles: ["ADMIN", "STAFF"],
             },
         ],
     },
-    // {
-    //   title: "auth pages",
-    //   layout: "auth",
-    //   pages: [
-    //     {
-    //       icon: <ServerStackIcon {...icon} />,
-    //       name: "sign in",
-    //       path: "/sign-in",
-    //       element: <SignIn />,
-    //     },
-    //     {
-    //       icon: <RectangleStackIcon {...icon} />,
-    //       name: "sign up",
-    //       path: "/sign-up",
-    //       element: <SignUp />,
-    //     },
-    //   ],
-    // },
-    //   {
-    // =======
     {
         title: "Giao dịch",
         layout: "dashboard",
         pages: [
             {
-                icon: <TableCellsIcon {...icon} />,
-                name: "Giao dịch",
+                icon: <CreditCardIcon  {...icon} />,
+                name: "Tổng quan",
                 path: "/managementTransactions",
                 element: <ManagementTransactions/>,
+                allowedRoles: ["ADMIN", "STAFF"],
             },
             {
-                icon: <TableCellsIcon {...icon} />,
+                icon: <CreditCardOutlined {...icon} />,
                 name: "Đơn rút tiền sellers",
                 path: "/managementWithdrawOfSeller",
                 element: <ManagementWindrawOfSeller/>,
+                allowedRoles: ["ADMIN", "STAFF"],
             }, {
-                icon: <TableCellsIcon {...icon} />,
+                icon: <IdcardOutlined  {...icon} />,
                 name: "Danh sach KYC",
                 path: "/managementKYC",
                 element: <ManageKYC/>,
+                allowedRoles: ["ADMIN", "STAFF"],
             },
             // {
             //     icon: <InformationCircleIcon {...icon} />,

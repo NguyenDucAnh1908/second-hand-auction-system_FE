@@ -16,6 +16,7 @@ import {
     PresentationChartBarIcon,
     ShoppingBagIcon,
     UserCircleIcon,
+    CreditCardIcon ,
     Cog6ToothIcon,
     InboxIcon,
     PowerIcon,
@@ -113,7 +114,7 @@ export function SiderUserBK() {
                     <ListItem className="p-0" selected={open === 1}>
                         <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3">
                             <ListItemPrefix>
-                                <PresentationChartBarIcon className="h-5 w-5" />
+                                <ShoppingBagIcon className="h-5 w-5" />
                             </ListItemPrefix>
                             <Typography color="blue-gray" className="mr-auto font-normal">
                                 Đấu giá
@@ -126,20 +127,20 @@ export function SiderUserBK() {
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
-                                Danh sách đăng ký
+                                Tất cả 
                             </ListItem>
                             <ListItem onClick={() => handleNavigate('/AuctionListProcess')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
-                                Danh sách chưa thanh toán
+                               Chờ thanh toán 
                             </ListItem>
-                            <ListItem onClick={() => handleNavigate('/AuctionListCompleted')}>
+                            {/* <ListItem onClick={() => handleNavigate('/AuctionListCompleted')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
-                                Đấu giá thành công
-                            </ListItem>
+                               Hoàn thành
+                            </ListItem> */}
                         </List>
                     </AccordionBody>
                 </Accordion>
@@ -192,7 +193,7 @@ export function SiderUserBK() {
                     <ListItem className="p-0" selected={open === 2}>
                         <AccordionHeader onClick={() => handleOpen(2)} className="border-b-0 p-3">
                             <ListItemPrefix>
-                                <ShoppingBagIcon className="h-5 w-5" />
+                                <CreditCardIcon  className="h-5 w-5" />
                             </ListItemPrefix>
                             <Typography color="blue-gray" className="mr-auto font-normal">
                                 Quản lý ví tiền

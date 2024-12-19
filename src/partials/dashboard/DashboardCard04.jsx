@@ -1,6 +1,6 @@
 import React from 'react';
 import BarChart from '../../charts/BarChart01';
-
+import { useGetOrderUserByMonthQuery } from "@/services/order.service.js";
 // Import utilities
 import { tailwindConfig } from '../../utils/Utils';
 
@@ -13,18 +13,20 @@ function DashboardCard04() {
     }).format(value);
   };
 
-  // Data for the bar chart
+  // Fetch data from API
+  const { data, isLoading, isError } = useGetOrderUserByMonthQuery();
+  console.log("Data",data)
+  // Check if the data is loading or there is an error
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading data</div>;
+
+  // Assuming that the `data` is an object with labels and two sets of data: 'chuaThanhToan' and 'thanhToan'
   const chartData = {
-    labels: [
-      '12-01-2024', '01-01-2024', '02-01-2024',
-      '03-01-2024', '04-01-2024', '05-01-2024',
-    ],
+    labels: data.labels || [],  // Ensure labels are from the API response
     datasets: [
       {
         label: 'Chưa thanh toán (VNĐ)',
-        data: [
-          800000, 1600000, 900000, 1300000, 1950000, 1700000,
-        ],
+        data: data.chuaThanhToan || [],  // 'chuaThanhToan' should be an array of amounts
         backgroundColor: tailwindConfig().theme.colors.sky[500],
         hoverBackgroundColor: tailwindConfig().theme.colors.sky[600],
         barPercentage: 0.7,
@@ -33,9 +35,7 @@ function DashboardCard04() {
       },
       {
         label: 'Thanh toán (VNĐ)',
-        data: [
-          4900000, 2600000, 5350000, 4800000, 5200000, 4800000, 4800000
-        ],
+        data: data.thanhToan || [],  // 'thanhToan' should be an array of amounts
         backgroundColor: tailwindConfig().theme.colors.violet[500],
         hoverBackgroundColor: tailwindConfig().theme.colors.violet[600],
         barPercentage: 0.7,
@@ -80,7 +80,6 @@ function DashboardCard04() {
           <h2 className="font-semibold text-gray-800 dark:text-gray-100">Số order</h2>
         </header>
         {/* Chart built with Chart.js 3 */}
-        {/* Change the height attribute to adjust the chart height */}
         <BarChart data={chartData} options={chartOptions} width={595} height={248} />
       </div>
   );

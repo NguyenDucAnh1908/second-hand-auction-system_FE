@@ -1,8 +1,8 @@
-import {Text, SelectBox, Img, ButtonDH, InputDH} from "./..";
-import React, {useEffect, useRef, useState} from "react";
+import { Text, SelectBox, Img, ButtonDH, InputDH } from "./..";
+import React, { useEffect, useRef, useState } from "react";
 import NavBarBK from "@/components/NavBarBK/index.jsx";
-import {useSelector, useDispatch} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
     selectCurrentUser,
     selectIsLoggedIn,
@@ -19,20 +19,20 @@ import {
     Typography,
     IconButton, Input, Button,
 } from "@material-tailwind/react";
-import {ExclamationCircleFilled} from '@ant-design/icons';
-import {AutoComplete, Badge, Space} from 'antd';
-import {ShopOutlined} from '@ant-design/icons';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { AutoComplete, Badge, Space } from 'antd';
+import { ShopOutlined } from '@ant-design/icons';
 import DrawerChat from "@/components/DrawerChat/index.jsx";
-import {useGetItemsFilterQuery} from "@/services/item.service.js";
-import {setFilters} from "@/redux/item/itemSlice.js";
-import {useGetUserByIdQuery} from "../../services/user.service";
-import {setUser, setLoading, setError} from "../../redux/user/userSlice";
-import {BellIcon, ClockIcon, CreditCardIcon} from "@heroicons/react/24/solid/index.js";
-import {useGetCategoriesQuery} from "@/services/category.service.js";
-import {useGetNotificationQuery} from "@/services/notification.service.js";
+import { useGetItemsFilterQuery } from "@/services/item.service.js";
+import { setFilters } from "@/redux/item/itemSlice.js";
+import { useGetUserByIdQuery } from "../../services/user.service";
+import { setUser, setLoading, setError } from "../../redux/user/userSlice";
+import { BellIcon, ClockIcon, CreditCardIcon } from "@heroicons/react/24/solid/index.js";
+import { useGetCategoriesQuery } from "@/services/category.service.js";
+import { useGetNotificationQuery } from "@/services/notification.service.js";
 
 
-export default function Header2({...props}) {
+export default function Header2({ ...props }) {
     const [searchBarValue, setSearchBarValue] = React.useState("");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -49,12 +49,12 @@ export default function Header2({...props}) {
 
     const showDrawer = () => setIsDrawerOpen(true);
     const closeDrawer = () => setIsDrawerOpen(false);
-    const onChange = ({target}) => setEmail(target.value);
-    const {data: userHeader, error, isLoading: isUserLoading, refetch} = useGetUserByIdQuery();
+    const onChange = ({ target }) => setEmail(target.value);
+    const { data: userHeader, error, isLoading: isUserLoading, refetch } = useGetUserByIdQuery();
 
     const filters = useSelector(
         (state) =>
-            state.item || {keyword: "", min: 0, max: 1600000000, scIds: []}
+            state.item || { keyword: "", min: 0, max: 1600000000, scIds: [] }
     );
     const {
         data: dataItems, error: errorItem,
@@ -115,7 +115,7 @@ export default function Header2({...props}) {
     useEffect(() => {
         if (searchQuery.trim()) {
             setShowResults(true);
-            dispatch(setFilters({keyword: searchQuery}));
+            dispatch(setFilters({ keyword: searchQuery }));
         } else {
             setShowResults(false); // Ẩn kết quả khi ô tìm kiếm trống
         }
@@ -151,7 +151,7 @@ export default function Header2({...props}) {
             {...props}
             className={`${props.className} flex self-stretch items-center z-[3] relative bg-gradient-to-b from-[#45ADA8] to-[#9DE0AD]`}
         >
-            <DrawerChat open={isDrawerOpen} onClose={closeDrawer}/>
+            <DrawerChat open={isDrawerOpen} onClose={closeDrawer} />
             <div className="w-full">
                 <div className="container-md mt-5 flex flex-col gap-9 self-stretch md:px-5">
                     <div className="ml-[74px] mr-6 flex items-center justify-between gap-5 md:mx-0 md:flex-col">
@@ -187,7 +187,7 @@ export default function Header2({...props}) {
                                     {showResults && (
                                         <div
                                             className="absolute w-[400px] bg-white shadow-lg border rounded-lg z-50 p-4"
-                                            style={{top: '100%', left: '50%', transform: 'translateX(-50%)'}}
+                                            style={{ top: '100%', left: '50%', transform: 'translateX(-50%)' }}
                                         >
                                             {isFetchingItem && <p>Loading...</p>}
                                             {!isFetchingItem && dataItems?.item.length === 0 && (
@@ -246,11 +246,13 @@ export default function Header2({...props}) {
                                 </div>
                                 <Button
                                     size="md"
-                                    className="mt bg-gray-800 bg-opacity-30 border border-gray-500 text-white rounded-lg px-4 py-2 transition duration-300 ease-in-out transform hover:bg-gray-500 hover:scale-105"
+                                    className="mt bg-gray-800 bg-opacity-30 border border-gray-500 text-white rounded-lg px-6 py-3 w-[115px] transition duration-300 ease-in-out transform hover:bg-gray-500 hover:scale-105"
                                     onClick={handleSearchSubmit}
                                 >
-                                    Search
+                                    Tìm kiếm
                                 </Button>
+
+
                                 {/* Kết quả tìm kiếm */}
                             </div>
 
@@ -260,13 +262,13 @@ export default function Header2({...props}) {
                                 <div className="flex flex-1 justify-center gap-3.5 sm:self-stretch mb-2">
                                     <a href="/dashboard-seller">
                                         <IconButton className="bg-blue-gray-900">
-                                            <ShopOutlined style={{fontSize: '20px'}}/>
+                                            <ShopOutlined style={{ fontSize: '20px' }} />
                                         </IconButton>
                                     </a>
                                     <Text className="font-semibold text-[14px] leading-[22px] text-gray-900">
                                         <span className="text-[13px] font-normal">
                                             Kênh
-                                            <br/>
+                                            <br />
                                         </span>
                                         <span className="text-[16px] font-medium">Cửa hàng</span>
                                     </Text>
@@ -327,7 +329,7 @@ export default function Header2({...props}) {
                                                     {/*    </Typography>*/}
                                                     {/*</MenuItem>*/}
 
-                                                    <hr className="my-2 border-blue-gray-50"/>
+                                                    <hr className="my-2 border-blue-gray-50" />
                                                     <MenuItem className="flex items-center gap-2 ">
                                                         <svg
                                                             width="16"
@@ -344,7 +346,7 @@ export default function Header2({...props}) {
                                                             />
                                                         </svg>
                                                         <Typography onClick={handleLogout} variant="small"
-                                                                    className="font-medium">
+                                                            className="font-medium">
                                                             Đăng xuất
                                                         </Typography>
                                                     </MenuItem>
@@ -353,20 +355,14 @@ export default function Header2({...props}) {
 
                                             <Text
                                                 className="font-bevietnampro text-[14px] font-bold leading-[22px] text-blue_gray-900_01">
-                                        <span className="text-[13px] font-normal">
-                                            {/*{userAPI.fullName}*/}
-                                            {userHeader?.fullName}
-                                            <br/>
-                                        </span>
-                                                <span className="text-[10px] font-medium">{userHeader?.role}</span>
+                                                <span className="text-[13px] font-normal">
+                                                    {/*{userAPI.fullName}*/}
+                                                    {userHeader?.fullName}
+                                                    <br />
+                                                </span>
+                                                {/* <span className="text-[10px] font-medium">{userHeader?.role}</span> */}
                                             </Text>
-                                            {/*<Badge count={<ClockCircleOutlined style={{ color: '#f5222d' }} />}>*/}
-                                            {/*<Avatar shape="square" size="large" />*/}
-                                            {/*<MenuHandler>*/}
-                                            {/*    <IconButton variant="text" color="blue-gray">*/}
-                                            {/*        <BellIcon className="h-5 w-5 text-blue-gray-500"/>*/}
-                                            {/*    </IconButton>*/}
-                                            {/*</MenuHandler>*/}
+
 
 
                                             <Menu>
@@ -406,13 +402,13 @@ export default function Header2({...props}) {
 
                                         </>
                                     ) : (
-                                        <Button onClick={navigateLogin} variant="gradient">LOGIN</Button>
+                                        <Button onClick={navigateLogin} variant="gradient">Đăng nhập</Button>
                                     )}
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <NavBarBK/>
+                    <NavBarBK />
                 </div>
             </div>
 
