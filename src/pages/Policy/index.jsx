@@ -55,10 +55,10 @@ export default function Policy() {
           <div className="bg-white shadow-xl rounded-lg p-8 md:p-12 mb-8 transform transition duration-500 hover:scale-105 hover:shadow-2xl">
             <h2 className="text-3xl font-semibold text-gray-800 mb-4">Chính Sách Hoa Hồng và Cọc</h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-4">
-              - Hoa hồng sẽ được tính là 5% trên mức giá cuối cùng mà khách hàng trả.
+              - Hoa hồng sẽ được tính là 20% trên mức giá cuối cùng mà khách hàng trả.
             </p>
             <p className="text-gray-600 text-lg leading-relaxed mb-4">
-              - Cọc (đặt cọc) sẽ được tính là 10% của giá khởi điểm, được yêu cầu khi thực hiện tham gia đấu giá.
+              - Cọc (đặt cọc) sẽ được tính là % của giá mua ngay, được yêu cầu khi thực hiện tham gia đấu giá.
             </p>
             <p className="text-gray-600 text-lg leading-relaxed mb-4">
               - Cả hoa hồng và cọc sẽ được tính và thông báo cho khách hàng trước khi hoàn tất giao dịch.
