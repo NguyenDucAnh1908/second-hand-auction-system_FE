@@ -32,13 +32,13 @@ const ManageKYC = () => {
     // console.log('data: ', data);
     // Khi kết nối thành công
     stompClient.onConnect = (frame) => {
-        console.log('Connected: ' + frame);
+        //console.log('Connected: ' + frame);
         setConnected(true);
 
         // Subscribe vào topic KYC để nhận dữ liệu cập nhật
         stompClient.subscribe('/topic/kyc', (message) => {
             const updatedKYC = JSON.parse(message.body);
-            console.log('Received updated KYC: ', updatedKYC);
+            //console.log('Received updated KYC: ', updatedKYC);
 
             // Cập nhật danh sách KYC sau khi nhận dữ liệu mới
             setItems((prevItems) => {
@@ -51,12 +51,12 @@ const ManageKYC = () => {
 
     // Nếu có lỗi WebSocket
     stompClient.onWebSocketError = (error) => {
-        console.error('WebSocket error:', error);
+        //console.error('WebSocket error:', error);
     };
 
     // Khi WebSocket đóng kết nối
     stompClient.onWebSocketClose = () => {
-        console.log('WebSocket closed');
+        //console.log('WebSocket closed');
         setConnected(false);
     };
 

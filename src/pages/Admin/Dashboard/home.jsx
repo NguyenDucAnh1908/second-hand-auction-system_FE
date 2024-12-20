@@ -8,7 +8,7 @@ import {Card, CardHeader, CardBody, Typography} from "@material-tailwind/react";
 import {StatisticsChart} from "@/widgets/charts/index.js";
 import {chartsConfig} from "@/configs/charts-config";
 import {format} from "date-fns"
-
+import {Empty, Skeleton} from 'antd';
 import statisticsChartsData from "@/data/statistics-charts-data.jsx";
 import ordersOverviewData from "../../../data/orders-overview-data";
 
@@ -214,11 +214,11 @@ export function Home() {
         },
 
     ];
-    if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>Error fetching data</div>;
-
+    // if (isLoading) return <div>Loading...</div>;
+    if (isError) return <div><Empty /></div>;
     return (
         <div className="mt-12">
+            <Skeleton loading={isLoading} active>
             {/* Statistics Cards */}
             <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
                 {statisticsData.length > 0 ? (
@@ -258,8 +258,7 @@ export function Home() {
                     />
                 ))}
             </div>
-
-
+            </Skeleton>
         </div>
     );
 }

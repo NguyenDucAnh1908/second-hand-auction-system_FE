@@ -163,7 +163,7 @@ export default function AuctionSection(
         }).format(price);
     };
 
-    console.log("dataItem", dataItem)
+    //console.log("dataItem", dataItem)
     const handleCreateOrder = async (auction_id) => {
         console.log(auction_id);
         if (!dataItem?.auction?.buy_now_price) {
