@@ -4,8 +4,8 @@ import FooterBK from "../../components/FooterBK/index.jsx";
 import {ButtonDH} from "../../components/index.jsx";
 import {useGetKYCByIdQuery, useGetKYCItemsQuery, useUpdateKycMutation} from "../../services/kyc.service.js";
 import {useParams} from 'react-router-dom';
-import {Input, message, Spin, Descriptions, Image,} from 'antd';
-import { format } from 'date-fns';  // Cài đặt date-fns nếu chưa có
+import {Input, message, Spin, Descriptions, Image, Skeleton,} from 'antd';
+import {format} from 'date-fns';  // Cài đặt date-fns nếu chưa có
 import {useNavigate} from 'react-router-dom';
 
 export default function KiemduyetStaffPage() {
@@ -25,7 +25,7 @@ export default function KiemduyetStaffPage() {
     if (error) return <div>Error loading KYC details: {error.message}</div>;
 
     const handleUpdateKyc = async (newStatus) => {
-        console.log("New Status:", newStatus);
+        //console.log("New Status:", newStatus);
         if (!newStatus) {
             //alert("Status cannot be null!");
             message.error("Status cannot be null!")
@@ -46,10 +46,10 @@ export default function KiemduyetStaffPage() {
             //message.error("Data to be sent to API")
 
             const response = await updateKyc(kycUpdateData).unwrap();
-            console.log("API response:", response);
+            //console.log("API response:", response);
             setStatus(newStatus);
             //alert("KYC updated successfully!");
-            message.success(response?.message);
+            //message.success(response?.message);
 
             navigate('/dashboard/managementKYC');
             isRefetchManageKyc();
@@ -119,54 +119,57 @@ export default function KiemduyetStaffPage() {
                         <Heading size="textlg" as="h2" className="text-[54px] font-bold text-blue_gray-900 text-center">
                             Thẩm định KYC
                         </Heading>
-                        {isLoading ? (
-                            <Spin size="large" tip="Đang tải thông tin..."/>
-                        ) : (
+                        {/*{isLoading ? (*/}
+                        {/*    <Spin size="large" tip="Đang tải thông tin..."/>*/}
+                        {/*) : (*/}
                             <>
-                                {/*<VerificationSection kycData={kycData}/>*/}
-                                <Descriptions title="Thông tin" items={items}/>
-                                <br/>
-                                <Input.TextArea
-                                    rows={4}
-                                    value={kyc?.reason}
-                                    onChange={(e) => setReason(e.target.value)}
-                                    placeholder="Nhập lý do (nếu có)"
-                                />
-                                <div className="flex justify-center pt-6">
-                                    <Spin spinning={isLoadingKyc} size="large" tip="Đang xử lý...">
+                                <Skeleton loading={isLoading} active>
+                                    {/*<VerificationSection kycData={kycData}/>*/}
+                                    <Descriptions title="Thông tin" items={items}/>
+                                    <br/>
+                                    <Input.TextArea
+                                        rows={4}
+                                        value={kyc?.reason}
+                                        onChange={(e) => setReason(e.target.value)}
+                                        placeholder="Nhập lý do (nếu có)"
+                                    />
+                                    <div className="flex justify-center pt-6">
+
                                         <div className="flex gap-5">
-                                            <ButtonDH
-                                                shape="round"
-                                                className="w-36 py-2 font-semibold bg-blue-500 text-white hover:bg-blue-600 transition duration-300"
-                                                onClick={() => handleUpdateKyc('APPROVED')}
-                                            >
+                                            <Spin spinning={isLoadingKyc} size="large" tip="Đang xử lý...">
+                                                <ButtonDH
+                                                    shape="round"
+                                                    className="w-36 py-2 font-semibold bg-blue-500 text-white hover:bg-blue-600 transition duration-300"
+                                                    onClick={() => handleUpdateKyc('APPROVED')}
+                                                >
                 <span className="flex items-center justify-center">
                     Phê Duyệt
                 </span>
-                                            </ButtonDH>
-                                            <ButtonDH
-                                                shape="round"
-                                                className="w-36 py-2 font-medium bg-yellow-400 text-gray-900 hover:bg-yellow-500 transition duration-300"
-                                                onClick={() => handleUpdateKyc('PENDING')}
-                                            >
+                                                </ButtonDH>
+                                                <ButtonDH
+                                                    shape="round"
+                                                    className="w-36 py-2 font-medium bg-yellow-400 text-gray-900 hover:bg-yellow-500 transition duration-300"
+                                                    onClick={() => handleUpdateKyc('PENDING')}
+                                                >
                 <span className="flex items-center justify-center">
                      Bổ Sung
                 </span>
-                                            </ButtonDH>
-                                            <ButtonDH
-                                                shape="round"
-                                                className="w-36 py-2 font-medium bg-red-500 text-white hover:bg-red-600 transition duration-300"
-                                                onClick={() => handleUpdateKyc('REJECTED')}
-                                            >
+                                                </ButtonDH>
+                                                <ButtonDH
+                                                    shape="round"
+                                                    className="w-36 py-2 font-medium bg-red-500 text-white hover:bg-red-600 transition duration-300"
+                                                    onClick={() => handleUpdateKyc('REJECTED')}
+                                                >
                 <span className="flex items-center justify-center">
                     Từ Chối
                 </span>
-                                            </ButtonDH>
+                                                </ButtonDH>
+                                            </Spin>
                                         </div>
-                                    </Spin>
-                                </div>
+                                    </div>
+                                </Skeleton>
                             </>
-                        )}
+                        {/*)}*/}
                     </div>
                 </div>
                 <div className="w-full h-px bg-gray-200 my-5"/>
