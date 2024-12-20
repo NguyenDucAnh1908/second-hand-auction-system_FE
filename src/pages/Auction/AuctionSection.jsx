@@ -162,6 +162,7 @@ export default function AuctionSection(
         }).format(price);
     };
 
+    console.log("dataItem", dataItem)
     const handleCreateOrder = async (auction_id) => {
         console.log(auction_id);
         if (!dataItem?.auction?.buy_now_price) {
@@ -185,6 +186,7 @@ export default function AuctionSection(
                 bidAmount: dataItem?.auction?.buy_now_price
             }).unwrap();
             //console.log("Phản hồi từ API:", response);
+
             if (response.status === 'OK') {
                 console.log("Tạo bid thành công:", response);
                 message.success("Đặt giá mua ngay thành công!", 3);
@@ -193,6 +195,7 @@ export default function AuctionSection(
                 const errorMessage = response.message || response.error || "Đã xảy ra lỗi, vui lòng thử lại.";
                 message.error(errorMessage, "Lỗi");
             }
+            isRefetch();
         } catch (error) {
             const errorMessage = error?.data?.message || "Đã xảy ra lỗi không xác định, vui lòng thử lại.";
             message.destroy()
@@ -203,8 +206,6 @@ export default function AuctionSection(
         //     setIsLoading(false);
         // }
     };
-
-
 
     const [isSealedBidModalOpen, setIsSealedBidModalOpen] = useState(false);
 
@@ -357,7 +358,8 @@ export default function AuctionSection(
                                     <div>
                                         <span className="text-base font-semibold text-gray-800">Chi phí cọc cho phiên đấu:</span>
                                         <div className="text-lg font-bold text-red-600 mt-2">
-                                            {formatPrice(dataItem?.auction.start_price * 0.1)}
+                                            {/*{formatPrice(dataItem?.auction.start_price * 0.1)}*/}
+                                            {formatPrice((dataItem?.auction?.buy_now_price * dataItem?.auction?.percent_deposit) / 100)}
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
