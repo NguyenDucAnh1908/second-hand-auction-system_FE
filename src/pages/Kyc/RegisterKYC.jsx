@@ -142,7 +142,7 @@ export default function KNCPage() {
 
             // Gọi API để tạo KYC
             const backendResponse = await createKyc(kycRequest);
-
+            
             if (backendResponse?.data) {
                 // Thông báo thành công
                 message.success('KYC đã được tạo thành công!');

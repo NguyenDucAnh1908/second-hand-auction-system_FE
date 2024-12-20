@@ -167,8 +167,8 @@ function RegisterProductPage() {
         // Validate: Kiểm tra độ dài mô tả
         if (value.length < 20) {
             setDescriptionError("Mô tả sản phẩm phải ít nhất 20 ký tự.");
-        } else if (value.length >= 1000) {
-            setDescriptionError("Mô tả sản phẩm không được vượt quá 1000 ký tự.");
+        } else if (value.length >= 10000) {
+            setDescriptionError("Mô tả sản phẩm không được vượt quá 10000 ký tự.");
         } else {
             setDescriptionError("");
         }
@@ -412,8 +412,13 @@ function RegisterProductPage() {
                         ) : (
                             auctionTypes?.map((type) => (
                                 <Option key={type.act_id} value={type.act_id}>
-                                    {type.auction_typeName}
+                                    {type.auction_typeName === "TRADITIONAL"
+                                        ? "Đấu giá truyền thống"
+                                        : type.auction_typeName === "ANONYMOUS"
+                                            ? "Đấu giá kín"
+                                            : type.auction_typeName}
                                 </Option>
+
                             ))
                         )}
                     </Select>
