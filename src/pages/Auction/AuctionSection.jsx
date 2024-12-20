@@ -123,6 +123,7 @@ export default function AuctionSection(
             navigate("/login");
         } else {
             setIsModalOpen(true);
+            isRefetchBidInfo()
         }
     };
     const handleOk = () => {
