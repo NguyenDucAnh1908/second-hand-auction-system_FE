@@ -23,7 +23,7 @@ export default function AuctionCreationSection1({itemId}) {
         isLoading: isloadingAuctionType,
     } = useGetAuctionTypeQuery();
     //const { refetch: isItemPendingAuctionRefetch } = useGetItemPendingAuctionQuery();
-    const [createAuction, {isLoading, isSuccess, isError, error}] = useAuctionCreateMutation();
+    const [createAuction, {isLoading: createAuctionLoading, isSuccess, isError, error}] = useAuctionCreateMutation();
     const [formData, setFormData] = useState({
         start_time: "",
         end_time: "",
@@ -32,7 +32,7 @@ export default function AuctionCreationSection1({itemId}) {
         terms_conditions: "Điều khoản hợp lệ",
         buy_now_price: null,
         price_step: null,
-        number_participant :2,
+        number_participant: 2,
         percent_deposit: 10,
         ship_type: "",
         comment: "Đã chấp thuận đấu giá",
@@ -89,7 +89,9 @@ export default function AuctionCreationSection1({itemId}) {
 
         }
     };
-
+    const handleCancel = () => {
+        navigate("/dashboard/auction-create-list");
+    };
     return (
         <>
             {/* auction creation section */}
@@ -136,7 +138,8 @@ export default function AuctionCreationSection1({itemId}) {
                                             </div>
 
                                             <div className="flex flex-col">
-                                                <label className="text-[15px] font-medium text-black-900">Giá mong muốn:</label>
+                                                <label className="text-[15px] font-medium text-black-900">Giá mong
+                                                    muốn:</label>
                                                 <InputNumber
                                                     defaultValue={1000}
                                                     formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
@@ -208,7 +211,8 @@ export default function AuctionCreationSection1({itemId}) {
                                                 />
                                             </div>
                                             <div className="flex flex-col">
-                                                <label className="text-[15px] font-medium text-black-900">Phần trăm giá cọc</label>
+                                                <label className="text-[15px] font-medium text-black-900">Phần trăm giá
+                                                    cọc</label>
                                                 <Select
                                                     defaultValue={10} // Đặt giá trị mặc định là 10%
                                                     style={{width: 350}}
@@ -265,14 +269,23 @@ export default function AuctionCreationSection1({itemId}) {
 
                             <div className="mt-8 flex justify-center mr-[450px]">
                                 <div className="flex gap-4">
-                                    <Button onClick={handleSubmit}
-                                            className="rounded-md bg-blue-600 px-4 py-2 text-white font-bold hover:bg-blue-500">Tạo
-                                        đấu giá
-                                    </Button>
-                                    <Button
-                                        className="rounded-md bg-red-600 px-4 py-2 text-white font-bold hover:bg-red-500">Hủy
-                                        tạo
-                                    </Button>
+                                    {createAuctionLoading ? (
+                                        <div className="w-full flex justify-center items-center">
+                                            <Spin size="large"/>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <Button onClick={handleSubmit}
+                                                    className="rounded-md bg-blue-600 px-4 py-2 text-white font-bold hover:bg-blue-500">Tạo
+                                                đấu giá
+                                            </Button>
+                                            <Button
+                                                onClick={handleCancel}
+                                                className="rounded-md bg-red-600 px-4 py-2 text-white font-bold hover:bg-red-500">Hủy
+                                                tạo
+                                            </Button>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>

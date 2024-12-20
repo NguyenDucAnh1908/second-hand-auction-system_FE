@@ -1,11 +1,11 @@
 import { ButtonDH, TextArea, Heading, InputDH } from "../../../components";
 import React, { useState, useEffect } from "react";
-import { Button, Input, message } from 'antd';
+import {Button, Input, message, Spin} from 'antd';
 import { useApproveItemAdminMutation, useGetItemDetailQuery } from "../../../services/item.service";
 import { useNavigate } from "react-router-dom";
 export default function StaffAssessmentSection({ itemId }) {
     const { data: itemDetail, isLoading, isError } = useGetItemDetailQuery({ id: itemId });
-    const [approveItem] = useApproveItemAdminMutation();
+    const [approveItem, {isLoading: loadingApprove}] = useApproveItemAdminMutation();
     const [status, setStatus] = useState('PENDING');
     const [reason, setReason] = useState('');
     const navigate = useNavigate();
@@ -91,23 +91,46 @@ export default function StaffAssessmentSection({ itemId }) {
                                 />
 
 
-
                                 {/* Buttons */}
+                                {/*<div className="mt-[66px] flex w-full justify-between gap-5 max-w-lg">*/}
+                                {/*    <ButtonDH*/}
+                                {/*        shape="round"*/}
+                                {/*        className="w-full max-w-[200px] rounded-md px-[34px] bg-green-500 text-white hover:bg-green-600"*/}
+                                {/*        onClick={handleApprove}*/}
+                                {/*    >*/}
+                                {/*        Phê duyệt*/}
+                                {/*    </ButtonDH>*/}
+                                {/*    <ButtonDH*/}
+                                {/*        shape="round"*/}
+                                {/*        className="w-full max-w-[200px] rounded-md px-[34px] bg-red-500 text-white hover:bg-red-600"*/}
+                                {/*        onClick={handleReject}*/}
+                                {/*    >*/}
+                                {/*        Từ chối*/}
+                                {/*    </ButtonDH>*/}
+                                {/*</div>*/}
                                 <div className="mt-[66px] flex w-full justify-between gap-5 max-w-lg">
-                                    <ButtonDH
-                                        shape="round"
-                                        className="w-full max-w-[200px] rounded-md px-[34px] bg-green-500 text-white hover:bg-green-600"
-                                        onClick={handleApprove}
-                                    >
-                                        Phê duyệt
-                                    </ButtonDH>
-                                    <ButtonDH
-                                        shape="round"
-                                        className="w-full max-w-[200px] rounded-md px-[34px] bg-red-500 text-white hover:bg-red-600"
-                                        onClick={handleReject}
-                                    >
-                                        Từ chối
-                                    </ButtonDH>
+                                    {loadingApprove ? (
+                                        <div className="w-full flex justify-center items-center">
+                                            <Spin size="large"/>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <ButtonDH
+                                                shape="round"
+                                                className="w-full max-w-[200px] rounded-md px-[34px] bg-green-500 text-white hover:bg-green-600"
+                                                onClick={handleApprove}
+                                            >
+                                                Phê duyệt
+                                            </ButtonDH>
+                                            <ButtonDH
+                                                shape="round"
+                                                className="w-full max-w-[200px] rounded-md px-[34px] bg-red-500 text-white hover:bg-red-600"
+                                                onClick={handleReject}
+                                            >
+                                                Từ chối
+                                            </ButtonDH>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
