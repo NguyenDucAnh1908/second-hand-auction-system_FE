@@ -157,7 +157,7 @@ export default function Header2({ ...props }) {
                     <div className="ml-[74px] mr-6 flex items-center justify-between gap-5 md:mx-0 md:flex-col">
                         <a href="/">
                             <Img
-                                src="images/img_auction.png"
+                                src="https://firebasestorage.googleapis.com/v0/b/android-decd6.appspot.com/o/z5930476766777_d10afe7424fe97f8b6e85bb89543c90e.jpg?alt=media&token=e5396d64-690e-4ef1-924d-1fd162eab863"
                                 alt="Header Logo"
                                 className="h-[60px] w-[60px] rounded-full object-cover self-end  md:self-auto"
                             />
