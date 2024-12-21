@@ -1,8 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Text, Img, InputDH, Heading } from "../../components";
 import Header2 from "../../components/Header2";
-import ProductInfo from "../../components/ProductInfo"
-import ProductInfo1 from "../../components/ProductInfo1";
 import React, { Suspense } from "react";
 import SellerDetailHeader from "../../components/SellerDetail";
 import {Breadcrumb, Checkbox, Collapse, Layout, Menu, theme} from 'antd';

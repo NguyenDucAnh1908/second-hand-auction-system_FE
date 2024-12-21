@@ -4,7 +4,6 @@ import Pagination from "@/components/Pagination/index.jsx";
 import {useNavigate} from "react-router-dom";
 import {useGetSellerInformationByUserIdQuery} from "../../services/sellerinformation.service.js";
 import {useGetItemsBySellerQuery, useGetItemsFilterQuery} from "../../services/item.service";
-import ProductDetails21 from "../ProductDetails21/index.jsx";
 import {
 
     Spin,

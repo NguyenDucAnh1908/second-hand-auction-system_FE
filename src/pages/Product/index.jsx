@@ -4,7 +4,6 @@ import {
     Heading,
     ButtonDH,
     CheckBox,
-    SeekBar,
     InputDH,
 } from "../../components";
 import FooterBK from "../../components/FooterBK";
@@ -30,7 +29,6 @@ import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { Input } from "@material-tailwind/react";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
-import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
 import { useGetCategoriesQuery } from "@/services/category.service.js";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetItemsFilterQuery } from "@/services/item.service.js";

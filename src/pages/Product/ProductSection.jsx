@@ -1,7 +1,6 @@
 import React, {useState, Suspense, useEffect} from "react";
 import {Text, SelectBox, Img, Heading} from "../../components";
 import Pagination from "../../components/Pagination";
-import ProductDetails21 from "../../components/ProductDetails21";
 import {Tag, Modal, Button} from "antd";
 import {CloseCircleOutlined} from "@ant-design/icons";
 import RegisterAuction from "../RegisterAuction-Buyer/RegisterAuction";

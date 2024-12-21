@@ -1,7 +1,5 @@
 import {Img, SelectBox, Heading, Text, InputDH} from "../../../components";
 import {CloseSVG} from "../../../components/InputDH/close.jsx";
-import {ReactTable} from "../../../components/ReactTable";
-import {createColumnHelper} from "@tanstack/react-table";
 import React, {useState} from 'react';
 import {Button, Card, Option, Select, Typography} from "@material-tailwind/react";
 import {Tag} from "antd";

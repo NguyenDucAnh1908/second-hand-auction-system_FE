@@ -8,7 +8,6 @@ import {
     InputDH,
 } from "../../components";
 import { CloseSVG } from "../../components/InputDH/close.jsx";
-import NumberRow from "../../components/NumberRow";
 import React, { useState } from "react";
 import { TabPanel, TabList, Tab, Tabs } from "react-tabs";
 import Header2 from "../../components/Header2";
