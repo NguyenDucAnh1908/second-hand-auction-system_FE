@@ -2,6 +2,10 @@ import React from "react";
 import { Button, Result } from 'antd';
 
 const NotFound = () => {
+    const navigate = useNavigate();
+    const navigateHome = () => {
+        navigate("/HomePage");
+    };
     return (
         <div>
             <Result

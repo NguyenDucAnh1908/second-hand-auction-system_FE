@@ -71,7 +71,7 @@ export default function ProductPage() {
     };
     const {
         data: categories = [],
-        error,
+        isError,
         isLoading,
         isFetching,
         isSuccess,
@@ -208,8 +208,8 @@ export default function ProductPage() {
                                 </div>
 
                                 <div className="w-full overflow-y-auto max-h-[400px]">
-                                    {error ? (
-                                        <Empty description={`Error: ${error.message || "Failed to load categories."}`} />
+                                    {isError ? (
+                                        <Empty description={`Error: ${isError.message || "Failed to load categories."}`} />
                                     ) : (
                                         <Spin spinning={isLoading} tip="Loading...">
                                             <Collapse defaultActiveKey={["1"]} ghost>
@@ -482,9 +482,7 @@ export default function ProductPage() {
                                                                     onBidClick={showModal} />
                                                             </div>
                                                         ))
-                                                    ) : (
-                                                        <Empty description="items" />
-                                                    )}
+                                                    ) : null}
                                                 </div>
                                             </Spin>
                                         )}

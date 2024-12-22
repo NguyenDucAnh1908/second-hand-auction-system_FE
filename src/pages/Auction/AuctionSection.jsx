@@ -174,20 +174,11 @@ export default function AuctionSection(
             message.error("ID phiên đấu giá không hợp lệ!", 3);
             return;
         }
-        // Ẩn nút ngay khi người dùng nhấn
-        // setIsButtonVisible(false);
-        //
-        // // Vô hiệu hóa nút và hiển thị loading spinner
-        // setIsButtonDisabled(true);
-        // setIsLoading(true);
-
         try {
             const response = await createBid({
                 auctionId: auction_id,
                 bidAmount: dataItem?.auction?.buy_now_price
             }).unwrap();
-            //console.log("Phản hồi từ API:", response);
-
             if (response.status === 'OK') {
                 console.log("Tạo bid thành công:", response);
                 message.success("Đặt giá mua ngay thành công!", 3);
@@ -202,10 +193,6 @@ export default function AuctionSection(
             message.destroy()
             message.error(errorMessage, 3);
         }
-
-        // finally {
-        //     setIsLoading(false);
-        // }
     };
 
     const [isSealedBidModalOpen, setIsSealedBidModalOpen] = useState(false);
@@ -218,8 +205,6 @@ export default function AuctionSection(
         setIsSealedBidModalOpen(true);
     };
 
-
-    // ẩn danh
     const handleAuctionEnd = async () => {
         try {
             const response = await updateTime({
@@ -231,8 +216,6 @@ export default function AuctionSection(
         }
     };
 
-
-    // Hàm xử lý Đấu Giá Ẩn Danh
     const handleSealedBidRegister = async (e) => {
         e.preventDefault();
         try {
@@ -791,8 +774,6 @@ export default function AuctionSection(
                                     </button>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>

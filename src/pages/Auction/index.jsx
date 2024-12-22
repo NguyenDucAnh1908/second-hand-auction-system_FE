@@ -93,8 +93,6 @@ export default function AuctionPage() {
         isLoading: loadingHighestBid,
         refetch: isRefetchHighestBid
     } = useGetHighestBidQuery(data?.auction?.auction_id);
-    //console.log("highestBid", highestBid?.data)
-    //const isHighBidder = winningBid?.data?.winBid === true;
     const [userIdSeller, setUserIdSeller] = useState(null);
 
     useEffect(() => {
@@ -133,19 +131,17 @@ export default function AuctionPage() {
 
         eventSource.addEventListener("bidUpdate", (event) => {
             const bid = JSON.parse(event.data);
-            //console.log("Updated bid:", bid);
-            // Cập nhật trạng thái và giá đấu từ SSE
             setBidAmount(bid?.bidAmount || null);
             if (bid?.winBid && bid?.userId === userAPI?.id) {
-                setIsHighBidder(true); // Người dùng hiện tại đang thắng
+                setIsHighBidder(true);
             } else {
-                setIsHighBidder(false); // Người dùng hiện tại bị outbid
+                setIsHighBidder(false);
             }
         });
 
         eventSource.onerror = (error) => {
             console.error("SSE Error:", error);
-            eventSource.close(); // Đóng kết nối nếu có lỗi
+            eventSource.close();
         };
 
         return () => {
