@@ -37,8 +37,12 @@ export default function AuctionSection(
     const auctionEndTime = dataItem.auction?.end_time || null;
     const auctionStartDate = dataItem.auction?.startDate || null;
     const auctionStartTime = dataItem.auction?.start_time || null;
-    const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}`).getTime();
-    const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
+    const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}Z`).getTime();
+    const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}Z`).getTime();
+
+
+    console.log("Backend endDate:", auctionEndDate, auctionEndTime);
+
 
     const auctionTypeName = dataItem.auctionType?.auction_typeName;
     //console.log(auctionTypeName);
@@ -114,7 +118,7 @@ export default function AuctionSection(
         refetch: isRefetchBidInfo
     } = useGetBidInfoQuery(dataItem?.auction?.auction_id);
 
-    //console.log("bidInfo: ", bidInfo)
+    console.log("bidInfo: ", bidInfo)
 
     const {Countdown} = Statistic;
     const showModal = () => {
