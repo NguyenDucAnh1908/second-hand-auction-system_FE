@@ -192,24 +192,68 @@ export default function TestComponent() {
                     }}
                 >
                     Content
-                    <div className="flex flex-col">
-                        <h1>Danh sách Subcategories</h1>
-                        {/*<ul>*/}
-                        {/*    {subCategories.map((subCategory, index) => (*/}
-                        {/*        <li key={index}>{subCategory.sub_category}</li>*/}
-                        {/*    ))}*/}
-                        {/*</ul>*/}
-                        <ul>
-                            {subCategories.map((subCategory, index) => (
-                                <li key={index}>{subCategory.sub_category}</li>
-                            ))}
-                        </ul>
-                        <h1>Danh sách Subcategories-v2</h1>
-                        {/*<ul>*/}
-                        {/*    {subCategoriesV2.map((subCategory, index) => (*/}
-                        {/*        <li key={index}>{subCategory.sub_category}</li>*/}
-                        {/*    ))}*/}
-                        {/*</ul>*/}
+                    <div className="p-6 bg-gray-100 min-h-screen">
+                        {/* Thông tin đơn hàng */}
+                        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+                            <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN ĐƠN HÀNG</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <p><strong>Mã đơn hàng:</strong> LDM8PH</p>
+                                <p><strong>Ngày lấy dự kiến:</strong> 23/12/2024</p>
+                                <p><strong>Ngày giao dự kiến:</strong> 24/12/2024 - 25/12/2024</p>
+                                <p>
+                                    <strong>Trạng thái hiện tại:</strong>
+                                    <span className="text-blue-500 font-semibold ml-2">Chờ lấy hàng</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Thông tin chi tiết */}
+                        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+                            <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN CHI TIẾT</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <p><strong>Mã đơn khách hàng:</strong></p>
+                                <p><strong>Sản phẩm:</strong> Áo Polo <span className="text-gray-500">x1</span></p>
+                                <p><strong>Cân nặng:</strong> 30 gram</p>
+                                <p><strong>Lưu ý giao hàng:</strong> Không cho xem hàng</p>
+                            </div>
+                        </div>
+
+                        {/* Người nhận */}
+                        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+                            <h3 className="text-lg font-semibold border-b pb-2 mb-4">NGƯỜI NHẬN</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <p><strong>Họ và tên:</strong> TinTest124</p>
+                                <p><strong>Điện thoại:</strong> 0987654321</p>
+                                <p className="col-span-2"><strong>Địa chỉ:</strong> 72 Thành Thái, Phường 14, Quận 10,
+                                    Hồ Chí Minh, Vietnam</p>
+                            </div>
+                        </div>
+
+                        {/* Chi phí */}
+                        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+                            <h3 className="text-lg font-semibold border-b pb-2 mb-4">CHI PHÍ</h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <p><strong>Người trả:</strong> Người nhận trả phí</p>
+                            </div>
+                        </div>
+
+                        {/* Lịch sử đơn hàng */}
+                        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+                            <h3 className="text-lg font-semibold border-b pb-2 mb-4">Lịch sử đơn hàng</h3>
+                            <div className="grid grid-cols-5 gap-4 text-sm text-gray-700">
+                                <p>Thứ 2, 23/12/2024</p>
+                                <p>Chi tiết</p>
+                                <p>Chờ lấy hàng</p>
+                                <p>72 Thành Thái, Phường 14, Quận 10, Hồ Chí Minh, Vietnam</p>
+                                <p>14:40</p>
+                            </div>
+                        </div>
+
+                        {/* Nhật ký người dùng */}
+                        <div className="bg-white p-6 rounded-lg shadow-md">
+                            <h3 className="text-lg font-semibold border-b pb-2 mb-4">Nhật ký người dùng</h3>
+                            {/* Thêm nội dung nếu cần */}
+                        </div>
                     </div>
                 </div>
             </Content>
