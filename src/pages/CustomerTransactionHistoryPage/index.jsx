@@ -1,32 +1,17 @@
-import {Helmet} from "react-helmet";
-import {
-    Img,
-    Text,
-    ButtonDH,
-    Heading,
-    SelectBox,
-    InputDH,
-} from "../../components";
-import {CloseSVG} from "../../components/InputDH/close.jsx";
-import React, {useState} from "react";
-import {TabPanel, TabList, Tab, Tabs} from "react-tabs";
+import {Heading,} from "../../components";
+import  {useState} from "react";
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {Table, Button, theme, Layout, Breadcrumb, Menu, Empty, Skeleton, Modal} from "antd";
+import {Breadcrumb, Button, Empty, Layout, Modal, Skeleton, Table, theme} from "antd";
 import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
 import {useGetTransactionWalletQuery} from "@/services/transactionWallet.service.js";
 import Pagination from "@/components/Pagination/index.jsx";
 
 
-const dropDownOptions = [
-    {label: "Option1", value: "option1"},
-    {label: "Option2", value: "option2"},
-    {label: "Option3", value: "option3"},
-];
+
 
 const {Content, Sider} = Layout;
 export default function CustomerTransactionHistoryPagePage() {
-    const [searchBarValue8, setSearchBarValue8] = React.useState("");
     const [page, setPage] = useState(1);
     const {
         token: {colorBgContainer, borderRadiusLG},
@@ -35,7 +20,7 @@ export default function CustomerTransactionHistoryPagePage() {
         data: dataTransactionWallet,
         isLoading: isLoadingTransactionWallet,
         isError: isErrorTransactionWallet,
-        error: errorTransactionWallet
+
     } = useGetTransactionWalletQuery({
         page: page - 1,
         limit: 8
