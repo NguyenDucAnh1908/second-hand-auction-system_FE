@@ -206,7 +206,7 @@ export const itemApiSlice = apiSlice.injectEndpoints({
         }),
 
         getImageItems: builder.query({
-            query: ({ id}) => `item/image-item/${id}`,
+            query: ({id}) => `item/image-item/${id}`,
             transformResponse: (response) => response.data,
         }),
 
