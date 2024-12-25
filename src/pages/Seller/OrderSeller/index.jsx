@@ -19,11 +19,11 @@ export default function OrderManagementSeller() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0); // State cho trang hiện tại
   const { data: dataOrder, error } = useGetOrderSellerQuery({ page: currentPage, limit: 10 });
-  console.log(dataOrder?.data);
+  //console.log(dataOrder?.data);
   if (error) return <div>Error loading orders!</div>;
   if (!dataOrder) return <div>Loading...</div>;
 
-  console.log("Data", dataOrder?.data);
+  //console.log("Data", dataOrder?.data);
   return (
     <>
       <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>

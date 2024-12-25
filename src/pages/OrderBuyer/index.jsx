@@ -21,6 +21,7 @@ import {
 } from '@ant-design/icons';
 import OnlineGatewayService from "@/services/apiGhn.service.js";
 import {useGetImageItemsQuery} from "@/services/item.service.js";
+import OrderDetailCompoment from "@/components/OrderDetailCompoment/index.jsx";
 
 const statusMapping = {
     ready_to_pick: {text: 'Mới tạo đơn hàng', color: 'text-gray-500'},
@@ -103,7 +104,6 @@ export default function OrderManagementBuyer() {
         setIsFeedbackSellerModalVisible(false);
         setSelectedOrder(null);
     };
-
 
     const dataSource = data?.data.map(order => ({
         key: order.id,
@@ -491,143 +491,153 @@ export default function OrderManagementBuyer() {
                     size='large'
                     width={900}
                 >
+                    {/*{selectedOrder && orderDetails && (*/}
+                    {/*    <div className="p-6 bg-gray-100 min-h-screen">*/}
+                    {/*        /!* Thông tin đơn hàng *!/*/}
+                    {/*        <div className="bg-white p-6 rounded-lg shadow-md mb-6">*/}
+                    {/*            <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN ĐƠN HÀNG</h3>*/}
+                    {/*            <div className="grid grid-cols-2 gap-4">*/}
+                    {/*                <p><strong>Mã đơn hàng:</strong> {orderDetails?.order_code}</p>*/}
+                    {/*                <p>*/}
+                    {/*                    <strong>Ngày lấy dự kiến:</strong>{' '}*/}
+                    {/*                    {orderDetails?.pickup_time*/}
+                    {/*                        ? new Date(orderDetails.pickup_time).toLocaleString('vi-VN', {*/}
+                    {/*                            day: '2-digit',*/}
+                    {/*                            month: '2-digit',*/}
+                    {/*                            year: 'numeric',*/}
+                    {/*                            hour: '2-digit',*/}
+                    {/*                            minute: '2-digit',*/}
+                    {/*                        })*/}
+                    {/*                        : 'Không xác định'}*/}
+                    {/*                </p>*/}
+                    {/*                <p>*/}
+                    {/*                    <strong>Ngày giao dự kiến:</strong>{' '}*/}
+                    {/*                    {orderDetails?.leadtime_order?.from_estimate_date*/}
+                    {/*                        ? new Date(orderDetails.leadtime_order.from_estimate_date).toLocaleDateString('vi-VN', {*/}
+                    {/*                            day: '2-digit',*/}
+                    {/*                            month: '2-digit',*/}
+                    {/*                            year: 'numeric',*/}
+                    {/*                        })*/}
+                    {/*                        : 'Không xác định'}{' '}*/}
+                    {/*                    -{' '}*/}
+                    {/*                    {orderDetails?.leadtime_order?.to_estimate_date*/}
+                    {/*                        ? new Date(orderDetails.leadtime_order.to_estimate_date).toLocaleDateString('vi-VN', {*/}
+                    {/*                            day: '2-digit',*/}
+                    {/*                            month: '2-digit',*/}
+                    {/*                            year: 'numeric',*/}
+                    {/*                        })*/}
+                    {/*                        : 'Không xác định'}*/}
+                    {/*                </p>*/}
+                    {/*                <p>*/}
+                    {/*                    <strong>Trạng thái hiện tại:</strong>*/}
+                    {/*                    <span*/}
+                    {/*                        className={`font-semibold ml-2 ${statusMapping[orderDetails?.status]?.color || 'text-gray-500'}`}> {statusMapping[orderDetails?.status]?.text || 'Không xác định'}</span>*/}
+                    {/*                </p>*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+
+                    {/*        /!* Thông tin chi tiết *!/*/}
+                    {/*        <div className="bg-white p-6 rounded-lg shadow-md mb-6">*/}
+                    {/*            <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN CHI TIẾT</h3>*/}
+                    {/*            <div className="grid grid-cols-2 gap-4">*/}
+                    {/*                <p><strong>Mã đơn khách hàng:</strong> {selectedOrder?.itemId} </p>*/}
+                    {/*                <p><strong>Sản phẩm:</strong> {selectedOrder?.itemName} </p>*/}
+                    {/*                <p><strong>Lưu ý giao hàng:</strong> {selectedOrder?.note} </p>*/}
+                    {/*                <p><strong>Phương thức thanh toán:</strong> {selectedOrder?.paymentMethod} </p>*/}
+
+                    {/*            </div>*/}
+                    {/*            <div className="mt-2 grid grid-cols-3 gap-1">*/}
+                    {/*                <Image.PreviewGroup*/}
+                    {/*                    preview={{*/}
+                    {/*                        onChange: (current, prev) =>*/}
+                    {/*                            console.log(`current index: ${current}, prev index: ${prev}`),*/}
+                    {/*                    }}*/}
+                    {/*                >*/}
+                    {/*                    {itemImage.map((image, index) => (*/}
+                    {/*                        <Image*/}
+                    {/*                            key={index}*/}
+                    {/*                            width={200}*/}
+                    {/*                            src={image.image} // Thay `url` bằng tên chính xác của trường trả về từ API*/}
+                    {/*                            alt={`Image ${index + 1}`}*/}
+                    {/*                        />*/}
+                    {/*                    ))}*/}
+                    {/*                </Image.PreviewGroup>*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+
+                    {/*        /!* Người nhận *!/*/}
+                    {/*        <div className="bg-white p-6 rounded-lg shadow-md mb-6">*/}
+                    {/*            <h3 className="text-lg font-semibold border-b pb-2 mb-4">NGƯỜI NHẬN</h3>*/}
+                    {/*            <div className="grid grid-cols-2 gap-4">*/}
+                    {/*                <p><strong>Họ và tên:</strong> {orderDetails?.to_name}</p>*/}
+                    {/*                <p><strong>Điện thoại:</strong> {orderDetails?.to_phone}</p>*/}
+                    {/*                /!*<p><strong>Email:</strong> {selectedOrder?.email}</p>*!/*/}
+                    {/*                <p className="col-span-2"><strong>Địa chỉ:</strong> {orderDetails?.to_address} </p>*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+
+                    {/*        /!* Người Gửi *!/*/}
+                    {/*        <div className="bg-white p-6 rounded-lg shadow-md mb-6">*/}
+                    {/*            <h3 className="text-lg font-semibold border-b pb-2 mb-4">NGƯỜI GỬI</h3>*/}
+                    {/*            <div className="grid grid-cols-2 gap-4">*/}
+                    {/*                <p><strong>Họ và tên:</strong> {orderDetails?.from_name}</p>*/}
+                    {/*                <p><strong>Điện thoại:</strong> {orderDetails?.from_phone}</p>*/}
+                    {/*                <p className="col-span-2"><strong>Địa chỉ:</strong> {orderDetails?.from_address}</p>*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+
+                    {/*        /!* Thông tin đấu giá *!/*/}
+                    {/*        <div className="bg-white p-6 rounded-lg shadow-md mb-6">*/}
+                    {/*            <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN ĐẤU GIÁ</h3>*/}
+                    {/*            <div className="grid grid-cols-2 gap-4">*/}
+                    {/*                <p><strong>Mã đấu giá:</strong> {selectedOrder?.auctionId} </p>*/}
+                    {/*                <p><strong>Kiểu dấu giá:</strong> {selectedOrder?.auctionTypeName}</p>*/}
+                    {/*                <p><strong>Số tiền đấu giá:</strong> {selectedOrder?.totalPrice} </p>*/}
+                    {/*                <p><strong>Bước giá:</strong> {selectedOrder?.priceStep} </p>*/}
+                    {/*                <p><strong>Trạng thái:</strong> {selectedOrder?.status} </p>*/}
+                    {/*                <p><strong>Điều khoản:</strong> {selectedOrder?.termConditions} </p>*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+
+                    {/*        /!* Chi phí *!/*/}
+                    {/*        <div className="bg-white p-6 rounded-lg shadow-md mb-6">*/}
+                    {/*            <h3 className="text-lg font-semibold border-b pb-2 mb-4">CHI PHÍ</h3>*/}
+                    {/*            <div className="grid grid-cols-2 gap-4">*/}
+                    {/*                <p>*/}
+                    {/*                    <strong>Người trả:</strong>{" "}*/}
+                    {/*                    {orderDetails?.payment_type_id === 1*/}
+                    {/*                        ? "Người Gửi trả phí"*/}
+                    {/*                        : orderDetails?.payment_type_id === 2*/}
+                    {/*                            ? "Người nhận trả phí"*/}
+                    {/*                            : "Không xác định"}*/}
+                    {/*                </p>*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+
+                    {/*        /!* Lịch sử đơn hàng *!/*/}
+                    {/*        <div className="bg-white p-6 rounded-lg shadow-md mb-6">*/}
+                    {/*            <h3 className="text-lg font-semibold border-b pb-2 mb-4">Lịch sử đơn hàng</h3>*/}
+                    {/*            <div className="grid grid-cols-5 gap-4 text-sm text-gray-700">*/}
+                    {/*            </div>*/}
+                    {/*            <Table pagination={false} columns={historyDelivery} dataSource={dataSourceDelivery}/>*/}
+                    {/*        </div>*/}
+
+                    {/*        /!* Nhật ký người dùng *!/*/}
+                    {/*        <div className="bg-white p-6 rounded-lg shadow-md">*/}
+                    {/*            <h3 className="text-lg font-semibold border-b pb-2 mb-4">Nhật ký người dùng</h3>*/}
+                    {/*            /!* Thêm nội dung nếu cần *!/*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
                     {selectedOrder && orderDetails && (
-                        <div className="p-6 bg-gray-100 min-h-screen">
-                            {/* Thông tin đơn hàng */}
-                            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                                <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN ĐƠN HÀNG</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <p><strong>Mã đơn hàng:</strong> {orderDetails?.order_code}</p>
-                                    <p>
-                                        <strong>Ngày lấy dự kiến:</strong>{' '}
-                                        {orderDetails?.pickup_time
-                                            ? new Date(orderDetails.pickup_time).toLocaleString('vi-VN', {
-                                                day: '2-digit',
-                                                month: '2-digit',
-                                                year: 'numeric',
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                            })
-                                            : 'Không xác định'}
-                                    </p>
-                                    <p>
-                                        <strong>Ngày giao dự kiến:</strong>{' '}
-                                        {orderDetails?.leadtime_order?.from_estimate_date
-                                            ? new Date(orderDetails.leadtime_order.from_estimate_date).toLocaleDateString('vi-VN', {
-                                                day: '2-digit',
-                                                month: '2-digit',
-                                                year: 'numeric',
-                                            })
-                                            : 'Không xác định'}{' '}
-                                        -{' '}
-                                        {orderDetails?.leadtime_order?.to_estimate_date
-                                            ? new Date(orderDetails.leadtime_order.to_estimate_date).toLocaleDateString('vi-VN', {
-                                                day: '2-digit',
-                                                month: '2-digit',
-                                                year: 'numeric',
-                                            })
-                                            : 'Không xác định'}
-                                    </p>
-                                    <p>
-                                        <strong>Trạng thái hiện tại:</strong>
-                                        <span
-                                            className={`font-semibold ml-2 ${statusMapping[orderDetails?.status]?.color || 'text-gray-500'}`}> {statusMapping[orderDetails?.status]?.text || 'Không xác định'}</span>
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Thông tin chi tiết */}
-                            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                                <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN CHI TIẾT</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <p><strong>Mã đơn khách hàng:</strong> {selectedOrder?.itemId} </p>
-                                    <p><strong>Sản phẩm:</strong> {selectedOrder?.itemName} </p>
-                                    <p><strong>Lưu ý giao hàng:</strong> {selectedOrder?.note} </p>
-                                    <p><strong>Phương thức thanh toán:</strong> {selectedOrder?.paymentMethod} </p>
-
-                                </div>
-                                <div className="mt-2 grid grid-cols-3 gap-1">
-                                    <Image.PreviewGroup
-                                        preview={{
-                                            onChange: (current, prev) =>
-                                                console.log(`current index: ${current}, prev index: ${prev}`),
-                                        }}
-                                    >
-                                        {itemImage.map((image, index) => (
-                                            <Image
-                                                key={index}
-                                                width={200}
-                                                src={image.image} // Thay `url` bằng tên chính xác của trường trả về từ API
-                                                alt={`Image ${index + 1}`}
-                                            />
-                                        ))}
-                                    </Image.PreviewGroup>
-                                </div>
-                            </div>
-
-                            {/* Người nhận */}
-                            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                                <h3 className="text-lg font-semibold border-b pb-2 mb-4">NGƯỜI NHẬN</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <p><strong>Họ và tên:</strong> {orderDetails?.to_name}</p>
-                                    <p><strong>Điện thoại:</strong> {orderDetails?.to_phone}</p>
-                                    {/*<p><strong>Email:</strong> {selectedOrder?.email}</p>*/}
-                                    <p className="col-span-2"><strong>Địa chỉ:</strong> {orderDetails?.to_address} </p>
-                                </div>
-                            </div>
-
-                            {/* Người Gửi */}
-                            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                                <h3 className="text-lg font-semibold border-b pb-2 mb-4">NGƯỜI GỬI</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <p><strong>Họ và tên:</strong> {orderDetails?.from_name}</p>
-                                    <p><strong>Điện thoại:</strong> {orderDetails?.from_phone}</p>
-                                    <p className="col-span-2"><strong>Địa chỉ:</strong> {orderDetails?.from_address}</p>
-                                </div>
-                            </div>
-
-                            {/* Thông tin đấu giá */}
-                            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                                <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN ĐẤU GIÁ</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <p><strong>Mã đấu giá:</strong> {selectedOrder?.auctionId} </p>
-                                    <p><strong>Kiểu dấu giá:</strong> {selectedOrder?.auctionTypeName}</p>
-                                    <p><strong>Số tiền đấu giá:</strong> {selectedOrder?.totalPrice} </p>
-                                    <p><strong>Bước giá:</strong> {selectedOrder?.priceStep} </p>
-                                    <p><strong>Trạng thái:</strong> {selectedOrder?.status} </p>
-                                    <p><strong>Điều khoản:</strong> {selectedOrder?.termConditions} </p>
-                                </div>
-                            </div>
-
-                            {/* Chi phí */}
-                            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                                <h3 className="text-lg font-semibold border-b pb-2 mb-4">CHI PHÍ</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <p>
-                                        <strong>Người trả:</strong>{" "}
-                                        {orderDetails?.payment_type_id === 1
-                                            ? "Người Gửi trả phí"
-                                            : orderDetails?.payment_type_id === 2
-                                                ? "Người nhận trả phí"
-                                                : "Không xác định"}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Lịch sử đơn hàng */}
-                            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                                <h3 className="text-lg font-semibold border-b pb-2 mb-4">Lịch sử đơn hàng</h3>
-                                <div className="grid grid-cols-5 gap-4 text-sm text-gray-700">
-                                </div>
-                                <Table pagination={false} columns={historyDelivery} dataSource={dataSourceDelivery}/>
-                            </div>
-
-                            {/* Nhật ký người dùng */}
-                            <div className="bg-white p-6 rounded-lg shadow-md">
-                                <h3 className="text-lg font-semibold border-b pb-2 mb-4">Nhật ký người dùng</h3>
-                                {/* Thêm nội dung nếu cần */}
-                            </div>
-                        </div>
+                        <OrderDetailCompoment
+                            selectedOrder={selectedOrder}
+                            orderDetails={orderDetails}
+                            statusMapping={statusMapping}
+                            itemImage={itemImage}
+                            historyDelivery={historyDelivery}
+                            dataSourceDelivery={dataSourceDelivery}
+                        />
                     )}
                 </Drawer>
 

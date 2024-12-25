@@ -15,8 +15,8 @@ function DrawerDetailOrder({orderId}) {
     const {data: orderDetail, error: errorOrderDetail, isLoading: loadingOrderDetail, isError: isErrorOrderDetail}
         = useGetOrderDetailQuery(orderId);
     const orderData = orderDetail?.data;
-    console.log("selectedOrderId", orderId)
-    console.log("selectedOrderId", orderDetail)
+    // console.log("selectedOrderId", orderId)
+    // console.log("selectedOrderId", orderDetail)
 
     const {data: seller} = useGetSellerQuery({id: orderData?.item.itemId});
     const {data: staff} = useGetUserByIdQuery();
