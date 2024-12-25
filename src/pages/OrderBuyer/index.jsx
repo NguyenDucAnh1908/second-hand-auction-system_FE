@@ -3,19 +3,8 @@ import React, {useEffect, useState} from "react"; // Import useState
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK";
 import {
-    Breadcrumb,
-    Layout,
-    theme,
-    Table,
-    Spin,
-    Alert,
-    Button,
-    Modal,
-    Skeleton,
-    Empty,
-    Tag,
-    Statistic,
-    Drawer, Space
+    Breadcrumb, Layout, theme, Table, Spin, Alert, Button, Modal, Skeleton, Empty,
+    Tag, Statistic, Drawer, Space, Image
 } from "antd";
 import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
 import {useGetOrderQuery} from "../../services/order.service";
@@ -31,16 +20,38 @@ import {
     SyncOutlined,
 } from '@ant-design/icons';
 import OnlineGatewayService from "@/services/apiGhn.service.js";
+import {useGetImageItemsQuery} from "@/services/item.service.js";
 
+const statusMapping = {
+    ready_to_pick: {text: 'Mới tạo đơn hàng', color: 'text-gray-500'},
+    picking: {text: 'Nhân viên đang lấy hàng', color: 'text-blue-500'},
+    cancel: {text: 'Hủy đơn hàng', color: 'text-red-500'},
+    money_collect_picking: {text: 'Đang thu tiền người gửi', color: 'text-yellow-500'},
+    picked: {text: 'Nhân viên đã lấy hàng', color: 'text-green-500'},
+    storing: {text: 'Hàng đang nằm ở kho', color: 'text-purple-500'},
+    transporting: {text: 'Đang luân chuyển hàng', color: 'text-blue-400'},
+    sorting: {text: 'Đang phân loại hàng hóa', color: 'text-teal-500'},
+    delivering: {text: 'Nhân viên đang giao cho người nhận', color: 'text-orange-500'},
+    money_collect_delivering: {text: 'Nhân viên đang thu tiền người nhận', color: 'text-yellow-600'},
+    delivered: {text: 'Nhân viên đã giao hàng thành công', color: 'text-green-600'},
+    delivery_fail: {text: 'Nhân viên giao hàng thất bại', color: 'text-red-600'},
+    waiting_to_return: {text: 'Đang đợi trả hàng về cho người gửi', color: 'text-gray-400'},
+    return: {text: 'Trả hàng', color: 'text-purple-400'},
+    return_transporting: {text: 'Đang luân chuyển hàng trả', color: 'text-blue-300'},
+    return_sorting: {text: 'Đang phân loại hàng trả', color: 'text-teal-400'},
+    returning: {text: 'Nhân viên đang đi trả hàng', color: 'text-orange-400'},
+    return_fail: {text: 'Nhân viên trả hàng thất bại', color: 'text-red-400'},
+    returned: {text: 'Nhân viên trả hàng thành công', color: 'text-green-400'},
+    exception: {text: 'Đơn hàng ngoại lệ không nằm trong quy trình', color: 'text-pink-500'},
+    damage: {text: 'Hàng bị hư hỏng', color: 'text-red-700'},
+    lost: {text: 'Hàng bị mất', color: 'text-black'},
+};
 
 const {Content, Sider} = Layout;
 export default function OrderManagementBuyer() {
     const {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
-
-    const {data, error, isLoading} = useGetOrderQuery({page: 0, limit: 10});
-    //console.log("data",data);
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(false);
@@ -51,12 +62,17 @@ export default function OrderManagementBuyer() {
     const [orderDetails, setOrderDetails] = useState(null);
     const [error1, setError] = useState(null);
 
-    const statusStyles = {
-        PENDING: 'bg-gray-500 text-white',
-        CONFIRMED: 'bg-green-500 text-white',
-        CANCELED: 'bg-red-500 text-white',
-    };
+    const {data, error, isLoading} = useGetOrderQuery({page: 0, limit: 10});
 
+    // id of item
+    const id = selectedOrder?.itemId;
+    const {
+        data: itemImage,
+        isError: itemImageError,
+        isLoading: itemImageLoading,
+        isSuccess: isSuccessImage,
+        refetch: refetchImage
+    } = useGetImageItemsQuery({id});
 
     const handleDetailClick = (order) => {
         setSelectedOrder(order);
@@ -89,7 +105,6 @@ export default function OrderManagementBuyer() {
     };
 
 
-
     const dataSource = data?.data.map(order => ({
         key: order.id,
         id: order.orderId,
@@ -114,22 +129,12 @@ export default function OrderManagementBuyer() {
         orderCode: order.orderCode
     })) || [];
 
-
-    // const showLoading = (order) => {
-    //     setOpen(true);
-    //     setLoading(true);
-    //     setSelectedOrder(order);
-    //     // setIsModalVisible(true);
-    //     // Simple loading mock. You should add cleanup logic in real world.
-    //     setTimeout(() => {
-    //         setLoading(false);
-    //     }, 10);
-    // };
-
     const showLoading = async (order) => {
-        setOpen(true); // Mở modal hoặc trạng thái cần thiết
-        setLoading(true); // Hiển thị trạng thái loading
-        setSelectedOrder(order); // Cập nhật selectedOrder
+
+        if (isLoading) return;
+        setOpen(true);
+        setLoading(true);
+        setSelectedOrder(order);
 
         try {
             const response = await OnlineGatewayService.detail_order_service({
@@ -138,33 +143,11 @@ export default function OrderManagementBuyer() {
             });
             setOrderDetails(response?.data.data);
         } catch (err) {
-            setError(err.message); // Xử lý lỗi
+            setError(err.message);
         } finally {
-            setLoading(false); // Tắt trạng thái loading
+            setLoading(false);
         }
     };
-
-    //console.log("selectedOrder.orderCode", selectedOrder.orderCode)
-    // useEffect(() => {
-    //     const fetchOrderDetails = async () => {
-    //         setLoading(true);
-    //         try {
-    //             const response = await OnlineGatewayService.detail_order_service({
-    //                 order_code: "LDM3BV", // Example data
-    //             });
-    //             setOrderDetails(response.data);
-    //         } catch (err) {
-    //             setError(err.message);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //
-    //     fetchOrderDetails();
-    // }, []);
-
-    console.log("data GHN", orderDetails)
-    console.log("data server", selectedOrder)
 
     const columns = [
         {
@@ -253,9 +236,11 @@ export default function OrderManagementBuyer() {
     const historyDelivery = [
         {
             title: 'Trạng thái giao hàng',
-            dataIndex: 'status',
-            key: 'status',
-            render: (text) => <a>{text}</a>, // Hiển thị trạng thái dưới dạng liên kết
+            dataIndex: 'statusText',
+            key: 'statusText',
+            render: (text, record) => (
+                <span className={`font-semibold ${record.statusColor}`}>{text}</span>
+            ),
         },
         {
             title: 'Mã chuyến',
@@ -282,15 +267,15 @@ export default function OrderManagementBuyer() {
     ];
 
 
-
     const dataSourceDelivery = orderDetails?.log.map(statusDelivery => ({
         key: statusDelivery.trip_code,
         status: statusDelivery.status,
+        statusText: statusMapping[statusDelivery.status]?.text || 'Không xác định',
+        statusColor: statusMapping[statusDelivery.status]?.color || 'text-gray-500',
         payment_type_id: statusDelivery.payment_type_id,
         trip_code: statusDelivery.trip_code,
         updated_date: statusDelivery.updated_date
     })) || [];
-
 
     // if (loading) return <p>Loading...</p>;
     // if (error1) return <p>Error: {error1}</p>;
@@ -498,7 +483,7 @@ export default function OrderManagementBuyer() {
                 <Drawer
                     closable
                     destroyOnClose
-                    title={<p>Loading Drawer</p>}
+                    title={<p>THÔNG TIN ĐƠN HÀNG</p>}
                     placement="right"
                     open={open}
                     loading={loading}
@@ -513,13 +498,40 @@ export default function OrderManagementBuyer() {
                                 <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN ĐƠN HÀNG</h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     <p><strong>Mã đơn hàng:</strong> {orderDetails?.order_code}</p>
-                                    <p><strong>Ngày lấy dự kiến:</strong> {orderDetails?.pickup_time}</p>
-                                    <p><strong>Ngày giao dự
-                                        kiến:</strong> {orderDetails?.leadtime_order.from_estimate_date} - {orderDetails?.leadtime_order.to_estimate_date}
+                                    <p>
+                                        <strong>Ngày lấy dự kiến:</strong>{' '}
+                                        {orderDetails?.pickup_time
+                                            ? new Date(orderDetails.pickup_time).toLocaleString('vi-VN', {
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            })
+                                            : 'Không xác định'}
+                                    </p>
+                                    <p>
+                                        <strong>Ngày giao dự kiến:</strong>{' '}
+                                        {orderDetails?.leadtime_order?.from_estimate_date
+                                            ? new Date(orderDetails.leadtime_order.from_estimate_date).toLocaleDateString('vi-VN', {
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric',
+                                            })
+                                            : 'Không xác định'}{' '}
+                                        -{' '}
+                                        {orderDetails?.leadtime_order?.to_estimate_date
+                                            ? new Date(orderDetails.leadtime_order.to_estimate_date).toLocaleDateString('vi-VN', {
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric',
+                                            })
+                                            : 'Không xác định'}
                                     </p>
                                     <p>
                                         <strong>Trạng thái hiện tại:</strong>
-                                        <span className="text-blue-500 font-semibold ml-2">{orderDetails?.status}</span>
+                                        <span
+                                            className={`font-semibold ml-2 ${statusMapping[orderDetails?.status]?.color || 'text-gray-500'}`}> {statusMapping[orderDetails?.status]?.text || 'Không xác định'}</span>
                                     </p>
                                 </div>
                             </div>
@@ -528,10 +540,28 @@ export default function OrderManagementBuyer() {
                             <div className="bg-white p-6 rounded-lg shadow-md mb-6">
                                 <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN CHI TIẾT</h3>
                                 <div className="grid grid-cols-2 gap-4">
-                                    <p><strong>Mã đơn khách hàng:</strong></p>
-                                    <p><strong>Sản phẩm:</strong> Áo Polo <span className="text-gray-500">x1</span></p>
-                                    <p><strong>Cân nặng:</strong> 30 gram</p>
-                                    <p><strong>Lưu ý giao hàng:</strong> Không cho xem hàng</p>
+                                    <p><strong>Mã đơn khách hàng:</strong> {selectedOrder?.itemId} </p>
+                                    <p><strong>Sản phẩm:</strong> {selectedOrder?.itemName} </p>
+                                    <p><strong>Lưu ý giao hàng:</strong> {selectedOrder?.note} </p>
+                                    <p><strong>Phương thức thanh toán:</strong> {selectedOrder?.paymentMethod} </p>
+
+                                </div>
+                                <div className="mt-2 grid grid-cols-3 gap-1">
+                                    <Image.PreviewGroup
+                                        preview={{
+                                            onChange: (current, prev) =>
+                                                console.log(`current index: ${current}, prev index: ${prev}`),
+                                        }}
+                                    >
+                                        {itemImage.map((image, index) => (
+                                            <Image
+                                                key={index}
+                                                width={200}
+                                                src={image.image} // Thay `url` bằng tên chính xác của trường trả về từ API
+                                                alt={`Image ${index + 1}`}
+                                            />
+                                        ))}
+                                    </Image.PreviewGroup>
                                 </div>
                             </div>
 
@@ -541,6 +571,7 @@ export default function OrderManagementBuyer() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <p><strong>Họ và tên:</strong> {orderDetails?.to_name}</p>
                                     <p><strong>Điện thoại:</strong> {orderDetails?.to_phone}</p>
+                                    {/*<p><strong>Email:</strong> {selectedOrder?.email}</p>*/}
                                     <p className="col-span-2"><strong>Địa chỉ:</strong> {orderDetails?.to_address} </p>
                                 </div>
                             </div>
@@ -559,11 +590,12 @@ export default function OrderManagementBuyer() {
                             <div className="bg-white p-6 rounded-lg shadow-md mb-6">
                                 <h3 className="text-lg font-semibold border-b pb-2 mb-4">THÔNG TIN ĐẤU GIÁ</h3>
                                 <div className="grid grid-cols-2 gap-4">
-                                    <p><strong>Mã đấu giá:</strong> {selectedOrder.auctionId} </p>
-                                    <p><strong>Kiểu dấu giá:</strong> {selectedOrder.auctionTypeName}</p>
-                                    <p><strong>Bước giá:</strong> {selectedOrder.priceStep} </p>
-                                    <p><strong>Trạng thái:</strong> {selectedOrder.status} </p>
-                                    <p><strong>Điều khoản:</strong> {selectedOrder.termConditions} </p>
+                                    <p><strong>Mã đấu giá:</strong> {selectedOrder?.auctionId} </p>
+                                    <p><strong>Kiểu dấu giá:</strong> {selectedOrder?.auctionTypeName}</p>
+                                    <p><strong>Số tiền đấu giá:</strong> {selectedOrder?.totalPrice} </p>
+                                    <p><strong>Bước giá:</strong> {selectedOrder?.priceStep} </p>
+                                    <p><strong>Trạng thái:</strong> {selectedOrder?.status} </p>
+                                    <p><strong>Điều khoản:</strong> {selectedOrder?.termConditions} </p>
                                 </div>
                             </div>
 
@@ -586,14 +618,8 @@ export default function OrderManagementBuyer() {
                             <div className="bg-white p-6 rounded-lg shadow-md mb-6">
                                 <h3 className="text-lg font-semibold border-b pb-2 mb-4">Lịch sử đơn hàng</h3>
                                 <div className="grid grid-cols-5 gap-4 text-sm text-gray-700">
-                                    {/*<p>Thứ 2, 23/12/2024</p>*/}
-                                    {/*<p>Chi tiết</p>*/}
-                                    {/*<p>Chờ lấy hàng</p>*/}
-                                    {/*<p>72 Thành Thái, Phường 14, Quận 10, Hồ Chí Minh, Vietnam</p>*/}
-                                    {/*<p>14:40</p>*/}
-
                                 </div>
-                                <Table pagination={false} columns={historyDelivery} dataSource={dataSourceDelivery} />
+                                <Table pagination={false} columns={historyDelivery} dataSource={dataSourceDelivery}/>
                             </div>
 
                             {/* Nhật ký người dùng */}
