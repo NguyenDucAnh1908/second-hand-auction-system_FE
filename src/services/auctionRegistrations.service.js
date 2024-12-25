@@ -42,6 +42,25 @@ export const auctionRegistrationsApiSlice = apiSlice.injectEndpoints({
             method: "GET",
         }),
 
+        getListRegisterUser: builder.query({
+            query: ({ auctionId, paging }) => ({
+                url: `/auction-register/users/auction/${auctionId}`,
+                params: {
+                    page: paging.page || 0,
+                    limit: paging.limit || 10,
+                },
+            }),
+            transformResponse: (response) => {
+                return {
+                    list: response.content  || [],  // Dữ liệu người dùng đã đăng ký
+                    totalPages: response.totalPages || 0,  // Số trang
+                    totalProducts: response.totalElements || 0,  // Số phần tử
+                };
+            },
+        }),
+        
+
+
     }),
 });
 
@@ -50,5 +69,6 @@ export const {
     useGetAuctionRegisterDetailQuery,
     useGetCheckAuctionRegisterQuery,
     useAuctionRegisterMutation,
-    useCheckUserInAuctionQuery
+    useCheckUserInAuctionQuery,
+    useGetListRegisterUserQuery,
 } = auctionRegistrationsApiSlice;

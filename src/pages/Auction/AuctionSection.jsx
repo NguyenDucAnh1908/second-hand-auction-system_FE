@@ -1,15 +1,17 @@
-import {ButtonDH, Heading, Img, Text} from "../../components";
-import React, {useEffect, useState} from "react";
-import {Checkbox, message, Modal, Spin, Statistic} from "antd";
+import { ButtonDH, Heading, Img, Text } from "../../components";
+import React, { useEffect, useState } from "react";
+import { Checkbox, message, Modal, Spin, Statistic } from "antd";
 import BidForm from "../../components/BidForm";
 import SealedBidForm from "../../components/SealedBidForm";
 import ImageGallery from "react-image-gallery";
 import 'react-image-gallery/styles/css/image-gallery.css';
-import {useNavigate} from "react-router-dom";
-import {useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery} from "@/services/auctionRegistrations.service.js";
-import {Button} from "@material-tailwind/react";
-import {useCreateBidMutation, useGetBidInfoQuery} from "@/services/bid.service.js";
-import {useUpdateStatusAuctionMutation} from "@/services/auction.service.js";
+import { useNavigate } from "react-router-dom";
+import { useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery } from "@/services/auctionRegistrations.service.js";
+import { Button } from "@material-tailwind/react";
+import { useCreateBidMutation, useGetBidInfoQuery } from "@/services/bid.service.js";
+import { useUpdateStatusAuctionMutation } from "@/services/auction.service.js";
+import { useGetListRegisterUserQuery } from "../../services/auctionRegistrations.service";
+import Pagination from "../../components/PaginationChanh";
 
 export default function AuctionSection(
     {
@@ -39,6 +41,7 @@ export default function AuctionSection(
     const auctionStartTime = dataItem.auction?.start_time || null;
     const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}Z`).getTime();
     const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}Z`).getTime();
+
 
 
     console.log("Backend endDate:", auctionEndDate, auctionEndTime);
@@ -79,13 +82,13 @@ export default function AuctionSection(
         isError: isErrorCheckRegister,
         error: errorCheckRegister,
         refetch: isRefetchCheckRegister,
-    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? {auctionId: selectedAuctionId} : null, {
+    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? { auctionId: selectedAuctionId } : null, {
         skip: !selectedAuctionId,
     });
     //console.log("CHECK checkRegister: ", checkRegister)
     const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.statusRegistration === true
     // *
-    const [AuctionRegister, {isLoading: isLoadingAuctionRegister, error}] = useAuctionRegisterMutation();
+    const [AuctionRegister, { isLoading: isLoadingAuctionRegister, error }] = useAuctionRegisterMutation();
     const handleSubmitAuctionRegister = async (e) => {
         e.preventDefault();
         try {
@@ -120,7 +123,7 @@ export default function AuctionSection(
 
     console.log("bidInfo: ", bidInfo)
 
-    const {Countdown} = Statistic;
+    const { Countdown } = Statistic;
     const showModal = () => {
         if (!isLoggedIn) {
             message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
@@ -253,8 +256,96 @@ export default function AuctionSection(
         }
     };
 
+
+    const [paging, setPaging] = useState({ page: 0, limit: 10 });
+
+
+    const {
+        data: registeredUsers,
+        isLoading: isLoadingRegisteredUsers,
+        isError: isErrorRegisteredUsers,
+        error: errorRegisteredUsers,
+    } = useGetListRegisterUserQuery({ auctionId: dataItem.auction.auction_id, paging });
+
+    const validRegisteredUsers = Array.isArray(registeredUsers?.list) ? registeredUsers.list : [];
+
+    const totalPages = registeredUsers?.totalPages || 0;
+
+    const [isRegisteredUsersModalOpen, setIsRegisteredUsersModalOpen] = useState(false); // Sử dụng biến riêng cho modal này
+    const showRegisteredUsersModal = () => {
+
+        setIsRegisteredUsersModalOpen(true); // Mở modal
+
+    };
+
+    // Hàm đóng modal
+    const handleCloseRegisteredUsersModal = () => {
+        setIsRegisteredUsersModalOpen(false); // Đóng modal
+    };
+
+
+ // Hàm xử lý chuyển trang
+const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) { // Đảm bảo trang hợp lệ
+        setPaging((prev) => ({ ...prev, page: newPage }));
+    }
+};
+
+
+    // Hàm định dạng tiền tệ
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(amount);
+    };
+
+
     return (
         <>
+
+            {/* Modal hiển thị danh sách người dùng đã đăng ký */}
+            <Modal
+                title="Danh sách người dùng đã đăng ký và tiền cọc"
+                visible={isRegisteredUsersModalOpen}
+                onCancel={handleCloseRegisteredUsersModal}
+                footer={null}
+                width={700}  // Điều chỉnh độ rộng của modal nhỏ hơn
+                style={{ maxHeight: "70vh", overflowY: "auto" }} // Giới hạn chiều cao tối đa và cho phép cuộn
+            >
+                <Spin spinning={isLoadingRegisteredUsers}>
+                    {/* Kiểm tra nếu có người dùng */}
+                    {validRegisteredUsers?.length > 0 ? (
+                        <div className="space-y-4">
+                            {validRegisteredUsers.map((user, index) => (
+                                <div key={user.ar_id} className="p-3 bg-gray-50 rounded-lg shadow-md flex items-center justify-between">
+                                    <span className="font-semibold text-sm text-gray-800">{index + 1}. {user.user_name}</span>
+                                    <div className="text-xs text-gray-600">
+                                        <p>{formatDate(user.created_date)}</p>
+                                        <p className="font-semibold text-blue-600">{formatCurrency(user.deposite_amount)}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-center text-gray-500">Không có người dùng nào được đăng ký.</p>
+                    )}
+                </Spin>
+
+                {/* Nếu có lỗi xảy ra */}
+                {isErrorRegisteredUsers && (
+                    <p className="text-red-500 text-center mt-4">Có lỗi xảy ra khi tải danh sách người dùng!</p>
+                )}
+
+                <Pagination
+                    currentPage={paging.page}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                />
+            </Modal>
+
 
             <Modal
                 title={isRegistered ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
@@ -264,12 +355,12 @@ export default function AuctionSection(
                 footer={null}
             >
                 {isRegistered ? (
-                    <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
                         <BidForm dataItem={dataItem} cancelModel={handleCancel}
-                                 isRefetchWinningBid={isRefetchWinningBid}
-                                 isRefetchHighestBid={isRefetchHighestBid}
-                                 bidIf={bidInfo}
-                                 isRefetchBidIf={isRefetchBidInfo}
+                            isRefetchWinningBid={isRefetchWinningBid}
+                            isRefetchHighestBid={isRefetchHighestBid}
+                            bidIf={bidInfo}
+                            isRefetchBidIf={isRefetchBidInfo}
                         />
                     </div>
 
@@ -287,7 +378,7 @@ export default function AuctionSection(
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <Checkbox id="agreement" className="h-5 w-5 text-green-600"/>
+                                        <Checkbox id="agreement" className="h-5 w-5 text-green-600" />
                                         <span className="text-sm leading-6 text-gray-700">
                                             Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
                                         </span>
@@ -327,7 +418,7 @@ export default function AuctionSection(
                 footer={null}
             >
                 {isRegistered ? (
-                    <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
                         <SealedBidForm
                             dataItem={dataItem}
                             cancelModel={handleCancel}
@@ -351,7 +442,7 @@ export default function AuctionSection(
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <Checkbox id="agreement" className="h-5 w-5 text-blue-600"/>
+                                        <Checkbox id="agreement" className="h-5 w-5 text-blue-600" />
                                         <span className="text-sm leading-6 text-gray-700">
                                             Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
                                         </span>
@@ -392,7 +483,7 @@ export default function AuctionSection(
             {isSuccessItemDt && dataItem && (
                 <div className="mt-4 flex items-center gap-[50px] px-[22px] md:flex-col sm:px-5">
                     <div className="flex flex-1 pt-0 items-start justify-end w-full md:flex-col md:self-stretch">
-                        <div className="w-full " style={{height: '960px', position: 'relative',}}>
+                        <div className="w-full " style={{ height: '960px', position: 'relative', }}>
                             <ImageGallery
                                 items={images}
                                 showFullscreenButton={true}
@@ -425,7 +516,7 @@ export default function AuctionSection(
                             >
                                 {dataItem.itemName}{" "}
                             </Heading>
-                            <div className="h-px bg-gray-200"/>
+                            <div className="h-px bg-gray-200" />
                         </div>
                         <Heading
                             size="text3xl"
@@ -475,14 +566,14 @@ export default function AuctionSection(
                                         Kết thúc vào lúc: <strong>{formatDate(endDateTime)}</strong>
                                     </p>
                                     <a href={`/ListOfBuyerBids/${idAuction}`}>
-                                                        <ButtonDH
-                                                            color="green_50"
-                                                            size="xl"
-                                                            className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5 w-full"
-                                                        >
-                                                            Kết quả đấu giá
-                                                        </ButtonDH>
-                                                    </a>
+                                        <ButtonDH
+                                            color="green_50"
+                                            size="xl"
+                                            className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5 w-full"
+                                        >
+                                            Kết quả đấu giá
+                                        </ButtonDH>
+                                    </a>
                                 </div>
 
 
@@ -623,13 +714,19 @@ export default function AuctionSection(
 
                                 {/* Hiển thị nếu chưa đến thời gian bắt đầu */}
                                 {now < startDateTime && (
-                                    <div
-                                        className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
+                                    <div className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
                                         <i className="fas fa-user-check text-blue-600 text-lg"></i>
                                         <p className="font-semibold text-sm text-gray-900">
                                             Hiện có {dataItem.numberParticipant} người đã đăng ký tham gia
+                                            <span
+                                                className="text-blue-600 cursor-pointer underline ml-2"
+                                                onClick={showRegisteredUsersModal} // Khi nhấn vào sẽ mở modal
+                                            >
+                                                Xem thông tin
+                                            </span>
                                         </p>
                                     </div>
+
                                 )}
                                 {/* Hiển thị khi đang trong khoảng thời gian đấu giá */}
                                 {now >= startDateTime && now <= endDateTime && (
