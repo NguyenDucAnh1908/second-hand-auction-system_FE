@@ -1,16 +1,16 @@
-import { ButtonDH, Heading, Img, Text } from "../../components";
-import React, { useEffect, useState } from "react";
-import { Checkbox, message, Modal, Spin, Statistic } from "antd";
+import {ButtonDH, Heading, Img, Text} from "../../components";
+import React, {useEffect, useState} from "react";
+import {Checkbox, message, Modal, Spin, Statistic} from "antd";
 import BidForm from "../../components/BidForm";
 import SealedBidForm from "../../components/SealedBidForm";
 import ImageGallery from "react-image-gallery";
 import 'react-image-gallery/styles/css/image-gallery.css';
-import { useNavigate } from "react-router-dom";
-import { useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery } from "@/services/auctionRegistrations.service.js";
-import { Button } from "@material-tailwind/react";
-import { useCreateBidMutation, useGetBidInfoQuery } from "@/services/bid.service.js";
-import { useUpdateStatusAuctionMutation } from "@/services/auction.service.js";
-import { useGetListRegisterUserQuery } from "../../services/auctionRegistrations.service";
+import {useNavigate} from "react-router-dom";
+import {useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery} from "@/services/auctionRegistrations.service.js";
+import {Button} from "@material-tailwind/react";
+import {useCreateBidMutation, useGetBidInfoQuery} from "@/services/bid.service.js";
+import {useUpdateStatusAuctionMutation} from "@/services/auction.service.js";
+import {useGetListRegisterUserQuery} from "@/services/auctionRegistrations.service.js";
 import Pagination from "../../components/PaginationChanh";
 
 export default function AuctionSection(
@@ -32,13 +32,13 @@ export default function AuctionSection(
     const [isButtonVisible, setIsButtonVisible] = useState(true);
     const [selectedAuctionId, setSelectedAuctionId] = useState(dataItem.auction.auction_id);
     const [showMessage, setShowMessage] = useState(false);
-
+    console.log("Data Auction", dataItem.auction[0].auction_id);
     // const isLoggedIn = useSelector(selectIsLoggedIn);
     const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
     const auctionEndTime = dataItem.auction?.end_time || null;
-    const auctionStartDate = dataItem.auction?.startDate || null;
-    const auctionStartTime = dataItem.auction?.start_time || null;
+    const auctionStartDate = dataItem.auction[0]?.startDate || null;
+    const auctionStartTime = dataItem.auction[0]?.start_time || null;
     const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}Z`).getTime();
     const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}Z`).getTime();
 
@@ -93,7 +93,7 @@ export default function AuctionSection(
         e.preventDefault();
         try {
             const auctionData = {
-                auction_id: dataItem.auction.auction_id,
+                auction_id: dataItem.auction[0].auction_id,
             };
             const response = await AuctionRegister(auctionData).unwrap();
             isRefetch();
@@ -169,11 +169,11 @@ export default function AuctionSection(
             maximumFractionDigits: 0,
         }).format(price);
     };
-
+    const priceBuyNow = dataItem.auction[0].buy_now_price
     //console.log("dataItem", dataItem)
     const handleCreateOrder = async (auction_id) => {
         console.log(auction_id);
-        if (!dataItem?.auction?.buy_now_price) {
+        if (!dataItem?.auction[0]?.buy_now_price) {
             message.error("Giá mua ngay không hợp lệ!", 3);
             return;
         }
@@ -184,7 +184,7 @@ export default function AuctionSection(
         try {
             const response = await createBid({
                 auctionId: auction_id,
-                bidAmount: dataItem?.auction?.buy_now_price
+                bidAmount: dataItem?.auction[0]?.buy_now_price
             }).unwrap();
             if (response.status === 'OK') {
                 console.log("Tạo bid thành công:", response);
@@ -374,7 +374,7 @@ const handlePageChange = (newPage) => {
                                             Chi phí cọc cho phiên đấu:
                                         </span>
                                         <div className="text-lg font-bold text-red-600 mt-2">
-                                            {formatPrice((dataItem?.auction?.buy_now_price * dataItem?.auction?.percent_deposit) / 100)}
+                                            {formatPrice((dataItem?.auction[0]?.buy_now_price * dataItem?.auction[0]?.percent_deposit) / 100)}
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
@@ -438,7 +438,7 @@ const handlePageChange = (newPage) => {
                                         <span className="text-base font-semibold text-gray-800">Chi phí cọc cho phiên đấu:</span>
                                         <div className="text-lg font-bold text-red-600 mt-2">
                                             {/*{formatPrice(dataItem?.auction.start_price * 0.1)}*/}
-                                            {formatPrice((dataItem?.auction?.buy_now_price * dataItem?.auction?.percent_deposit) / 100)}
+                                            {formatPrice((dataItem?.auction[0]?.buy_now_price * dataItem?.auction?.percent_deposit) / 100)}
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
@@ -524,7 +524,7 @@ const handlePageChange = (newPage) => {
                             className="ml-1.5 mt-[26px] flex self-start font-bevietnampro text-[20px] font-medium text-blue_gray-900_01 md:ml-0"
                         >
                             <span className="font-bold">Giá khởi điểm:</span>
-                            <span>&nbsp;{formatPrice(dataItem.auction.start_price)}</span>
+                            <span>&nbsp;{formatPrice(dataItem.auction[0]?.start_price) }</span>
                         </Heading>
                         {now >= startDateTime && bidAmount > 0 && dataItem?.auctionType?.act_id !== 3 && (
                             <Heading
@@ -789,12 +789,12 @@ const handlePageChange = (newPage) => {
                                         Giá mua ngay
                                     </Heading>
                                     <ButtonDH
-                                        onClick={() => handleCreateOrder(dataItem?.auction?.auction_id)}
+                                        onClick={() => handleCreateOrder(dataItem?.auction[0]?.auction_id)}
                                         className="bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 text-white py-2 px-4 rounded-lg text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-300"
                                         disabled={isButtonDisabled}
                                         loading={isLoading}
                                     >
-                                        Giá mua ngay: {formatPrice(dataItem?.auction?.buy_now_price)}
+                                        Giá mua ngay: {formatPrice(dataItem?.auction[0]?.buy_now_price)}
                                     </ButtonDH>
 
                                 </>

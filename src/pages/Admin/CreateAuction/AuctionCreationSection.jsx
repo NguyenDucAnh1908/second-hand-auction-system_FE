@@ -75,14 +75,14 @@ export default function AuctionCreationSection({itemDetail}) {
             key: '1',
             label: <span className="font-bold text-lg text-gray-800">Tên sản phẩm</span>,
             children: <span className="text-base text-gray-600">{itemDetail?.itemName || 'N/A'}</span>,
-            span: 4
-        },
-        {
-            key: '2',
-            label: <span className="font-bold text-lg text-gray-800">Danh mục phụ</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.scId.sub_category || 'N/A'}</span>,
             span: 2
         },
+        // {
+        //     key: '2',
+        //     label: <span className="font-bold text-lg text-gray-800">Danh mục phụ</span>,
+        //     children: <span className="text-base text-gray-600">{itemDetail?.scId.sub_category || 'N/A'}</span>,
+        //     span: 2
+        // },
         {
             key: '3',
             label: <span className="font-bold text-lg text-gray-800">Trạng thái sản phẩm</span>,
@@ -98,6 +98,12 @@ export default function AuctionCreationSection({itemDetail}) {
             key: '4',
             label: <span className="font-bold text-lg text-gray-800">Mức giá mong muốn</span>,
             children: <span className="text-base text-gray-600">{formatCurrency(itemDetail?.priceBuyNow) || 'N/A'}</span>,
+            span: 2
+        },
+        {
+            key: '5',
+            label: <span className="font-bold text-lg text-gray-800">Mức giá mong muốn</span>,
+            children: <span className="text-base text-gray-600">{formatCurrency(itemDetail?.priceStepItem) || 'N/A'}</span>,
             span: 2
         },
 

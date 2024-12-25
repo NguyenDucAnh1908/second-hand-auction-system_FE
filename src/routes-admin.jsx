@@ -1,27 +1,16 @@
 import {
+    CheckBadgeIcon,
+    CreditCardIcon,
     HomeIcon,
-    UserCircleIcon,
-    TableCellsIcon,
-    InformationCircleIcon,
-    ServerStackIcon,
-    RectangleStackIcon,
-    DocumentMagnifyingGlassIcon,
-    ArrowDownOnSquareStackIcon,
-    ClipboardDocumentCheckIcon,
+    PlusCircleIcon,
     ShoppingBagIcon,
     ShoppingCartIcon,
-    CheckBadgeIcon,
-    PlusIcon,
-    PlusCircleIcon,
-    CreditCardIcon,
+    UserCircleIcon,
 } from "@heroicons/react/24/solid";
-import {Home, Profile, Tables, Notifications} from "./pages/Admin/Dashboard";
-import {SignIn, SignUp} from "./pages/Admin/auth";
+import {Home} from "./pages/Admin/Dashboard";
 import AppraisalFormPage from "./pages/Admin/AppraisalForm/index.jsx";
 import StaffProductListPage from "./pages/Admin/StaffProductList/index.jsx";
 import CreateAuction from "./pages/Admin/CreateAuction/index.jsx";
-import ManageFeedback from "./pages/Admin/ManageFeedback/index.jsx";
-import OrderManagementAdmin from "./pages/Admin/OrderManagement/index.jsx";
 import StoreOrders from "pages/Admin/StoreOrders/index.jsx";
 import KiemduyetStaffPage from "./pages/Kyc/Kyc.jsx";
 import ManagementTransactions from "./pages/Admin/ManagementTransactions/index.jsx";
@@ -31,10 +20,7 @@ import ManageKYC from "./pages/Admin/ManageKYC/index.jsx";
 import ProductPending from "./pages/Admin/ManageProduct/index.jsx";
 import ManageUser from "./pages/Admin/ManageUser/index.jsx";
 import ManageListCreateAuctionProduct from "pages/Admin/ManageListCreateAuctionProduct/index.jsx";
-import { DocumentCurrencyBangladeshiIcon, PhoneArrowDownLeftIcon } from "@heroicons/react/24/outline";
-import { CheckCircleOutlined } from "@ant-design/icons";
-import { CreditCardOutlined, IdcardOutlined } from '@ant-design/icons';
-import RequireAuth from "@/routers/RequireAuth.jsx";
+import {CreditCardOutlined, IdcardOutlined} from "@ant-design/icons";
 
 const icon = {
     className: "w-5 h-5 text-inherit",

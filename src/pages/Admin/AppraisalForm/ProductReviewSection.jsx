@@ -75,54 +75,95 @@ export default function ProductReviewSection({itemDetail}) {
     const items = [
         {
             key: '1',
-            label: <span className="font-bold text-lg text-gray-800">Tên sản phẩm</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.itemName || 'N/A'}</span>,
+            label: (
+                <span className="font-semibold text-lg text-gray-800">
+                Tên sản phẩm
+            </span>
+            ),
+            children: (
+                <span className="text-base text-gray-600">
+                {itemDetail?.itemName || 'N/A'}
+            </span>
+            ),
             span: 4
         },
-        {
-            key: '2',
-            label: <span className="font-bold text-lg text-gray-800">Danh mục phụ</span>,
-            children: <span className="text-base text-gray-600">{itemDetail.scId.sub_category || 'N/A'}</span>,
-            span: 2
-        },
+        // {
+        //     key: '2',
+        //     label: (
+        //         <span className="font-semibold text-lg text-gray-800">
+        //             Danh mục phụ
+        //         </span>
+        //     ),
+        //     children: (
+        //         <span className="text-base text-gray-600">
+        //             {itemDetail.scId.sub_category || 'N/A'}
+        //         </span>
+        //     ),
+        //     span: 2
+        // },
         {
             key: '3',
-            label: <span className="font-bold text-lg text-gray-800">Bước giá mong muốn</span>,
-            children: <span className="text-base text-gray-600">{itemDetail.priceStepItem || 'N/A'}</span>,
+            label: (
+                <span className="font-semibold text-lg text-gray-800">
+                Bước giá mong muốn
+            </span>
+            ),
+            children: (
+                <span className="text-base text-gray-600">
+                {formatCurrency(itemDetail.priceStepItem) || 'N/A'}
+            </span>
+            ),
             span: 2
         },
         {
             key: '4',
-            label: <span className="font-bold text-lg text-gray-800">Trạng thái sản phẩm</span>,
+            label: (
+                <span className="font-semibold text-lg text-gray-800">
+                Trạng thái sản phẩm
+            </span>
+            ),
             children: (
-                <span className={`text-base ${getItemStatusClass(itemDetail.itemStatus)}`}>
-            {itemDetail.itemStatus ? formatItemStatus(itemDetail.itemStatus) : 'N/A'}
-        </span>
+                <span
+                    className={`text-base ${getItemStatusClass(itemDetail.itemStatus)}`}
+                >
+                {itemDetail.itemStatus ? formatItemStatus(itemDetail.itemStatus) : 'N/A'}
+            </span>
             ),
             span: 2
         },
-
         {
             key: '5',
-            label: <span className="font-bold text-lg text-gray-800">Mức giá mong muốn</span>,
-            children: <span
-                className="text-base text-gray-600">{formatCurrency(itemDetail.priceBuyNow) || 'N/A'}</span>,
+            label: (
+                <span className="font-semibold text-lg text-gray-800">
+                Mức giá mong muốn
+            </span>
+            ),
+            children: (
+                <span className="text-base text-gray-600">
+                {formatCurrency(itemDetail.priceBuyNow) || 'N/A'}
+            </span>
+            ),
             span: 2
         },
-
         {
             key: '6',
-            label: <span className="font-bold text-lg text-gray-800">Mô tả sản phẩm</span>,
-            children:
+            label: (
+                <span className="font-semibold text-lg text-gray-800">
+                Mô tả sản phẩm
+            </span>
+            ),
+            children: (
                 <Button
                     onClick={() => handleOpenDescriptionModal(itemDetail?.itemDescription)}
-                    className="ql-bg-blue-500 text-white hover:bg-yellow-600"
+                    className="bg-blue-500 text-white hover:bg-yellow-600 py-2 px-4 rounded-lg shadow-md"
                 >
                     Xem mô tả
-                </Button>,
+                </Button>
+            ),
             span: 4
         }
     ];
+
 
 
     return (
