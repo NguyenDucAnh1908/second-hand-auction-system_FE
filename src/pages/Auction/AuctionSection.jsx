@@ -731,13 +731,18 @@ const handlePageChange = (newPage) => {
                                 {/* Hiển thị khi đang trong khoảng thời gian đấu giá */}
                                 {now >= startDateTime && now <= endDateTime && (
                                     <>
-                                        <div
-                                            className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
-                                            <i className="fas fa-user-check text-blue-600 text-lg"></i>
-                                            <p className="font-semibold text-sm text-gray-900">
-                                                Có {dataItem.numberParticipant} người đang đấu giá phiên này
-                                            </p>
-                                        </div>
+                                        <div className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
+                                        <i className="fas fa-user-check text-blue-600 text-lg"></i>
+                                        <p className="font-semibold text-sm text-gray-900">
+                                            Hiện có {dataItem.numberParticipant} người đã đăng ký tham gia
+                                            <span
+                                                className="text-blue-600 cursor-pointer underline ml-2"
+                                                onClick={showRegisteredUsersModal} // Khi nhấn vào sẽ mở modal
+                                            >
+                                                Xem thông tin
+                                            </span>
+                                        </p>
+                                    </div>
                                     </>
                                 )}
 

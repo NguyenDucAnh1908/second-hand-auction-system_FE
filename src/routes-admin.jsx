@@ -35,6 +35,7 @@ import { DocumentCurrencyBangladeshiIcon, PhoneArrowDownLeftIcon } from "@heroic
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { CreditCardOutlined, IdcardOutlined } from '@ant-design/icons';
 import RequireAuth from "@/routers/RequireAuth.jsx";
+import AuctionDetailAdmin from "./pages/Admin/AuctionDetailAdmin/index.jsx";
 
 const icon = {
     className: "w-5 h-5 text-inherit",
@@ -122,6 +123,13 @@ export const routesAdmin = [
                 // name: "Tạo phiên đấu giá",
                 path: "/CreateAuction/:itemId",
                 element: <CreateAuction/>,
+                allowedRoles: ["ADMIN", "STAFF"],
+            },
+            {
+                // icon: <UserCircleIcon {...icon} />,
+                // name: "Chi tiết phiên đấu giá",
+                path: "/AuctionDetailAdmin/:auctionId",
+                element: <AuctionDetailAdmin/>,
                 allowedRoles: ["ADMIN", "STAFF"],
             },
         ],

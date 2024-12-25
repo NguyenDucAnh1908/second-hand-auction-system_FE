@@ -59,7 +59,8 @@ export default function StaffProductListPage() {
         time: item?.auction?.approved_at,
         status: item?.itemStatus,
         sellerHeader: item?.auction?.created_by || "Unknown Seller",
-        auction: item?.auction
+        auction: item?.auction,
+        auctionId: item?.auction?.auction_id
     })) || [];
 
 
@@ -70,6 +71,11 @@ export default function StaffProductListPage() {
         setOpen(true);
         setSelectedItemId(itemId);
     };
+
+    const handleShowAuctionDetail = (auctionId) => {
+        navigate(`/AuctionDetailAdmin/${auctionId}`);
+    };
+
     const showLargeDrawer = (itemId) => {
         setSize('large');
         setOpen(true);
@@ -134,6 +140,13 @@ export default function StaffProductListPage() {
                 onCancel={handleCloseModal}
                 maskClosable={true}
                 footer={null} // Ẩn footer mặc định
+                width="100vw" // Chiếm toàn bộ chiều rộng
+                style={{
+                    top: 0, // Đặt modal ở vị trí trên cùng của màn hình
+                    left: 0, // Đặt modal ở vị trí bên trái
+                    margin: 0, // Loại bỏ margin mặc định
+                }}
+                bodyStyle={{ height: '100vh', padding: 0 }} // Chiếm toàn bộ chiều cao của màn hình
             >
                 {selectedAuction ? (
                     <Form
@@ -329,7 +342,7 @@ export default function StaffProductListPage() {
                                             image,
                                             time,
                                             status,
-                                            sellerHeader, auction
+                                            sellerHeader, auction, auctionId
                                         }) => {
                                             return (
                                                 <tr key={number}>
@@ -427,6 +440,14 @@ export default function StaffProductListPage() {
                                                                 tiết</Button>
                                                         </div>
                                                     </td>
+
+                                                    {/* <td className="p-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <Button onClick={() => handleShowAuctionDetail(auctionId)} color="blue">
+                                                                Chi tiết Auction
+                                                            </Button>
+                                                        </div>
+                                                    </td> */}
                                                     {/* <td className="p-4">
 
                                                         <div className="flex items-center gap-2">
@@ -458,15 +479,15 @@ export default function StaffProductListPage() {
                 title={"Chi tiết sản phẩm"}
                 placement="right"
                 size={size}
-                width={1200}
+                width={1700}
                 onClose={onClose}
                 open={open}
                 extra={
                     <Space>
-                        <Button onClick={onClose}>Cancel</Button>
-                        <Button type="primary" onClick={onClose}>
+                        <Button onClick={onClose}>Đóng</Button>
+                        {/* <Button type="primary" onClick={onClose}>
                             OK
-                        </Button>
+                        </Button> */}
                     </Space>
                 }
             >
