@@ -35,7 +35,7 @@ const statusMapping = {
     lost: {text: 'Hàng bị mất', color: 'text-black'},
 };
 
-function DrawerDetailOrder({orderId}) {
+function DrawerDetailOrder({orderId, orderCode}) {
     const [selectedDescription, setSelectedDescription] = useState(null);
     const [isModalDescriptionVisible, setIsModalDescriptionVisible] = useState(false);
     const [open, setOpen] = React.useState(false);
@@ -46,8 +46,6 @@ function DrawerDetailOrder({orderId}) {
     const {data: orderDetail, error: errorOrderDetail, isLoading: loadingOrderDetail, isError: isErrorOrderDetail}
         = useGetOrderDetailQuery(orderId);
     const orderData = orderDetail?.data;
-
-
     const {data: seller} = useGetSellerQuery({id: orderData?.item.itemId});
     const {data: staff} = useGetUserByIdQuery();
     const handleOpenDescriptionModal = async (itemDescription) => {
@@ -55,23 +53,21 @@ function DrawerDetailOrder({orderId}) {
         setIsModalDescriptionVisible(true);
     };
 
-
     const handleCloseDescriptionModal = () => {
         setIsModalDescriptionVisible(false); // Đóng modal
         setSelectedDescription(null); // Reset thông tin đấu giá
     };
 
-
     useEffect(() => {
         const fetchOrderDetails = async () => {
-            if (!orderDetail?.data.orderCode) return; // Không gọi API nếu itemId không có
+            if (!orderCode) return; // Không gọi API nếu itemId không có
 
             setLoading(true);
             setError(null);
 
             try {
                 const response = await OnlineGatewayService.detail_order_service({
-                    order_code: orderDetail?.data.orderCode,
+                    order_code: orderCode,
                 });
                 setOrderDetails(response?.data); // Lưu dữ liệu trả về
             } catch (err) {
@@ -86,25 +82,9 @@ function DrawerDetailOrder({orderId}) {
 
     console.log("data detail", orderDetail)
     console.log("data GHN", orderDetails?.data)
-    console.log("orderDetail?.data.orderCode", orderDetail?.data.orderCode)
+    console.log("orderId", orderId)
+    console.log("orderCod", orderCode)
     //const  orderDetailsGHN = orderDetails?.data
-
-    const showLoading = async () => {
-        if (loadingOrderDetail) return;
-        setOpen(true);
-        setLoading(true);
-        try {
-            const response = await OnlineGatewayService.detail_order_service({
-                order_code: orderDetail?.itemId,
-                //order_code: "LDM3BV",
-            });
-            setOrderDetails(response?.data.data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const order = [
         {
