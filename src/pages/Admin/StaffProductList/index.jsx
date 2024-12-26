@@ -7,7 +7,7 @@ import { Button, Card, IconButton, Typography } from "@material-tailwind/react";
 import {
     Empty, Skeleton, Tag, Drawer, Space,
     Modal, Descriptions, Divider,
-    DatePicker, Input, Form, TimePicker, message
+    DatePicker, Input, Form, TimePicker, message, Tabs, Spin, Badge
 } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
@@ -17,6 +17,7 @@ import DrawerDetailItem from "@/components/DrawerDetailItem/index.jsx";
 import dayjs from "dayjs";
 import AuctionFormModal from "../../../components/AuctionFormModal/AuctionFormModal.jsx";
 import { useForm } from 'antd/es/form/Form';
+import { useGetListRegisterUserQuery } from "../../../services/auctionRegistrations.service.js";
 
 
 
@@ -28,6 +29,18 @@ const TABLE_HEAD = [
     "Trạng thái",
     "Người bán",
     "Tùy chỉnh"
+];
+
+const TABLE_HEAD2 = [
+    "ID",
+    "Hình ảnh",
+    "Sản phẩm",
+    "Trạng thái",
+    "Thời gian",
+    "Người bán",
+    "Tiền cọc",
+    "Thông tin",
+    "Xem trực tiếp"
 ];
 
 export default function StaffProductListPage() {
@@ -42,7 +55,7 @@ export default function StaffProductListPage() {
     const [selectedAuction, setSelectedAuction] = useState(null);
     const [updateAuction, { isUpdateLoading }] = useUpdateAuctionMutation();
     const [form] = useForm();
-
+    const [itemInfor, setItemInfor] = useState(null);
 
     const { data = {}, isLoading, isError, error } = useGetItemsQuery({
         page: page - 1, // API thường dùng chỉ số 0-based
@@ -60,7 +73,8 @@ export default function StaffProductListPage() {
         status: item?.itemStatus,
         sellerHeader: item?.auction?.created_by || "Unknown Seller",
         auction: item?.auction,
-        auctionId: item?.auction?.auction_id
+        auctionId: item?.auction?.auction_id,
+        itemInfor: item
     })) || [];
 
 
@@ -85,11 +99,13 @@ export default function StaffProductListPage() {
         setOpen(false);
     };
 
-    const showModal = (auctionData) => {
+    const showModal = (auctionData, itemInfor) => {
         setSelectedAuction(auctionData);
         form.resetFields();
         setIsModalOpen(true);
+        setItemInfor(itemInfor);
     };
+
 
 
     const navigate = useNavigate();
@@ -129,7 +145,134 @@ export default function StaffProductListPage() {
     };
 
 
+    const [paging, setPaging] = useState({ page: 0, limit: 10 });
 
+
+    const {
+        data: registeredUsers,
+        isLoading: isLoadingRegisteredUsers,
+        isError: isErrorRegisteredUsers,
+        error: errorRegisteredUsers,
+    } = useGetListRegisterUserQuery({ auctionId: selectedAuction?.auction_id, paging });
+
+    const validRegisteredUsers = Array.isArray(registeredUsers?.list) ? registeredUsers.list : [];
+
+    const totalPages = registeredUsers?.totalPages || 0;
+
+    const [isRegisteredUsersModalOpen, setIsRegisteredUsersModalOpen] = useState(false); // Sử dụng biến riêng cho modal này
+    const showRegisteredUsersModal = () => {
+
+        setIsRegisteredUsersModalOpen(true); // Mở modal
+
+    };
+
+    // Hàm đóng modal
+    const handleCloseRegisteredUsersModal = () => {
+        setIsRegisteredUsersModalOpen(false); // Đóng modal
+    };
+
+
+    // Hàm xử lý chuyển trang
+    const handlePageChange = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) { // Đảm bảo trang hợp lệ
+            setPaging((prev) => ({ ...prev, page: newPage }));
+        }
+    };
+
+
+    // Hàm định dạng tiền tệ
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(amount);
+    };
+
+    const formatDate = (timestamp) => {
+        return new Date(timestamp).toLocaleString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    };
+
+
+
+    const items = itemInfor ? [
+        {
+            key: '1',
+            label: 'Tên sản phẩm',
+            children: itemInfor?.itemName,
+            span: 2,
+        },
+        {
+            key: '2',
+            label: 'Hình Ảnh',
+            children: (
+                <img
+                    src={itemInfor?.thumbnail}
+                    alt="Product"
+                    className="w-[30%] h-48 object-cover rounded"
+                />
+            ),
+            span: 3,
+        },
+        {
+            key: '3',
+            label: 'ID Phiên đấu giá',
+            children: `${itemInfor?.auction?.auction_id}`,
+        },
+        {
+            key: '4',
+            label: 'Thời Gian Đấu Giá',
+            children: `${itemInfor?.auction?.start_time || ''} - ${itemInfor?.auction?.startDate || ''} đến ${itemInfor?.auction?.end_time || ''} - ${itemInfor?.auction?.endDate || ''}`,
+            span: 2,
+        },
+        {
+            key: '5',
+            label: 'Trạng Thái',
+            children: (
+                <Badge
+                    status={
+                        itemInfor?.auction?.status === 'CANCELLED' ? 'error' :
+                        itemInfor?.auction?.status === 'CLOSED' ? 'default' :
+                        itemInfor?.auction?.status === 'COMPLETED' ? 'success' :
+                        itemInfor?.auction?.status === 'OPEN' ? 'processing' :
+                        itemInfor?.auction?.status === 'PENDING' ? 'warning' :
+                                            'default'
+                    }
+                    text={
+                        itemInfor?.auction?.status === 'CANCELLED' ? 'Đã hủy' :
+                        itemInfor?.auction?.status === 'CLOSED' ? 'Đã đóng' :
+                        itemInfor?.auction?.status === 'COMPLETED' ? 'Hoàn thành' :
+                        itemInfor?.auction?.status === 'OPEN' ? 'Đang mở' :
+                        itemInfor?.auction?.status === 'PENDING' ? 'Đang chờ' :
+                                            'Không xác định'
+                    }
+                />
+            ),
+            span: 3,
+        },
+
+        {
+            key: '6',
+            label: 'Người Bán',
+            children: itemInfor?.auction?.created_by,
+        },
+        {
+            key: '7',
+            label: 'Tiền Cọc',
+            children: `${new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format((itemInfor?.auction?.buy_now_price) * (itemInfor?.auction?.percent_deposit) / 100)}`,
+        },
+
+    ] : [];
 
     return (
         <>
@@ -137,161 +280,173 @@ export default function StaffProductListPage() {
             <Modal
                 title="Thông tin phiên đấu giá"
                 open={isModalOpen}
-                onCancel={handleCloseModal}
-                maskClosable={true}
-                footer={null} // Ẩn footer mặc định
-                width="100vw" // Chiếm toàn bộ chiều rộng
-                style={{
-                    top: 0, // Đặt modal ở vị trí trên cùng của màn hình
-                    left: 0, // Đặt modal ở vị trí bên trái
-                    margin: 0, // Loại bỏ margin mặc định
+                onCancel={() => {
+                    handleCloseModal();
+                    window.location.reload();
                 }}
-                bodyStyle={{ height: '100vh', padding: 0 }} // Chiếm toàn bộ chiều cao của màn hình
+                maskClosable={true}
+                footer={null}
+                width="100vw"
+                style={{
+                    top: 0,
+                    left: 0,
+                    margin: 0,
+                }}
+                bodyStyle={{ height: '100vh', padding: 0 }}
             >
-                {selectedAuction ? (
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        initialValues={{
-                            startDate: dayjs(selectedAuction?.startDate),
-                            endDate: dayjs(selectedAuction?.endDate),
-                            start_time: dayjs(selectedAuction?.start_time, "HH:mm"),
-                            end_time: dayjs(selectedAuction?.end_time, "HH:mm"),
-                            buy_now_price: selectedAuction?.buy_now_price,
-                            percent_deposit: selectedAuction?.percent_deposit,
-                        }}
+                <Tabs defaultActiveKey="1">
+                    {/* Thông tin chi tiết của phiên đấu giá */}
 
+                    <Tabs.TabPane tab="Thông tin chi tiết" key="1">
+                        {items.length > 0 ? (
+                            <Descriptions bordered column={1}>
+                                {items.map((item) => (
+                                    <Descriptions.Item key={item.key} label={item.label} span={item.span || 1}>
+                                        {item.children}
+                                    </Descriptions.Item>
+                                ))}
+                            </Descriptions>
+                        ) : (
+                            <Empty description="Không có dữ liệu" />
+                        )}
+                    </Tabs.TabPane>
 
-                        onFinish={async (values) => {
+                    {/* Tab Thông tin phiên đấu giá */}
+                    <Tabs.TabPane tab="Cập nhập phiên đấu giá" key="2">
+                        {selectedAuction ? (
+                            <Form
+                                form={form}
+                                layout="vertical"
+                                initialValues={{
+                                    startDate: dayjs(selectedAuction?.startDate),
+                                    endDate: dayjs(selectedAuction?.endDate),
+                                    start_time: dayjs(selectedAuction?.start_time, "HH:mm"),
+                                    end_time: dayjs(selectedAuction?.end_time, "HH:mm"),
+                                    buy_now_price: selectedAuction?.buy_now_price,
+                                    percent_deposit: selectedAuction?.percent_deposit,
+                                }}
+                                onFinish={async (values) => {
+                                    const startDate = dayjs(values.startDate);
+                                    const endDate = dayjs(values.endDate);
 
+                                    if (startDate.isAfter(endDate)) {
+                                        message.error("Ngày bắt đầu không được sau ngày kết thúc!");
+                                        return;
+                                    }
 
-                            // Kiểm tra điều kiện ngày
-                            const startDate = dayjs(values.startDate);
-                            const endDate = dayjs(values.endDate);
+                                    try {
+                                        const updatedData = {
+                                            ...selectedAuction,
+                                            start_date: dayjs(values.startDate).format("YYYY-MM-DD HH:mm:ss.SSSSSS"),
+                                            end_date: dayjs(values.endDate).format("YYYY-MM-DD HH:mm:ss.SSSSSS"),
+                                            start_time: dayjs(values.start_time).format("HH:mm") + ":00",
+                                            end_time: dayjs(values.end_time).format("HH:mm") + ":00",
+                                            buy_now_price: parseFloat(values.buy_now_price) || 0,
+                                            percent_deposit: parseFloat(values.percent_deposit) || 0,
+                                        };
 
-                            if (startDate.isAfter(endDate)) {
-                                message.error("Ngày bắt đầu không được sau ngày kết thúc!");
-                                return; // Dừng lại nếu điều kiện không hợp lệ
-                            }
+                                        const response = await updateAuction({
+                                            auctionId: selectedAuction.auction_id,
+                                            auctionData: updatedData,
+                                        }).unwrap();
 
-
-                            try {
-                                const updatedData = {
-                                    ...selectedAuction,
-                                    start_date: dayjs(values.startDate).format("YYYY-MM-DD HH:mm:ss.SSSSSS"),
-                                    end_date: dayjs(values.endDate).format("YYYY-MM-DD HH:mm:ss.SSSSSS"),
-
-                                    start_time: dayjs(values.start_time).format("HH:mm") + ":00",
-                                    end_time: dayjs(values.end_time).format("HH:mm") + ":00",
-                                    buy_now_price: parseFloat(values.buy_now_price) || 0,
-                                    percent_deposit: parseFloat(values.percent_deposit) || 0,
-                                };
-
-
-                                // Gọi API cập nhật thông tin
-                                const response = await updateAuction({
-                                    auctionId: selectedAuction.auction_id,
-                                    auctionData: updatedData,
-                                }).unwrap();
-
-
-                                message.success("Cập nhật thông tin thành công!");
-                                setIsModalOpen(false); // Đảm bảo tắt modal
-                                setTimeout(() => {
-                                    window.location.reload(); // Reload after 2 seconds
-                                }, 2000); // Delay in milliseconds
-
-                            } catch (error) {
-                                console.error("Lỗi trong quá trình gửi request: ", error);
-                                message.error("Cập nhật thất bại!");
-                            }
-                        }}
-
-
-
-
-                    >
-                        <Descriptions bordered column={1}>
-                            {/* Thời gian bắt đầu */}
-                            <Descriptions.Item label="Thời gian bắt đầu">
-                                <Form.Item name="startDate" noStyle>
-                                    <DatePicker
-                                        placeholder="Chọn ngày bắt đầu"
-                                        format="DD/MM/YYYY"
-                                    />
+                                        message.success("Cập nhật thông tin thành công!");
+                                        setIsModalOpen(false);
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 2000);
+                                    } catch (error) {
+                                        console.error("Lỗi trong quá trình gửi request: ", error);
+                                        message.error("Cập nhật thất bại!");
+                                    }
+                                }}
+                            >
+                                <Descriptions bordered column={1}>
+                                    <Descriptions.Item label="Thời gian bắt đầu">
+                                        <Form.Item name="startDate" noStyle>
+                                            <DatePicker placeholder="Chọn ngày bắt đầu" format="DD/MM/YYYY" />
+                                        </Form.Item>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Thời gian kết thúc">
+                                        <Form.Item name="endDate" noStyle>
+                                            <DatePicker placeholder="Chọn ngày kết thúc" format="DD/MM/YYYY" />
+                                        </Form.Item>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Giờ bắt đầu">
+                                        <Form.Item name="start_time" noStyle>
+                                            <TimePicker format="HH:mm" placeholder="Chọn giờ bắt đầu" />
+                                        </Form.Item>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Giờ kết thúc">
+                                        <Form.Item name="end_time" noStyle>
+                                            <TimePicker format="HH:mm" placeholder="Chọn giờ kết thúc" />
+                                        </Form.Item>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Giá mua ngay (VNĐ)">
+                                        <Form.Item name="buy_now_price" noStyle>
+                                            <Input />
+                                        </Form.Item>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Tiền cọc (%)">
+                                        <Form.Item name="percent_deposit" noStyle>
+                                            <Input />
+                                        </Form.Item>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Trạng thái">
+                                        {selectedAuction?.status === "OPEN"
+                                            ? "Đang mở"
+                                            : selectedAuction?.status === "CLOSED"
+                                                ? "Đã đóng"
+                                                : selectedAuction?.status === "PENDING"
+                                                    ? "Chưa mở"
+                                                    : "Không xác định"}
+                                    </Descriptions.Item>
+                                </Descriptions>
+                                <Divider />
+                                <Form.Item>
+                                    <Button type="primary" htmlType="submit" loading={isUpdateLoading}>
+                                        Cập nhật
+                                    </Button>
                                 </Form.Item>
-                            </Descriptions.Item>
+                            </Form>
+                        ) : (
+                            <Empty description="Không có thông tin đấu giá" />
+                        )}
+                    </Tabs.TabPane>
 
-                            {/* Thời gian kết thúc */}
-                            <Descriptions.Item label="Thời gian kết thúc">
-                                <Form.Item name="endDate" noStyle>
-                                    <DatePicker
-                                        placeholder="Chọn ngày kết thúc"
-                                        format="DD/MM/YYYY"
-                                    />
-                                </Form.Item>
-                            </Descriptions.Item>
-
-                            {/* Giờ bắt đầu */}
-                            <Descriptions.Item label="Giờ bắt đầu">
-                                <Form.Item name="start_time" noStyle>
-                                    <TimePicker
-                                        format="HH:mm"
-                                        placeholder="Chọn giờ bắt đầu"
-                                    />
-                                </Form.Item>
-                            </Descriptions.Item>
-
-                            {/* Giờ kết thúc */}
-                            <Descriptions.Item label="Giờ kết thúc">
-                                <Form.Item name="end_time" noStyle>
-                                    <TimePicker
-                                        format="HH:mm"
-                                        placeholder="Chọn giờ kết thúc"
-                                    />
-                                </Form.Item>
-                            </Descriptions.Item>
-
-                            {/* Giá mua ngay */}
-                            <Descriptions.Item label="Giá mua ngay (VNĐ)">
-                                <Form.Item name="buy_now_price" noStyle>
-                                    <Input />
-                                </Form.Item>
-                            </Descriptions.Item>
-
-                            {/* Tiền cọc */}
-                            <Descriptions.Item label="Tiền cọc (%)">
-                                <Form.Item name="percent_deposit" noStyle>
-                                    <Input />
-                                </Form.Item>
-                            </Descriptions.Item>
-
-                            {/* Trạng thái */}
-                            <Descriptions.Item label="Trạng thái">
-                                {selectedAuction?.status === "OPEN"
-                                    ? "Đang mở"
-                                    : selectedAuction?.status === "CLOSED"
-                                        ? "Đã đóng"
-                                        : selectedAuction?.status === "PENDING"
-                                            ? "Chưa mở"
-                                            : "Không xác định"}
-                            </Descriptions.Item>
-
-                        </Descriptions>
-
-
-                        <Divider />
-
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit" loading={isUpdateLoading}>
-                                Cập nhật
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                ) : (
-                    <Empty description="Không có thông tin đấu giá" />
-                )}
+                    {/* Tab Danh sách người dùng đã đăng ký */}
+                    <Tabs.TabPane tab="Danh sách người dùng đã đăng ký" key="3">
+                        <Spin spinning={isLoadingRegisteredUsers}>
+                            {validRegisteredUsers?.length > 0 ? (
+                                <div className="space-y-4">
+                                    {validRegisteredUsers.map((user, index) => (
+                                        <div key={user.ar_id} className="p-3 bg-gray-50 rounded-lg shadow-md flex items-center justify-between">
+                                            <span className="font-semibold text-sm text-gray-800">
+                                                {index + 1}. {user.user_name}
+                                            </span>
+                                            <div className="text-xs text-gray-600">
+                                                <p>{formatDate(user.created_date)}</p>
+                                                <p className="font-semibold text-blue-600">{formatCurrency(user.deposite_amount)}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-center text-gray-500">Không có người dùng nào được đăng ký.</p>
+                            )}
+                        </Spin>
+                        {isErrorRegisteredUsers && (
+                            <p className="text-red-500 text-center mt-4">Có lỗi xảy ra khi tải danh sách người dùng!</p>
+                        )}
+                        <Pagination
+                            currentPage={paging.page}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </Tabs.TabPane>
+                </Tabs>
             </Modal>
+
 
 
 
@@ -342,7 +497,7 @@ export default function StaffProductListPage() {
                                             image,
                                             time,
                                             status,
-                                            sellerHeader, auction, auctionId
+                                            sellerHeader, auction, auctionId, itemInfor
                                         }) => {
                                             return (
                                                 <tr key={number}>
@@ -421,7 +576,7 @@ export default function StaffProductListPage() {
                                                     <td className="p-4">
                                                         <div className="flex items-center gap-2">
                                                             <Button
-                                                                onClick={() => showModal(auction)}
+                                                                onClick={() => showModal(auction, itemInfor)}
                                                                 color="blue"
                                                                 disabled={!auction}
                                                             >
