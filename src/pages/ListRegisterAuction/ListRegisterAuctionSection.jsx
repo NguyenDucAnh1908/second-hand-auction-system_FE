@@ -413,6 +413,12 @@ export default function ListRegisterAuctionSection() {
                                     key: 'email',
                                 },
                                 {
+                                    title: 'Thời gian',
+                                    dataIndex: 'bidTime',
+                                    key: 'bidTime',
+                                    render: (text) => dayjs(text).format('DD/MM/YYYY HH:mm'),
+                                  },
+                                {
                                     title: 'Số Tiền ',
                                     dataIndex: 'bidAmount', // Dùng 'bidAmount' thay vì 'depositeAmount'
                                     key: 'depositeAmount',
