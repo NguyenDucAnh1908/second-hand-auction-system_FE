@@ -1,13 +1,13 @@
 import { Helmet } from "react-helmet";
 import { Img, InputDH } from "../../../components";
 import { CloseSVG } from "../../../components/InputDH/close.jsx";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, IconButton, Typography } from "@material-tailwind/react";
 import {
     Empty, Skeleton, Tag, Drawer, Space,
     Modal, Descriptions, Divider,
-    DatePicker, Input, Form, TimePicker, message, Tabs, Spin, Badge
+    DatePicker, Input, Form, TimePicker, message, Tabs, Spin, Badge, Table
 } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import AuctionFormModal from "../../../components/AuctionFormModal/AuctionFormModal.jsx";
 import { useForm } from 'antd/es/form/Form';
 import { useGetListRegisterUserQuery } from "../../../services/auctionRegistrations.service.js";
+import { useGetAllBidsQuery } from "@/services/bid.service.js";
 
 
 
@@ -200,7 +201,32 @@ export default function StaffProductListPage() {
         });
     };
 
+    //api gọi lịch sử bid
 
+    const [bidData, setBidData] = useState([]); // State riêng biệt lưu bid data
+
+
+    const { data: historyBid } = useGetAllBidsQuery({
+        auctionId: parseInt(itemInfor?.auction?.auction_id, 10) || 0,
+        page: 0,
+    });
+
+    useEffect(() => {
+        if (historyBid?.data) {
+            setBidData(historyBid.data);
+        } else {
+            setBidData([]);
+        }
+    }, [historyBid?.data]);
+
+    useEffect(() => {
+        if (isModalOpen && historyBid?.data) {
+            setBidData(historyBid.data);
+        } else if (isModalOpen) {
+            setBidData([]);
+        }
+    }, [historyBid?.data, isModalOpen]);
+    //end
 
     const items = itemInfor ? [
         {
@@ -239,18 +265,18 @@ export default function StaffProductListPage() {
                 <Badge
                     status={
                         itemInfor?.auction?.status === 'CANCELLED' ? 'error' :
-                        itemInfor?.auction?.status === 'CLOSED' ? 'default' :
-                        itemInfor?.auction?.status === 'COMPLETED' ? 'success' :
-                        itemInfor?.auction?.status === 'OPEN' ? 'processing' :
-                        itemInfor?.auction?.status === 'PENDING' ? 'warning' :
+                            itemInfor?.auction?.status === 'CLOSED' ? 'default' :
+                                itemInfor?.auction?.status === 'COMPLETED' ? 'success' :
+                                    itemInfor?.auction?.status === 'OPEN' ? 'processing' :
+                                        itemInfor?.auction?.status === 'PENDING' ? 'warning' :
                                             'default'
                     }
                     text={
                         itemInfor?.auction?.status === 'CANCELLED' ? 'Đã hủy' :
-                        itemInfor?.auction?.status === 'CLOSED' ? 'Đã đóng' :
-                        itemInfor?.auction?.status === 'COMPLETED' ? 'Hoàn thành' :
-                        itemInfor?.auction?.status === 'OPEN' ? 'Đang mở' :
-                        itemInfor?.auction?.status === 'PENDING' ? 'Đang chờ' :
+                            itemInfor?.auction?.status === 'CLOSED' ? 'Đã đóng' :
+                                itemInfor?.auction?.status === 'COMPLETED' ? 'Hoàn thành' :
+                                    itemInfor?.auction?.status === 'OPEN' ? 'Đang mở' :
+                                        itemInfor?.auction?.status === 'PENDING' ? 'Đang chờ' :
                                             'Không xác định'
                     }
                 />
@@ -297,6 +323,20 @@ export default function StaffProductListPage() {
                 <Tabs defaultActiveKey="1">
                     {/* Thông tin chi tiết của phiên đấu giá */}
 
+                    {/* <Tabs.TabPane tab="Thông tin chi tiết" key="1">
+                            {items.length > 0 ? (
+                                <Descriptions bordered column={1}>
+                                    {items.map((item) => (
+                                        <Descriptions.Item key={item.key} label={item.label} span={item.span || 1}>
+                                            {item.children}
+                                        </Descriptions.Item>
+                                    ))}
+                                </Descriptions>
+                            ) : (
+                                <Empty description="Không có dữ liệu" />
+                            )}
+                        </Tabs.TabPane> */}
+
                     <Tabs.TabPane tab="Thông tin chi tiết" key="1">
                         {items.length > 0 ? (
                             <Descriptions bordered column={1}>
@@ -309,7 +349,112 @@ export default function StaffProductListPage() {
                         ) : (
                             <Empty description="Không có dữ liệu" />
                         )}
+
+                        <Divider />
+
+                        {/* Bảng lịch sử bid */}
+                        <Table
+                            columns={[
+                                {
+                                    title: 'Họ và Tên',
+                                    dataIndex: 'username',
+                                    key: 'username',
+                                },
+                                {
+                                    title: 'Email',
+                                    dataIndex: 'email',
+                                    key: 'email',
+                                },
+                                {
+                                    title: 'Thời gian',
+                                    dataIndex: 'bidTime',
+                                    key: 'bidTime',
+                                    render: (text) => dayjs(text).format('DD/MM/YYYY HH:mm'),
+                                },
+                                {
+                                    title: 'Số Tiền',
+                                    dataIndex: 'bidAmount',
+                                    key: 'bidAmount',
+                                    render: (amount) =>
+                                        new Intl.NumberFormat('vi-VN', {
+                                            style: 'currency',
+                                            currency: 'VND',
+                                        }).format(amount),
+                                },
+                                {
+                                    title: 'Trạng Thái',
+                                    dataIndex: 'winBid',
+                                    key: 'status',
+                                    render: (status) => (
+                                        <span
+                                            style={{
+                                                height: 24,
+                                                width: 100,
+                                                backgroundColor: status ? '#38A169' : '#E53E3E',
+                                                color: 'white',
+                                                padding: '0.25rem 0.75rem',
+                                                borderRadius: '9999px',
+                                                fontWeight: 'bold',
+                                                textAlign: 'center',
+                                                display: 'inline-block',
+                                                transition: 'background-color 0.3s ease, transform 0.2s ease',
+                                                transform: 'scale(1)',
+                                            }}
+                                        >
+                                            {status ? 'Thắng' : 'Thua'}
+                                        </span>
+                                    ),
+                                },
+                            ]}
+                            dataSource={bidData}
+                            pagination={false}
+                            rowKey="userId"
+                        />
+
+                        <Divider />
+
+                        {/* Thêm phần hiển thị lịch sử bid của user */}
+                        <Descriptions title="Lịch sử đấu giá của người dùng" bordered column={1}>
+                            {bidData.length > 0 ? (
+                                <Table
+                                    columns={[
+                                        {
+                                            title: 'Họ và Tên',
+                                            dataIndex: 'username',
+                                            key: 'username',
+                                        },
+                                        {
+                                            title: 'Email',
+                                            dataIndex: 'email',
+                                            key: 'email',
+                                        },
+                                        {
+                                            title: 'Thời gian',
+                                            dataIndex: 'bidTime',
+                                            key: 'bidTime',
+                                            render: (text) => dayjs(text).format('DD/MM/YYYY HH:mm'),
+                                        },
+                                        {
+                                            title: 'Số Tiền',
+                                            dataIndex: 'bidAmount',
+                                            key: 'bidAmount',
+                                            render: (amount) =>
+                                                new Intl.NumberFormat('vi-VN', {
+                                                    style: 'currency',
+                                                    currency: 'VND',
+                                                }).format(amount),
+                                        },
+                                    ]}
+                                    dataSource={bidData}
+                                    pagination={false}
+                                    rowKey="userId"
+                                />
+                            ) : (
+                                <Empty description="Không có lịch sử đấu giá" />
+                            )}
+                        </Descriptions>
                     </Tabs.TabPane>
+
 
                     {/* Tab Thông tin phiên đấu giá */}
                     <Tabs.TabPane tab="Cập nhập phiên đấu giá" key="2">
@@ -648,6 +793,8 @@ export default function StaffProductListPage() {
             >
                 <DrawerDetailItem itemIds={selectedItemId} />
             </Drawer>
+
+
 
 
         </>

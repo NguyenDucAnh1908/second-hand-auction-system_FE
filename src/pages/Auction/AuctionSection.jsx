@@ -44,18 +44,15 @@ export default function AuctionSection(
 
 
 
-    console.log("Backend endDate:", auctionEndDate, auctionEndTime);
 
 
     const auctionTypeName = dataItem.auctionType?.auction_typeName;
-    //console.log(auctionTypeName);
     const now = new Date().getTime();
     const [isAuctionStarted, setIsAuctionStarted] = useState(false);
     useEffect(() => {
         setIsAuctionStarted(now >= startDateTime);
     }, [now, startDateTime]);
     const idAuction = dataItem?.auction.auction_id;
-    //console.log("idAuction", idAuction)
 
     const isAuctionEnded = endDateTime < now; // Kiểm tra nếu thời gian kết thúc đã qua
 
@@ -85,7 +82,6 @@ export default function AuctionSection(
     } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? { auctionId: selectedAuctionId } : null, {
         skip: !selectedAuctionId,
     });
-    //console.log("CHECK checkRegister: ", checkRegister)
     const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.statusRegistration === true
     // *
     const [AuctionRegister, { isLoading: isLoadingAuctionRegister, error }] = useAuctionRegisterMutation();
@@ -101,7 +97,6 @@ export default function AuctionSection(
             message.success(response.message || "Register auction successfully!");
             handleCancel();
         } catch (error) {
-            console.error("Error response:", error);
 
             // Kiểm tra và xử lý lỗi chi tiết
             if (error?.data?.message) {
@@ -121,7 +116,6 @@ export default function AuctionSection(
         refetch: isRefetchBidInfo
     } = useGetBidInfoQuery(dataItem?.auction?.auction_id);
 
-    console.log("bidInfo: ", bidInfo)
 
     const { Countdown } = Statistic;
     const showModal = () => {
@@ -170,9 +164,7 @@ export default function AuctionSection(
         }).format(price);
     };
 
-    //console.log("dataItem", dataItem)
     const handleCreateOrder = async (auction_id) => {
-        console.log(auction_id);
         if (!dataItem?.auction?.buy_now_price) {
             message.error("Giá mua ngay không hợp lệ!", 3);
             return;
@@ -187,10 +179,8 @@ export default function AuctionSection(
                 bidAmount: dataItem?.auction?.buy_now_price
             }).unwrap();
             if (response.status === 'OK') {
-                console.log("Tạo bid thành công:", response);
                 message.success("Đặt giá mua ngay thành công!", 3);
             } else {
-                console.error("Lỗi khi tạo bid:", response);
                 const errorMessage = response.message || response.error || "Đã xảy ra lỗi, vui lòng thử lại.";
                 message.error(errorMessage, "Lỗi");
             }
@@ -208,7 +198,6 @@ export default function AuctionSection(
     const handleSealedBidModalCancel = () => setIsSealedBidModalOpen(false);
 
     const showModal2 = () => {
-        console.log("showModal called");
         setIsSealedBidModalOpen(true);
     };
 
@@ -217,7 +206,6 @@ export default function AuctionSection(
             const response = await updateTime({
                 auctionId: dataItem.auction?.auction_id,
             }).unwrap();
-            console.log("Phản hồi từ API:", response);
         } catch (error) {
             message.error(error.data.message(), "Lỗi");
         }
@@ -243,7 +231,6 @@ export default function AuctionSection(
             // Cập nhật trạng thái là đã thành công
             setIsSealedBidSuccess(true);
         } catch (error) {
-            console.error("Sealed bid error response:", error);
 
             // Xử lý lỗi backend
             if (error?.data?.message) {
@@ -284,12 +271,12 @@ export default function AuctionSection(
     };
 
 
- // Hàm xử lý chuyển trang
-const handlePageChange = (newPage) => {
-    if (newPage >= 0 && newPage < totalPages) { // Đảm bảo trang hợp lệ
-        setPaging((prev) => ({ ...prev, page: newPage }));
-    }
-};
+    // Hàm xử lý chuyển trang
+    const handlePageChange = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) { // Đảm bảo trang hợp lệ
+            setPaging((prev) => ({ ...prev, page: newPage }));
+        }
+    };
 
 
     // Hàm định dạng tiền tệ
@@ -301,6 +288,8 @@ const handlePageChange = (newPage) => {
             maximumFractionDigits: 0,
         }).format(amount);
     };
+
+
 
 
     return (
@@ -641,7 +630,7 @@ const handlePageChange = (newPage) => {
                                                             size="xl"
                                                             className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5 w-full"
                                                         >
-                                                            Danh sách những người đang đấu giá
+                                                            Lịch sử đặt giá thầu
                                                         </ButtonDH>
                                                     </a>
 
@@ -732,17 +721,17 @@ const handlePageChange = (newPage) => {
                                 {now >= startDateTime && now <= endDateTime && (
                                     <>
                                         <div className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
-                                        <i className="fas fa-user-check text-blue-600 text-lg"></i>
-                                        <p className="font-semibold text-sm text-gray-900">
-                                            Hiện có {dataItem.numberParticipant} người đã đăng ký tham gia
-                                            <span
-                                                className="text-blue-600 cursor-pointer underline ml-2"
-                                                onClick={showRegisteredUsersModal} // Khi nhấn vào sẽ mở modal
-                                            >
-                                                Xem thông tin
-                                            </span>
-                                        </p>
-                                    </div>
+                                            <i className="fas fa-user-check text-blue-600 text-lg"></i>
+                                            <p className="font-semibold text-sm text-gray-900">
+                                                Hiện có {dataItem.numberParticipant} người đã đăng ký tham gia
+                                                <span
+                                                    className="text-blue-600 cursor-pointer underline ml-2"
+                                                    onClick={showRegisteredUsersModal} // Khi nhấn vào sẽ mở modal
+                                                >
+                                                    Xem thông tin
+                                                </span>
+                                            </p>
+                                        </div>
                                     </>
                                 )}
 
