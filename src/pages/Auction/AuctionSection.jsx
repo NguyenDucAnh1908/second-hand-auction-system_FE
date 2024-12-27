@@ -12,6 +12,9 @@ import { useCreateBidMutation, useGetBidInfoQuery } from "@/services/bid.service
 import { useUpdateStatusAuctionMutation } from "@/services/auction.service.js";
 import { useGetListRegisterUserQuery } from "../../services/auctionRegistrations.service";
 import Pagination from "../../components/PaginationChanh";
+import { useFetchUserAddresses } from "../Address/hook/useFetchUserAddresses";
+import axios from "axios";
+import { FaShippingFast } from 'react-icons/fa';
 
 export default function AuctionSection(
     {
@@ -32,6 +35,7 @@ export default function AuctionSection(
     const [isButtonVisible, setIsButtonVisible] = useState(true);
     const [selectedAuctionId, setSelectedAuctionId] = useState(dataItem.auction.auction_id);
     const [showMessage, setShowMessage] = useState(false);
+
 
     // const isLoggedIn = useSelector(selectIsLoggedIn);
     const navigate = useNavigate();
@@ -287,6 +291,58 @@ export default function AuctionSection(
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         }).format(amount);
+    };
+
+
+    // phần tính phí ship
+
+    const { addresses, isRefetchAddress } = useFetchUserAddresses();
+    const [shippingFee, setShippingFee] = useState(null);
+
+    useEffect(() => {
+        if (!addresses || addresses.length === 0) return;
+
+        // Tìm địa chỉ có `status = true`
+        const defaultAddress = addresses.find((address) => address.status === true);
+
+        if (defaultAddress) {
+            const districtCode = defaultAddress.district_code;
+            const wardCode = defaultAddress.ward_code
+
+            // Call API tính phí
+            calculateShippingFee(districtCode, wardCode);
+            
+        }
+    }, [addresses]);
+
+    const calculateShippingFee = async (districtCode, wardCode) => {
+        try {
+            const response = await axios.post(
+                'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee',
+                {
+                    from_district_id: 1449, // Quận Thủ Đức
+                    service_id: 53320,
+                    to_district_id: parseInt(districtCode, 10),
+                    to_ward_code: wardCode.toString(),
+                    weight: 2000, // 2kg
+                    length: 30,
+                    width: 20,
+                    height: 10,
+                    insurance_value: 500000, // 500k giá trị hàng hóa
+                }, // <-- Đảm bảo đóng ngoặc ở đây
+                {
+                    headers: {
+                        Token: 'd4067185-ae9f-11ee-8868-1648922bf010', // Key là 'Token'
+                        'Content-Type': 'application/json',
+                    }, // <-- Đóng ngoặc đúng ở đây
+                } // <-- Đóng ngoặc tổng thể cho hàm axios.post
+            );
+
+            setShippingFee(response?.data?.data?.total);
+        } catch (error) {
+            console.error('Error calculating shipping fee:', error);
+            setShippingFee('Failed to fetch shipping fee');
+        }
     };
 
 
@@ -803,10 +859,19 @@ export default function AuctionSection(
                             </Heading>
 
                             <Text
-                                className="ml-2 mt-4 text-base font-normal text-blue-gray-900 leading-relaxed tracking-wide">
+                                className="ml-2 mt-4 text-base font-normal text-blue-gray-900 leading-relaxed tracking-wide"
+                            >
                                 Thông tin giao hàng: Người bán và người đấu giá có thể thỏa thuận và trao đổi với nhau
-                                về phương thức giao hàng và thời gian giao hàng.
+                                về thông tin giao hàng.
                             </Text>
+
+                            {/* Hiển thị phí ship */}
+                            <div className="ml-2 mt-6 flex items-center space-x-2">
+                                <FaShippingFast size={20} color="blue" /> {/* Biểu tượng vận chuyển */}
+                                <Text className="text-base font-semibold text-blue-gray-900">
+                                    Phí ship dự tính: {shippingFee ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shippingFee) : 'Đang tính...'}
+                                </Text>
+                            </div>
 
                             <Text
                                 size="textmd"
