@@ -1,6 +1,6 @@
 import {Img, Heading, InputDH} from "../../../components";
 import {CloseSVG} from "../../../components/InputDH/close.jsx";
-import  {useState} from "react";
+import  {useState, useEffect} from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
@@ -16,10 +16,16 @@ import {
     HourglassOutlined,
     DeleteOutlined
 } from '@ant-design/icons';
-import {Tag, Breadcrumb, Layout, theme, Button, Empty, Skeleton, message} from 'antd';
+import {Tag, Breadcrumb, Layout, theme, Button,
+     Empty, Skeleton, message, Tabs, Badge, Descriptions
+,Divider, Table, Spin } from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
 import {Modal} from 'antd';
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
+import { useGetAllBidsQuery } from "@/services/bid.service.js";
+import { useGetListRegisterUserQuery } from "../../../services/auctionRegistrations.service.js";
+import dayjs from "dayjs";
+
 
 const {Content, Sider} = Layout;
 
@@ -46,6 +52,8 @@ export default function ListOfSellerProductPage() {
     const [searchBarValue1, setSearchBarValue1] = useState("");
     const [page, setPage] = useState(1);
     const [deleteItemMutation] = useGetDeleteItemMutation();
+    const [itemName, setItemName] = useState(null);
+    const [itemThumbnail, setItemThumbnail] = useState(null);
 
     const pageSize = 10;
     const formatDate = (dateString) => {
@@ -61,10 +69,13 @@ export default function ListOfSellerProductPage() {
         setCurrentPage(page);
     };
 
-    const handleOpenModal = (auction) => {
+    const handleOpenModal = (auction, itemName, thumbnail) => {
         setSelectedAuction(auction);
         setIsModalVisible(true);
+        setItemName(itemName);
+        setItemThumbnail(thumbnail);
     };
+
 
     const handleOpenDescriptionModal = (itemDescription) => {
         setSelectedDescription(itemDescription);
@@ -128,7 +139,157 @@ export default function ListOfSellerProductPage() {
     };
 
 
+      //api gọi lịch sử bid
+    
+        const [bidData, setBidData] = useState([]); // State riêng biệt lưu bid data
+    
+    
+        const { data: historyBid } = useGetAllBidsQuery({
+            auctionId: parseInt(selectedAuction?.auction_id, 10) || 0,
+            page: 0,
+        });
+    
+        useEffect(() => {
+            if (historyBid?.data) {
+                setBidData(historyBid.data);
+            } else {
+                setBidData([]);
+            }
+        }, [historyBid?.data]);
+    
+        useEffect(() => {
+            if (isModalVisible && historyBid?.data) {
+                setBidData(historyBid.data);
+            } else if (isModalVisible) {
+                setBidData([]);
+            }
+        }, [historyBid?.data, isModalVisible]);
+        //end
 
+
+        //api lấy danh sách đăng ký auction, có cọc...
+         const [paging, setPaging] = useState({ page: 0, limit: 10 });
+        
+        
+            const {
+                data: registeredUsers,
+                isLoading: isLoadingRegisteredUsers,
+                isError: isErrorRegisteredUsers,
+                error: errorRegisteredUsers,
+            } = useGetListRegisterUserQuery({ auctionId: selectedAuction?.auction_id, paging });
+        
+            const validRegisteredUsers = Array.isArray(registeredUsers?.list) ? registeredUsers.list : [];
+        
+            const totalPages = registeredUsers?.totalPages || 0;
+        
+            const [isRegisteredUsersModalOpen, setIsRegisteredUsersModalOpen] = useState(false); // Sử dụng biến riêng cho modal này
+            const showRegisteredUsersModal = () => {
+        
+                setIsRegisteredUsersModalOpen(true); // Mở modal
+        
+            };
+        
+            // Hàm đóng modal
+            const handleCloseRegisteredUsersModal = () => {
+                setIsRegisteredUsersModalOpen(false); // Đóng modal
+            };
+        
+        
+            // Hàm xử lý chuyển trang
+            const handlePageChangeRegister = (newPage) => {
+                if (newPage >= 0 && newPage < totalPages) { // Đảm bảo trang hợp lệ
+                    setPaging((prev) => ({ ...prev, page: newPage }));
+                }
+            };
+        
+        
+            // Hàm định dạng tiền tệ
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                }).format(amount);
+            };
+        
+           
+        
+        //end 
+
+
+
+    const items = selectedAuction && itemName && itemThumbnail ? [
+        {
+            key: '1',
+            label: 'Tên sản phẩm',
+            children: itemName,
+            span: 2,
+        },
+        {
+            key: '2',
+            label: 'Hình Ảnh',
+            children: (
+                <img
+                     src={itemThumbnail}
+                    alt="Product"
+                    className="w-[30%] h-48 object-cover rounded"
+                />
+            ),
+            span: 3,
+        },
+        {
+            key: '3',
+            label: 'ID Phiên đấu giá',
+            children: `${selectedAuction?.auction_id}`,
+        },
+        {
+            key: '4',
+            label: 'Thời Gian Đấu Giá',
+            children: `${selectedAuction?.start_time || ''} - ${selectedAuction?.startDate || ''} đến ${selectedAuction?.end_time || ''} - ${selectedAuction?.endDate || ''}`,
+            span: 2,
+        },
+        {
+            key: '5',
+            label: 'Trạng Thái',
+            children: (
+                <Badge
+                    status={
+                        selectedAuction?.status === 'CANCELLED' ? 'error' :
+                        selectedAuction?.status === 'CLOSED' ? 'default' :
+                        selectedAuction?.status === 'COMPLETED' ? 'success' :
+                        selectedAuction?.status === 'OPEN' ? 'processing' :
+                        selectedAuction?.status === 'PENDING' ? 'warning' :
+                                            'default'
+                    }
+                    text={
+                        selectedAuction?.status === 'CANCELLED' ? 'Đã hủy' :
+                        selectedAuction?.status === 'CLOSED' ? 'Đã đóng' :
+                        selectedAuction?.status === 'COMPLETED' ? 'Hoàn thành' :
+                        selectedAuction?.status === 'OPEN' ? 'Đang mở' :
+                        selectedAuction?.status === 'PENDING' ? 'Đang chờ' :
+                                            'Không xác định'
+                    }
+                />
+            ),
+            span: 3,
+        },
+
+        {
+            key: '6',
+            label: 'Người Bán',
+            children: selectedAuction?.created_by,
+        },
+        {
+            key: '7',
+            label: 'Tiền Cọc',
+            children: `${new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format((selectedAuction?.buy_now_price) * (selectedAuction?.percent_deposit) / 100)}`,
+        },
+
+    ] : [];
 
 
 
@@ -157,7 +318,7 @@ export default function ListOfSellerProductPage() {
                 </td>
                 <td className="p-4">
                     <Typography variant="small" className="font-normal text-gray-600">
-                        <Button onClick={() => handleOpenModal(auction)}>Thông tin đấu giá</Button>
+                        <Button onClick={() => handleOpenModal(auction, itemName,thumbnail )}>Thông tin đấu giá</Button>
                     </Typography>
                 </td>
                 <td className="p-4 mt-5 flex items-center justify-center w-[180px]">
@@ -300,38 +461,177 @@ export default function ListOfSellerProductPage() {
                 title="Thông tin chi tiết đấu giá"
                 visible={isModalVisible}
                 onCancel={handleCloseModal}
-                footer={[
-                    <Button key="close" onClick={handleCloseModal} className="bg-red-500 text-white hover:bg-red-600">
-                        Đóng
-                    </Button>,
-                ]}
+                // footer={[
+                //     <Button key="close" onClick={handleCloseModal} className="bg-red-500 text-white hover:bg-red-600">
+                //         Đóng
+                //     </Button>,
+                // ]}
                 className="rounded-lg shadow-lg"
+                maskClosable={true}
+                footer={null}
+                width="100vw"
+                style={{
+                    top: 0,
+                    left: 0,
+                    margin: 0,
+                }}
             >
-                {selectedAuction && (
-                    <div className="space-y-4 p-4">
-                        <div className="bg-gray-100 p-4 rounded-lg shadow">
-                            <h4 className="text-lg font-bold">Mã sản phẩm: <span
-                                className="text-blue-600">{selectedAuction.auction_id}</span></h4>
-                            <p className="text-gray-700">Người thẩm định: <span
-                                className="font-semibold">{selectedAuction.created_by}</span></p>
-                            <p className="text-gray-700">Giá khởi điểm: <span
-                                className="font-semibold">{selectedAuction.start_price.toLocaleString('vi-VN', {
-                                style: 'currency',
-                                currency: 'VND'
-                            })}</span></p>
-                            <p className="text-gray-700">Thời gian đấu giá: <span
-                                className="font-semibold">{selectedAuction.start_time} - {selectedAuction.end_time}</span>
-                            </p>
-                            <p className="text-gray-700">Ngày đấu giá: <span
-                                className="font-semibold">{formatDate(selectedAuction.startDate)} - {formatDate(selectedAuction.endDate)}</span>
-                            </p>
-                            <p className="text-gray-700">Ngày thẩm định sản phẩm: <span
-                                className="font-semibold">{formatDate(selectedAuction.approved_at)}</span></p>
-                            <p className="text-gray-700">Trạng thái phiên đấu giá: <span
-                                className="font-semibold">{selectedAuction.status}</span></p>
-                        </div>
-                    </div>
-                )}
+                 <Tabs defaultActiveKey="1">
+                    {/* Thông tin chi tiết của phiên đấu giá */}
+
+                 
+
+                    <Tabs.TabPane tab="Thông tin chi tiết" key="1">
+                        {items.length > 0 ? (
+                            <Descriptions bordered column={1}>
+                                {items.map((item) => (
+                                    <Descriptions.Item key={item.key} label={item.label} span={item.span || 1}>
+                                        {item.children}
+                                    </Descriptions.Item>
+                                ))}
+                            </Descriptions>
+                        ) : (
+                            <Empty description="Không có dữ liệu" />
+                        )}
+
+                        <Divider />
+
+                        {/* Bảng lịch sử bid */}
+                        <Table
+                            columns={[
+                                {
+                                    title: 'Họ và Tên',
+                                    dataIndex: 'username',
+                                    key: 'username',
+                                },
+                                {
+                                    title: 'Email',
+                                    dataIndex: 'email',
+                                    key: 'email',
+                                },
+                                {
+                                    title: 'Thời gian',
+                                    dataIndex: 'bidTime',
+                                    key: 'bidTime',
+                                    render: (text) => dayjs(text).format('DD/MM/YYYY HH:mm'),
+                                },
+                                {
+                                    title: 'Số Tiền',
+                                    dataIndex: 'bidAmount',
+                                    key: 'bidAmount',
+                                    render: (amount) =>
+                                        new Intl.NumberFormat('vi-VN', {
+                                            style: 'currency',
+                                            currency: 'VND',
+                                        }).format(amount),
+                                },
+                                {
+                                    title: 'Trạng Thái',
+                                    dataIndex: 'winBid',
+                                    key: 'status',
+                                    render: (status) => (
+                                        <span
+                                            style={{
+                                                height: 24,
+                                                width: 100,
+                                                backgroundColor: status ? '#38A169' : '#E53E3E',
+                                                color: 'white',
+                                                padding: '0.25rem 0.75rem',
+                                                borderRadius: '9999px',
+                                                fontWeight: 'bold',
+                                                textAlign: 'center',
+                                                display: 'inline-block',
+                                                transition: 'background-color 0.3s ease, transform 0.2s ease',
+                                                transform: 'scale(1)',
+                                            }}
+                                        >
+                                            {status ? 'Thắng' : 'Thua'}
+                                        </span>
+                                    ),
+                                },
+                            ]}
+                            dataSource={bidData}
+                            pagination={false}
+                            rowKey="userId"
+                        />
+
+                        <Divider />
+
+                        {/* Thêm phần hiển thị lịch sử bid của user */}
+                        {/* <Descriptions title="Lịch sử đấu giá của người dùng" bordered column={1}>
+                            {bidData.length > 0 ? (
+                                <Table
+                                    columns={[
+                                        {
+                                            title: 'Họ và Tên',
+                                            dataIndex: 'username',
+                                            key: 'username',
+                                        },
+                                        {
+                                            title: 'Email',
+                                            dataIndex: 'email',
+                                            key: 'email',
+                                        },
+                                        {
+                                            title: 'Thời gian',
+                                            dataIndex: 'bidTime',
+                                            key: 'bidTime',
+                                            render: (text) => dayjs(text).format('DD/MM/YYYY HH:mm'),
+                                        },
+                                        {
+                                            title: 'Số Tiền',
+                                            dataIndex: 'bidAmount',
+                                            key: 'bidAmount',
+                                            render: (amount) =>
+                                                new Intl.NumberFormat('vi-VN', {
+                                                    style: 'currency',
+                                                    currency: 'VND',
+                                                }).format(amount),
+                                        },
+                                    ]}
+                                    dataSource={bidData}
+                                    pagination={false}
+                                    rowKey="userId"
+                                />
+                            ) : (
+                                <Empty description="Không có lịch sử đấu giá" />
+                            )}
+                        </Descriptions> */}
+                    </Tabs.TabPane>
+
+
+
+                    {/* Tab Danh sách người dùng đã đăng ký */}
+                    <Tabs.TabPane tab="Danh sách người dùng đã đăng ký" key="2">
+                        <Spin spinning={isLoadingRegisteredUsers}>
+                            {validRegisteredUsers?.length > 0 ? (
+                                <div className="space-y-4">
+                                    {validRegisteredUsers.map((user, index) => (
+                                        <div key={user.ar_id} className="p-3 bg-gray-50 rounded-lg shadow-md flex items-center justify-between">
+                                            <span className="font-semibold text-sm text-gray-800">
+                                                {index + 1}. {user.user_name}
+                                            </span>
+                                            <div className="text-xs text-gray-600">
+                                                <p>{formatDate(user.created_date)}</p>
+                                                <p className="font-semibold text-blue-600">{formatCurrency(user.deposite_amount)}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-center text-gray-500">Không có người dùng nào được đăng ký.</p>
+                            )}
+                        </Spin>
+                        {isErrorRegisteredUsers && (
+                            <p className="text-red-500 text-center mt-4">Có lỗi xảy ra khi tải danh sách người dùng!</p>
+                        )}
+                        <Pagination
+                            currentPage={paging.page}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </Tabs.TabPane>
+                </Tabs>
             </Modal>
             <Modal
                 title="Mô tả"
