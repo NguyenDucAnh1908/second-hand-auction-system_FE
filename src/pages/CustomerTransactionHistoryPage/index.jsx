@@ -273,13 +273,13 @@ export default function CustomerTransactionHistoryPagePage() {
     </span>
                                                     </div>
                                                     <div className="flex justify-between">
-                                                        <span className="text-gray-500">Số tiền thực nhận</span>
+                                                        <span className="text-gray-500">Số tiền sau giao dịch</span>
                                                         <span className="text-xl font-bold text-gray-600">
         {selectedTransaction.netAmount.toLocaleString("vi-VN")} đ
     </span>
                                                     </div>
                                                     <div className="flex justify-between">
-                                                        <span className="text-gray-500">Số tiền ban đầu</span>
+                                                        <span className="text-gray-500">Số tiền trước giao dịch</span>
                                                         <span className="text-xl font-bold text-gray-800">
         {selectedTransaction.oldAmount.toLocaleString("vi-VN")} đ
     </span>
