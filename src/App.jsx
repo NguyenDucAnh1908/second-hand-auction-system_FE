@@ -50,6 +50,7 @@ import WebSocketTest from "./pages/test.jsx";
 import ListOfBuyerBidsAdmin from "./pages/ListOfBuyerBidAdmin/index.jsx";
 import UpdateProduct from "pages/Seller/ListOfSellerProducts/UpdateProduct.jsx";
 import OptionalAuth from "@/routers/OptionalAuth.jsx";
+import ReportPage from "pages/Report/ReportPage.jsx";
 
 function App() {
     return (
@@ -92,6 +93,7 @@ function App() {
                     <Route path="Order/:id" index element={<OrderForm/>}/>
                     <Route path="MenuKyc" index element={<MenuKyc/>}/>
                     <Route path="UpdateKYC" index element={<UpdateKYC/>}/>
+                    <Route path="report" index element={<ReportPage/>}/>
                 </Route>
 
 
@@ -123,9 +125,7 @@ function App() {
                     <Route path="/dashboard-seller/CRUDInfor" index element={<CRUDSellerInfor/>}/>
                     <Route path="/dashboard-seller/UpdateProduct/:id" element={<UpdateProduct/>}/>
                 </Route>
-
                 {/*<Route element={<RequireAuth allowedRoles={["STAFF", "ADMIN"]}/>}>*/}
-
                 {/*</Route>*/}
             </Route>
             <Route path="RegisterAuction" index element={<RegisterAuction/>}/>
