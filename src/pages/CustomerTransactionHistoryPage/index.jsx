@@ -82,8 +82,8 @@ export default function CustomerTransactionHistoryPagePage() {
 
                 // Định dạng số tiền
                 const formattedAmount = isNegativeTransaction
-                    ? `-${Math.abs(text).toLocaleString("vi-VN")} đ`
-                    : `+${Math.abs(text).toLocaleString("vi-VN")} đ`;
+                    ? `${Math.abs(text).toLocaleString("vi-VN")} đ`
+                    : `${Math.abs(text).toLocaleString("vi-VN")} đ`;
 
                 // Định nghĩa CSS
                 const amountStyle = {
@@ -144,10 +144,10 @@ export default function CustomerTransactionHistoryPagePage() {
             second: '2-digit',
         }),
         transactionType:
-            item.transactionType === "DEPOSIT_AUCTION" ? "Nạp tiền đấu giá" :
-                item.transactionType === "DEPOSIT" ? "Nạp tiền" :
+            item.transactionType === "DEPOSIT_AUCTION" ? "Trừ tiền cọc" :
+                item.transactionType === "DEPOSIT" ? "Nạp tiền vào ví" :
                     item.transactionType === "WITHDRAWAL" ? "Rút tiền" :
-                        item.transactionType === "REFUND" ? "Hoàn cọc" : "Chuyển khoản",
+                        item.transactionType === "REFUND" ? "Hoàn tiền cọc" : "Chuyển khoản",
 
         method: item.image || "Không xác định",
         status: item.transactionStatus === "COMPLETED" ? "Hoàn thành" : "Đang xử lý",

@@ -1,22 +1,22 @@
-import React, {useState, useEffect} from 'react';
-import {TextArea, Heading} from "../../components";
+import React, { useState, useEffect } from 'react';
+import { TextArea, Heading, InputDH } from "../../components";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {ButtonDH} from "../../components/index.jsx";
-import {useGetKYCByIdQuery, useGetKYCItemsQuery, useUpdateKycMutation} from "../../services/kyc.service.js";
-import {useParams} from 'react-router-dom';
-import {Input, message, Spin, Descriptions, Image, Skeleton,} from 'antd';
-import {format} from 'date-fns';  // Cài đặt date-fns nếu chưa có
-import {useNavigate} from 'react-router-dom';
+import { ButtonDH } from "../../components/index.jsx";
+import { useGetKYCByIdQuery, useGetKYCItemsQuery, useUpdateKycMutation } from "../../services/kyc.service.js";
+import { useParams } from 'react-router-dom';
+import { Input, message, Spin, Descriptions, Image, Skeleton, } from 'antd';
+import { format } from 'date-fns';  // Cài đặt date-fns nếu chưa có
+import { useNavigate } from 'react-router-dom';
 
 export default function KiemduyetStaffPage() {
-    const {id} = useParams();
-    const {data: kycData, error, isLoading} = useGetKYCByIdQuery(id);
+    const { id } = useParams();
+    const { data: kycData, error, isLoading } = useGetKYCByIdQuery(id);
     console.log(kycData);
-    const [updateKyc, {isLoading: isLoadingKyc}] = useUpdateKycMutation();
+    const [updateKyc, { isLoading: isLoadingKyc }] = useUpdateKycMutation();
     const [status, setStatus] = useState(kycData?.data?.kycStatus);
     const [reason, setReason] = useState("");
     const navigate = useNavigate();
-    const {data: dataManageKyc, refetch: isRefetchManageKyc} = useGetKYCItemsQuery({page: 0, limit: 10});
+    const { data: dataManageKyc, refetch: isRefetchManageKyc } = useGetKYCItemsQuery({ page: 0, limit: 10 });
     const formatDate = (date) => {
         return date ? format(new Date(date), 'dd/MM/yyyy') : "Chưa có";
     };
@@ -40,7 +40,7 @@ export default function KiemduyetStaffPage() {
 
             const kycUpdateData = {
                 kycId: id,
-                kycData: {...kycData.data, status: newStatus, reason},
+                kycData: { ...kycData.data, status: newStatus, reason },
             };
             //console.log("Data to be sent to API:", kycUpdateData);
             //message.error("Data to be sent to API")
@@ -125,14 +125,16 @@ export default function KiemduyetStaffPage() {
                         <>
                             <Skeleton loading={isLoading} active>
                                 {/*<VerificationSection kycData={kycData}/>*/}
-                                <Descriptions title="Thông tin" items={items}/>
-                                <br/>
-                                <Input.TextArea
+                                <Descriptions title="Thông tin" items={items} />
+                                <br />
+                                <InputDH
                                     rows={4}
                                     value={kyc?.reason}
                                     onChange={(e) => setReason(e.target.value)}
                                     placeholder="Nhập lý do (nếu có)"
+                                    className="w-full p-4 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-700 resize-none placeholder-gray-500"
                                 />
+
                                 <div className="flex justify-center pt-6">
                                     <Spin spinning={isLoadingKyc} size="large" tip="Đang xử lý...">
                                         <div className="flex gap-5">
@@ -142,27 +144,27 @@ export default function KiemduyetStaffPage() {
                                                 className="w-36 py-2 font-semibold bg-blue-500 text-white hover:bg-blue-600 transition duration-300"
                                                 onClick={() => handleUpdateKyc('APPROVED')}
                                             >
-                <span className="flex items-center justify-center">
-                    Phê Duyệt
-                </span>
+                                                <span className="flex items-center justify-center">
+                                                    Phê Duyệt
+                                                </span>
                                             </ButtonDH>
                                             <ButtonDH
                                                 shape="round"
                                                 className="w-36 py-2 font-medium bg-yellow-400 text-gray-900 hover:bg-yellow-500 transition duration-300"
                                                 onClick={() => handleUpdateKyc('PENDING')}
                                             >
-                <span className="flex items-center justify-center">
-                     Bổ Sung
-                </span>
+                                                <span className="flex items-center justify-center">
+                                                    Bổ Sung
+                                                </span>
                                             </ButtonDH>
                                             <ButtonDH
                                                 shape="round"
                                                 className="w-36 py-2 font-medium bg-red-500 text-white hover:bg-red-600 transition duration-300"
                                                 onClick={() => handleUpdateKyc('REJECTED')}
                                             >
-                <span className="flex items-center justify-center">
-                    Từ Chối
-                </span>
+                                                <span className="flex items-center justify-center">
+                                                    Từ Chối
+                                                </span>
                                             </ButtonDH>
                                         </div>
                                     </Spin>
@@ -172,7 +174,7 @@ export default function KiemduyetStaffPage() {
                         {/*)}*/}
                     </div>
                 </div>
-                <div className="w-full h-px bg-gray-200 my-5"/>
+                <div className="w-full h-px bg-gray-200 my-5" />
             </div>
         </div>
     );

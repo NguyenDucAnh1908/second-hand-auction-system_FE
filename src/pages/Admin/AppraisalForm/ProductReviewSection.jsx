@@ -1,20 +1,20 @@
-import {Heading, Img} from "../../../components";
-import React, {useState} from "react";
-import {Carousel, Descriptions, Avatar, Typography, Upload, Modal, Image, Col, Row, Flex} from 'antd';
-import {useGetSellerQuery} from "../../../services/item.service";
-import {UploadOutlined} from "@ant-design/icons";
-import {DatePicker} from 'antd';
+import { Heading, Img } from "../../../components";
+import React, { useState } from "react";
+import { Carousel, Descriptions, Avatar, Typography, Upload, Modal, Image, Col, Row, Flex } from 'antd';
+import { useGetSellerQuery } from "../../../services/item.service";
+import { UploadOutlined } from "@ant-design/icons";
+import { DatePicker } from 'antd';
 import moment from 'moment';
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
-import {Button} from "@material-tailwind/react";
+import { Button } from "@material-tailwind/react";
 
 
-export default function ProductReviewSection({itemDetail}) {
+export default function ProductReviewSection({ itemDetail }) {
     const [previewImages, setPreviewImages] = useState([]);
     const [fileList, setFileList] = useState([]);
     const [selectedDescription, setSelectedDescription] = useState(null);
     const [isModalDescriptionVisible, setIsModalDescriptionVisible] = useState(false);
-    const {data: seller} = useGetSellerQuery({id: itemDetail.itemId});
+    const { data: seller } = useGetSellerQuery({ id: itemDetail.itemId });
     const staff = JSON.parse(localStorage.getItem('user'));
 
     if (!itemDetail) {
@@ -75,54 +75,164 @@ export default function ProductReviewSection({itemDetail}) {
     const items = [
         {
             key: '1',
-            label: <span className="font-bold text-lg text-gray-800">Tên sản phẩm</span>,
+            label: <span className="font-semibold text-xl text-gray-800">Tên sản phẩm</span>,
             children: <span className="text-base text-gray-600">{itemDetail?.itemName || 'N/A'}</span>,
-            span: 4
+            span: 1
         },
         {
             key: '2',
-            label: <span className="font-bold text-lg text-gray-800">Danh mục phụ</span>,
-            children: <span className="text-base text-gray-600">{itemDetail.scId.sub_category || 'N/A'}</span>,
-            span: 2
+            label: <span className="font-semibold text-xl text-gray-800">Hãng điện thoại</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.scId?.sub_category || 'N/A'}</span>,
+            span: 1
         },
         {
             key: '3',
-            label: <span className="font-bold text-lg text-gray-800">Bước giá mong muốn</span>,
-            children: <span className="text-base text-gray-600">{itemDetail.priceStepItem || 'N/A'}</span>,
-            span: 2
+            label: <span className="font-semibold text-xl text-gray-800">Bước giá mong muốn</span>,
+            children: <span className="text-base text-gray-600">{formatCurrency(itemDetail?.priceStepItem) || 'N/A'}</span>,
+            span: 1
         },
         {
             key: '4',
-            label: <span className="font-bold text-lg text-gray-800">Trạng thái sản phẩm</span>,
+            label: <span className="font-semibold text-lg text-gray-800">Trạng thái sản phẩm</span>,
             children: (
-                <span className={`text-base ${getItemStatusClass(itemDetail.itemStatus)}`}>
-            {itemDetail.itemStatus ? formatItemStatus(itemDetail.itemStatus) : 'N/A'}
-        </span>
+                <span
+                    className={`text-xs ${getItemStatusClass(itemDetail?.itemStatus)} text-gray-600 font-medium inline-block px-3 py-1 rounded-full 
+                                ${itemDetail?.itemStatus ? 'bg-green-100' : 'bg-red-100'} 
+                                transition-all duration-300 ease-in-out shadow-sm hover:shadow-md`}
+                >
+                    {itemDetail?.itemStatus ? formatItemStatus(itemDetail?.itemStatus) : 'N/A'}
+                </span>
             ),
-            span: 2
+            span: 1
         },
-
         {
             key: '5',
-            label: <span className="font-bold text-lg text-gray-800">Mức giá mong muốn</span>,
-            children: <span
-                className="text-base text-gray-600">{formatCurrency(itemDetail.priceBuyNow) || 'N/A'}</span>,
-            span: 2
+            label: <span className="font-semibold text-xl text-gray-800">Mức giá mong muốn</span>,
+            children: <span className="text-base text-gray-600">{formatCurrency(itemDetail?.priceBuyNow) || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '6',
+            label: <span className="font-semibold text-xl text-gray-800">Mô tả sản phẩm</span>,
+            children: (
+                <Button
+                    onClick={() => handleOpenDescriptionModal(itemDetail?.itemDescription)}
+                    className="bg-blue-500 text-white hover:bg-yellow-600 px-4 py-2 rounded"
+                >
+                    Xem mô tả
+                </Button>
+            ),
+            span: 1
+        },
+        {
+            key: '7',
+            label: <span className="font-semibold text-xl text-gray-800">Màu sắc</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.color || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '8',
+            label: <span className="font-semibold text-xl text-gray-800">Tình trạng pin</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.batteryHealth || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '9',
+            label: <span className="font-semibold text-xl text-gray-800">Tình trạng thân máy</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.bodyCondition || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '10',
+            label: <span className="font-semibold text-xl text-gray-800">Hệ điều hành</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.osVersion || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '11',
+            label: <span className="font-semibold text-xl text-gray-800">Đám mây</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.icloudStatus || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '12',
+            label: <span className="font-semibold text-xl text-gray-800">Tình trạng cổng kết nối</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.portCondition || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '13',
+            label: <span className="font-semibold text-xl text-gray-800">Tình trạng nút điện thoại</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.buttonCondition || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '14',
+            label: <span className="font-semibold text-xl text-gray-800">Tình trạng màn hình</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.screenCondition || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '15',
+            label: <span className="font-semibold text-xl text-gray-800">Tình trạng camera</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.cameraCondition || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '16',
+            label: <span className="font-semibold text-xl text-gray-800">Bộ nhớ</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.storage || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '17',
+            label: <span className="font-semibold text-xl text-gray-800">IMEI</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.imei || 'N/A'}</span>,
+            span: 1
         },
 
         {
-            key: '6',
-            label: <span className="font-bold text-lg text-gray-800">Mô tả sản phẩm</span>,
-            children:
-                <Button
-                    onClick={() => handleOpenDescriptionModal(itemDetail?.itemDescription)}
-                    className="ql-bg-blue-500 text-white hover:bg-yellow-600"
-                >
-                    Xem mô tả
-                </Button>,
-            span: 4
-        }
+            key: '18',
+            label: <span className="font-semibold text-xl text-gray-800">Tình trạng khoá iCloud</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.icloudStatus || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '19',
+            label: <span className="font-semibold text-xl text-gray-800">CPU</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.cpu || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '20',
+            label: <span className="font-semibold text-xl text-gray-800">RAM</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.ram || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '21',
+            label: <span className="font-semibold text-xl text-gray-800">Kích thước màn hình</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.screen_size || 'N/A'} inch</span>,
+            span: 1
+        },
+        {
+            key: '22',
+            label: <span className="font-semibold text-xl text-gray-800">Thống số camera</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.camera_specs || 'N/A'}</span>,
+            span: 1
+        },
+        {
+            key: '23',
+            label: <span className="font-semibold text-xl text-gray-800">Cảm biến</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.sensors || 'N/A'}</span>,
+            span: 2
+        },
     ];
+
+
+
+
+
 
 
     return (
@@ -134,7 +244,7 @@ export default function ProductReviewSection({itemDetail}) {
                 footer={[
                     // eslint-disable-next-line react/jsx-key
                     <Button color="blue" onClick={handleCloseDescriptionModal}
-                            className="bg-red-500 text-white hover:bg-red-600"
+                        className="bg-red-500 text-white hover:bg-red-600"
                     >
                         Đóng
                     </Button>,
@@ -142,7 +252,7 @@ export default function ProductReviewSection({itemDetail}) {
                 className="rounded-lg shadow-lg"
                 width={1000}
             >
-                <DescriptionItem selectedDescription={selectedDescription}/>
+                <DescriptionItem selectedDescription={selectedDescription} />
             </Modal>
 
             <div className="flex flex-col items-center py-10 bg-gray-50 ">
@@ -154,32 +264,37 @@ export default function ProductReviewSection({itemDetail}) {
                     >
                         Thẩm định
                     </Heading>
-                    <div className="flex items-center w-full gap-[34px] md:flex-col">
-                        <div className="flex-1 bg-blue-200 rounded-2xl p-6 flex flex-col gap-4">
-                            <Descriptions title={<div className="w-full text-center text-xl font-semibold">Thông tin sản
-                                phẩm</div>} layout="vertical" items={items}/>
-
+                    <div className="flex flex-wrap gap-10 w-full py-10">
+                        {/* Phần thông tin */}
+                        <div className="flex-row-reverse bg-white rounded-2xl p-8 shadow-lg border-2 border-blue-500 max-w-2xl w-full">
+                            <Descriptions
+                                layout="vertical"
+                                items={items}
+                                className="space-y-6"
+                            />
                         </div>
 
-                        <div className=" mx-auto bg-blue-200 rounded-2xl p-6 ">
-                            <div className="w-80">
-                                <Image.PreviewGroup
-                                    preview={{
-                                        onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
-                                    }}
-                                >
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {itemDetail.images.map((images, index) => (
-                                            <div key={index} className="flex justify-center items-center">
-                                                <Image width={400}
-                                                       src={images.image}/>
-                                            </div>
-                                        ))}
+                        {/* Phần hình ảnh */}
+                        <div className="flex-1 bg-blue-100 rounded-2xl p-8 shadow-lg max-w-xl w-full">
+                            <div className="grid grid-cols-1 gap-6">
+                                {itemDetail.images.slice(0, 9).map((image, index) => (
+                                    <div key={index} className="flex justify-center items-center rounded-lg overflow-hidden shadow-lg">
+                                        <Image
+                                            src={image.image}
+                                            alt={`Image ${index + 1}`}
+                                            width={400}
+                                            height={300}
+                                            className="object-cover w-full h-auto rounded-lg" // Giữ tỷ lệ hình ảnh
+                                        />
                                     </div>
-                                </Image.PreviewGroup>
+                                ))}
                             </div>
+
                         </div>
                     </div>
+
+
+
 
 
                     {/* Thông tin người bán và người thẩm định */}
@@ -194,18 +309,18 @@ export default function ProductReviewSection({itemDetail}) {
                                     <div className="flex items-center gap-4">
                                         <Avatar
                                             src={seller?.avatar || "https://docs.material-tailwind.com/img/face-2.jpg"}
-                                            alt="avatar" variant="rounded" className="w-16 h-16"/>
+                                            alt="avatar" variant="rounded" className="w-16 h-16" />
                                         <div>
                                             <Typography variant="h6"
-                                                        className="font-medium text-gray-800">{seller?.fullName || 'N/A'}</Typography>
+                                                className="font-medium text-gray-800">{seller?.fullName || 'N/A'}</Typography>
                                             <Typography variant="small" color="gray"
-                                                        className="font-normal">{seller?.role || 'N/A'}</Typography>
+                                                className="font-normal">{seller?.role || 'N/A'}</Typography>
                                         </div>
                                     </div>
                                     <Heading size="textxs" as="p" className="text-sm font-medium text-gray-700">Số điện
                                         thoại: {seller?.phoneNumber || 'N/A'}</Heading>
                                     <Heading size="textxs" as="p"
-                                             className="text-sm font-medium text-gray-700">Email: {seller?.email || 'N/A'}</Heading>
+                                        className="text-sm font-medium text-gray-700">Email: {seller?.email || 'N/A'}</Heading>
                                 </div>
                             </div>
 
@@ -221,18 +336,18 @@ export default function ProductReviewSection({itemDetail}) {
                                     <div className="flex items-center gap-4">
                                         <Avatar
                                             src={staff?.avatar || "https://docs.material-tailwind.com/img/face-2.jpg"}
-                                            alt="avatar" variant="rounded" className="w-16 h-16"/>
+                                            alt="avatar" variant="rounded" className="w-16 h-16" />
                                         <div>
                                             <Typography variant="h6"
-                                                        className="font-medium text-gray-800">{staff?.fullName || 'N/A'}</Typography>
+                                                className="font-medium text-gray-800">{staff?.fullName || 'N/A'}</Typography>
                                             <Typography variant="small" color="gray"
-                                                        className="font-normal">{staff?.role || 'N/A'}</Typography>
+                                                className="font-normal">{staff?.role || 'N/A'}</Typography>
                                         </div>
                                     </div>
                                     <Heading size="textxs" as="p" className="text-sm font-medium text-gray-700">Số điện
                                         thoại: {staff?.phoneNumber || 'N/A'}</Heading>
                                     <Heading size="textxs" as="p"
-                                             className="text-sm font-medium text-gray-700">Email: {staff?.email || 'N/A'}</Heading>
+                                        className="text-sm font-medium text-gray-700">Email: {staff?.email || 'N/A'}</Heading>
                                 </div>
                             </div>
 
@@ -244,13 +359,13 @@ export default function ProductReviewSection({itemDetail}) {
                     {(itemDetail.itemDocument) && (
                         <>
                             <Heading size="textxs" as="p" className="text-xl font-medium text-black-900 mb-5">Giấy tờ thẩm định</Heading>
-                            <div style={{width: '100%', height: '50vh', border: '1px solid #ddd'}}>
+                            <div style={{ width: '100%', height: '50vh', border: '1px solid #ddd' }}>
                                 <iframe
                                     src={itemDetail.itemDocument}
                                     title="PDF Viewer"
                                     width="100%"
                                     height="100%"
-                                    style={{border: 'none'}}
+                                    style={{ border: 'none' }}
                                 />
                             </div>
                         </>
