@@ -1,16 +1,16 @@
-import {Helmet} from "react-helmet";
-import {ButtonDH, Heading, Text,} from "../../components";
+import { Helmet } from "react-helmet";
+import { ButtonDH, Heading, Text, } from "../../components";
 import Header2 from "../../components/Header2";
 import AuctionSection from "./AuctionSection";
-import React, {useEffect, useState} from "react";
-import {Avatar, Breadcrumb, Flex, Layout, Rate, Skeleton, Tabs, theme} from "antd";
+import React, { useEffect, useState } from "react";
+import { Avatar, Breadcrumb, Flex, Layout, Rate, Skeleton, Tabs, theme } from "antd";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import {useGetItemDetailQuery, useGetSimilarItemAuctionQuery} from "@/services/item.service.js";
-import {useNavigate, useParams} from "react-router-dom";
-import {useSelector} from 'react-redux';
-import {useGetSellerInformationByAuctionIdQuery} from "../../services/sellerinformation.service.js";
-import {useGetHighestBidQuery, useGetWinBidQuery} from "@/services/bid.service.js";
-import {selectCurrentUserAPI, selectIsLoggedIn} from "@/redux/auth/authSlice.js";
+import { useGetItemDetailQuery, useGetSimilarItemAuctionQuery } from "@/services/item.service.js";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { useGetSellerInformationByAuctionIdQuery } from "../../services/sellerinformation.service.js";
+import { useGetHighestBidQuery, useGetWinBidQuery } from "@/services/bid.service.js";
+import { selectCurrentUserAPI, selectIsLoggedIn } from "@/redux/auth/authSlice.js";
 import FeedBack from "@/components/FeedBack.jsx";
 import SliderItem from "@/components/SlilerItem/index.jsx";
 
@@ -149,67 +149,73 @@ export default function AuctionPage() {
         };
     }, [userAPI?.id]);
     if (error) return <p>Error loading item details.</p>;
+
+
+
     const accordionData = [
-        {
-            detailsTitle: "Thông tin sản phẩm",
-            content: (
-                <>
-                    <div className="flex items-start self-stretch md:flex-col">
-                        <div className="mt-[18px] h-[4px] w-[4px] rounded-sm bg-blue_gray-900_01" />
-                        <Heading
-                            as="p"
-                            className="ml-2.5 w-[62%] self-center text-[16px] font-normal leading-10 text-blue_gray-600_01 md:ml-0 md:w-full"
-                        >
-                            <>
-                                {/*{data?.itemDescription}*/}
-                                <p dangerouslySetInnerHTML={{ __html: data?.itemDescription }} />
-                                <br />
-                            </>
-                        </Heading>
-                    </div>
-                </>
-            ),
-        },
-
-        {
-            detailsTitle: "Hướng dẫn tham gia đấu giá",
-            content: (
-                <div className="text-base text-gray-800 leading-relaxed">
-                    <p className="mb-4">
-                        Để tham gia đấu giá sản phẩm, bạn cần thực hiện các bước sau:
-                    </p>
-                    <ul className="ml-5 mt-4 space-y-4 text-sm text-gray-700 list-inside">
-                        <li className="flex items-start">
-                            <span className="text-red-600 font-semibold mr-2">1. Đăng ký tài khoản:</span>
-                            Bạn cần có một tài khoản người dùng trên hệ thống đấu giá để có thể tham gia các phiên đấu giá. Nếu chưa có, bạn hãy đăng ký tài khoản mới.
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-red-600 font-semibold mr-2">2. Chọn sản phẩm đấu giá:</span>
-                            Sau khi đăng nhập vào hệ thống, bạn có thể chọn sản phẩm mà bạn muốn tham gia đấu giá. Đảm bảo rằng bạn đã đọc kỹ thông tin về sản phẩm trước khi tham gia.
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-red-600 font-semibold mr-2">3. Đặt giá đấu:</span>
-                            Trong phiên đấu giá, bạn có thể đặt giá đấu cao hơn mức giá hiện tại để tăng cơ hội sở hữu sản phẩm. Hãy tham gia đấu giá nhanh chóng trước khi phiên đấu giá kết thúc.
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-red-600 font-semibold mr-2">4. Theo dõi kết quả:</span>
-                            Theo dõi tiến trình đấu giá và số tiền đấu giá hiện tại. Phiên đấu giá sẽ kết thúc khi hết thời gian, và người có mức giá cao nhất sẽ thắng cuộc.
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-red-600 font-semibold mr-2">5. Thanh toán và nhận sản phẩm:</span>
-                            Sau khi thắng đấu giá, bạn cần thanh toán số tiền đã đấu giá. Sau khi thanh toán, sản phẩm sẽ được giao đến bạn theo thỏa thuận với người bán.
-                        </li>
-                    </ul>
-                    <p className="mt-4 text-gray-700">
-                        Tham gia đấu giá không chỉ mang lại cơ hội sở hữu sản phẩm với mức giá hấp dẫn mà còn giúp bạn trải nghiệm quy trình đấu giá chuyên nghiệp.
-                    </p>
+    {
+        detailsTitle: "Thông tin sản phẩm",
+        content: (
+            <div className="accordion-content">
+                <div className="product-info mb-6">
+                    <p className="font-semibold text-lg mb-2"><strong>Tình Trạng Pin:</strong> {data?.batteryHealth} %</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Phiên bản hệ điều hành:</strong> {data?.osVersion}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Trạng thái iCloud:</strong> {data?.icloudStatus}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Tình trạng vỏ máy:</strong> {data?.bodyCondition}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Tình trạng màn hình:</strong> {data?.screenCondition}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Tình trạng camera:</strong> {data?.cameraCondition}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Tình trạng cổng:</strong> {data?.portCondition}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Tình trạng nút bấm:</strong> {data?.buttonCondition}</p>
                 </div>
-            ),
-        }
+
+                <div className="item-specification mb-6">
+                    <p className="font-semibold text-lg mb-2"><strong>Chíp xử lý:</strong> {data?.itemSpecific?.cpu}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>RAM:</strong> {data?.itemSpecific?.ram}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Kích thước màn hình:</strong> {data?.itemSpecific?.screenSize}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Camera:</strong> {data?.itemSpecific?.cameraSpecs}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Kết nối:</strong> {data?.itemSpecific?.connectivity}</p>
+                    <p className="font-semibold text-lg mb-2"><strong>Cảm biến:</strong> {data?.itemSpecific?.sensors}</p>
+                </div>
+            </div>
+        ),
+    },
+    {
+        detailsTitle: "Hướng dẫn tham gia đấu giá",
+        content: (
+            <div className="text-base text-gray-800 leading-relaxed">
+                <p className="mb-4 text-lg font-semibold">Để tham gia đấu giá sản phẩm, bạn cần thực hiện các bước sau:</p>
+                <ul className="ml-5 mt-4 space-y-4 text-sm text-gray-700 list-inside">
+                    <li className="flex items-start">
+                        <span className="text-red-600 font-semibold mr-2">1. Đăng ký tài khoản:</span>
+                        Bạn cần có một tài khoản người dùng trên hệ thống đấu giá để có thể tham gia các phiên đấu giá. Nếu chưa có, bạn hãy đăng ký tài khoản mới.
+                    </li>
+                    <li className="flex items-start">
+                        <span className="text-red-600 font-semibold mr-2">2. Chọn sản phẩm đấu giá:</span>
+                        Sau khi đăng nhập vào hệ thống, bạn có thể chọn sản phẩm mà bạn muốn tham gia đấu giá. Đảm bảo rằng bạn đã đọc kỹ thông tin về sản phẩm trước khi tham gia.
+                    </li>
+                    <li className="flex items-start">
+                        <span className="text-red-600 font-semibold mr-2">3. Đặt giá đấu:</span>
+                        Trong phiên đấu giá, bạn có thể đặt giá đấu cao hơn mức giá hiện tại để tăng cơ hội sở hữu sản phẩm. Hãy tham gia đấu giá nhanh chóng trước khi phiên đấu giá kết thúc.
+                    </li>
+                    <li className="flex items-start">
+                        <span className="text-red-600 font-semibold mr-2">4. Theo dõi kết quả:</span>
+                        Theo dõi tiến trình đấu giá và số tiền đấu giá hiện tại. Phiên đấu giá sẽ kết thúc khi hết thời gian, và người có mức giá cao nhất sẽ thắng cuộc.
+                    </li>
+                    <li className="flex items-start">
+                        <span className="text-red-600 font-semibold mr-2">5. Thanh toán và nhận sản phẩm:</span>
+                        Sau khi thắng đấu giá, bạn cần thanh toán số tiền đã đấu giá. Sau khi thanh toán, sản phẩm sẽ được giao đến bạn theo thỏa thuận với người bán.
+                    </li>
+                </ul>
+                <p className="mt-4 text-gray-700">
+                    Tham gia đấu giá không chỉ mang lại cơ hội sở hữu sản phẩm với mức giá hấp dẫn mà còn giúp bạn trải nghiệm quy trình đấu giá chuyên nghiệp.
+                </p>
+            </div>
+        ),
+    },
+];
 
 
 
-    ];
 
 
     return (
@@ -250,10 +256,10 @@ export default function AuctionPage() {
                             {isLoggedIn && initialized && (
                                 <div
                                     className={`w-full p-1 flex items-center rounded-lg ${data.auctionType?.act_id === 3
-                                            ? 'bg-gradient-to-r from-blue-500 to-blue-700' // Nền xanh dương cho đấu giá kín
-                                            : isHighBidder === true
-                                                ? 'bg-gradient-to-r from-white to-green-500'
-                                                : 'bg-gradient-to-r from-white to-red-500'
+                                        ? 'bg-gradient-to-r from-blue-500 to-blue-700' // Nền xanh dương cho đấu giá kín
+                                        : isHighBidder === true
+                                            ? 'bg-gradient-to-r from-white to-green-500'
+                                            : 'bg-gradient-to-r from-white to-red-500'
                                         }`}
                                 >
                                     <span className="text-sm font-semibold">

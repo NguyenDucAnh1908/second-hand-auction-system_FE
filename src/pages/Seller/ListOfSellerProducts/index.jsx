@@ -1,14 +1,14 @@
-import {Img, Heading, InputDH} from "../../../components";
-import {CloseSVG} from "../../../components/InputDH/close.jsx";
-import  {useState, useEffect} from "react";
+import { Img, Heading, InputDH } from "../../../components";
+import { CloseSVG } from "../../../components/InputDH/close.jsx";
+import { useState, useEffect } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
-import {Link, useNavigate} from 'react-router-dom';
-import {DocumentIcon, TrashIcon} from "@heroicons/react/24/solid";
-import {Card, IconButton, Typography} from "@material-tailwind/react";
+import { Link, useNavigate } from 'react-router-dom';
+import { DocumentIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { Card, IconButton, Typography } from "@material-tailwind/react";
 import Pagination from "@/components/Pagination/index.jsx";
-import {useGetItemByUserQuery,useGetDeleteItemMutation} from "../../../services/item.service.js";
+import { useGetItemByUserQuery, useGetDeleteItemMutation } from "../../../services/item.service.js";
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
@@ -16,18 +16,20 @@ import {
     HourglassOutlined,
     DeleteOutlined
 } from '@ant-design/icons';
-import {Tag, Breadcrumb, Layout, theme, Button,
-     Empty, Skeleton, message, Tabs, Badge, Descriptions
-,Divider, Table, Spin } from 'antd';
+import {
+    Tag, Breadcrumb, Layout, theme, Button,
+    Empty, Skeleton, message, Tabs, Badge, Descriptions
+    , Divider, Table, Spin
+} from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
-import {Modal} from 'antd';
+import { Modal } from 'antd';
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
 import { useGetAllBidsQuery } from "@/services/bid.service.js";
 import { useGetListRegisterUserQuery } from "../../../services/auctionRegistrations.service.js";
 import dayjs from "dayjs";
 
 
-const {Content, Sider} = Layout;
+const { Content, Sider } = Layout;
 
 const TABLE_HEAD = [
     "ID",
@@ -41,7 +43,7 @@ const TABLE_HEAD = [
 
 export default function ListOfSellerProductPage() {
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const navigate = useNavigate();
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -55,26 +57,54 @@ export default function ListOfSellerProductPage() {
     const [itemName, setItemName] = useState(null);
     const [itemThumbnail, setItemThumbnail] = useState(null);
 
+    //29/12
+    const [batteryHealth, setBatteryHealth] = useState(null);
+    const [osVersion, setOsVersion] = useState(null);
+    const [icloudStatus, setIcloudStatus] = useState(null);
+    const [bodyCondition, setBodyCondition] = useState(null);
+    const [screenCondition, setScreenCondition] = useState(null);
+    const [cameraCondition, setCameraCondition] = useState(null);
+    const [portCondition, setPortCondition] = useState(null);
+    const [buttonCondition, setButtonCondition] = useState(null);
+    const [itemSpecification, setItemSpecification] = useState(null);
+
+
+
     const pageSize = 10;
     const formatDate = (dateString) => {
-        const options = {year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Ho_Chi_Minh'};
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' };
         return new Date(dateString).toLocaleDateString('vi-VN', options);
     };
 
-    const {data, isError, isLoading} = useGetItemByUserQuery(
-        {page: page - 1, limit: pageSize}
+    const { data, isError, isLoading } = useGetItemByUserQuery(
+        { page: page - 1, limit: pageSize }
     );
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
 
-    const handleOpenModal = (auction, itemName, thumbnail) => {
+    const handleOpenModal = (
+        auction, itemName, thumbnail,
+        batteryHealth, osVersion, icloudStatus, bodyCondition,
+        screenCondition, cameraCondition, portCondition,
+        buttonCondition, itemSpecification
+    ) => {
         setSelectedAuction(auction);
         setIsModalVisible(true);
         setItemName(itemName);
         setItemThumbnail(thumbnail);
+        setBatteryHealth(batteryHealth);
+        setOsVersion(osVersion);
+        setIcloudStatus(icloudStatus);
+        setBodyCondition(bodyCondition);
+        setScreenCondition(screenCondition);
+        setCameraCondition(cameraCondition);
+        setPortCondition(portCondition);
+        setButtonCondition(buttonCondition);
+        setItemSpecification(itemSpecification);
     };
+    
 
 
     const handleOpenDescriptionModal = (itemDescription) => {
@@ -139,87 +169,91 @@ export default function ListOfSellerProductPage() {
     };
 
 
-      //api gọi lịch sử bid
-    
-        const [bidData, setBidData] = useState([]); // State riêng biệt lưu bid data
-    
-    
-        const { data: historyBid } = useGetAllBidsQuery({
-            auctionId: parseInt(selectedAuction?.auction_id, 10) || 0,
-            page: 0,
-        });
-    
-        useEffect(() => {
-            if (historyBid?.data) {
-                setBidData(historyBid.data);
-            } else {
-                setBidData([]);
-            }
-        }, [historyBid?.data]);
-    
-        useEffect(() => {
-            if (isModalVisible && historyBid?.data) {
-                setBidData(historyBid.data);
-            } else if (isModalVisible) {
-                setBidData([]);
-            }
-        }, [historyBid?.data, isModalVisible]);
-        //end
+    //api gọi lịch sử bid
+
+    const [bidData, setBidData] = useState([]); // State riêng biệt lưu bid data
 
 
-        //api lấy danh sách đăng ký auction, có cọc...
-         const [paging, setPaging] = useState({ page: 0, limit: 10 });
-        
-        
-            const {
-                data: registeredUsers,
-                isLoading: isLoadingRegisteredUsers,
-                isError: isErrorRegisteredUsers,
-                error: errorRegisteredUsers,
-            } = useGetListRegisterUserQuery({ auctionId: selectedAuction?.auction_id, paging });
-        
-            const validRegisteredUsers = Array.isArray(registeredUsers?.list) ? registeredUsers.list : [];
-        
-            const totalPages = registeredUsers?.totalPages || 0;
-        
-            const [isRegisteredUsersModalOpen, setIsRegisteredUsersModalOpen] = useState(false); // Sử dụng biến riêng cho modal này
-            const showRegisteredUsersModal = () => {
-        
-                setIsRegisteredUsersModalOpen(true); // Mở modal
-        
-            };
-        
-            // Hàm đóng modal
-            const handleCloseRegisteredUsersModal = () => {
-                setIsRegisteredUsersModalOpen(false); // Đóng modal
-            };
-        
-        
-            // Hàm xử lý chuyển trang
-            const handlePageChangeRegister = (newPage) => {
-                if (newPage >= 0 && newPage < totalPages) { // Đảm bảo trang hợp lệ
-                    setPaging((prev) => ({ ...prev, page: newPage }));
-                }
-            };
-        
-        
-            // Hàm định dạng tiền tệ
-            const formatCurrency = (amount) => {
-                return new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND',
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0,
-                }).format(amount);
-            };
-        
-           
-        
-        //end 
+    const { data: historyBid } = useGetAllBidsQuery({
+        auctionId: parseInt(selectedAuction?.auction_id, 10) || 0,
+        page: 0,
+    });
+
+    useEffect(() => {
+        if (historyBid?.data) {
+            setBidData(historyBid.data);
+        } else {
+            setBidData([]);
+        }
+    }, [historyBid?.data]);
+
+    useEffect(() => {
+        if (isModalVisible && historyBid?.data) {
+            setBidData(historyBid.data);
+        } else if (isModalVisible) {
+            setBidData([]);
+        }
+    }, [historyBid?.data, isModalVisible]);
+    //end
+
+
+    //api lấy danh sách đăng ký auction, có cọc...
+    const [paging, setPaging] = useState({ page: 0, limit: 10 });
+
+
+    const {
+        data: registeredUsers,
+        isLoading: isLoadingRegisteredUsers,
+        isError: isErrorRegisteredUsers,
+        error: errorRegisteredUsers,
+    } = useGetListRegisterUserQuery({ auctionId: selectedAuction?.auction_id, paging });
+
+    const validRegisteredUsers = Array.isArray(registeredUsers?.list) ? registeredUsers.list : [];
+
+    const totalPages = registeredUsers?.totalPages || 0;
+
+    const [isRegisteredUsersModalOpen, setIsRegisteredUsersModalOpen] = useState(false); // Sử dụng biến riêng cho modal này
+    const showRegisteredUsersModal = () => {
+
+        setIsRegisteredUsersModalOpen(true); // Mở modal
+
+    };
+
+    // Hàm đóng modal
+    const handleCloseRegisteredUsersModal = () => {
+        setIsRegisteredUsersModalOpen(false); // Đóng modal
+    };
+
+
+    // Hàm xử lý chuyển trang
+    const handlePageChangeRegister = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) { // Đảm bảo trang hợp lệ
+            setPaging((prev) => ({ ...prev, page: newPage }));
+        }
+    };
+
+
+    // Hàm định dạng tiền tệ
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(amount);
+    };
 
 
 
-    const items = selectedAuction && itemName && itemThumbnail ? [
+    //end 
+
+
+
+
+
+    const items = selectedAuction && itemName && itemThumbnail && batteryHealth && osVersion &&
+        icloudStatus && bodyCondition && screenCondition && cameraCondition && portCondition &&
+        buttonCondition && itemSpecification ? [
         {
             key: '1',
             label: 'Tên sản phẩm',
@@ -231,7 +265,7 @@ export default function ListOfSellerProductPage() {
             label: 'Hình Ảnh',
             children: (
                 <img
-                     src={itemThumbnail}
+                    src={itemThumbnail}
                     alt="Product"
                     className="w-[30%] h-48 object-cover rounded"
                 />
@@ -256,18 +290,18 @@ export default function ListOfSellerProductPage() {
                 <Badge
                     status={
                         selectedAuction?.status === 'CANCELLED' ? 'error' :
-                        selectedAuction?.status === 'CLOSED' ? 'default' :
-                        selectedAuction?.status === 'COMPLETED' ? 'success' :
-                        selectedAuction?.status === 'OPEN' ? 'processing' :
-                        selectedAuction?.status === 'PENDING' ? 'warning' :
+                            selectedAuction?.status === 'CLOSED' ? 'default' :
+                                selectedAuction?.status === 'COMPLETED' ? 'success' :
+                                    selectedAuction?.status === 'OPEN' ? 'processing' :
+                                        selectedAuction?.status === 'PENDING' ? 'warning' :
                                             'default'
                     }
                     text={
                         selectedAuction?.status === 'CANCELLED' ? 'Đã hủy' :
-                        selectedAuction?.status === 'CLOSED' ? 'Đã đóng' :
-                        selectedAuction?.status === 'COMPLETED' ? 'Hoàn thành' :
-                        selectedAuction?.status === 'OPEN' ? 'Đang mở' :
-                        selectedAuction?.status === 'PENDING' ? 'Đang chờ' :
+                            selectedAuction?.status === 'CLOSED' ? 'Đã đóng' :
+                                selectedAuction?.status === 'COMPLETED' ? 'Hoàn thành' :
+                                    selectedAuction?.status === 'OPEN' ? 'Đang mở' :
+                                        selectedAuction?.status === 'PENDING' ? 'Đang chờ' :
                                             'Không xác định'
                     }
                 />
@@ -289,13 +323,91 @@ export default function ListOfSellerProductPage() {
             }).format((selectedAuction?.buy_now_price) * (selectedAuction?.percent_deposit) / 100)}`,
         },
 
+
+        {
+            key: '8',
+            label: 'Tình trạng Pin',
+            children: batteryHealth,
+        },
+        {
+            key: '9',
+            label: 'Phiên bản hệ điều hành',
+            children: osVersion,
+        },
+        {
+            key: '10',
+            label: 'Trạng thái iCloud',
+            children: icloudStatus,
+        },
+        {
+            key: '11',
+            label: 'Tình trạng vỏ máy',
+            children: bodyCondition,
+        },
+        {
+            key: '12',
+            label: 'Tình trạng màn hình',
+            children: screenCondition,
+        },
+        {
+            key: '13',
+            label: 'Tình trạng camera',
+            children: cameraCondition,
+        },
+        {
+            key: '14',
+            label: 'Tình trạng cổng',
+            children: portCondition,
+        },
+        {
+            key: '15',
+            label: 'Tình trạng nút bấm',
+            children: buttonCondition,
+        },
+        // Item specification
+        {
+            key: '16',
+            label: 'Chíp xử lý',
+            children: itemSpecification?.cpu,
+        },
+        {
+            key: '17',
+            label: 'RAM',
+            children: itemSpecification?.ram,
+        },
+        {
+            key: '18',
+            label: 'Kích thước màn hình',
+            children: itemSpecification?.screenSize,
+        },
+        {
+            key: '19',
+            label: 'Camera',
+            children: itemSpecification?.cameraSpecs,
+        },
+        {
+            key: '20',
+            label: 'Kết nối',
+            children: itemSpecification?.connectivity,
+        },
+        {
+            key: '21',
+            label: 'Cảm biến',
+            children: itemSpecification?.sensors,
+        }
+
     ] : [];
+
 
 
 
     const renderTableRows = () => {
 
-        return data?.items?.items.map(({itemId, itemName, thumbnail, itemDescription, auction, itemStatus}, index) => (
+        return data?.items?.items.map(({ itemId, itemName, thumbnail,
+            itemDescription, auction, itemStatus,
+            batteryHealth, osVersion, icloudStatus, bodyCondition, screenCondition, cameraCondition,
+            portCondition, buttonCondition, itemSpecification
+        }, index) => (
             <tr key={itemId}>
                 <td className="p-4">
                     <Typography variant="small" color="blue-gray" className="font-bold">
@@ -308,7 +420,7 @@ export default function ListOfSellerProductPage() {
                     </Typography>
                 </td>
                 <td className="p-4">
-                    <img src={thumbnail} alt={itemName} className="w-16 h-16 object-cover rounded"/>
+                    <img src={thumbnail} alt={itemName} className="w-16 h-16 object-cover rounded" />
                 </td>
                 <td className="p-4">
                     <Typography variant="small" className="font-normal text-gray-600">
@@ -318,25 +430,28 @@ export default function ListOfSellerProductPage() {
                 </td>
                 <td className="p-4">
                     <Typography variant="small" className="font-normal text-gray-600">
-                        <Button onClick={() => handleOpenModal(auction, itemName,thumbnail )}>Thông tin đấu giá</Button>
+                        <Button onClick={() => handleOpenModal(auction, itemName, thumbnail,
+                            batteryHealth, osVersion, icloudStatus, bodyCondition,
+                            screenCondition, cameraCondition, portCondition, buttonCondition, itemSpecification
+                        )}>Thông tin đấu giá</Button>
                     </Typography>
                 </td>
                 <td className="p-4 mt-5 flex items-center justify-center w-[180px]">
                     {itemStatus === "ACCEPTED" && (
-                        <Tag icon={<CheckCircleOutlined/>} color="success" className="w-full text-center">Hợp lệ</Tag>
+                        <Tag icon={<CheckCircleOutlined />} color="success" className="w-full text-center">Hợp lệ</Tag>
                     )}
                     {itemStatus === "PENDING" && (
-                        <Tag icon={<SyncOutlined spin/>} color="processing" className="w-full text-center">Đang
+                        <Tag icon={<SyncOutlined spin />} color="processing" className="w-full text-center">Đang
                             chờ</Tag>
                     )}
                     {itemStatus === "REJECTED" && (
-                        <Tag icon={<CloseCircleOutlined/>} color="error" className="w-full text-center">Từ chối</Tag>
+                        <Tag icon={<CloseCircleOutlined />} color="error" className="w-full text-center">Từ chối</Tag>
                     )}
                     {itemStatus === "INACTIVE" && (
-                        <Tag icon={<DeleteOutlined/>} color="error" className="w-full text-center">Hủy bỏ</Tag>
+                        <Tag icon={<DeleteOutlined />} color="error" className="w-full text-center">Hủy bỏ</Tag>
                     )}
                     {itemStatus === "PENDING_AUCTION" && (
-                        <Tag icon={<HourglassOutlined/>} color="warning" className="w-full text-center">Đang tạo
+                        <Tag icon={<HourglassOutlined />} color="warning" className="w-full text-center">Đang tạo
                             phiên</Tag>
                     )}
                 </td>
@@ -345,10 +460,10 @@ export default function ListOfSellerProductPage() {
                 <td className="p-4">
                     <div className="flex items-center gap-2">
                         <IconButton variant="text" size="sm">
-                            <DocumentIcon onClick={() => handleUpdateItem(itemId,itemStatus)} className="h-4 w-4 text-gray-900"/>
+                            <DocumentIcon onClick={() => handleUpdateItem(itemId, itemStatus)} className="h-4 w-4 text-gray-900" />
                         </IconButton>
                         <IconButton onClick={() => handleDeleteItem(itemId)} variant="text" size="sm">
-                            <TrashIcon strokeWidth={3} className="h-4 w-4 text-gray-900"/>
+                            <TrashIcon strokeWidth={3} className="h-4 w-4 text-gray-900" />
                         </IconButton>
 
 
@@ -359,20 +474,20 @@ export default function ListOfSellerProductPage() {
     };
 
     return (
-        <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-            <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
-            <Content style={{padding: '0 48px', flex: 1, display: 'flex', flexDirection: 'column'}}>
-                <Breadcrumb style={{margin: '16px 0'}}>
+        <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+            <Content style={{ padding: '0 48px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <Breadcrumb style={{ margin: '16px 0' }}>
                     <Breadcrumb.Item>Home</Breadcrumb.Item>
                     <Breadcrumb.Item>List</Breadcrumb.Item>
                     <Breadcrumb.Item>App</Breadcrumb.Item>
                 </Breadcrumb>
                 <Layout
-                    style={{padding: '24px 0', background: colorBgContainer, borderRadius: borderRadiusLG, flex: 1}}>
-                    <Sider style={{background: colorBgContainer}} width={300}>
-                        <Sidebar/>
+                    style={{ padding: '24px 0', background: colorBgContainer, borderRadius: borderRadiusLG, flex: 1 }}>
+                    <Sider style={{ background: colorBgContainer }} width={300}>
+                        <Sidebar />
                     </Sider>
-                    <Content style={{padding: '0 24px', minHeight: 280, flex: 1}}>
+                    <Content style={{ padding: '0 24px', minHeight: 280, flex: 1 }}>
                         <div className="w-full bg-gray-50_01">
                             <div className="mt-4 flex flex-col items-end">
                                 <div className="w-[100%] md:w-full md:px-5">
@@ -382,7 +497,7 @@ export default function ListOfSellerProductPage() {
                                             <div className="flex flex-col gap-2">
                                                 <div className="ml-1 flex md:ml-0">
                                                     <Heading size="headingxl" as="h1"
-                                                             className="text-[30px] font-semibold uppercase text-gray-900_01 md:text-[44px] sm:text-[38px] -mt-[80px] ml-[20px]">
+                                                        className="text-[30px] font-semibold uppercase text-gray-900_01 md:text-[44px] sm:text-[38px] -mt-[80px] ml-[20px]">
                                                         Danh sách sản phẩm
                                                     </Heading>
                                                 </div>
@@ -395,40 +510,40 @@ export default function ListOfSellerProductPage() {
                                                         onChange={(e) => setSearchBarValue1(e.target.value)}
                                                         suffix={searchBarValue1?.length > 0 ? (
                                                             <CloseSVG onClick={() => setSearchBarValue1("")} height={18}
-                                                                      width={18} fillColor="#626974ff"/>
+                                                                width={18} fillColor="#626974ff" />
                                                         ) : (
                                                             <Img src="/images/img_search.svg" alt="Search"
-                                                                 className="h-[18px] w-[18px]"/>
+                                                                className="h-[18px] w-[18px]" />
                                                         )}
                                                         className="flex h-[40px] w-[24%] items-center justify-center gap-4 rounded bg-bg-white px-4 text-[16px] text-blue_gray-600 shadow-xs sm:w-full "
                                                     />
                                                     <Link to="/Dashboard-seller/registerproduct"
-                                                          className="flex h-[40px] min-w-[152px] flex-row items-center justify-center gap-0.5 rounded-md"
-                                                          style={{backgroundColor: '#28a745'}}>
+                                                        className="flex h-[40px] min-w-[152px] flex-row items-center justify-center gap-0.5 rounded-md"
+                                                        style={{ backgroundColor: '#28a745' }}>
                                                         Tạo sản phẩm
                                                     </Link>
                                                 </div>
                                                 {isError ? (
-                                                    <Empty/>
+                                                    <Empty />
                                                 ) : (
                                                     <Skeleton loading={isLoading} active>
                                                         <Card className="h-full w-full overflow-scroll">
                                                             <table className="w-full min-w-max table-auto text-left">
                                                                 <thead>
-                                                                <tr>
-                                                                    {TABLE_HEAD.map((head) => (
-                                                                        <th key={head} className="p-4 pt-10">
-                                                                            <Typography variant="small"
-                                                                                        color="blue-gray"
-                                                                                        className="font-bold leading-none">
-                                                                                {head}
-                                                                            </Typography>
-                                                                        </th>
-                                                                    ))}
-                                                                </tr>
+                                                                    <tr>
+                                                                        {TABLE_HEAD.map((head) => (
+                                                                            <th key={head} className="p-4 pt-10">
+                                                                                <Typography variant="small"
+                                                                                    color="blue-gray"
+                                                                                    className="font-bold leading-none">
+                                                                                    {head}
+                                                                                </Typography>
+                                                                            </th>
+                                                                        ))}
+                                                                    </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                {renderTableRows()}
+                                                                    {renderTableRows()}
                                                                 </tbody>
                                                             </table>
                                                         </Card>
@@ -456,7 +571,7 @@ export default function ListOfSellerProductPage() {
                     </Content>
                 </Layout>
             </Content>
-            <FooterBK/>
+            <FooterBK />
             <Modal
                 title="Thông tin chi tiết đấu giá"
                 visible={isModalVisible}
@@ -476,10 +591,10 @@ export default function ListOfSellerProductPage() {
                     margin: 0,
                 }}
             >
-                 <Tabs defaultActiveKey="1">
+                <Tabs defaultActiveKey="1">
                     {/* Thông tin chi tiết của phiên đấu giá */}
 
-                 
+
 
                     <Tabs.TabPane tab="Thông tin chi tiết" key="1">
                         {items.length > 0 ? (
@@ -639,14 +754,14 @@ export default function ListOfSellerProductPage() {
                 onCancel={handleCloseDescriptionModal}
                 footer={[
                     <Button key="close" onClick={handleCloseDescriptionModal}
-                            className="bg-red-500 text-white hover:bg-red-600">
+                        className="bg-red-500 text-white hover:bg-red-600">
                         Đóng
                     </Button>,
                 ]}
                 className="rounded-lg shadow-lg"
                 width={1000}
             >
-                <DescriptionItem selectedDescription={selectedDescription}/>
+                <DescriptionItem selectedDescription={selectedDescription} />
             </Modal>
         </Layout>
     );

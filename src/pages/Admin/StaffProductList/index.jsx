@@ -298,6 +298,78 @@ export default function StaffProductListPage() {
             }).format((itemInfor?.auction?.buy_now_price) * (itemInfor?.auction?.percent_deposit) / 100)}`,
         },
 
+        {
+            key: '8',
+            label: 'Tình trạng Pin',
+            children: `${itemInfor?.batteryHealth} %`,
+        },
+        {
+            key: '9',
+            label: 'Phiên bản hệ điều hành',
+            children: itemInfor?.osVersion,
+        },
+        {
+            key: '10',
+            label: 'Trạng thái iCloud',
+            children: itemInfor?.icloudStatus,
+        },
+        {
+            key: '11',
+            label: 'Tình trạng vỏ máy',
+            children: itemInfor?.bodyCondition,
+        },
+        {
+            key: '12',
+            label: 'Tình trạng màn hình',
+            children: itemInfor?.screenCondition,
+        },
+        {
+            key: '13',
+            label: 'Tình trạng camera',
+            children: itemInfor?.cameraCondition,
+        },
+        {
+            key: '14',
+            label: 'Tình trạng cổng',
+            children: itemInfor?.portCondition,
+        },
+        {
+            key: '15',
+            label: 'Tình trạng nút bấm',
+            children: itemInfor?.buttonCondition,
+        },
+        // Item specification
+        {
+            key: '16',
+            label: 'Chíp xử lý',
+            children: itemInfor?.itemSpecification?.cpu,
+        },
+        {
+            key: '17',
+            label: 'RAM',
+            children: itemInfor?.itemSpecification?.ram,
+        },
+        {
+            key: '18',
+            label: 'Kích thước màn hình',
+            children: itemInfor?.itemSpecification?.screenSize,
+        },
+        {
+            key: '19',
+            label: 'Camera',
+            children: itemInfor?.itemSpecification?.cameraSpecs,
+        },
+        {
+            key: '20',
+            label: 'Kết nối',
+            children: itemInfor?.itemSpecification?.connectivity,
+        },
+        {
+            key: '21',
+            label: 'Cảm biến',
+            children: itemInfor?.itemSpecification?.sensors,
+        }
+
     ] : [];
 
     return (
@@ -318,24 +390,12 @@ export default function StaffProductListPage() {
                     left: 0,
                     margin: 0,
                 }}
-                bodyStyle={{ height: '100vh', padding: 0 }}
+             
             >
                 <Tabs defaultActiveKey="1">
                     {/* Thông tin chi tiết của phiên đấu giá */}
 
-                    {/* <Tabs.TabPane tab="Thông tin chi tiết" key="1">
-                            {items.length > 0 ? (
-                                <Descriptions bordered column={1}>
-                                    {items.map((item) => (
-                                        <Descriptions.Item key={item.key} label={item.label} span={item.span || 1}>
-                                            {item.children}
-                                        </Descriptions.Item>
-                                    ))}
-                                </Descriptions>
-                            ) : (
-                                <Empty description="Không có dữ liệu" />
-                            )}
-                        </Tabs.TabPane> */}
+                   
 
                     <Tabs.TabPane tab="Thông tin chi tiết" key="1">
                         {items.length > 0 ? (
@@ -414,7 +474,7 @@ export default function StaffProductListPage() {
                         <Divider />
 
                         {/* Thêm phần hiển thị lịch sử bid của user */}
-                        <Descriptions title="Lịch sử đấu giá của người dùng" bordered column={1}>
+                        <Descriptions title="" bordered column={1}>
                             {bidData.length > 0 ? (
                                 <Table
                                     columns={[
