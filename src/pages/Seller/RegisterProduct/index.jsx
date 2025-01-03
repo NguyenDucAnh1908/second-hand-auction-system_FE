@@ -1,7 +1,7 @@
 import 'react-datepicker/dist/react-datepicker.css';
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
-import { ButtonDH, Heading, TextArea, } from "../../../components";
+import { ButtonDH, Heading, Img, TextArea, } from "../../../components";
 import React, { useEffect, useRef, useState } from "react";
 import { Option, Select } from "@material-tailwind/react";
 import { PlusOutlined } from '@ant-design/icons';
@@ -26,6 +26,7 @@ import { useGetAuctionTypeQuery } from "@/services/auctionType.service.js";
 import { useGetCategoriesQuery } from "@/services/category.service.js";
 import TextEditor from "@/components/TextEditor/index.jsx";
 import { useNavigate } from "react-router-dom";
+
 
 const { Text, Link } = Typography;
 const { Content, Sider } = Layout;
@@ -62,15 +63,32 @@ function RegisterProductPage() {
     const [cameraCondition, setCameraCondition] = useState("");
     const [portCondition, setPortCondition] = useState("");
     const [buttonCondition, setButtonCondition] = useState("");
-    const [cpu, setCpu] = useState("");
     const [ram, setRam] = useState("");
     const [screenSize, setScreenSize] = useState("");
     const [cameraSpecs, setCameraSpecs] = useState("");
     const [connectivity, setConnectivity] = useState("");
     const [sensors, setSensors] = useState("");
+    const [serial, setSerial] = useState("");
 
     const [imgItem, setImgItem] = useState([]);
     const [file, setFile] = useState(null);
+
+    const [imeiData, setImeiData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [brand, setBrand] = useState("");
+    const [device_image, setDevice_image] = useState("");
+    const [sim, setSim] = useState("");
+    const [sim_slots, setSim_slots] = useState("");
+    const [os, setOs] = useState("");
+    const [os_family, setOs_family] = useState("");
+    const [bluetooth, setBluetooth] = useState("");
+    const [usb, setUsb] = useState("");
+    const [wlan, setWlan] = useState("");
+    const [nfc, setNfc] = useState("");
+    const [speed, setSpeed] = useState("");
+    const [nettech, setNettech] = useState("");
+    const [model, setModel] = useState("")
+    const [type, setType] = useState("")
 
     const [itemNameError, setItemNameError] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -260,7 +278,7 @@ function RegisterProductPage() {
             price_step_item: priceStepItem,
             img_item: uploadedImages,
             item_document: fileUrl,
-            sc_id: scId,
+            sc_id: 1,
             auction_type: auctionType,
             imei: imei, // Thêm trường IMEI
             storage: storage, // Thêm dung lượng
@@ -273,14 +291,28 @@ function RegisterProductPage() {
             camera_condition: cameraCondition, // Tình trạng camera
             port_condition: portCondition, // Tình trạng cổng kết nối
             button_condition: buttonCondition, // Tình trạng nút
-            cpu: cpu, // CPU
             ram: ram, // RAM
             screen_size: screenSize, // Kích thước màn hình
             camera_specs: cameraSpecs, // Thông số camera
             connectivity: connectivity, // Kết nối
             sensors: sensors, // Cảm biến
+            brand: brand,
+            device_image: device_image,
+            model: model,
+            serial: serial,
+            type: type,
+            network_technology: nettech.join(', '),
+            nfc: nfc,
+            os: os,
+            os_family: os_family,
+            sim: sim,
+            sim_slots: sim_slots,
+            bluetooth: bluetooth.join(', '),
+            speed: speed.join(', '),
+            usb: usb.join(', '),
+            wlan: wlan.join(', ')
         };
-        
+
 
         console.log(payload);
         try {
@@ -349,78 +381,266 @@ function RegisterProductPage() {
     };
 
 
-    const items = [
+
+
+
+
+
+
+    // Function to fetch IMEI info
+    const fetchImeiInfo = async () => {
+        if (imei.length !== 15) {
+            alert("Mã IMEI phải có 15 chữ số.");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await fetch(`https://kist-imei-decoding-v1.p.rapidapi.com/api/imei/${imei}`, {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': 'f9db9f1526mshb53b86400745cd4p1a6763jsn2b9b90d98931',
+                    'x-rapidapi-host': 'kist-imei-decoding-v1.p.rapidapi.com'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch IMEI data');
+            }
+
+            const data = await response.json();
+            console.log('IMEI Data:', data);
+            setImeiData(data);
+
+            // Map response data to form fields
+            setItemName(`${data.data.brand} ${data.data.name}`);
+            setBrand(data.data.brand)
+            setDevice_image(data.data.device_image);
+            setSim(data.data.device_spec.sim)
+            setSim_slots(data.data.device_spec.sim_slots)
+            setOs(data.data.device_spec.os)
+            setOs_family(data.data.device_spec.os_family)
+            setBluetooth(data.data.device_spec.bluetooth)
+            setUsb(data.data.device_spec.usb)
+            setWlan(data.data.device_spec.wlan)
+            setNfc(data.data.device_spec.nfc)
+            setSpeed(data.data.device_spec.speed)
+            setNettech(data.data.device_spec.nettech)
+            setSerial(data.data.serial)
+            setImei(data.query);
+            setModel(data.data.model)
+            setType(data.data.device_spec.type)
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const imeiCheck = [
         {
             key: '1',
-            label: <label className="font-bold">Hãng điện thoại</label>,
+            label: <label className="font-bold">Mã IMEI</label>,
             children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={selectedCategory || undefined}
-                        onChange={(value) => {
-                            setSelectedCategory(value);
-                            setSelectedSubCategory(null);
-                        }}
-                        placeholder="Chọn danh mục"
-                        loading={isloadingCategories}
-                        className="w-full"
-                    >
-                        {isloadingCategories ? (
-                            <Option disabled>
-                                <Spin />
-                            </Option>
-                        ) : errorCategories ? (
-                            <Option disabled>Error loading categories</Option>
-                        ) : (
-                            categories?.map((category) => (
-                                <Option key={category.categoryId} value={category.categoryId}>
-                                    {category.categoryName}
-                                </Option>
-                            ))
-                        )}
-                    </Select>
+                <div className="w-full space-y-4">
+                    <div className="flex items-center space-x-4">
+                        <Input
+                            placeholder="Nhập mã IMEI"
+                            maxLength={15}  // Giới hạn 15 ký tự
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                // Chỉ cho phép số
+                                if (/^\d*$/.test(value)) {
+                                    setImei(value);  // Cập nhật giá trị
+                                }
+                            }}
+                            value={imei}  // Giá trị của input được gắn với state
+                            className="rounded-md border p-3 w-full"
+                            style={{ maxWidth: '250px' }} // Giới hạn chiều rộng input
+                        />
+                        <button
+                            onClick={fetchImeiInfo}
+                            className="p-2 bg-blue-500 text-white rounded"
+                        >
+                            Kiểm tra IMEI
+                        </button>
+                    </div>
+                </div>
+            ),
+        }, 
+        
+        {
+            key: '2',
+            label: <label className="font-bold"></label>,
+            children: (
+                <div className="w-[30%] space-y-4">
+                    <Img
+                        src={device_image || '/images/Mobile-Smartphone-icon.png'} 
+                        className="w-full h-auto rounded-md shadow-md"
+                    />
+                </div>
+            ),
+        }
+        
+
+    ];
+
+
+    const fieldReponse = [
+        {
+            key: '1',
+            label: <label className="font-bold">Tên Sản Phẩm</label>,
+            children: (
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                   {itemName}
                 </div>
             ),
         },
         {
             key: '2',
-            label: <label className="font-bold">Danh mục phụ</label>,
+            label: <label className="font-bold">Serial</label>,
             children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={selectedSubCategory || undefined}
-                        onChange={(value) => setSelectedSubCategory(value)}
-                        placeholder="Chọn danh mục phụ"
-                        disabled={!selectedCategory}
-                        className="w-full"
-                    >
-                        {filteredSubCategories.map((subCategory) => (
-                            <Option key={subCategory.scId} value={subCategory.scId}>
-                                {subCategory.sub_category}
-                            </Option>
-                        ))}
-                    </Select>
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {serial}
                 </div>
             ),
         },
         {
             key: '3',
-            label: <label className="font-bold">Tên sản phẩm</label>,
+            label: <label className="font-bold">Hỗ trợ Sim</label>,
             children: (
-                <div className="w-full space-y-4">
-                    <Input
-                        placeholder="Nhập tên sản phẩm"
-                        value={itemName}
-                        onChange={handleItemNameChange}
-                        status={itemNameError ? 'error' : ''}
-                        className={`rounded-md border p-3 w-full ${itemNameError ? 'border-red-500' : 'border-gray-300'}`}
-                    />
-                    {itemNameError && (
-                        <Text type="danger" className="text-red-500">{itemNameError}</Text>
-                    )}
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {sim}
                 </div>
             ),
         },
+        {
+            key: '4',
+            label: <label className="font-bold">Số khe cắm sim</label>,
+            children: (
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {sim_slots}
+                </div>
+            ),
+        },
+        {
+            key: '5',
+            label: <label className="font-bold">Phiên bản</label>,
+            children: (
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {os}
+                </div>
+            ),
+        },
+        {
+            key: '6',
+            label: <label className="font-bold">Hệ điều hành</label>,
+            children: (
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {os_family}
+                </div>
+            ),
+        },
+        {
+            key: '7',
+            label: <label className="font-bold">Bluetooth</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                    {bluetooth?.length ? (
+                        bluetooth.map((item, index) => (
+                            <li key={index} className="text-gray-800">{item}</li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No Bluetooth data available</p>
+                    )}
+                </ul>
+            ),
+        }
+        ,
+        {
+            key: '8',
+            label: <label className="font-bold">Cổng USB</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                    {Array.isArray(usb) && usb.length > 0 ? (
+                        usb.map((item, index) => (
+                            <li key={index} className="text-gray-800">{item}</li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No USB data available</p>
+                    )}
+                </ul>
+            ),
+        },
+        {
+            key: '9',
+            label: <label className="font-bold">Wi-Fi</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                    {Array.isArray(wlan) && wlan.length > 0 ? (
+                        wlan.map((item, index) => (
+                            <li key={index} className="text-gray-800">{item}</li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No Wi-Fi data available</p>
+                    )}
+                </ul>
+            ),
+        },
+        {
+            key: '10',
+            label: <label className="font-bold text-black">Tốc độ kết nối mạng</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                    {Array.isArray(speed) && speed.length > 0 ? (
+                        speed.map((item, index) => (
+                            <li key={index} className="text-black">{item}</li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No speed data available</p>
+                    )}
+                </ul>
+            ),
+        },
+        {
+            key: '11',
+            label: <label className="font-bold">Công nghệ mạng hỗ trợ</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                    {Array.isArray(nettech) && nettech.length > 0 ? (
+                        nettech.map((item, index) => (
+                            <li key={index} className="text-gray-800">{item}</li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No network technology data available</p>
+                    )}
+                </ul>
+            ),
+        },
+        {
+            key: '11',
+            label: <label className="font-bold">Mã model</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                  {model}
+                </ul>
+            ),
+        },
+        
+        
+    ];
+
+
+
+
+
+
+
+    const items = [
+      
+       
+      
         {
             key: '4',
             label: <label className="font-bold">Giá mong muốn</label>,
@@ -461,21 +681,7 @@ function RegisterProductPage() {
                 </div>
             ),
         },
-        {
-            key: '6',
-            label: <label className="font-bold">IMEI</label>,
-            children: (
-                <div className="w-full space-y-4">
-                    <Input
-                        placeholder="Nhập IMEI sản phẩm"
-                        value={imei}
-                        onChange={(e) => setImei(e.target.value)} // Trích xuất giá trị từ e.target.value
-                        className={`rounded-md border p-3 w-full ${itemNameError ? 'border-red-500' : 'border-gray-300'}`}
-                    />
-                </div>
-            ),
-        },
-        
+      
 
         {
             key: '7',
@@ -544,24 +750,9 @@ function RegisterProductPage() {
                 </div>
             ),
         },
-        
 
-        {
-            key: '10',
-            label: <label className="font-bold">Hệ điều hành</label>,
-            children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={osVersion}
-                        onChange={(value) => setOsVersion(value)}
-                        className="w-full"
-                    >
-                        <Option value="ANDROID">Android</Option>
-                        <Option value="IOS">iOS</Option>
-                    </Select>
-                </div>
-            ),
-        },
+
+       
         {
             key: '11',
             label: <label className="font-bold">Tình trạng đám mây</label>,
@@ -579,7 +770,7 @@ function RegisterProductPage() {
                 </div>
             ),
         },
-        
+
         {
             key: '12',
             label: <label className="font-bold">Tình trạng thân điện thoại</label>,
@@ -652,8 +843,8 @@ function RegisterProductPage() {
                 </div>
             ),
         },
-        
-        
+
+
         {
             key: '16',
             label: <label className="font-bold">Tình trạng RAM</label>,
@@ -769,29 +960,9 @@ function RegisterProductPage() {
                         onChange={(value) => setConnectivity(value)}
                         className="w-full"
                     >
-                        <Option value="WiFi">WiFi</Option>
+                     
                         <Option value="4G">4G</Option>
                         <Option value="5G">5G</Option>
-                        <Option value="Bluetooth">Bluetooth</Option>
-                    </Select>
-                </div>
-            ),
-        },
-        
-        {
-            key: '23',
-            label: <label className="font-bold">Tình trạng CPU</label>,
-            children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={cpu}
-                        onChange={(value) => setCpu(value)}
-                        className="w-full"
-                    >
-                        <Option value="Snapdragon 888">Snapdragon 888</Option>
-                        <Option value="A15 Bionic">A15 Bionic</Option>
-                        <Option value="Exynos 2100">Exynos 2100</Option>
-                        <Option value="Dimensity 1200">Dimensity 1200</Option>
                     </Select>
                 </div>
             ),
@@ -829,7 +1000,7 @@ function RegisterProductPage() {
                 </div>
             ),
         },
-        
+
         {
             key: '25',
             label: <label className="font-bold">Upload File</label>,
@@ -981,6 +1152,14 @@ function RegisterProductPage() {
                                         >
                                             Đăng kí sản phẩm
                                         </Heading>
+
+                                        <Descriptions layout="vertical" bordered
+                                            items={imeiCheck} />
+
+                                        <Descriptions layout="vertical" bordered
+                                            items={fieldReponse} />
+
+
                                         <Descriptions layout="vertical" bordered
                                             items={items} />
 

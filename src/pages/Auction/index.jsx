@@ -216,8 +216,6 @@ export default function AuctionPage() {
 
 
 
-
-
     return (
         <>
             <Helmet>
