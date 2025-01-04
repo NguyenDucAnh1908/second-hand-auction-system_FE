@@ -44,6 +44,7 @@ export default function AuctionSection(
     const auctionStartDate = dataItem.auction?.startDate || null;
     const auctionStartTime = dataItem.auction?.start_time || null;
     const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}Z`).getTime();
+    console.log("Ngay gio batdau ", startDateTime)
     const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}Z`).getTime();
 
 
@@ -51,7 +52,10 @@ export default function AuctionSection(
 
 
     const auctionTypeName = dataItem.auctionType?.auction_typeName;
-    const now = new Date().getTime();
+    const nowVN = new Date().getTime();
+    const now = new Date(nowVN + (7 * 60 * 60 * 1000)); // Cộng 7 giờ
+    // console.log("Bây giờ (giờ Việt Nam):", vietnamTime.toLocaleString('vi-VN'));
+    
     const [isAuctionStarted, setIsAuctionStarted] = useState(false);
     useEffect(() => {
         setIsAuctionStarted(now >= startDateTime);

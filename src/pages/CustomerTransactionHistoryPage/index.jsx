@@ -63,50 +63,26 @@ export default function CustomerTransactionHistoryPagePage() {
         //     width: 200,
         // },
         {
-            title: "Trạng thái",
-            dataIndex: "status",
-            key: "status",
-            width: 150,
-        },
-        {
             title: "Số tiền",
             dataIndex: "amount",
             key: "amount",
-            render: (text, record) => {
-                // Phân loại giao dịch tiêu cực (âm) và tích cực (dương)
-                const negativeTransactionTypes = ["WITHDRAWAL", "TRANSFER", "REFUND", "DEPOSIT_AUCTION"];
-                const positiveTransactionTypes = ["DEPOSIT"];
-
-                // Xác định giao dịch là âm hay dương
-                const isNegativeTransaction = negativeTransactionTypes.includes(record.transactionType);
-
-                // Định dạng số tiền
-                const formattedAmount = isNegativeTransaction
-                    ? `${Math.abs(text).toLocaleString("vi-VN")} đ`
-                    : `${Math.abs(text).toLocaleString("vi-VN")} đ`;
-
-                // Định nghĩa CSS
-                const amountStyle = {
-                    color: isNegativeTransaction ? "red" : "green", // Đỏ nếu âm, xanh nếu dương
+            render: (amount, record) => {
+                // Phân loại giao dịch
+                const isNegative = amount < 0;
+                const style = {
+                    color: isNegative ? "red" : "green", // Màu đỏ cho số âm, xanh cho số dương
                     fontWeight: "bold",
                     fontSize: "14px",
                 };
-
-                const containerStyle = {
-                    backgroundColor: isNegativeTransaction ? "#ffe6e6" : "#e6ffe6", // Nền đỏ nhạt hoặc xanh nhạt
-                    padding: "5px 10px",
-                    borderRadius: "5px",
-                    display: "inline-block",
-                };
-
-                return (
-                    <span style={containerStyle}>
-                <span style={amountStyle}>{formattedAmount}</span>
-            </span>
-                );
+        
+                const formattedAmount = `${isNegative ? '-' : '+'}${Math.abs(amount).toLocaleString("vi-VN")} đ`;
+        
+                return <span style={style}>{formattedAmount}</span>;
             },
-            width: 150,
+            width: 200,
         },
+        
+        
         {
             title: "Người gửi", // Thêm cột Người gửi
             dataIndex: "sender",
@@ -148,15 +124,15 @@ export default function CustomerTransactionHistoryPagePage() {
                 item.transactionType === "DEPOSIT" ? "Nạp tiền vào ví" :
                     item.transactionType === "WITHDRAWAL" ? "Rút tiền" :
                         item.transactionType === "REFUND" ? "Hoàn tiền cọc" : "Chuyển khoản",
-
         method: item.image || "Không xác định",
         status: item.transactionStatus === "COMPLETED" ? "Hoàn thành" : "Đang xử lý",
-        amount: item.amount,
+        amount: item.amount, // Đảm bảo giá trị này đúng (số dương hoặc âm)
         netAmount: item.netAmount,
         oldAmount: item.oldAmount,
         sender: item.senderName,
         recipient: item.recipientName,
     }));
+    
 
 
     return (
