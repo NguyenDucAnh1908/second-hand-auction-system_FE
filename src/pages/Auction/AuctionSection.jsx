@@ -15,6 +15,12 @@ import Pagination from "../../components/PaginationChanh";
 import { useFetchUserAddresses } from "../Address/hook/useFetchUserAddresses";
 import axios from "axios";
 import { FaShippingFast } from 'react-icons/fa';
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default function AuctionSection(
     {
@@ -43,9 +49,9 @@ export default function AuctionSection(
     const auctionEndTime = dataItem.auction?.end_time || null;
     const auctionStartDate = dataItem.auction?.startDate || null;
     const auctionStartTime = dataItem.auction?.start_time || null;
-    const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}Z`).getTime();
-    console.log("Ngay gio batdau ", startDateTime)
-    const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}Z`).getTime();
+    const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}`).getTime();
+const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
+
 
 
 

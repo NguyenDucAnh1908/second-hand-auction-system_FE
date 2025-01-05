@@ -19,7 +19,8 @@ import AuctionFormModal from "../../../components/AuctionFormModal/AuctionFormMo
 import { useForm } from 'antd/es/form/Form';
 import { useGetListRegisterUserQuery } from "../../../services/auctionRegistrations.service.js";
 import { useGetAllBidsQuery } from "@/services/bid.service.js";
-
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 
 const TABLE_HEAD = [
@@ -43,6 +44,9 @@ const TABLE_HEAD2 = [
     "Thông tin",
     "Xem trực tiếp"
 ];
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default function StaffProductListPage() {
 
@@ -534,11 +538,13 @@ export default function StaffProductListPage() {
                                     const startDate = dayjs(values.startDate);
                                     const endDate = dayjs(values.endDate);
 
+                                    // const startDate = dayjs(values.startDate).tz("Asia/Ho_Chi_Minh");
+                                    // const endDate = dayjs(values.endDate).tz("Asia/Ho_Chi_Minh");
+
                                     if (startDate.isAfter(endDate)) {
                                         message.error("Ngày bắt đầu không được sau ngày kết thúc!");
                                         return;
                                     }
-
                                     try {
                                         const updatedData = {
                                             ...selectedAuction,
