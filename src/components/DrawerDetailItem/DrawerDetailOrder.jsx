@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useGetSellerQuery} from "@/services/item.service.js";
 import {useGetUserByIdQuery} from "@/services/user.service.js";
 import {Button, Typography} from "@material-tailwind/react";
@@ -7,29 +7,84 @@ import DescriptionItem from "@/components/DescriptionItem/index.jsx";
 import {Heading} from "@/components/index.jsx";
 import {useGetOrderDetailQuery} from "@/services/order.service.js";
 import {SyncOutlined} from "@ant-design/icons";
+import OnlineGatewayService from "@/services/apiGhn.service.js";
 
-function DrawerDetailOrder({orderId}) {
+
+const statusMapping = {
+    ready_to_pick: {text: 'Mới tạo đơn hàng', color: 'text-gray-500'},
+    picking: {text: 'Nhân viên đang lấy hàng', color: 'text-blue-500'},
+    cancel: {text: 'Hủy đơn hàng', color: 'text-red-500'},
+    money_collect_picking: {text: 'Đang thu tiền người gửi', color: 'text-yellow-500'},
+    picked: {text: 'Nhân viên đã lấy hàng', color: 'text-green-500'},
+    storing: {text: 'Hàng đang nằm ở kho', color: 'text-purple-500'},
+    transporting: {text: 'Đang luân chuyển hàng', color: 'text-blue-400'},
+    sorting: {text: 'Đang phân loại hàng hóa', color: 'text-teal-500'},
+    delivering: {text: 'Nhân viên đang giao cho người nhận', color: 'text-orange-500'},
+    money_collect_delivering: {text: 'Nhân viên đang thu tiền người nhận', color: 'text-yellow-600'},
+    delivered: {text: 'Nhân viên đã giao hàng thành công', color: 'text-green-600'},
+    delivery_fail: {text: 'Nhân viên giao hàng thất bại', color: 'text-red-600'},
+    waiting_to_return: {text: 'Đang đợi trả hàng về cho người gửi', color: 'text-gray-400'},
+    return: {text: 'Trả hàng', color: 'text-purple-400'},
+    return_transporting: {text: 'Đang luân chuyển hàng trả', color: 'text-blue-300'},
+    return_sorting: {text: 'Đang phân loại hàng trả', color: 'text-teal-400'},
+    returning: {text: 'Nhân viên đang đi trả hàng', color: 'text-orange-400'},
+    return_fail: {text: 'Nhân viên trả hàng thất bại', color: 'text-red-400'},
+    returned: {text: 'Nhân viên trả hàng thành công', color: 'text-green-400'},
+    exception: {text: 'Đơn hàng ngoại lệ không nằm trong quy trình', color: 'text-pink-500'},
+    damage: {text: 'Hàng bị hư hỏng', color: 'text-red-700'},
+    lost: {text: 'Hàng bị mất', color: 'text-black'},
+};
+
+function DrawerDetailOrder({orderId, orderCode}) {
     const [selectedDescription, setSelectedDescription] = useState(null);
     const [isModalDescriptionVisible, setIsModalDescriptionVisible] = useState(false);
+    const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(true);
+    const [orderDetails, setOrderDetails] = useState(null);
+    const [error, setError] = useState(null);
 
     const {data: orderDetail, error: errorOrderDetail, isLoading: loadingOrderDetail, isError: isErrorOrderDetail}
         = useGetOrderDetailQuery(orderId);
     const orderData = orderDetail?.data;
-    console.log("selectedOrderId", orderId)
-    console.log("selectedOrderId", orderDetail)
-
     const {data: seller} = useGetSellerQuery({id: orderData?.item.itemId});
     const {data: staff} = useGetUserByIdQuery();
-    const handleOpenDescriptionModal = (itemDescription) => {
+    const handleOpenDescriptionModal = async (itemDescription) => {
         setSelectedDescription(itemDescription);
         setIsModalDescriptionVisible(true);
     };
-
 
     const handleCloseDescriptionModal = () => {
         setIsModalDescriptionVisible(false); // Đóng modal
         setSelectedDescription(null); // Reset thông tin đấu giá
     };
+
+    useEffect(() => {
+        const fetchOrderDetails = async () => {
+            if (!orderCode) return; // Không gọi API nếu itemId không có
+
+            setLoading(true);
+            setError(null);
+
+            try {
+                const response = await OnlineGatewayService.detail_order_service({
+                    order_code: orderCode,
+                });
+                setOrderDetails(response?.data); // Lưu dữ liệu trả về
+            } catch (err) {
+                setError(err.message); // Lưu thông báo lỗi
+            } finally {
+                setLoading(false); // Tắt trạng thái loading
+            }
+        };
+
+        fetchOrderDetails();
+    }, [orderDetail?.itemId]);
+
+    console.log("data detail", orderDetail)
+    console.log("data GHN", orderDetails?.data)
+    console.log("orderId", orderId)
+    console.log("orderCod", orderCode)
+    //const  orderDetailsGHN = orderDetails?.data
 
     const order = [
         {
@@ -57,16 +112,17 @@ function DrawerDetailOrder({orderId}) {
             key: '5',
             label: 'Tổng số tiền',
             children: orderData?.totalAmount,
-            span: 3,
+            span: 1,
         },
         {
-            key: '5',
+            key: '6',
             label: 'Trạng thái',
             children:
                 <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                    <Tag icon={<SyncOutlined spin/>} color="processing">
-                        {orderData?.status}
-                    </Tag>
+                    <p>
+                        <span
+                            className={`font-semibold ml-2 ${statusMapping[orderDetails?.data?.status]?.color || 'text-gray-500'}`}> {statusMapping[orderDetails?.data?.status]?.text || 'Không xác định'}</span>
+                    </p>
                     <Button
                         type="primary"
                         // onClick={() => handleUpdateStatus(orderData?.id)}
@@ -76,24 +132,132 @@ function DrawerDetailOrder({orderId}) {
                     </Button>
                 </div>
             ,
+            span: 1,
+        },
+        {
+            key: '7',
+            label: 'Phương thức vận chuyển',
+            children: orderData?.shippingMethod,
+            span: 1,
+        },
+        {
+            key: '8',
+            label: 'Địa chỉ',
+            children: orderData?.address,
             span: 3,
         },
         {
-            key: '5',
-            label: 'Phương thức vận chuyển',
-            children: orderData?.shippingMethod,
-        },
-        {
-            key: '5',
-            label: 'Địa chỉ',
-            children: orderData?.address,
-            span: 2,
-        },
-        {
-            key: '5',
+            key: '9',
             label: 'Ghi chú',
             children: orderData?.note,
-
+            span: 1,
+        },
+        {
+            key: '11',
+            label: 'Mã đơn hàng',
+            children: orderDetails?.data?.order_code,
+            span: 1,
+        },
+        {
+            key: '12',
+            label: 'Ngày lấy dự kiến',
+            children: orderDetails?.data?.pickup_time,
+            span: 1,
+        },
+        {
+            key: '10',
+            label: 'Ghi chú',
+            children: <p>
+                {orderDetails?.data?.leadtime_order?.from_estimate_date
+                    ? new Date(orderDetails?.data.leadtime_order.from_estimate_date).toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                    })
+                    : 'Không xác định'}{' '}
+                -{' '}
+                {orderDetails?.data?.leadtime_order?.to_estimate_date
+                    ? new Date(orderDetails?.data.leadtime_order.to_estimate_date).toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                    })
+                    : 'Không xác định'}
+            </p>,
+            // orderDetails?.leadtime_order
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Họ và tên Người nhận',
+            children: orderDetails?.data.to_name,
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Điện thoại Người nhận',
+            children: orderDetails?.data.to_phone,
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Địa chỉ Người nhận',
+            children: orderDetails?.data.to_address,
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Họ và tên Người Gửi',
+            children: orderDetails?.data.from_name,
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Điện thoại Người Gửi',
+            children: orderDetails?.data.from_phone,
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Địa chỉ Người Gửi',
+            children: orderDetails?.data.from_address,
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Mã đấu giá',
+            children: orderDetail?.data.item.auction.auction_id,
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Kiểu dấu giá',
+            children: "bo xung sau",
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Điều khoản',
+            children: "bo xung sau",
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Bước giá',
+            children: "bo xung sau",
+            span: 1,
+        },
+        {
+            key: '13',
+            label: 'Bước giá',
+            children: <p>
+                {orderDetails?.data?.payment_type_id === 1
+                    ? "Người Gửi trả phí"
+                    : orderDetails?.data?.payment_type_id === 2
+                        ? "Người nhận trả phí"
+                        : "Không xác định"}
+            </p>,
+            span: 1,
         },
     ];
 
@@ -161,7 +325,7 @@ function DrawerDetailOrder({orderId}) {
             {/* auction creation section */}
             <div className="mt-[26px] flex flex-col items-center">
                 <div className="container-xs flex flex-col items-center gap-[78px] md:gap-[58px] md:px-5 sm:gap-[39px]">
-                    <Descriptions title="Order Info" items={order}/>
+                    <Descriptions title="THÔNG TIN ĐƠN HÀNG" items={order}/>
                     <div className="self-stretch">
 
                         <div className="flex items-center w-full gap-[34px] md:flex-col">

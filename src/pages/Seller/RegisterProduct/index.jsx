@@ -1,10 +1,10 @@
 import 'react-datepicker/dist/react-datepicker.css';
 import Sidebar from '../../../partials/Sidebar';
 import Header from '../../../partials/Header';
-import {ButtonDH, Heading, TextArea,} from "../../../components";
-import React, {useEffect, useRef, useState} from "react";
-import {Option, Select} from "@material-tailwind/react";
-import {PlusOutlined} from '@ant-design/icons';
+import { ButtonDH, Heading, Img, TextArea, } from "../../../components";
+import React, { useEffect, useRef, useState } from "react";
+import { Option, Select } from "@material-tailwind/react";
+import { PlusOutlined } from '@ant-design/icons';
 import {
     Breadcrumb,
     Checkbox,
@@ -20,15 +20,16 @@ import {
     Upload
 } from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
-import {useRegisterItemMutation} from "@/services/item.service.js";
+import { useRegisterItemMutation } from "@/services/item.service.js";
 import useHookUploadImage from "@/hooks/useHookUploadImage.js";
-import {useGetAuctionTypeQuery} from "@/services/auctionType.service.js";
-import {useGetCategoriesQuery} from "@/services/category.service.js";
+import { useGetAuctionTypeQuery } from "@/services/auctionType.service.js";
+import { useGetCategoriesQuery } from "@/services/category.service.js";
 import TextEditor from "@/components/TextEditor/index.jsx";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const {Text, Link} = Typography;
-const {Content, Sider} = Layout;
+
+const { Text, Link } = Typography;
+const { Content, Sider } = Layout;
 
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -40,7 +41,7 @@ const getBase64 = (file) =>
 
 function RegisterProductPage() {
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -50,10 +51,44 @@ function RegisterProductPage() {
     const [priceBuyNow, setPriceBuyNow] = useState(0);
     const [priceStepItem, setPriceStepItem] = useState(0);
     const [itemDescription, setItemDescription] = useState("");
-    const [itemDocument,setItemDocument] = useState("");
-    const [itemCondition, setItemCondition] = useState("NEW");
+    const [itemDocument, setItemDocument] = useState("");
+    const [imei, setImei] = useState("");
+    const [storage, setStorage] = useState("");
+    const [color, setColor] = useState("");
+    const [batteryHealth, setBatteryHealth] = useState(null);
+    const [osVersion, setOsVersion] = useState("");
+    const [icloudStatus, setIcloudStatus] = useState("");
+    const [bodyCondition, setBodyCondition] = useState("");
+    const [screenCondition, setScreenCondition] = useState("");
+    const [cameraCondition, setCameraCondition] = useState("");
+    const [portCondition, setPortCondition] = useState("");
+    const [buttonCondition, setButtonCondition] = useState("");
+    const [ram, setRam] = useState("");
+    const [screenSize, setScreenSize] = useState("");
+    const [cameraSpecs, setCameraSpecs] = useState("");
+    const [connectivity, setConnectivity] = useState("");
+    const [sensors, setSensors] = useState("");
+    const [serial, setSerial] = useState("");
+
     const [imgItem, setImgItem] = useState([]);
     const [file, setFile] = useState(null);
+
+    const [imeiData, setImeiData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [brand, setBrand] = useState("");
+    const [device_image, setDevice_image] = useState("");
+    const [sim, setSim] = useState("");
+    const [sim_slots, setSim_slots] = useState("");
+    const [os, setOs] = useState("");
+    const [os_family, setOs_family] = useState("");
+    const [bluetooth, setBluetooth] = useState("");
+    const [usb, setUsb] = useState("");
+    const [wlan, setWlan] = useState("");
+    const [nfc, setNfc] = useState("");
+    const [speed, setSpeed] = useState("");
+    const [nettech, setNettech] = useState("");
+    const [model, setModel] = useState("")
+    const [type, setType] = useState("")
 
     const [itemNameError, setItemNameError] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -61,7 +96,7 @@ function RegisterProductPage() {
     const [scId, setScId] = useState(0);
     const [auctionType, setAuctionType] = useState(null);
     const [descriptionError, setDescriptionError] = useState(null);
-    const [FileUpload,setFileUpload] = useState(null);
+    const [FileUpload, setFileUpload] = useState(null);
     // const [spinning, setSpinning] = React.useState(false);
     // const [percent, setPercent] = React.useState(0);
     const [spinning, setSpinning] = React.useState(false);
@@ -73,7 +108,7 @@ function RegisterProductPage() {
     const navigate = useNavigate();
     const userRef = useRef();
     const errRef = useRef();
-    const {UploadImage} = useHookUploadImage();
+    const { UploadImage } = useHookUploadImage();
     const {
         data: auctionTypes,
         error: errorAuctionType,
@@ -93,7 +128,7 @@ function RegisterProductPage() {
         setPreviewImage(file.url || file.preview);
         setPreviewOpen(true);
     };
-    const handleChange = ({fileList: newFileList}) => setFileList(newFileList);
+    const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
     const uploadButton = (
         <button
             style={{
@@ -102,7 +137,7 @@ function RegisterProductPage() {
             }}
             type="button"
         >
-            <PlusOutlined/>
+            <PlusOutlined />
             <div
                 style={{
                     marginTop: 8,
@@ -185,7 +220,7 @@ function RegisterProductPage() {
             if (file.originFileObj) {
                 try {
                     const imageUrl = await UploadImage(file.originFileObj); // Upload and get URL
-                    uploadedImages.push({image_url: imageUrl});
+                    uploadedImages.push({ image_url: imageUrl });
                 } catch (err) {
                     console.error("Error uploading image:", err);
                     message.error("Error uploading an image.");
@@ -205,7 +240,7 @@ function RegisterProductPage() {
 
     const handleFileItemChange = (event) => {
         const file = event.target.files[0];
-        console.log("File",file);
+        console.log("File", file);
         if (file) {
             setItemDocument(file.name);
             setFileUpload(file)// Cập nhật tên file vào state
@@ -217,7 +252,7 @@ function RegisterProductPage() {
     };
 
 
-    const [registerItem, {isLoading, isSuccess, isError, error}] = useRegisterItemMutation();
+    const [registerItem, { isLoading, isSuccess, isError, error }] = useRegisterItemMutation();
 
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
@@ -233,21 +268,51 @@ function RegisterProductPage() {
         }
 
         const fileUrl = await UploadImage(FileUpload);
-        if(!fileUrl ){
+        if (!fileUrl) {
             message.error("Lỗi upload file");
         }
-
         const payload = {
             item_name: itemName,
             item_description: itemDescription,
-            item_condition: itemCondition,
             price_buy_now: priceBuyNow,
             price_step_item: priceStepItem,
             img_item: uploadedImages,
-            item_document:fileUrl,
-            sc_id: scId,
+            item_document: fileUrl,
+            sc_id: 1,
             auction_type: auctionType,
+            imei: imei, // Thêm trường IMEI
+            storage: storage, // Thêm dung lượng
+            color: color, // Màu sắc
+            battery_health: batteryHealth, // Tình trạng pin
+            os_version: osVersion, // Phiên bản hệ điều hành
+            icloud_status: icloudStatus, // Tình trạng iCloud
+            body_condition: bodyCondition, // Tình trạng thân máy
+            screen_condition: screenCondition, // Tình trạng màn hình
+            camera_condition: cameraCondition, // Tình trạng camera
+            port_condition: portCondition, // Tình trạng cổng kết nối
+            button_condition: buttonCondition, // Tình trạng nút
+            ram: ram, // RAM
+            screen_size: screenSize, // Kích thước màn hình
+            camera_specs: cameraSpecs, // Thông số camera
+            connectivity: connectivity, // Kết nối
+            sensors: sensors, // Cảm biến
+            brand: brand,
+            device_image: device_image,
+            model: model,
+            serial: serial,
+            type: type,
+            network_technology: nettech.join(', '),
+            nfc: nfc,
+            os: os,
+            os_family: os_family,
+            sim: sim,
+            sim_slots: sim_slots,
+            bluetooth: bluetooth.join(', '),
+            speed: speed.join(', '),
+            usb: usb.join(', '),
+            wlan: wlan.join(', ')
         };
+
 
         console.log(payload);
         try {
@@ -316,27 +381,268 @@ function RegisterProductPage() {
     };
 
 
-    const items = [
+
+
+
+
+
+
+    // Function to fetch IMEI info
+    const fetchImeiInfo = async () => {
+        if (imei.length !== 15) {
+            alert("Mã IMEI phải có 15 chữ số.");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await fetch(`https://kist-imei-decoding-v1.p.rapidapi.com/api/imei/${imei}`, {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': 'f9db9f1526mshb53b86400745cd4p1a6763jsn2b9b90d98931',
+                    'x-rapidapi-host': 'kist-imei-decoding-v1.p.rapidapi.com'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch IMEI data');
+            }
+
+            const data = await response.json();
+            console.log('IMEI Data:', data);
+            setImeiData(data);
+
+            // Map response data to form fields
+            setItemName(`${data.data.brand} ${data.data.name}`);
+            setBrand(data.data.brand)
+            setDevice_image(data.data.device_image);
+            setSim(data.data.device_spec.sim)
+            setSim_slots(data.data.device_spec.sim_slots)
+            setOs(data.data.device_spec.os)
+            setOs_family(data.data.device_spec.os_family)
+            setBluetooth(data.data.device_spec.bluetooth)
+            setUsb(data.data.device_spec.usb)
+            setWlan(data.data.device_spec.wlan)
+            setNfc(data.data.device_spec.nfc)
+            setSpeed(data.data.device_spec.speed)
+            setNettech(data.data.device_spec.nettech)
+            setSerial(data.data.serial)
+            setImei(data.query);
+            setModel(data.data.model)
+            setType(data.data.device_spec.type)
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const imeiCheck = [
         {
             key: '1',
-            label: <label className="font-bold">Tên sản phẩm</label>,
+            label: <label className="font-bold">Mã IMEI</label>,
             children: (
                 <div className="w-full space-y-4">
-                    <Input
-                        placeholder="Nhập tên sản phẩm"
-                        value={itemName}
-                        onChange={handleItemNameChange}
-                        status={itemNameError ? 'error' : ''}
-                        className={`rounded-md border p-3 w-full ${itemNameError ? 'border-red-500' : 'border-gray-300'}`}
+                    <div className="flex items-center space-x-4">
+                        <Input
+                            placeholder="Nhập mã IMEI"
+                            maxLength={15}  // Giới hạn 15 ký tự
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                // Chỉ cho phép số
+                                if (/^\d*$/.test(value)) {
+                                    setImei(value);  // Cập nhật giá trị
+                                }
+                            }}
+                            value={imei}  // Giá trị của input được gắn với state
+                            className="rounded-md border p-3 w-full"
+                            style={{ maxWidth: '250px' }} // Giới hạn chiều rộng input
+                        />
+                        <button
+                            onClick={fetchImeiInfo}
+                            className="p-2 bg-blue-500 text-white rounded"
+                        >
+                            Kiểm tra IMEI
+                        </button>
+                    </div>
+                </div>
+            ),
+        }, 
+        
+        {
+            key: '2',
+            label: <label className="font-bold"></label>,
+            children: (
+                <div className="w-[30%] space-y-4">
+                    <Img
+                        src={device_image || '/images/Mobile-Smartphone-icon.png'} 
+                        className="w-full h-auto rounded-md shadow-md"
                     />
-                    {itemNameError && (
-                        <Text type="danger" className="text-red-500">{itemNameError}</Text>
-                    )}
+                </div>
+            ),
+        }
+        
+
+    ];
+
+
+    const fieldReponse = [
+        {
+            key: '1',
+            label: <label className="font-bold">Tên Sản Phẩm</label>,
+            children: (
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                   {itemName}
                 </div>
             ),
         },
         {
             key: '2',
+            label: <label className="font-bold">Serial</label>,
+            children: (
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {serial}
+                </div>
+            ),
+        },
+        {
+            key: '3',
+            label: <label className="font-bold">Hỗ trợ Sim</label>,
+            children: (
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {sim}
+                </div>
+            ),
+        },
+        {
+            key: '4',
+            label: <label className="font-bold">Số khe cắm sim</label>,
+            children: (
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {sim_slots}
+                </div>
+            ),
+        },
+        {
+            key: '5',
+            label: <label className="font-bold">Phiên bản</label>,
+            children: (
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {os}
+                </div>
+            ),
+        },
+        {
+            key: '6',
+            label: <label className="font-bold">Hệ điều hành</label>,
+            children: (
+                <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {os_family}
+                </div>
+            ),
+        },
+        {
+            key: '7',
+            label: <label className="font-bold">Bluetooth</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                    {bluetooth?.length ? (
+                        bluetooth.map((item, index) => (
+                            <li key={index} className="text-gray-800">{item}</li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No Bluetooth data available</p>
+                    )}
+                </ul>
+            ),
+        }
+        ,
+        {
+            key: '8',
+            label: <label className="font-bold">Cổng USB</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                    {Array.isArray(usb) && usb.length > 0 ? (
+                        usb.map((item, index) => (
+                            <li key={index} className="text-gray-800">{item}</li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No USB data available</p>
+                    )}
+                </ul>
+            ),
+        },
+        {
+            key: '9',
+            label: <label className="font-bold">Wi-Fi</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                    {Array.isArray(wlan) && wlan.length > 0 ? (
+                        wlan.map((item, index) => (
+                            <li key={index} className="text-gray-800">{item}</li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No Wi-Fi data available</p>
+                    )}
+                </ul>
+            ),
+        },
+        {
+            key: '10',
+            label: <label className="font-bold text-black">Tốc độ kết nối mạng</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                    {Array.isArray(speed) && speed.length > 0 ? (
+                        speed.map((item, index) => (
+                            <li key={index} className="text-black">{item}</li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No speed data available</p>
+                    )}
+                </ul>
+            ),
+        },
+        {
+            key: '11',
+            label: <label className="font-bold">Công nghệ mạng hỗ trợ</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                    {Array.isArray(nettech) && nettech.length > 0 ? (
+                        nettech.map((item, index) => (
+                            <li key={index} className="text-gray-800">{item}</li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No network technology data available</p>
+                    )}
+                </ul>
+            ),
+        },
+        {
+            key: '11',
+            label: <label className="font-bold">Mã model</label>,
+            children: (
+                <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                  {model}
+                </ul>
+            ),
+        },
+        
+        
+    ];
+
+
+
+
+
+
+
+    const items = [
+      
+       
+      
+        {
+            key: '4',
             label: <label className="font-bold">Giá mong muốn</label>,
             children: (
                 <div className="w-full space-y-4">
@@ -356,7 +662,7 @@ function RegisterProductPage() {
             ),
         },
         {
-            key: '3',
+            key: '5',
             label: <label className="font-bold">Bước giá mong muốn</label>,
             children: (
                 <div className="w-full space-y-4">
@@ -375,26 +681,295 @@ function RegisterProductPage() {
                 </div>
             ),
         },
+      
+
         {
-            key: '4',
-            label: <label className="font-bold">Tình trạng</label>,
+            key: '7',
+            label: <label className="font-bold">Dung lượng</label>,
+            children: (
+                <div className="w-full space-y-4">
+                    <Select
+                        value={storage}
+                        onChange={(value) => setStorage(value)} // Cập nhật dung lượng trong state
+                        className="w-full"
+                    >
+                        <Option value="8GB">8GB</Option>
+                        <Option value="16GB">16GB</Option>
+                        <Option value="32GB">32GB</Option>
+                        <Option value="64GB">64GB</Option>
+                        <Option value="128GB">128GB</Option>
+                        <Option value="256GB">256GB</Option>
+                        <Option value="512GB">512GB</Option>
+                        <Option value="1TB">1TB</Option>
+                        {/* Thêm các giá trị dung lượng tùy chỉnh nếu cần */}
+                    </Select>
+
+                </div>
+            ),
+        },
+
+        {
+            key: '8',
+            label: <label className="font-bold">Màu sắc</label>,
             children: (
                 <div className="w-72 mt-4">
                     <Select
-                        value={itemCondition}
-                        onChange={(value) => setItemCondition(value)}
+                        value={color}
+                        onChange={(value) => setColor(value)}
                         className="w-full"
                     >
-                        <Option value="LIKE_NEW">Như mới</Option>
-                        <Option value="USED_GOOD">Đã qua sử dụng - Tốt</Option>
-                        <Option value="USED_FAIR">Đã qua sử dụng - Khá</Option>
-                        <Option value="REFURBISHED">Tân trang</Option>
+                        <Option value="BLACK">Đen</Option>
+                        <Option value="WHITE">Trắng</Option>
+                        <Option value="SILVER">Bạc</Option>
+                        <Option value="GOLD">Vàng</Option>
+                        <Option value="BLUE">Xanh dương</Option>
+                        <Option value="RED">Đỏ</Option>
+                        <Option value="GREEN">Xanh lá</Option>
+                        <Option value="OTHER">Màu khác</Option>
+                    </Select>
+                </div>
+            ),
+        },
+
+        {
+            key: '9',
+            label: <label className="font-bold">Tình trạng pin</label>,
+            children: (
+                <div className="w-full space-y-4">
+                    <Select
+                        value={batteryHealth}
+                        onChange={(value) => setBatteryHealth(parseFloat(value))} // Chuyển đổi giá trị sang Double
+                        className="w-full"
+                    >
+                        <Option value={100.0}>Mới 100%</Option>
+                        <Option value={80.0}>Tốt 80%</Option>
+                        <Option value={60.0}>Khá 60%</Option>
+                        <Option value={40.0}>Kém 40%</Option>
+                        <Option value={0.0}>Không hoạt động</Option>
+                    </Select>
+                </div>
+            ),
+        },
+
+
+       
+        {
+            key: '11',
+            label: <label className="font-bold">Tình trạng đám mây</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={icloudStatus}
+                        onChange={(value) => setIcloudStatus(value)}
+                        className="w-full"
+                    >
+                        <Option value="ACTIVATED">Đã kích hoạt</Option>
+                        <Option value="DEACTIVATED">Chưa kích hoạt</Option>
+                        <Option value="LOCKED">Bị khóa</Option>
+                    </Select>
+                </div>
+            ),
+        },
+
+        {
+            key: '12',
+            label: <label className="font-bold">Tình trạng thân điện thoại</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={bodyCondition}
+                        onChange={(value) => setBodyCondition(value)}
+                        className="w-full"
+                    >
+                        <Option value="Good">Tốt</Option>
+                        <Option value="Fair">Vừa phải</Option>
+                        <Option value="Damaged">Hư hỏng</Option>
+                        <Option value="Like New">Như mới</Option>
                     </Select>
                 </div>
             ),
         },
         {
-            key: '5',
+            key: '13',
+            label: <label className="font-bold">Tình trạng nút điện thoại</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={buttonCondition}
+                        onChange={(value) => setButtonCondition(value)}
+                        className="w-full"
+                    >
+                        <Option value="Like New">Các nút hoạt động hoàn hảo, không mòn, không kẹt.</Option>
+                        <Option value="Good">Nút nhấn dễ dàng, không kẹt.</Option>
+                        <Option value="Fair">Nút có thể mòn nhẹ, nhấn vẫn được.</Option>
+                        <Option value="Damaged"> Nút khó nhấn hoặc không phản hồi.</Option>
+                    </Select>
+                </div>
+            ),
+        },
+        {
+            key: '14',
+            label: <label className="font-bold">Tình trạng màn hình điện thoại</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={screenCondition}
+                        onChange={(value) => setScreenCondition(value)}
+                        className="w-full"
+                    >
+                        <Option value="Like New">Màn hình không xước, không vỡ, cảm ứng mượt.</Option>
+                        <Option value="Good">Một vài vết xước nhỏ, không ảnh hưởng.</Option>
+                        <Option value="Fair">Màn hình có xước rõ, có thể nứt nhẹ.</Option>
+                        <Option value="Damaged">Màn hình vỡ, xước sâu, cảm ứng không hoạt động tốt.</Option>
+                    </Select>
+                </div>
+            ),
+        },
+        {
+            key: '15',
+            label: <label className="font-bold">Tình trạng camera điện thoại</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={cameraCondition}
+                        onChange={(value) => setCameraCondition(value)}
+                        className="w-full"
+                    >
+                        <Option value="Like New">Camera rõ nét, lens không xước.</Option>
+                        <Option value="Good">Camera hoạt động tốt, lens không xước lớn.</Option>
+                        <Option value="Fair">Camera có xước nhẹ, ảnh có thể mờ.</Option>
+                        <Option value="Damaged">Camera không rõ nét, lens xước lớn.</Option>
+                    </Select>
+                </div>
+            ),
+        },
+
+
+        {
+            key: '16',
+            label: <label className="font-bold">Tình trạng RAM</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={ram}
+                        onChange={(value) => setRam(value)}
+                        className="w-full"
+                    >
+                        <Option value="4GB">4GB</Option>
+                        <Option value="8GB">8GB</Option>
+                        <Option value="16GB">16GB</Option>
+                        <Option value="32GB">32GB</Option>
+                    </Select>
+                </div>
+            ),
+        },
+        {
+            key: '17',
+            label: <label className="font-bold">Tình trạng bộ nhớ trong (Storage)</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={storage}
+                        onChange={(value) => setStorage(value)}
+                        className="w-full"
+                    >
+                        <Option value="64GB">64GB</Option>
+                        <Option value="128GB">128GB</Option>
+                        <Option value="256GB">256GB</Option>
+                        <Option value="512GB">512GB</Option>
+                    </Select>
+                </div>
+            ),
+        },
+        {
+            key: '18',
+            label: <label className="font-bold">Tình trạng cổng kết nối</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={portCondition}
+                        onChange={(value) => setPortCondition(value)}
+                        className="w-full"
+                    >
+                        <Option value="USB-C">USB-C</Option>
+                        <Option value="Lightning">Lightning</Option>
+                        <Option value="Micro-USB">Micro-USB</Option>
+                    </Select>
+                </div>
+            ),
+        },
+        {
+            key: '19',
+            label: <label className="font-bold">Thông số camera</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={cameraSpecs}
+                        onChange={(value) => setCameraSpecs(value)}
+                        className="w-full"
+                    >
+                        <Option value="12MP">12MP</Option>
+                        <Option value="8MP">8MP</Option>
+                        <Option value="16MP">16MP</Option>
+                    </Select>
+                </div>
+            ),
+        },
+        {
+            key: '20',
+            label: <label className="font-bold">Cảm biến</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={sensors}
+                        onChange={(value) => setSensors(value)}
+                        className="w-full"
+                    >
+                        <Option value="12MP">12MP</Option>
+                        <Option value="64MP">64MP</Option>
+                        <Option value="48MP">48MP</Option>
+                    </Select>
+                </div>
+            ),
+        },
+        {
+            key: '21',
+            label: <label className="font-bold">Kích thước màn hình</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={screenSize}
+                        onChange={(value) => setScreenSize(value)}
+                        className="w-full"
+                    >
+                        <Option value="5.5">5.5 inch</Option>
+                        <Option value="6.1">6.1 inch</Option>
+                        <Option value="6.5">6.5 inch</Option>
+                        <Option value="7.0">7.0 inch</Option>
+                    </Select>
+                </div>
+            ),
+        },
+        {
+            key: '22',
+            label: <label className="font-bold">Khả năng kết nối</label>,
+            children: (
+                <div className="w-72 mt-4">
+                    <Select
+                        value={connectivity}
+                        onChange={(value) => setConnectivity(value)}
+                        className="w-full"
+                    >
+                     
+                        <Option value="4G">4G</Option>
+                        <Option value="5G">5G</Option>
+                    </Select>
+                </div>
+            ),
+        },
+
+        {
+            key: '24',
             label: <label className="font-bold">Loại đấu giá</label>,
             children: (
                 <div className="w-72 mt-4">
@@ -425,61 +1000,9 @@ function RegisterProductPage() {
                 </div>
             ),
         },
+
         {
-            key: '6',
-            label: <label className="font-bold">Danh mục</label>,
-            children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={selectedCategory || undefined}
-                        onChange={(value) => {
-                            setSelectedCategory(value);
-                            setSelectedSubCategory(null);
-                        }}
-                        placeholder="Chọn danh mục"
-                        loading={isloadingCategories}
-                        className="w-full"
-                    >
-                        {isloadingCategories ? (
-                            <Option disabled>
-                                <Spin />
-                            </Option>
-                        ) : errorCategories ? (
-                            <Option disabled>Error loading categories</Option>
-                        ) : (
-                            categories?.map((category) => (
-                                <Option key={category.categoryId} value={category.categoryId}>
-                                    {category.categoryName}
-                                </Option>
-                            ))
-                        )}
-                    </Select>
-                </div>
-            ),
-        },
-        {
-            key: '7',
-            label: <label className="font-bold">Danh mục phụ</label>,
-            children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={selectedSubCategory || undefined}
-                        onChange={(value) => setSelectedSubCategory(value)}
-                        placeholder="Chọn danh mục phụ"
-                        disabled={!selectedCategory}
-                        className="w-full"
-                    >
-                        {filteredSubCategories.map((subCategory) => (
-                            <Option key={subCategory.scId} value={subCategory.scId}>
-                                {subCategory.sub_category}
-                            </Option>
-                        ))}
-                    </Select>
-                </div>
-            ),
-        },
-        {
-            key: '8',
+            key: '25',
             label: <label className="font-bold">Upload File</label>,
             children: (
                 <div className="w-72 mt-4">
@@ -504,7 +1027,7 @@ function RegisterProductPage() {
             // span: 2,
         },
         {
-            key: '9',
+            key: '26',
             label: <label className="font-bold">Hình ảnh</label>,
             children: (
                 <div className="w-72 mt-4">
@@ -536,7 +1059,7 @@ function RegisterProductPage() {
         },
 
         {
-            key: '10',
+            key: '27',
             label: <label className="font-bold">Mô tả sản phẩm</label>,
             children: (
                 <div className="w-full space-y-4">
@@ -572,8 +1095,8 @@ function RegisterProductPage() {
 
     return (
         <>
-            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-                <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
+            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
                 <Content
                     style={{
                         padding: '0 48px',
@@ -587,9 +1110,9 @@ function RegisterProductPage() {
                             margin: '16px 0',
                         }}
                     >
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                        <Breadcrumb.Item>List</Breadcrumb.Item>
-                        <Breadcrumb.Item>App</Breadcrumb.Item>
+                        <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+                        <Breadcrumb.Item>Sản phẩm</Breadcrumb.Item>
+                        <Breadcrumb.Item>Đăng kí</Breadcrumb.Item>
                     </Breadcrumb>
                     <Layout
                         style={{
@@ -606,7 +1129,7 @@ function RegisterProductPage() {
                             }}
                             width={300}
                         >
-                            <Sidebar/>
+                            <Sidebar />
                         </Sider>
                         <Content
                             style={{
@@ -619,7 +1142,7 @@ function RegisterProductPage() {
                                 <div className="flex items-start md:flex-col">
                                     {/*start is here*/}
                                     {/*<Spin spinning={spinning} tip="Loading..."/>*/}
-                                    <Spin spinning={spinning} percent={percent} fullscreen/>
+                                    <Spin spinning={spinning} percent={percent} fullscreen />
                                     <div
                                         className="mt-3.5 flex flex-1 flex-col gap-16 self-center md:self-stretch sm:gap-8">
                                         <Heading
@@ -629,8 +1152,16 @@ function RegisterProductPage() {
                                         >
                                             Đăng kí sản phẩm
                                         </Heading>
-                                        <Descriptions  layout="vertical" bordered
-                                                      items={items}/>
+
+                                        <Descriptions layout="vertical" bordered
+                                            items={imeiCheck} />
+
+                                        <Descriptions layout="vertical" bordered
+                                            items={fieldReponse} />
+
+
+                                        <Descriptions layout="vertical" bordered
+                                            items={items} />
 
                                         <div className=" md:ml-0">
                                             <div className="flex flex-col items-center gap-[62px] sm:gap-[31px]">
@@ -644,31 +1175,31 @@ function RegisterProductPage() {
                                                     </Heading>
 
                                                     <div className="flex items-center gap-3 mt-2 max-w-4xl mx-auto">
-                                                        <Checkbox onChange={onChange}/>
+                                                        <Checkbox onChange={onChange} />
                                                         <span className="flex-1">
-        Tôi xác nhận rằng tất cả thông tin, hình ảnh và mô tả sản phẩm mà tôi cung cấp là chính xác, đầy đủ,
-        và không gây hiểu nhầm cho người mua. Tôi đồng ý chịu trách nhiệm về tính chính xác của thông tin này.
-        Vui lòng tham khảo thêm <a href="/Policy"
-                                   className="text-blue-500 hover:underline">Điều khoản dịch vụ</a>.
-    </span>
+                                                            Tôi xác nhận rằng tất cả thông tin, hình ảnh và mô tả sản phẩm mà tôi cung cấp là chính xác, đầy đủ,
+                                                            và không gây hiểu nhầm cho người mua. Tôi đồng ý chịu trách nhiệm về tính chính xác của thông tin này.
+                                                            Vui lòng tham khảo thêm <a href="/Policy"
+                                                                className="text-blue-500 hover:underline">Điều khoản dịch vụ</a>.
+                                                        </span>
                                                     </div>
 
                                                     <div className="flex items-center gap-3 mt-2 max-w-4xl mx-auto">
-                                                        <Checkbox onChange={onChange}/>
+                                                        <Checkbox onChange={onChange} />
                                                         <span className="flex-1">
-        Tôi đồng ý rằng mọi hành vi vi phạm quy định về thông tin sản phẩm hoặc quy trình giao dịch có thể dẫn đến
-        các hình phạt do hệ thống áp dụng. Chi tiết có thể xem tại
-        <a href="/Policy" className="text-blue-500 hover:underline"> Chính sách đăng bán sản phẩm</a>.
-    </span>
+                                                            Tôi đồng ý rằng mọi hành vi vi phạm quy định về thông tin sản phẩm hoặc quy trình giao dịch có thể dẫn đến
+                                                            các hình phạt do hệ thống áp dụng. Chi tiết có thể xem tại
+                                                            <a href="/Policy" className="text-blue-500 hover:underline"> Chính sách đăng bán sản phẩm</a>.
+                                                        </span>
                                                     </div>
 
                                                     <div className="flex items-center gap-3 mt-6 max-w-4xl mx-auto">
-                                                        <Checkbox onChange={onChange}/>
+                                                        <Checkbox onChange={onChange} />
                                                         <span className="flex-1">
-        Tôi cam kết tuân thủ tất cả các quy định và điều khoản mà hệ thống đặt ra, bao gồm nhưng không giới hạn ở
-        quy trình đăng bán, thẩm định sản phẩm, và quy trình giao dịch.
-        Đọc thêm tại <a href="/Policy" className="text-blue-500 hover:underline">Hướng dẫn sử dụng hệ thống</a>.
-    </span>
+                                                            Tôi cam kết tuân thủ tất cả các quy định và điều khoản mà hệ thống đặt ra, bao gồm nhưng không giới hạn ở
+                                                            quy trình đăng bán, thẩm định sản phẩm, và quy trình giao dịch.
+                                                            Đọc thêm tại <a href="/Policy" className="text-blue-500 hover:underline">Hướng dẫn sử dụng hệ thống</a>.
+                                                        </span>
                                                     </div>
 
                                                 </div>
@@ -677,7 +1208,7 @@ function RegisterProductPage() {
                                                         size="md"
                                                         className="min-w-[152px] rounded-md bg-green-500 text-white hover:bg-green-600"
                                                         onClick={() => handleSubmit()}
-                                                        ///onClick={showLoader}
+                                                    ///onClick={showLoader}
                                                     >
                                                         Gửi thẩm định
                                                     </ButtonDH>
@@ -707,7 +1238,7 @@ function RegisterProductPage() {
                         </Content>
                     </Layout>
                 </Content>
-                <FooterBK/>
+                <FooterBK />
             </Layout>
         </>
     );

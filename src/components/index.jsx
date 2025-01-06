@@ -3,8 +3,6 @@ import { CheckBox } from "./CheckBox";
 import { Heading } from "./Heading";
 import { Img } from "./Img";
 import { InputDH } from "./InputDH";
-import { RatingBar } from "./RatingBar";
-import { SeekBar } from "./SeekBar";
 import { SelectBox } from "./SelectBox";
 import { Slider } from "./Slider";
 import { Text } from "./Text";
@@ -18,8 +16,6 @@ export {
   Heading,
   Img,
   InputDH,
-  RatingBar,
-  SeekBar,
   SelectBox,
   Slider,
   Text,

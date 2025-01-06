@@ -1,15 +1,26 @@
-import {ButtonDH, Heading, Img, Text} from "../../components";
-import React, {useEffect, useState} from "react";
-import {Checkbox, message, Modal, Spin, Statistic} from "antd";
+import { ButtonDH, Heading, Img, Text } from "../../components";
+import React, { useEffect, useState } from "react";
+import { Checkbox, message, Modal, Spin, Statistic } from "antd";
 import BidForm from "../../components/BidForm";
 import SealedBidForm from "../../components/SealedBidForm";
 import ImageGallery from "react-image-gallery";
 import 'react-image-gallery/styles/css/image-gallery.css';
-import {useNavigate} from "react-router-dom";
-import {useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery} from "@/services/auctionRegistrations.service.js";
-import {Button} from "@material-tailwind/react";
-import {useCreateBidMutation, useGetBidInfoQuery} from "@/services/bid.service.js";
-import {useUpdateStatusAuctionMutation} from "@/services/auction.service.js";
+import { useNavigate } from "react-router-dom";
+import { useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery } from "@/services/auctionRegistrations.service.js";
+import { Button } from "@material-tailwind/react";
+import { useCreateBidMutation, useGetBidInfoQuery } from "@/services/bid.service.js";
+import { useUpdateStatusAuctionMutation } from "@/services/auction.service.js";
+import { useGetListRegisterUserQuery } from "../../services/auctionRegistrations.service";
+import Pagination from "../../components/PaginationChanh";
+import { useFetchUserAddresses } from "../Address/hook/useFetchUserAddresses";
+import axios from "axios";
+import { FaShippingFast } from 'react-icons/fa';
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default function AuctionSection(
     {
@@ -31,6 +42,7 @@ export default function AuctionSection(
     const [selectedAuctionId, setSelectedAuctionId] = useState(dataItem.auction.auction_id);
     const [showMessage, setShowMessage] = useState(false);
 
+
     // const isLoggedIn = useSelector(selectIsLoggedIn);
     const navigate = useNavigate();
     const auctionEndDate = dataItem.auction?.endDate || null;
@@ -38,17 +50,23 @@ export default function AuctionSection(
     const auctionStartDate = dataItem.auction?.startDate || null;
     const auctionStartTime = dataItem.auction?.start_time || null;
     const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}`).getTime();
-    const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
+const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
+
+
+
+
+
 
     const auctionTypeName = dataItem.auctionType?.auction_typeName;
-    //console.log(auctionTypeName);
-    const now = new Date().getTime();
+    const nowVN = new Date().getTime();
+    const now = new Date(nowVN + (7 * 60 * 60 * 1000)); // Cộng 7 giờ
+    // console.log("Bây giờ (giờ Việt Nam):", vietnamTime.toLocaleString('vi-VN'));
+    
     const [isAuctionStarted, setIsAuctionStarted] = useState(false);
     useEffect(() => {
         setIsAuctionStarted(now >= startDateTime);
     }, [now, startDateTime]);
     const idAuction = dataItem?.auction.auction_id;
-    //console.log("idAuction", idAuction)
 
     const isAuctionEnded = endDateTime < now; // Kiểm tra nếu thời gian kết thúc đã qua
 
@@ -75,13 +93,12 @@ export default function AuctionSection(
         isError: isErrorCheckRegister,
         error: errorCheckRegister,
         refetch: isRefetchCheckRegister,
-    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? {auctionId: selectedAuctionId} : null, {
+    } = useGetCheckAuctionRegisterQuery(selectedAuctionId ? { auctionId: selectedAuctionId } : null, {
         skip: !selectedAuctionId,
     });
-    //console.log("CHECK checkRegister: ", checkRegister)
     const isRegistered = checkRegister?.auctionId === selectedAuctionId && checkRegister?.statusRegistration === true
     // *
-    const [AuctionRegister, {isLoading: isLoadingAuctionRegister, error}] = useAuctionRegisterMutation();
+    const [AuctionRegister, { isLoading: isLoadingAuctionRegister, error }] = useAuctionRegisterMutation();
     const handleSubmitAuctionRegister = async (e) => {
         e.preventDefault();
         try {
@@ -94,7 +111,6 @@ export default function AuctionSection(
             message.success(response.message || "Register auction successfully!");
             handleCancel();
         } catch (error) {
-            console.error("Error response:", error);
 
             // Kiểm tra và xử lý lỗi chi tiết
             if (error?.data?.message) {
@@ -114,9 +130,8 @@ export default function AuctionSection(
         refetch: isRefetchBidInfo
     } = useGetBidInfoQuery(dataItem?.auction?.auction_id);
 
-    //console.log("bidInfo: ", bidInfo)
 
-    const {Countdown} = Statistic;
+    const { Countdown } = Statistic;
     const showModal = () => {
         if (!isLoggedIn) {
             message.warning("Bạn cần đăng nhập để tham gia đấu giá!");
@@ -163,9 +178,7 @@ export default function AuctionSection(
         }).format(price);
     };
 
-    //console.log("dataItem", dataItem)
     const handleCreateOrder = async (auction_id) => {
-        console.log(auction_id);
         if (!dataItem?.auction?.buy_now_price) {
             message.error("Giá mua ngay không hợp lệ!", 3);
             return;
@@ -174,25 +187,14 @@ export default function AuctionSection(
             message.error("ID phiên đấu giá không hợp lệ!", 3);
             return;
         }
-        // Ẩn nút ngay khi người dùng nhấn
-        // setIsButtonVisible(false);
-        //
-        // // Vô hiệu hóa nút và hiển thị loading spinner
-        // setIsButtonDisabled(true);
-        // setIsLoading(true);
-
         try {
             const response = await createBid({
                 auctionId: auction_id,
                 bidAmount: dataItem?.auction?.buy_now_price
             }).unwrap();
-            //console.log("Phản hồi từ API:", response);
-
             if (response.status === 'OK') {
-                console.log("Tạo bid thành công:", response);
                 message.success("Đặt giá mua ngay thành công!", 3);
             } else {
-                console.error("Lỗi khi tạo bid:", response);
                 const errorMessage = response.message || response.error || "Đã xảy ra lỗi, vui lòng thử lại.";
                 message.error(errorMessage, "Lỗi");
             }
@@ -202,10 +204,6 @@ export default function AuctionSection(
             message.destroy()
             message.error(errorMessage, 3);
         }
-
-        // finally {
-        //     setIsLoading(false);
-        // }
     };
 
     const [isSealedBidModalOpen, setIsSealedBidModalOpen] = useState(false);
@@ -214,25 +212,19 @@ export default function AuctionSection(
     const handleSealedBidModalCancel = () => setIsSealedBidModalOpen(false);
 
     const showModal2 = () => {
-        console.log("showModal called");
         setIsSealedBidModalOpen(true);
     };
 
-
-    // ẩn danh
     const handleAuctionEnd = async () => {
         try {
             const response = await updateTime({
                 auctionId: dataItem.auction?.auction_id,
             }).unwrap();
-            console.log("Phản hồi từ API:", response);
         } catch (error) {
             message.error(error.data.message(), "Lỗi");
         }
     };
 
-
-    // Hàm xử lý Đấu Giá Ẩn Danh
     const handleSealedBidRegister = async (e) => {
         e.preventDefault();
         try {
@@ -253,7 +245,6 @@ export default function AuctionSection(
             // Cập nhật trạng thái là đã thành công
             setIsSealedBidSuccess(true);
         } catch (error) {
-            console.error("Sealed bid error response:", error);
 
             // Xử lý lỗi backend
             if (error?.data?.message) {
@@ -266,8 +257,150 @@ export default function AuctionSection(
         }
     };
 
+
+    const [paging, setPaging] = useState({ page: 0, limit: 10 });
+
+
+    const {
+        data: registeredUsers,
+        isLoading: isLoadingRegisteredUsers,
+        isError: isErrorRegisteredUsers,
+        error: errorRegisteredUsers,
+    } = useGetListRegisterUserQuery({ auctionId: dataItem.auction.auction_id, paging });
+
+    const validRegisteredUsers = Array.isArray(registeredUsers?.list) ? registeredUsers.list : [];
+
+    const totalPages = registeredUsers?.totalPages || 0;
+
+    const [isRegisteredUsersModalOpen, setIsRegisteredUsersModalOpen] = useState(false); // Sử dụng biến riêng cho modal này
+    const showRegisteredUsersModal = () => {
+
+        setIsRegisteredUsersModalOpen(true); // Mở modal
+
+    };
+
+    // Hàm đóng modal
+    const handleCloseRegisteredUsersModal = () => {
+        setIsRegisteredUsersModalOpen(false); // Đóng modal
+    };
+
+
+    // Hàm xử lý chuyển trang
+    const handlePageChange = (newPage) => {
+        if (newPage >= 0 && newPage < totalPages) { // Đảm bảo trang hợp lệ
+            setPaging((prev) => ({ ...prev, page: newPage }));
+        }
+    };
+
+
+    // Hàm định dạng tiền tệ
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(amount);
+    };
+
+
+    // phần tính phí ship
+
+    const { addresses, isRefetchAddress } = useFetchUserAddresses();
+    const [shippingFee, setShippingFee] = useState(null);
+
+    useEffect(() => {
+        if (!addresses || addresses.length === 0) return;
+
+        // Tìm địa chỉ có `status = true`
+        const defaultAddress = addresses.find((address) => address.status === true);
+
+        if (defaultAddress) {
+            const districtCode = defaultAddress.district_code;
+            const wardCode = defaultAddress.ward_code
+
+            // Call API tính phí
+            calculateShippingFee(districtCode, wardCode);
+            
+        }
+    }, [addresses]);
+
+    const calculateShippingFee = async (districtCode, wardCode) => {
+        try {
+            const response = await axios.post(
+                'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee',
+                {
+                    from_district_id: 1449, // Quận Thủ Đức
+                    service_id: 53320,
+                    to_district_id: parseInt(districtCode, 10),
+                    to_ward_code: wardCode.toString(),
+                    weight: 2000, // 2kg
+                    length: 30,
+                    width: 20,
+                    height: 10,
+                    insurance_value: 500000, // 500k giá trị hàng hóa
+                }, // <-- Đảm bảo đóng ngoặc ở đây
+                {
+                    headers: {
+                        Token: 'd4067185-ae9f-11ee-8868-1648922bf010', // Key là 'Token'
+                        'Content-Type': 'application/json',
+                    }, // <-- Đóng ngoặc đúng ở đây
+                } // <-- Đóng ngoặc tổng thể cho hàm axios.post
+            );
+
+            setShippingFee(response?.data?.data?.total);
+        } catch (error) {
+            console.error('Error calculating shipping fee:', error);
+            setShippingFee('Failed to fetch shipping fee');
+        }
+    };
+
+
+
+
     return (
         <>
+
+            {/* Modal hiển thị danh sách người dùng đã đăng ký */}
+            <Modal
+                title="Danh sách người dùng đã đăng ký và tiền cọc"
+                visible={isRegisteredUsersModalOpen}
+                onCancel={handleCloseRegisteredUsersModal}
+                footer={null}
+                width={700}  // Điều chỉnh độ rộng của modal nhỏ hơn
+                style={{ maxHeight: "70vh", overflowY: "auto" }} // Giới hạn chiều cao tối đa và cho phép cuộn
+            >
+                <Spin spinning={isLoadingRegisteredUsers}>
+                    {/* Kiểm tra nếu có người dùng */}
+                    {validRegisteredUsers?.length > 0 ? (
+                        <div className="space-y-4">
+                            {validRegisteredUsers.map((user, index) => (
+                                <div key={user.ar_id} className="p-3 bg-gray-50 rounded-lg shadow-md flex items-center justify-between">
+                                    <span className="font-semibold text-sm text-gray-800">{index + 1}. {user.user_name}</span>
+                                    <div className="text-xs text-gray-600">
+                                        <p>{formatDate(user.created_date)}</p>
+                                        <p className="font-semibold text-blue-600">{formatCurrency(user.deposite_amount)}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-center text-gray-500">Không có người dùng nào được đăng ký.</p>
+                    )}
+                </Spin>
+
+                {/* Nếu có lỗi xảy ra */}
+                {isErrorRegisteredUsers && (
+                    <p className="text-red-500 text-center mt-4">Có lỗi xảy ra khi tải danh sách người dùng!</p>
+                )}
+
+                <Pagination
+                    currentPage={paging.page}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                />
+            </Modal>
+
 
             <Modal
                 title={isRegistered ? "Đặt Giá Thầu" : "Tham Gia Đấu Giá"}
@@ -277,12 +410,12 @@ export default function AuctionSection(
                 footer={null}
             >
                 {isRegistered ? (
-                    <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
                         <BidForm dataItem={dataItem} cancelModel={handleCancel}
-                                 isRefetchWinningBid={isRefetchWinningBid}
-                                 isRefetchHighestBid={isRefetchHighestBid}
-                                 bidIf={bidInfo}
-                                 isRefetchBidIf={isRefetchBidInfo}
+                            isRefetchWinningBid={isRefetchWinningBid}
+                            isRefetchHighestBid={isRefetchHighestBid}
+                            bidIf={bidInfo}
+                            isRefetchBidIf={isRefetchBidInfo}
                         />
                     </div>
 
@@ -300,7 +433,7 @@ export default function AuctionSection(
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <Checkbox id="agreement" className="h-5 w-5 text-green-600"/>
+                                        <Checkbox id="agreement" className="h-5 w-5 text-green-600" />
                                         <span className="text-sm leading-6 text-gray-700">
                                             Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
                                         </span>
@@ -340,7 +473,7 @@ export default function AuctionSection(
                 footer={null}
             >
                 {isRegistered ? (
-                    <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
                         <SealedBidForm
                             dataItem={dataItem}
                             cancelModel={handleCancel}
@@ -364,7 +497,7 @@ export default function AuctionSection(
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <Checkbox id="agreement" className="h-5 w-5 text-blue-600"/>
+                                        <Checkbox id="agreement" className="h-5 w-5 text-blue-600" />
                                         <span className="text-sm leading-6 text-gray-700">
                                             Tôi đã đọc và nghiên cứu đầy đủ các thông tin của hồ sơ tham dự đấu giá. Tôi cam kết thực hiện đúng các quy định trong hồ sơ và quy định pháp luật liên quan.
                                         </span>
@@ -405,7 +538,7 @@ export default function AuctionSection(
             {isSuccessItemDt && dataItem && (
                 <div className="mt-4 flex items-center gap-[50px] px-[22px] md:flex-col sm:px-5">
                     <div className="flex flex-1 pt-0 items-start justify-end w-full md:flex-col md:self-stretch">
-                        <div className="w-full " style={{height: '960px', position: 'relative',}}>
+                        <div className="w-full " style={{ height: '960px', position: 'relative', }}>
                             <ImageGallery
                                 items={images}
                                 showFullscreenButton={true}
@@ -438,7 +571,7 @@ export default function AuctionSection(
                             >
                                 {dataItem.itemName}{" "}
                             </Heading>
-                            <div className="h-px bg-gray-200"/>
+                            <div className="h-px bg-gray-200" />
                         </div>
                         <Heading
                             size="text3xl"
@@ -488,14 +621,14 @@ export default function AuctionSection(
                                         Kết thúc vào lúc: <strong>{formatDate(endDateTime)}</strong>
                                     </p>
                                     <a href={`/ListOfBuyerBids/${idAuction}`}>
-                                                        <ButtonDH
-                                                            color="green_50"
-                                                            size="xl"
-                                                            className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5 w-full"
-                                                        >
-                                                            Kết quả đấu giá
-                                                        </ButtonDH>
-                                                    </a>
+                                        <ButtonDH
+                                            color="green_50"
+                                            size="xl"
+                                            className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5 w-full"
+                                        >
+                                            Kết quả đấu giá
+                                        </ButtonDH>
+                                    </a>
                                 </div>
 
 
@@ -563,7 +696,7 @@ export default function AuctionSection(
                                                             size="xl"
                                                             className="gap-[34px] self-stretch rounded-[24px] border border-solid border-green-a700 px-[33px] sm:px-5 w-full"
                                                         >
-                                                            Danh sách những người đang đấu giá
+                                                            Lịch sử đặt giá thầu
                                                         </ButtonDH>
                                                     </a>
 
@@ -636,22 +769,33 @@ export default function AuctionSection(
 
                                 {/* Hiển thị nếu chưa đến thời gian bắt đầu */}
                                 {now < startDateTime && (
-                                    <div
-                                        className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
+                                    <div className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
                                         <i className="fas fa-user-check text-blue-600 text-lg"></i>
                                         <p className="font-semibold text-sm text-gray-900">
                                             Hiện có {dataItem.numberParticipant} người đã đăng ký tham gia
+                                            <span
+                                                className="text-blue-600 cursor-pointer underline ml-2"
+                                                onClick={showRegisteredUsersModal} // Khi nhấn vào sẽ mở modal
+                                            >
+                                                Xem thông tin
+                                            </span>
                                         </p>
                                     </div>
+
                                 )}
                                 {/* Hiển thị khi đang trong khoảng thời gian đấu giá */}
                                 {now >= startDateTime && now <= endDateTime && (
                                     <>
-                                        <div
-                                            className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
+                                        <div className="p-4 border rounded-lg bg-white shadow-md flex items-center gap-2 mt-4 font-bevietnampro text-xs text-gray-700 w-full md:ml-0">
                                             <i className="fas fa-user-check text-blue-600 text-lg"></i>
                                             <p className="font-semibold text-sm text-gray-900">
-                                                Có {dataItem.numberParticipant} người đang đấu giá phiên này
+                                                Hiện có {dataItem.numberParticipant} người đã đăng ký tham gia
+                                                <span
+                                                    className="text-blue-600 cursor-pointer underline ml-2"
+                                                    onClick={showRegisteredUsersModal} // Khi nhấn vào sẽ mở modal
+                                                >
+                                                    Xem thông tin
+                                                </span>
                                             </p>
                                         </div>
                                     </>
@@ -725,10 +869,19 @@ export default function AuctionSection(
                             </Heading>
 
                             <Text
-                                className="ml-2 mt-4 text-base font-normal text-blue-gray-900 leading-relaxed tracking-wide">
+                                className="ml-2 mt-4 text-base font-normal text-blue-gray-900 leading-relaxed tracking-wide"
+                            >
                                 Thông tin giao hàng: Người bán và người đấu giá có thể thỏa thuận và trao đổi với nhau
-                                về phương thức giao hàng và thời gian giao hàng.
+                                về thông tin giao hàng.
                             </Text>
+
+                            {/* Hiển thị phí ship */}
+                            <div className="ml-2 mt-6 flex items-center space-x-2">
+                                <FaShippingFast size={20} color="blue" /> {/* Biểu tượng vận chuyển */}
+                                <Text className="text-base font-semibold text-blue-gray-900">
+                                    Phí ship dự tính: {shippingFee ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shippingFee) : 'Đang tính...'}
+                                </Text>
+                            </div>
 
                             <Text
                                 size="textmd"
@@ -791,8 +944,6 @@ export default function AuctionSection(
                                     </button>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>

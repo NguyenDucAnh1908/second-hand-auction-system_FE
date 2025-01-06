@@ -50,13 +50,13 @@ class OnlineGatewayService {
         return response;
     }
 
-    // static async detail_order_service(data) {
-    //     const response = await axios.post(
-    //         `${api}/v2/shipping-order/detail`,
-    //         data,
-    //         { headers: headers }
-    //     );
-    //     return response;
-    // }
+    static async detail_order_service(data) {
+        const response = await axios.post(
+            `${api}/v2/shipping-order/detail`,
+            data,
+            { headers: headers }
+        );
+        return response;
+    }
 }
 export default OnlineGatewayService;

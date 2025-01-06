@@ -1,42 +1,26 @@
-import { Helmet } from "react-helmet";
-import {
-    Img,
-    Text,
-    ButtonDH,
-    Heading,
-    SelectBox,
-    InputDH,
-} from "../../components";
-import { CloseSVG } from "../../components/InputDH/close.jsx";
-import NumberRow from "../../components/NumberRow";
-import React, { useState } from "react";
-import { TabPanel, TabList, Tab, Tabs } from "react-tabs";
+import {Heading,} from "../../components";
+import  {useState} from "react";
 import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK/index.jsx";
-import { Table, Button, theme, Layout, Breadcrumb, Menu, Empty, Skeleton, Modal } from "antd";
-import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
-import { useGetTransactionWalletQuery } from "@/services/transactionWallet.service.js";
+import {Breadcrumb, Button, Empty, Layout, Modal, Skeleton, Table, theme} from "antd";
+import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
+import {useGetTransactionWalletQuery} from "@/services/transactionWallet.service.js";
 import Pagination from "@/components/Pagination/index.jsx";
 
 
-const dropDownOptions = [
-    { label: "Option1", value: "option1" },
-    { label: "Option2", value: "option2" },
-    { label: "Option3", value: "option3" },
-];
 
-const { Content, Sider } = Layout;
+
+const {Content, Sider} = Layout;
 export default function CustomerTransactionHistoryPagePage() {
-    const [searchBarValue8, setSearchBarValue8] = React.useState("");
     const [page, setPage] = useState(1);
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
     const {
         data: dataTransactionWallet,
         isLoading: isLoadingTransactionWallet,
         isError: isErrorTransactionWallet,
-        error: errorTransactionWallet
+
     } = useGetTransactionWalletQuery({
         page: page - 1,
         limit: 8
@@ -79,53 +63,26 @@ export default function CustomerTransactionHistoryPagePage() {
         //     width: 200,
         // },
         {
-            title: "Trạng thái",
-            dataIndex: "status",
-            key: "status",
-            width: 150,
-        },
-        {
             title: "Số tiền",
             dataIndex: "amount",
             key: "amount",
-            render: (text, record) => {
-                // Phân loại giao dịch tiêu cực (âm) và tích cực (dương)
-                const negativeTransactionTypes = ["WITHDRAWAL", "TRANSFER", "REFUND", "DEPOSIT_AUCTION"];
-                const positiveTransactionTypes = ["DEPOSIT"];
-
-                // Xác định giao dịch là âm hay dương
-                const isNegativeTransaction = negativeTransactionTypes.includes(record.transactionType);
-
-                // Xác định số tiền hiển thị
-                const formattedAmount = isNegativeTransaction ? `${Math.abs(text)}` : `+${Math.abs(text)}`;
-
-                // Định nghĩa CSS
-                const amountStyle = {
-                    color: isNegativeTransaction ? "red" : "green", // Đỏ nếu âm, xanh nếu dương
+            render: (amount, record) => {
+                // Phân loại giao dịch
+                const isNegative = amount < 0;
+                const style = {
+                    color: isNegative ? "red" : "green", // Màu đỏ cho số âm, xanh cho số dương
                     fontWeight: "bold",
                     fontSize: "14px",
                 };
-
-                const containerStyle = {
-                    backgroundColor: isNegativeTransaction ? "#ffe6e6" : "#e6ffe6", // Nền đỏ nhạt hoặc xanh nhạt
-                    padding: "5px 10px",
-                    borderRadius: "5px",
-                    display: "inline-block",
-                };
-
-                return (
-                    <span style={containerStyle}>
-                <span style={amountStyle}>{formattedAmount} đ</span>
-            </span>
-                );
+        
+                const formattedAmount = `${isNegative ? '-' : '+'}${Math.abs(amount).toLocaleString("vi-VN")} đ`;
+        
+                return <span style={style}>{formattedAmount}</span>;
             },
-            width: 150,
+            width: 200,
         },
-
-
-
-
-
+        
+        
         {
             title: "Người gửi", // Thêm cột Người gửi
             dataIndex: "sender",
@@ -163,23 +120,25 @@ export default function CustomerTransactionHistoryPagePage() {
             second: '2-digit',
         }),
         transactionType:
-            item.transactionType === "DEPOSIT_AUCTION" ? "Nạp tiền đấu giá" :
-                item.transactionType === "DEPOSIT" ? "Nạp tiền" :
+            item.transactionType === "DEPOSIT_AUCTION" ? "Trừ tiền cọc" :
+                item.transactionType === "DEPOSIT" ? "Nạp tiền vào ví" :
                     item.transactionType === "WITHDRAWAL" ? "Rút tiền" :
-                        item.transactionType === "REFUND" ? "Hoàn cọc" : "Chuyển khoản",
-
+                        item.transactionType === "REFUND" ? "Hoàn tiền cọc" : "Chuyển khoản",
         method: item.image || "Không xác định",
         status: item.transactionStatus === "COMPLETED" ? "Hoàn thành" : "Đang xử lý",
-        amount: item.amount,
+        amount: item.amount, // Đảm bảo giá trị này đúng (số dương hoặc âm)
+        netAmount: item.netAmount,
+        oldAmount: item.oldAmount,
         sender: item.senderName,
         recipient: item.recipientName,
     }));
+    
 
 
     return (
         <>
-            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-                <Header2 />
+            <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+                <Header2/>
                 <Content
                     style={{
                         padding: '0 48px',
@@ -211,7 +170,7 @@ export default function CustomerTransactionHistoryPagePage() {
                             }}
                             width={300}
                         >
-                            <SiderUserBK />
+                            <SiderUserBK/>
                         </Sider>
                         <Content
                             style={{
@@ -228,10 +187,10 @@ export default function CustomerTransactionHistoryPagePage() {
                                 Lịch sử nạp tiền
                             </Heading>
                             {isErrorTransactionWallet ? (
-                                <Empty />
-                            ) :
+                                    <Empty/>
+                                ) :
                                 <Skeleton loading={isLoadingTransactionWallet} active>
-                                    <Table columns={columns} dataSource={data} bordered pagination={false} />
+                                    <Table columns={columns} dataSource={data} bordered pagination={false}/>
                                 </Skeleton>
                             }
 
@@ -250,40 +209,83 @@ export default function CustomerTransactionHistoryPagePage() {
                                 footer={[<Button key="close" onClick={handleCancel}>Đóng</Button>]}
                             >
                                 {selectedTransaction ? (
-                                    <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-md">
-                                        <p className="text-sm text-gray-700">
-                                            <strong className="font-semibold">Mã giao dịch:</strong> {selectedTransaction.id}
-                                        </p>
-                                        <p className="text-sm text-gray-700">
-                                            <strong className="font-semibold">Thời gian:</strong> {selectedTransaction.time}
-                                        </p>
-                                        <p className="text-sm text-gray-700">
-                                            <strong className="font-semibold">Loại giao dịch:</strong> {selectedTransaction.transactionType}
-                                        </p>
-                                        <p className="text-sm text-gray-700">
-                                            <strong className="font-semibold">Trạng thái:</strong> {selectedTransaction.status}
-                                        </p>
-                                        <p className="text-sm text-gray-700">
-                                            <strong className="font-semibold">Số tiền:</strong> {selectedTransaction.amount} đ
-                                        </p>
-                                        <p className="text-sm text-gray-700">
-                                            <strong className="font-semibold">Người gửi:</strong> {selectedTransaction.sender}
-                                        </p>
-                                        <p className="text-sm text-gray-700">
-                                            <strong className="font-semibold">Người nhận:</strong> {selectedTransaction.recipient}
-                                        </p>
-                                    </div>
-                                ) : (
-                                    <p className="text-center text-gray-500">Không có thông tin giao dịch.</p>
-                                )}
-                            </Modal>
+                                    <div
+                                        className="border border-gray-300 rounded-lg p-6 bg-white shadow-lg max-w-lg mx-auto">
+                                        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center border-b pb-4">
+                                            Chi tiết Giao Dịch
+                                        </h2>
+                                        <div className="space-y-4">
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-500">Mã giao dịch</span>
+                                                <span
+                                                    className="font-medium text-gray-900">{selectedTransaction.id}</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-500">Thời gian</span>
+                                                <span
+                                                    className="font-medium text-gray-900">{selectedTransaction.time}</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-500">Loại giao dịch</span>
+                                                <span
+                                                    className="font-medium text-gray-900">{selectedTransaction.transactionType}</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-500">Trạng thái</span>
+                                                <span
+                                                    className={`px-3 py-1 text-sm font-semibold rounded ${
+                                                        selectedTransaction.status === "Thành công"
+                                                            ? "bg-green-100 text-green-800"
+                                                            : "bg-red-100 text-red-800"
+                                                    }`}
+                                                >
+          {selectedTransaction.status}
+        </span>
+                                            </div>
+                                                    <div className="flex justify-between">
+                                                        <span className="text-gray-500">Giá trị giao dịch</span>
+                                                        <span className="text-xl font-bold text-gray-600">
+        {selectedTransaction.amount.toLocaleString("vi-VN")} đ
+    </span>
+                                                    </div>
+                                                    <div className="flex justify-between">
+                                                        <span className="text-gray-500">Số tiền sau giao dịch</span>
+                                                        <span className="text-xl font-bold text-gray-600">
+        {selectedTransaction.netAmount.toLocaleString("vi-VN")} đ
+    </span>
+                                                    </div>
+                                                    <div className="flex justify-between">
+                                                        <span className="text-gray-500">Số tiền trước giao dịch</span>
+                                                        <span className="text-xl font-bold text-gray-800">
+        {selectedTransaction.oldAmount.toLocaleString("vi-VN")} đ
+    </span>
+                                                    </div>
 
-                        </Content>
-                    </Layout>
-                </Content>
-                <FooterBK
-                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
-            </Layout>
-        </>
-    );
-}
+
+                                                    <div className="flex justify-between">
+                                                        <span className="text-gray-500">Người gửi</span>
+                                                        <span
+                                                            className="font-medium text-gray-900">{selectedTransaction.sender}</span>
+                                                    </div>
+                                                    <div className="flex justify-between">
+                                                        <span className="text-gray-500">Người nhận</span>
+                                                        <span
+                                                            className="font-medium text-gray-900">{selectedTransaction.recipient}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            ) : (
+                                            <p className="text-center text-gray-500">Không có thông tin giao dịch.</p>
+                                            )}
+
+                                        </Modal>
+
+                                    </Content>
+                                    </Layout>
+                                    </Content>
+                                    <FooterBK
+                                    className="mt-[34px] h-[388px] bg-[url(/images/img_group_19979.png)] bg-cover bg-no-repeat md:h-auto" />
+                                    </Layout>
+                                    </>
+                                    );
+                                }

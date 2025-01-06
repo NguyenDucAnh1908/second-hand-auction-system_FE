@@ -49,25 +49,54 @@ import CRUDSellerInfor from "./pages/Seller/CRUDInfor/index.jsx";
 import WebSocketTest from "./pages/test.jsx";
 import ListOfBuyerBidsAdmin from "./pages/ListOfBuyerBidAdmin/index.jsx";
 import UpdateProduct from "pages/Seller/ListOfSellerProducts/UpdateProduct.jsx";
+import OptionalAuth from "@/routers/OptionalAuth.jsx";
+import ReportPage from "pages/Report/ReportPage.jsx";
 
 function App() {
     return (
         <Routes>
             <Route path="/" element={<Layout/>}>
-                <Route index element={<HomePage/>}/>
-                <Route path="HomePage" index element={<HomePage/>}/>
-                <Route path="Product" index element={<Product/>}/>
-                <Route path="Auction/:id" element={<Auction />} />
+
                 <Route path="Login" index element={<Login/>}/>
                 <Route path="Register" index element={<Register/>}/>
                 <Route path="ForgotPassword" index element={<ForgotPassword/>}/>
                 <Route path="VerifyAccount" index element={<VerifyAccount/>}/>
                 <Route path="PaymentSuccess" index element={<PaymentSuccess/>}/>
-                <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
-                <Route path="Contact" index element={<Contact/>}/>
-                <Route path="Policy" index element={<Policy/>}/>
-                <Route path="articles" index element={<AboutAuction/>}/>
-                <Route path="socket" index element={<WebSocketTest/>}/>
+
+
+                <Route element={<OptionalAuth />}>
+                    <Route index element={<HomePage/>}/>
+                    <Route path="HomePage" index element={<HomePage/>}/>
+                    <Route path="Product" index element={<Product/>}/>
+                    <Route path="Auction/:id" element={<Auction/>}/>
+                    <Route path="SellerDetailPage" index element={<SellerDetailPage/>}/>
+                    <Route path="Contact" index element={<Contact/>}/>
+                    <Route path="Policy" index element={<Policy/>}/>
+                    <Route path="articles" index element={<AboutAuction/>}/>
+                    <Route path="socket" index element={<WebSocketTest/>}/>
+                </Route>
+
+                {/*BUYER*/}
+                <Route element={<RequireAuth allowedRoles={["BUYER"]}/>}>
+                    <Route path="HistoryPage" index element={<CustomerTransactionHistoryPagePage/>}/>
+                    <Route path="ProfileDetail" index element={<ProfileDetailPage/>}/>
+                    <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
+                    <Route path="Address" index element={<AddressPage/>}/>
+                    <Route path="ListOfBuyerBids/:id" index element={<ListOfBuyerBids/>}/>
+                    <Route path="RegisterKYC" index element={<KNCPage/>}/>
+                    <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
+                    <Route path="ListOfSellerPage" index element={<ListOfSellerPage/>}/>
+                    <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
+                    <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
+                    <Route path="AuctionListCompleted" index element={<AuctionListCompleted/>}/>
+                    {/*<Route path="CreateOrder/:id" index element={<CreateOrder/>}/>*/}
+                    <Route path="Order/:id" index element={<OrderForm/>}/>
+                    <Route path="MenuKyc" index element={<MenuKyc/>}/>
+                    <Route path="UpdateKYC" index element={<UpdateKYC/>}/>
+                    <Route path="report" index element={<ReportPage/>}/>
+                </Route>
+
+
                 {/* Test */}
                 <Route path="TestComponent" index element={<TestComponent/>}/>
                 <Route path="Test" index element={<TestAPI/>}/>
@@ -94,29 +123,9 @@ function App() {
                     <Route path="/dashboard-seller/OrderManagementSeller" index element={<OrderManagementSeller/>}/>
                     <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>
                     <Route path="/dashboard-seller/CRUDInfor" index element={<CRUDSellerInfor/>}/>
-                    <Route path="/dashboard-seller/UpdateProduct/:id" element={<UpdateProduct />} />
-                </Route>
-
-                {/*BUYER*/}
-                <Route element={<RequireAuth allowedRoles={["BUYER"]} />}>
-                    <Route path="HistoryPage" index element={<CustomerTransactionHistoryPagePage/>}/>
-                    <Route path="ProfileDetail" index element={<ProfileDetailPage/>}/>
-                    <Route path="DepositMoney" index element={<DepositMoneyPage/>}/>
-                    <Route path="Address" index element={<AddressPage/>}/>
-                    <Route path="ListOfBuyerBids/:id" index element={<ListOfBuyerBids/>}/>
-                    <Route path="RegisterKYC" index element={<KNCPage/>}/>
-                    <Route path="OrderManagementBuyer" index element={<OrderManagementBuyer/>}/>
-                    <Route path="ListOfSellerPage" index element={<ListOfSellerPage/>}/>
-                    <Route path="ListRegisterAuction" index element={<ListRegisterAuction/>}/>
-                    <Route path="AuctionListProcess" index element={<AuctionListProcess/>}/>
-                    <Route path="AuctionListCompleted" index element={<AuctionListCompleted/>}/>
-                    {/*<Route path="CreateOrder/:id" index element={<CreateOrder/>}/>*/}
-                    <Route path="Order/:id" index element={<OrderForm/>}/>
-                    <Route path="MenuKyc" index element={<MenuKyc/>}/>
-                    <Route path="UpdateKYC" index element={<UpdateKYC/>}/>
+                    <Route path="/dashboard-seller/UpdateProduct/:id" element={<UpdateProduct/>}/>
                 </Route>
                 {/*<Route element={<RequireAuth allowedRoles={["STAFF", "ADMIN"]}/>}>*/}
-
                 {/*</Route>*/}
             </Route>
             <Route path="RegisterAuction" index element={<RegisterAuction/>}/>

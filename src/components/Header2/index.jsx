@@ -50,7 +50,7 @@ export default function Header2({ ...props }) {
     const showDrawer = () => setIsDrawerOpen(true);
     const closeDrawer = () => setIsDrawerOpen(false);
     const onChange = ({ target }) => setEmail(target.value);
-    const { data: userHeader, error, isLoading: isUserLoading, refetch } = useGetUserByIdQuery();
+    //const { data: userHeader, error, isLoading: isUserLoading, refetch } = useGetUserByIdQuery();
 
     const filters = useSelector(
         (state) =>
@@ -143,6 +143,10 @@ export default function Header2({ ...props }) {
     };
     const handleSeeMore = () => {
         navigate("/product");
+    };
+
+    const navigateStoreSeller = () => {
+        navigate("/dashboard-seller");
     };
 
     const displayedItems = dataItems?.item.slice(0, 5);
@@ -260,7 +264,7 @@ export default function Header2({ ...props }) {
                             <div
                                 className="mr-4 flex w-[32%] items-end justify-center gap-4 md:mr-0 md:w-full sm:flex-col">
                                 <div className="flex flex-1 justify-center gap-3.5 sm:self-stretch mb-2">
-                                    <a href="/dashboard-seller">
+                                    <a onClick={navigateStoreSeller}>
                                         <IconButton className="bg-blue-gray-900">
                                             <ShopOutlined style={{ fontSize: '20px' }} />
                                         </IconButton>
@@ -283,7 +287,7 @@ export default function Header2({ ...props }) {
                                                         variant="circular"
                                                         alt="tania andrew"
                                                         className="cursor-pointer rounded-full object-cover"
-                                                        src={userHeader?.avatar}
+                                                        src={userAPI?.avatar}
                                                     />
                                                 </MenuHandler>
                                                 <MenuList>
@@ -357,7 +361,7 @@ export default function Header2({ ...props }) {
                                                 className="font-bevietnampro text-[14px] font-bold leading-[22px] text-blue_gray-900_01">
                                                 <span className="text-[13px] font-normal">
                                                     {/*{userAPI.fullName}*/}
-                                                    {userHeader?.fullName}
+                                                    {userAPI?.fullName}
                                                     <br />
                                                 </span>
                                                 {/* <span className="text-[10px] font-medium">{userHeader?.role}</span> */}

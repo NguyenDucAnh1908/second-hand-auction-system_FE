@@ -1,20 +1,20 @@
-import {Heading, Img} from "../../../components";
-import React, {useState} from "react";
-import {Carousel, Descriptions, Avatar, Typography, Upload, Modal, Image, Col, Row, Flex} from 'antd';
-import {useGetSellerQuery} from "../../../services/item.service";
-import {UploadOutlined} from "@ant-design/icons";
-import {DatePicker} from 'antd';
+import { Heading, Img } from "../../../components";
+import React, { useState } from "react";
+import { Carousel, Descriptions, Avatar, Typography, Upload, Modal, Image, Col, Row, Flex } from 'antd';
+import { useGetSellerQuery } from "../../../services/item.service";
+import { UploadOutlined } from "@ant-design/icons";
+import { DatePicker } from 'antd';
 import moment from 'moment';
 import DescriptionItem from "@/components/DescriptionItem/index.jsx";
-import {Button} from "@material-tailwind/react";
+import { Button } from "@material-tailwind/react";
 
 
-export default function ProductReviewSection({itemDetail}) {
+export default function ProductReviewSection({ itemDetail }) {
     const [previewImages, setPreviewImages] = useState([]);
     const [fileList, setFileList] = useState([]);
     const [selectedDescription, setSelectedDescription] = useState(null);
     const [isModalDescriptionVisible, setIsModalDescriptionVisible] = useState(false);
-    const {data: seller} = useGetSellerQuery({id: itemDetail.itemId});
+    const { data: seller } = useGetSellerQuery({ id: itemDetail.itemId });
     const staff = JSON.parse(localStorage.getItem('user'));
 
     if (!itemDetail) {
@@ -73,56 +73,285 @@ export default function ProductReviewSection({itemDetail}) {
         setSelectedDescription(null); // Reset thông tin đấu giá
     };
     const items = [
-        {
-            key: '1',
-            label: <span className="font-bold text-lg text-gray-800">Tên sản phẩm</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.itemName || 'N/A'}</span>,
-            span: 4
-        },
-        {
-            key: '2',
-            label: <span className="font-bold text-lg text-gray-800">Danh mục phụ</span>,
-            children: <span className="text-base text-gray-600">{itemDetail.scId.sub_category || 'N/A'}</span>,
-            span: 2
-        },
+
+        //start
+    
+            {
+                key: '1',
+                label: <label className="font-bold text-black">Tên Sản Phẩm</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                       {itemDetail.itemName}
+                    </div>
+                ),
+            },
+            {
+                key: '2',
+                label: <label className="font-bold text-black">Serial</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.serial}
+                    </div>
+                ),
+            },
+            {
+                key: '3',
+                label: <label className="font-bold text-black">Hỗ trợ Sim</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.itemSpecific.sim}
+                    </div>
+                ),
+            },
+            {
+                key: '4',
+                label: <label className="font-bold text-black">Số khe cắm sim</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.itemSpecific.simSlots}
+                    </div>
+                ),
+            },
+            {
+                key: '5',
+                label: <label className="font-bold text-black">Phiên bản</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.itemSpecific.os}
+                    </div>
+                ),
+            },
+            {
+                key: '6',
+                label: <label className="font-bold text-black">Hệ điều hành</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.itemSpecific.osFamily}
+                    </div>
+                ),
+            },
+            {
+                key: '7',
+                label: <label className="font-bold text-black">Bluetooth</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.itemSpecific.bluetooth}
+                    </div>
+                ),
+            }
+            ,
+            {
+                key: '8',
+                label: <label className="font-bold text-black">Cổng USB</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {itemDetail.itemSpecific.usb}
+                </div>
+                ),
+            },
+            {
+                key: '9',
+                label: <label className="font-bold text-black">Wi-Fi</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {itemDetail.itemSpecific.wlan}
+                </div>
+                ),
+            },
+            {
+                key: '10',
+                label: <label className="font-bold text-black">Tốc độ kết nối mạng</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {itemDetail.itemSpecific.speed}
+                </div>
+                ),
+            },
+            {
+                key: '11',
+                label: <label className="font-bold text-black">Công nghệ mạng hỗ trợ</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {itemDetail.itemSpecific.networkTechnology}
+                </div>
+                ),
+            },
+            {
+                key: '11',
+                label: <label className="font-bold text-black">Mã model</label>,
+                children: (
+                    <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                      {itemDetail.model}
+                    </ul>
+                ),
+            },
+            
+       
+    
+
+
+
+
+
+        //end
+        ,
+        // {
+        //     key: '1',
+        //     label: <label className="font-bold text-black">Tên sản phẩm</span>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.itemName || 'N/A'}</span>,
+        //     span: 1
+        // },
+        // {
+        //     key: '2',
+        //     label: <label className="font-bold text-black">Hãng điện thoại</span>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.scId?.sub_category || 'N/A'}</span>,
+        //     span: 1
+        // },
         {
             key: '3',
-            label: <span className="font-bold text-lg text-gray-800">Bước giá mong muốn</span>,
-            children: <span className="text-base text-gray-600">{itemDetail.priceStepItem || 'N/A'}</span>,
+            label:  <label className="font-bold text-black">Bước giá mong muốn</label>,
+            children:  <div className="rounded-md border p-3 w-full bg-gray-100">{formatCurrency(itemDetail?.priceStepItem) || 'N/A'}</div>,
+            span: 1
+        },
+       
+        {
+            key: '5',
+            label: <label className="font-bold text-black">Mức giá mong muốn</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{formatCurrency(itemDetail?.priceBuyNow) || 'N/A'}</div>,
+            span: 1
+        },
+       
+        {
+            key: '7',
+            label: <label className="font-bold text-black">Màu sắc</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.color || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '8',
+            label: <label className="font-bold text-black">Tình trạng pin</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.batteryHealth || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '9',
+            label: <label className="font-bold text-black">Tình trạng thân máy</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.bodyCondition || 'N/A'}</div>,
+            span: 1
+        },
+        // {
+        //     key: '10',
+        //     label: <label className="font-bold text-black">Hệ điều hành</span>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.osVersion || 'N/A'}</span>,
+        //     span: 1
+        // },
+        // {
+        //     key: '11',
+        //     label: <label className="font-bold text-black">Đám mây</span>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.icloudStatus || 'N/A'}</span>,
+        //     span: 1
+        // },
+        {
+            key: '12',
+            label: <label className="font-bold text-black">Tình trạng cổng kết nối</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.portCondition || 'N/A'}</div>,
+            span: 1
+        },
+        // {
+        //     key: '13',
+        //     label: <label className="font-bold text-black">Tình trạng nút điện thoại</span>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.buttonCondition || 'N/A'}</span>,
+        //     span: 1
+        // },
+        {
+            key: '14',
+            label: <label className="font-bold text-black">Tình trạng màn hình</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.screenCondition || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '15',
+            label: <label className="font-bold text-black">Tình trạng camera</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.cameraCondition || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '16',
+            label: <label className="font-bold text-black">Bộ nhớ</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.storage || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '17',
+            label: <label className="font-bold text-black">IMEI</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.imei || 'N/A'}</div>,
+            span: 1
+        },
+
+        // {
+        //     key: '18',
+        //     label: <label className="font-bold text-black">Tình trạng khoá iCloud</label>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.icloudStatus || 'N/A'}</div>,
+        //     span: 1
+        // },
+      
+        {
+            key: '20',
+            label: <label className="font-bold text-black">RAM</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.itemSpecific?.ram || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '21',
+            label: <label className="font-bold text-black">Kích thước màn hình</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.itemSpecific?.screen_size || 'N/A'} inch</div>,
+            span: 1
+        },
+        {
+            key: '22',
+            label: <label className="font-bold text-black">Thống số camera</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.itemSpecific?.camera_specs || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '23',
+            label: <label className="font-bold text-black">Cảm biến</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.itemSpecific?.sensors || 'N/A'}</div>,
             span: 2
+        },
+        {
+            key: '6',
+            label: <label className="font-bold text-black">Mô tả sản phẩm</label>,
+            children: (
+                <Button
+                    onClick={() => handleOpenDescriptionModal(itemDetail?.itemDescription)}
+                    className="bg-blue-500 text-white hover:bg-yellow-600 px-4 py-2 rounded"
+                >
+                    Xem mô tả
+                </Button>
+            ),
+            span: 1
         },
         {
             key: '4',
-            label: <span className="font-bold text-lg text-gray-800">Trạng thái sản phẩm</span>,
+            label: <label className="font-bold text-black">Trạng thái sản phẩm</label>,
             children: (
-                <span className={`text-base ${getItemStatusClass(itemDetail.itemStatus)}`}>
-            {itemDetail.itemStatus ? formatItemStatus(itemDetail.itemStatus) : 'N/A'}
-        </span>
-            ),
-            span: 2
-        },
-
-        {
-            key: '5',
-            label: <span className="font-bold text-lg text-gray-800">Mức giá mong muốn</span>,
-            children: <span
-                className="text-base text-gray-600">{formatCurrency(itemDetail.priceBuyNow) || 'N/A'}</span>,
-            span: 2
-        },
-
-        {
-            key: '6',
-            label: <span className="font-bold text-lg text-gray-800">Mô tả sản phẩm</span>,
-            children:
-                <Button
-                    onClick={() => handleOpenDescriptionModal(itemDetail?.itemDescription)}
-                    className="ql-bg-blue-500 text-white hover:bg-yellow-600"
+                <span
+                    className={`text-xs ${getItemStatusClass(itemDetail?.itemStatus)} text-gray-600 font-medium inline-block px-3 py-1 rounded-full 
+                                ${itemDetail?.itemStatus ? 'bg-green-100' : 'bg-red-100'} 
+                                transition-all duration-300 ease-in-out shadow-sm hover:shadow-md`}
                 >
-                    Xem mô tả
-                </Button>,
-            span: 4
-        }
+                    {itemDetail?.itemStatus ? formatItemStatus(itemDetail?.itemStatus) : 'N/A'}
+                </span>
+            ),
+            span: 1
+        },
     ];
+
+
+
+
+
 
 
     return (
@@ -134,7 +363,7 @@ export default function ProductReviewSection({itemDetail}) {
                 footer={[
                     // eslint-disable-next-line react/jsx-key
                     <Button color="blue" onClick={handleCloseDescriptionModal}
-                            className="bg-red-500 text-white hover:bg-red-600"
+                        className="bg-red-500 text-white hover:bg-red-600"
                     >
                         Đóng
                     </Button>,
@@ -142,7 +371,7 @@ export default function ProductReviewSection({itemDetail}) {
                 className="rounded-lg shadow-lg"
                 width={1000}
             >
-                <DescriptionItem selectedDescription={selectedDescription}/>
+                <DescriptionItem selectedDescription={selectedDescription} />
             </Modal>
 
             <div className="flex flex-col items-center py-10 bg-gray-50 ">
@@ -154,32 +383,37 @@ export default function ProductReviewSection({itemDetail}) {
                     >
                         Thẩm định
                     </Heading>
-                    <div className="flex items-center w-full gap-[34px] md:flex-col">
-                        <div className="flex-1 bg-blue-200 rounded-2xl p-6 flex flex-col gap-4">
-                            <Descriptions title={<div className="w-full text-center text-xl font-semibold">Thông tin sản
-                                phẩm</div>} layout="vertical" items={items}/>
-
+                    <div className="flex flex-wrap gap-10 w-full py-10">
+                        {/* Phần thông tin */}
+                        <div className="flex-row-reverse bg-white rounded-2xl p-8 shadow-lg border-2 border-blue-500 max-w-2xl w-full">
+                            <Descriptions
+                                layout="vertical"
+                                items={items}
+                                className="space-y-6"
+                            />
                         </div>
 
-                        <div className=" mx-auto bg-blue-200 rounded-2xl p-6 ">
-                            <div className="w-80">
-                                <Image.PreviewGroup
-                                    preview={{
-                                        onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
-                                    }}
-                                >
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {itemDetail.images.map((images, index) => (
-                                            <div key={index} className="flex justify-center items-center">
-                                                <Image width={400}
-                                                       src={images.image}/>
-                                            </div>
-                                        ))}
+                        {/* Phần hình ảnh */}
+                        <div className="flex-1 bg-blue-100 rounded-2xl p-8 shadow-lg max-w-xl w-full">
+                            <div className="grid grid-cols-1 gap-6">
+                                {itemDetail.images.slice(0, 9).map((image, index) => (
+                                    <div key={index} className="flex justify-center items-center rounded-lg overflow-hidden shadow-lg">
+                                        <Image
+                                            src={image.image}
+                                            alt={`Image ${index + 1}`}
+                                            width={400}
+                                            height={300}
+                                            className="object-cover w-full h-auto rounded-lg" // Giữ tỷ lệ hình ảnh
+                                        />
                                     </div>
-                                </Image.PreviewGroup>
+                                ))}
                             </div>
+
                         </div>
                     </div>
+
+
+
 
 
                     {/* Thông tin người bán và người thẩm định */}
@@ -194,18 +428,18 @@ export default function ProductReviewSection({itemDetail}) {
                                     <div className="flex items-center gap-4">
                                         <Avatar
                                             src={seller?.avatar || "https://docs.material-tailwind.com/img/face-2.jpg"}
-                                            alt="avatar" variant="rounded" className="w-16 h-16"/>
+                                            alt="avatar" variant="rounded" className="w-16 h-16" />
                                         <div>
                                             <Typography variant="h6"
-                                                        className="font-medium text-gray-800">{seller?.fullName || 'N/A'}</Typography>
+                                                className="font-medium text-gray-800">{seller?.fullName || 'N/A'}</Typography>
                                             <Typography variant="small" color="gray"
-                                                        className="font-normal">{seller?.role || 'N/A'}</Typography>
+                                                className="font-normal">{seller?.role || 'N/A'}</Typography>
                                         </div>
                                     </div>
                                     <Heading size="textxs" as="p" className="text-sm font-medium text-gray-700">Số điện
                                         thoại: {seller?.phoneNumber || 'N/A'}</Heading>
                                     <Heading size="textxs" as="p"
-                                             className="text-sm font-medium text-gray-700">Email: {seller?.email || 'N/A'}</Heading>
+                                        className="text-sm font-medium text-gray-700">Email: {seller?.email || 'N/A'}</Heading>
                                 </div>
                             </div>
 
@@ -221,18 +455,18 @@ export default function ProductReviewSection({itemDetail}) {
                                     <div className="flex items-center gap-4">
                                         <Avatar
                                             src={staff?.avatar || "https://docs.material-tailwind.com/img/face-2.jpg"}
-                                            alt="avatar" variant="rounded" className="w-16 h-16"/>
+                                            alt="avatar" variant="rounded" className="w-16 h-16" />
                                         <div>
                                             <Typography variant="h6"
-                                                        className="font-medium text-gray-800">{staff?.fullName || 'N/A'}</Typography>
+                                                className="font-medium text-gray-800">{staff?.fullName || 'N/A'}</Typography>
                                             <Typography variant="small" color="gray"
-                                                        className="font-normal">{staff?.role || 'N/A'}</Typography>
+                                                className="font-normal">{staff?.role || 'N/A'}</Typography>
                                         </div>
                                     </div>
                                     <Heading size="textxs" as="p" className="text-sm font-medium text-gray-700">Số điện
                                         thoại: {staff?.phoneNumber || 'N/A'}</Heading>
                                     <Heading size="textxs" as="p"
-                                             className="text-sm font-medium text-gray-700">Email: {staff?.email || 'N/A'}</Heading>
+                                        className="text-sm font-medium text-gray-700">Email: {staff?.email || 'N/A'}</Heading>
                                 </div>
                             </div>
 
@@ -244,13 +478,13 @@ export default function ProductReviewSection({itemDetail}) {
                     {(itemDetail.itemDocument) && (
                         <>
                             <Heading size="textxs" as="p" className="text-xl font-medium text-black-900 mb-5">Giấy tờ thẩm định</Heading>
-                            <div style={{width: '100%', height: '50vh', border: '1px solid #ddd'}}>
+                            <div style={{ width: '100%', height: '50vh', border: '1px solid #ddd' }}>
                                 <iframe
                                     src={itemDetail.itemDocument}
                                     title="PDF Viewer"
                                     width="100%"
                                     height="100%"
-                                    style={{border: 'none'}}
+                                    style={{ border: 'none' }}
                                 />
                             </div>
                         </>

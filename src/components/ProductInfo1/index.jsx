@@ -1,7 +1,6 @@
 import { Text, Heading, Img, InputDH,  } from "./..";
 import React, { Suspense } from "react";
 import {Breadcrumb, Checkbox, Collapse, Layout, Menu, theme} from 'antd';
-import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
 import Pagination from "@/components/Pagination/index.jsx";
 
 const { Panel } = Collapse;

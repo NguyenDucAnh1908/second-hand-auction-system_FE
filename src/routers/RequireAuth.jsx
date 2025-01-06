@@ -21,15 +21,19 @@ const RequireAuth = ({ allowedRoles }) => {
       pauseOnHover,
     });
   };
-
-  return token && rolesArray.some((r) => allowedRoles?.includes(r)) ? (
-    <Outlet />
-  ) : token ? (
-       openNotification(true)
-     // <Navigate to="/unauthorized" state={{ from: location }} replace />
-  ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
-  );
+  // if (!token) {
+  //   return <Outlet />;
+  // }
+  if (token && rolesArray.some((r) => allowedRoles?.includes(r))) {
+    return <Outlet />;
+  } else if (token) {
+    // Người dùng có token nhưng không có quyền, hiển thị thông báo
+    openNotification(true);
+    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
+  } else {
+    // Người dùng không có token, điều hướng tới trang đăng nhập
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 };
 
 export default RequireAuth;

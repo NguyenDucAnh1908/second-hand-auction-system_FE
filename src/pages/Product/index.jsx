@@ -4,7 +4,6 @@ import {
     Heading,
     ButtonDH,
     CheckBox,
-    SeekBar,
     InputDH,
 } from "../../components";
 import FooterBK from "../../components/FooterBK";
@@ -30,7 +29,6 @@ import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { Input } from "@material-tailwind/react";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
-import ProductDetails21 from "@/components/ProductDetails21/index.jsx";
 import { useGetCategoriesQuery } from "@/services/category.service.js";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetItemsFilterQuery } from "@/services/item.service.js";
@@ -73,7 +71,7 @@ export default function ProductPage() {
     };
     const {
         data: categories = [],
-        error,
+        isError,
         isLoading,
         isFetching,
         isSuccess,
@@ -210,8 +208,8 @@ export default function ProductPage() {
                                 </div>
 
                                 <div className="w-full overflow-y-auto max-h-[400px]">
-                                    {error ? (
-                                        <Empty description={`Error: ${error.message || "Failed to load categories."}`} />
+                                    {isError ? (
+                                        <Empty description={`Error: ${isError.message || "Failed to load categories."}`} />
                                     ) : (
                                         <Spin spinning={isLoading} tip="Loading...">
                                             <Collapse defaultActiveKey={["1"]} ghost>
@@ -484,9 +482,7 @@ export default function ProductPage() {
                                                                     onBidClick={showModal} />
                                                             </div>
                                                         ))
-                                                    ) : (
-                                                        <Empty description="items" />
-                                                    )}
+                                                    ) : null}
                                                 </div>
                                             </Spin>
                                         )}

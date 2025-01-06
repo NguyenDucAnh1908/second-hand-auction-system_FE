@@ -54,6 +54,7 @@ export default function StoreOrders() {
     const [size, setSize] = useState();
     const [open, setOpen] = useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState(null);
+    const [selectedOrderCode, setSelectedOrderCode] = useState("");
     const navigate = useNavigate();
     // const handleDetailClick = () => {
     //     navigate("/dashboard/StoreOrders/OrderManagementAdmin");
@@ -72,10 +73,11 @@ export default function StoreOrders() {
     const totalPages1 = orderResponse?.data?.totalPages || 0;
     const orders = orderResponse?.data?.orders || [];
 
-    const showDefaultDrawer = (orderId) => {
+    const showDefaultDrawer = (orderId, orderCode) => {
         setSize('default');
         setOpen(true);
         setSelectedOrderId(orderId);
+        setSelectedOrderCode(orderCode);
     };
     // Handle tab change to set status
     const handleTabChange = (newStatus) => {
@@ -89,6 +91,8 @@ export default function StoreOrders() {
     const onClose = () => {
         setOpen(false);
     };
+
+    console.log("selectedOrderId dataa", selectedOrderId?.data);
 
     return (
         <>
@@ -108,7 +112,7 @@ export default function StoreOrders() {
                     </Space>
                 }
             >
-                <DrawerDetailOrder orderId={selectedOrderId}/>
+                <DrawerDetailOrder orderId={selectedOrderId} orderCode={selectedOrderCode}/>
                 {/*itemIds={selectedItemId}*/}
             </Drawer>
             <div className="w-full">
@@ -167,6 +171,7 @@ export default function StoreOrders() {
                                                      totalPrice,
                                                      shippingType,
                                                      createBy,
+                                                     orderCode,
                                                  }, index) => {
                                                     const isLast = index === orders.length - 1;
                                                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
@@ -240,7 +245,7 @@ export default function StoreOrders() {
                                                                 <Tooltip content="Detail">
                                                                     <IconButton variant="text"
                                                                                 // onClick={handleDetailClick}
-                                                                                onClick={() => showDefaultDrawer(orderId)}
+                                                                                onClick={() => showDefaultDrawer(orderId, orderCode)}
                                                                     >
                                                                         <PencilIcon className="h-4 w-4"/>
                                                                     </IconButton>

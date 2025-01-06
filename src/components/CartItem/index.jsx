@@ -1,4 +1,3 @@
-import { Text, Heading, RatingBar, Img } from "./..";
 import React, { useState } from "react";
 import { Button, Input } from "@material-tailwind/react";
 import { Image, Statistic, Col, Row, Checkbox, Modal, message, Card, Badge, Typography } from 'antd';
