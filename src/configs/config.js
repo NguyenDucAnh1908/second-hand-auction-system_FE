@@ -14,8 +14,11 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
+
 const api = "http://103.163.24.146:8080/api/v1/";
-// const api = "http://localhost:8080/api/v1/";
+
+
+
 
 export {api, storage};
 export {default as chartsConfig} from "./charts-config";
