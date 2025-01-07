@@ -51,6 +51,7 @@ import ListOfBuyerBidsAdmin from "./pages/ListOfBuyerBidAdmin/index.jsx";
 import UpdateProduct from "pages/Seller/ListOfSellerProducts/UpdateProduct.jsx";
 import OptionalAuth from "@/routers/OptionalAuth.jsx";
 import ReportPage from "pages/Report/ReportPage.jsx";
+import ReportSellerPage from "pages/Report/ReportSellerPage.jsx";
 
 function App() {
     return (
@@ -124,6 +125,7 @@ function App() {
                     <Route path="/dashboard-seller/ListTransaction" index element={<ListTransaction/>}/>
                     <Route path="/dashboard-seller/CRUDInfor" index element={<CRUDSellerInfor/>}/>
                     <Route path="/dashboard-seller/UpdateProduct/:id" element={<UpdateProduct/>}/>
+                    <Route path="/dashboard-seller/report" element={<ReportSellerPage/>}/>
                 </Route>
                 {/*<Route element={<RequireAuth allowedRoles={["STAFF", "ADMIN"]}/>}>*/}
                 {/*</Route>*/}
