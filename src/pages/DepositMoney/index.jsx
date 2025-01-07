@@ -10,7 +10,7 @@ import { BankOutlined, WalletOutlined } from "@ant-design/icons";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { useDepositUserMutation } from "@/services/walletCustomerService.js";
 import { toast } from "react-toastify";
-
+import { api } from "../../configs/config";
 const dropDownOptions = [
     { label: "VN_PAY", value: "paymentMethod" },
 
@@ -18,11 +18,13 @@ const dropDownOptions = [
 const { Content, Sider } = Layout;
 
 export default function DepositMoneyPage() {
+    const apiUrl = "https://auction-system-plum.vercel.app/";
     const [paymentMethod, setPaymentMethod] = useState("VN_PAYMENT");
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState("");
-    const [returnSuccess, setReturnSuccess] = useState("http://localhost:5173/SuccessfullyPayment");
-    const [returnError, setReturnError] = useState("http://localhost:5173/FailPayment");
+    const [returnSuccess, setReturnSuccess] = useState(`${apiUrl}SuccessfullyPayment`);
+    const [returnError, setReturnError] = useState(`${apiUrl}FailPayment`);
+
 
     const userRef = useRef();
     const errRef = useRef();

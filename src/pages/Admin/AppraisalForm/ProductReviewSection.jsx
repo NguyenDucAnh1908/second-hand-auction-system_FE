@@ -73,47 +73,255 @@ export default function ProductReviewSection({ itemDetail }) {
         setSelectedDescription(null); // Reset thông tin đấu giá
     };
     const items = [
-        {
-            key: '1',
-            label: <span className="font-semibold text-xl text-gray-800">Tên sản phẩm</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.itemName || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '2',
-            label: <span className="font-semibold text-xl text-gray-800">Hãng điện thoại</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.scId?.sub_category || 'N/A'}</span>,
-            span: 1
-        },
+
+        //start
+    
+            {
+                key: '1',
+                label: <label className="font-bold text-black">Tên Sản Phẩm</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                       {itemDetail.itemName}
+                    </div>
+                ),
+            },
+            {
+                key: '2',
+                label: <label className="font-bold text-black">Serial</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.serial}
+                    </div>
+                ),
+            },
+            {
+                key: '3',
+                label: <label className="font-bold text-black">Hỗ trợ Sim</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.itemSpecific.sim}
+                    </div>
+                ),
+            },
+            {
+                key: '4',
+                label: <label className="font-bold text-black">Số khe cắm sim</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.itemSpecific.simSlots}
+                    </div>
+                ),
+            },
+            {
+                key: '5',
+                label: <label className="font-bold text-black">Phiên bản</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.itemSpecific.os}
+                    </div>
+                ),
+            },
+            {
+                key: '6',
+                label: <label className="font-bold text-black">Hệ điều hành</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.itemSpecific.osFamily}
+                    </div>
+                ),
+            },
+            {
+                key: '7',
+                label: <label className="font-bold text-black">Bluetooth</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                        {itemDetail.itemSpecific.bluetooth}
+                    </div>
+                ),
+            }
+            ,
+            {
+                key: '8',
+                label: <label className="font-bold text-black">Cổng USB</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {itemDetail.itemSpecific.usb}
+                </div>
+                ),
+            },
+            {
+                key: '9',
+                label: <label className="font-bold text-black">Wi-Fi</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {itemDetail.itemSpecific.wlan}
+                </div>
+                ),
+            },
+            {
+                key: '10',
+                label: <label className="font-bold text-black">Tốc độ kết nối mạng</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {itemDetail.itemSpecific.speed}
+                </div>
+                ),
+            },
+            {
+                key: '11',
+                label: <label className="font-bold text-black">Công nghệ mạng hỗ trợ</label>,
+                children: (
+                    <div className="rounded-md border p-3 w-full bg-gray-100">
+                    {itemDetail.itemSpecific.networkTechnology}
+                </div>
+                ),
+            },
+            {
+                key: '11',
+                label: <label className="font-bold text-black">Mã model</label>,
+                children: (
+                    <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
+                      {itemDetail.model}
+                    </ul>
+                ),
+            },
+            
+       
+    
+
+
+
+
+
+        //end
+        ,
+        // {
+        //     key: '1',
+        //     label: <label className="font-bold text-black">Tên sản phẩm</span>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.itemName || 'N/A'}</span>,
+        //     span: 1
+        // },
+        // {
+        //     key: '2',
+        //     label: <label className="font-bold text-black">Hãng điện thoại</span>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.scId?.sub_category || 'N/A'}</span>,
+        //     span: 1
+        // },
         {
             key: '3',
-            label: <span className="font-semibold text-xl text-gray-800">Bước giá mong muốn</span>,
-            children: <span className="text-base text-gray-600">{formatCurrency(itemDetail?.priceStepItem) || 'N/A'}</span>,
+            label:  <label className="font-bold text-black">Bước giá mong muốn</label>,
+            children:  <div className="rounded-md border p-3 w-full bg-gray-100">{formatCurrency(itemDetail?.priceStepItem) || 'N/A'}</div>,
             span: 1
         },
-        {
-            key: '4',
-            label: <span className="font-semibold text-lg text-gray-800">Trạng thái sản phẩm</span>,
-            children: (
-                <span
-                    className={`text-xs ${getItemStatusClass(itemDetail?.itemStatus)} text-gray-600 font-medium inline-block px-3 py-1 rounded-full 
-                                ${itemDetail?.itemStatus ? 'bg-green-100' : 'bg-red-100'} 
-                                transition-all duration-300 ease-in-out shadow-sm hover:shadow-md`}
-                >
-                    {itemDetail?.itemStatus ? formatItemStatus(itemDetail?.itemStatus) : 'N/A'}
-                </span>
-            ),
-            span: 1
-        },
+       
         {
             key: '5',
-            label: <span className="font-semibold text-xl text-gray-800">Mức giá mong muốn</span>,
-            children: <span className="text-base text-gray-600">{formatCurrency(itemDetail?.priceBuyNow) || 'N/A'}</span>,
+            label: <label className="font-bold text-black">Mức giá mong muốn</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{formatCurrency(itemDetail?.priceBuyNow) || 'N/A'}</div>,
             span: 1
+        },
+       
+        {
+            key: '7',
+            label: <label className="font-bold text-black">Màu sắc</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.color || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '8',
+            label: <label className="font-bold text-black">Tình trạng pin</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.batteryHealth || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '9',
+            label: <label className="font-bold text-black">Tình trạng thân máy</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.bodyCondition || 'N/A'}</div>,
+            span: 1
+        },
+        // {
+        //     key: '10',
+        //     label: <label className="font-bold text-black">Hệ điều hành</span>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.osVersion || 'N/A'}</span>,
+        //     span: 1
+        // },
+        // {
+        //     key: '11',
+        //     label: <label className="font-bold text-black">Đám mây</span>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.icloudStatus || 'N/A'}</span>,
+        //     span: 1
+        // },
+        {
+            key: '12',
+            label: <label className="font-bold text-black">Tình trạng cổng kết nối</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.portCondition || 'N/A'}</div>,
+            span: 1
+        },
+        // {
+        //     key: '13',
+        //     label: <label className="font-bold text-black">Tình trạng nút điện thoại</span>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.buttonCondition || 'N/A'}</span>,
+        //     span: 1
+        // },
+        {
+            key: '14',
+            label: <label className="font-bold text-black">Tình trạng màn hình</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.screenCondition || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '15',
+            label: <label className="font-bold text-black">Tình trạng camera</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.cameraCondition || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '16',
+            label: <label className="font-bold text-black">Bộ nhớ</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.storage || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '17',
+            label: <label className="font-bold text-black">IMEI</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.imei || 'N/A'}</div>,
+            span: 1
+        },
+
+        // {
+        //     key: '18',
+        //     label: <label className="font-bold text-black">Tình trạng khoá iCloud</label>,
+        //     children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.icloudStatus || 'N/A'}</div>,
+        //     span: 1
+        // },
+      
+        {
+            key: '20',
+            label: <label className="font-bold text-black">RAM</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.itemSpecific?.ram || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '21',
+            label: <label className="font-bold text-black">Kích thước màn hình</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.itemSpecific?.screen_size || 'N/A'} inch</div>,
+            span: 1
+        },
+        {
+            key: '22',
+            label: <label className="font-bold text-black">Thống số camera</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.itemSpecific?.camera_specs || 'N/A'}</div>,
+            span: 1
+        },
+        {
+            key: '23',
+            label: <label className="font-bold text-black">Cảm biến</label>,
+            children: <div className="rounded-md border p-3 w-full bg-gray-100">{itemDetail?.itemSpecific?.sensors || 'N/A'}</div>,
+            span: 2
         },
         {
             key: '6',
-            label: <span className="font-semibold text-xl text-gray-800">Mô tả sản phẩm</span>,
+            label: <label className="font-bold text-black">Mô tả sản phẩm</label>,
             children: (
                 <Button
                     onClick={() => handleOpenDescriptionModal(itemDetail?.itemDescription)}
@@ -125,107 +333,18 @@ export default function ProductReviewSection({ itemDetail }) {
             span: 1
         },
         {
-            key: '7',
-            label: <span className="font-semibold text-xl text-gray-800">Màu sắc</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.color || 'N/A'}</span>,
+            key: '4',
+            label: <label className="font-bold text-black">Trạng thái sản phẩm</label>,
+            children: (
+                <span
+                    className={`text-xs ${getItemStatusClass(itemDetail?.itemStatus)} text-gray-600 font-medium inline-block px-3 py-1 rounded-full 
+                                ${itemDetail?.itemStatus ? 'bg-green-100' : 'bg-red-100'} 
+                                transition-all duration-300 ease-in-out shadow-sm hover:shadow-md`}
+                >
+                    {itemDetail?.itemStatus ? formatItemStatus(itemDetail?.itemStatus) : 'N/A'}
+                </span>
+            ),
             span: 1
-        },
-        {
-            key: '8',
-            label: <span className="font-semibold text-xl text-gray-800">Tình trạng pin</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.batteryHealth || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '9',
-            label: <span className="font-semibold text-xl text-gray-800">Tình trạng thân máy</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.bodyCondition || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '10',
-            label: <span className="font-semibold text-xl text-gray-800">Hệ điều hành</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.osVersion || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '11',
-            label: <span className="font-semibold text-xl text-gray-800">Đám mây</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.icloudStatus || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '12',
-            label: <span className="font-semibold text-xl text-gray-800">Tình trạng cổng kết nối</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.portCondition || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '13',
-            label: <span className="font-semibold text-xl text-gray-800">Tình trạng nút điện thoại</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.buttonCondition || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '14',
-            label: <span className="font-semibold text-xl text-gray-800">Tình trạng màn hình</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.screenCondition || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '15',
-            label: <span className="font-semibold text-xl text-gray-800">Tình trạng camera</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.cameraCondition || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '16',
-            label: <span className="font-semibold text-xl text-gray-800">Bộ nhớ</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.storage || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '17',
-            label: <span className="font-semibold text-xl text-gray-800">IMEI</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.imei || 'N/A'}</span>,
-            span: 1
-        },
-
-        {
-            key: '18',
-            label: <span className="font-semibold text-xl text-gray-800">Tình trạng khoá iCloud</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.icloudStatus || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '19',
-            label: <span className="font-semibold text-xl text-gray-800">CPU</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.cpu || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '20',
-            label: <span className="font-semibold text-xl text-gray-800">RAM</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.ram || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '21',
-            label: <span className="font-semibold text-xl text-gray-800">Kích thước màn hình</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.screen_size || 'N/A'} inch</span>,
-            span: 1
-        },
-        {
-            key: '22',
-            label: <span className="font-semibold text-xl text-gray-800">Thống số camera</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.camera_specs || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '23',
-            label: <span className="font-semibold text-xl text-gray-800">Cảm biến</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.sensors || 'N/A'}</span>,
-            span: 2
         },
     ];
 

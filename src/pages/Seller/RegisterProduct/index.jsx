@@ -337,7 +337,7 @@ function RegisterProductPage() {
 
     useEffect(() => {
         if (selectedCategory) {
-            setSelectedSubCategory(null); // Reset subcategory khi thay đổi category
+            setSelectedSubCategory(1); // Reset subcategory khi thay đổi category
             setScId(1); // Reset scId khi thay đổi category
         }
     }, [selectedCategory]);

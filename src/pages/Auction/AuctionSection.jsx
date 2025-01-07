@@ -15,6 +15,12 @@ import Pagination from "../../components/PaginationChanh";
 import { useFetchUserAddresses } from "../Address/hook/useFetchUserAddresses";
 import axios from "axios";
 import { FaShippingFast } from 'react-icons/fa';
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default function AuctionSection(
     {
@@ -43,15 +49,19 @@ export default function AuctionSection(
     const auctionEndTime = dataItem.auction?.end_time || null;
     const auctionStartDate = dataItem.auction?.startDate || null;
     const auctionStartTime = dataItem.auction?.start_time || null;
-    const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}Z`).getTime();
-    const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}Z`).getTime();
+    const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}`).getTime();
+    const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
 
 
+    
 
 
 
     const auctionTypeName = dataItem.auctionType?.auction_typeName;
-    const now = new Date().getTime();
+    const nowVN = new Date().getTime();
+    const now = new Date(); // Cộng 7 giờ
+    
+
     const [isAuctionStarted, setIsAuctionStarted] = useState(false);
     useEffect(() => {
         setIsAuctionStarted(now >= startDateTime);
@@ -59,6 +69,7 @@ export default function AuctionSection(
     const idAuction = dataItem?.auction.auction_id;
 
     const isAuctionEnded = endDateTime < now; // Kiểm tra nếu thời gian kết thúc đã qua
+
 
     const [auctionStatus, setAuctionStatus] = useState("");
 
@@ -311,7 +322,7 @@ export default function AuctionSection(
 
             // Call API tính phí
             calculateShippingFee(districtCode, wardCode);
-            
+
         }
     }, [addresses]);
 
