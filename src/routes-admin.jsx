@@ -36,6 +36,7 @@ import { CheckCircleOutlined } from "@ant-design/icons";
 import { CreditCardOutlined, IdcardOutlined } from '@ant-design/icons';
 import RequireAuth from "@/routers/RequireAuth.jsx";
 import AuctionDetailAdmin from "./pages/Admin/AuctionDetailAdmin/index.jsx";
+import ReportAdminPage from "pages/Report/ReportAdminPage.jsx";
 
 const icon = {
     className: "w-5 h-5 text-inherit",
@@ -53,6 +54,13 @@ export const routesAdmin = [
                 name: "Thống kê",
                 path: "/home",
                 element: <Home />,
+                allowedRoles: ["ADMIN", "STAFF"],
+            },
+            {
+                icon: <HomeIcon {...icon} />,
+                name: "Báo cáo",
+                path: "/report",
+                element: <ReportAdminPage />,
                 allowedRoles: ["ADMIN", "STAFF"],
             }
         ],
