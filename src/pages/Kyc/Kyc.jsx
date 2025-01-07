@@ -57,7 +57,7 @@ export default function KiemduyetStaffPage() {
             //console.error("Error updating KYC:", error);
             //alert("Failed to update KYC: " + error.message);
             // message.success(error?.data.message);
-            navigate('/dashboard/managementKYC');
+            // navigate('/dashboard/managementKYC');
         }
     };
     const items = [
