@@ -50,7 +50,7 @@ export default function AuctionSection(
     const auctionStartDate = dataItem.auction?.startDate || null;
     const auctionStartTime = dataItem.auction?.start_time || null;
     const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}`).getTime();
-const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
+    const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
 
 
 
