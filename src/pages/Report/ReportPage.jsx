@@ -68,22 +68,37 @@ const ReportPage = () => {
     };
     const columns = [
         {
-            title: "Type",
+            title: "Loại",
             dataIndex: "type",
             key: "type",
+            render: (type) => {
+                const typeMap = {
+                    DAMAGED_PRODUCT: { text: "Hàng lỗi", color: "volcano" },
+                    MISSING_BALANCE: { text: "Không nhận được tiền", color: "orange" },
+                    SERVICE_NOT_WORKING: { text: "Dịch vụ không hoạt động", color: "geekblue" },
+                    TRANSACTION_ERROR: { text: "Lỗi giao dịch", color: "purple" },
+                    ACCOUNT_LOCKED: { text: "Tài khoản bị khóa", color: "red" },
+                    DISPLAY_ERROR: { text: "Lỗi hiển thị", color: "cyan" },
+                    OTHER: { text: "Lỗi khác", color: "green" },
+                };
+
+                const typeInfo = typeMap[type] || { text: "Không xác định", color: "default" };
+
+                return <Tag color={typeInfo.color}>{typeInfo.text}</Tag>;
+            },
         },
         {
-            title: "Purpose",
+            title: "Lý do",
             dataIndex: "reason",
             key: "reason",
         },
         {
-            title: "Create Date",
+            title: "Ngày tạo",
             dataIndex: "responseCreateTime",
             key: "responseCreateTime",
         },
         {
-            title: "Process Note",
+            title: "Ghi chú quy trình",
             dataIndex: "responseMessage",
             key: "responseMessage",
         },
@@ -91,19 +106,33 @@ const ReportPage = () => {
             title: "File",
             dataIndex: "evidence",
             key: "evidence",
-            render: (text) => (text ? <a href={text}>Download File</a> : "No File"),
+            render: (text) =>
+                text ? (
+                    <a href={text} target="_blank" rel="noopener noreferrer">
+                        Xem file
+                    </a>
+                ) : (
+                    "No File"
+                ),
         },
         {
-            title: "Status",
+            title: "Trạng thái",
             dataIndex: "status",
             key: "status",
             render: (status) => {
-                let color = status === "APPROVED" ? "green" : status === "REJECTED" ? "volcano" : "geekblue";
-                return <Tag color={color}>{status}</Tag>;
+                // Map trạng thái tiếng Việt và màu sắc
+                const statusMap = {
+                    PENDING: {text: "Đang chờ xử lý", color: "geekblue"},
+                    IN_PROGRESS: {text: "Đang trong quá trình xử lý", color: "orange"},
+                    RESOLVED: {text: "Đã giải quyết", color: "green"},
+                    REJECTED: {text: "Từ chối", color: "volcano"},
+                };
+                const statusInfo = statusMap[status] || {text: "Không xác định", color: "default"};
+                return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;
             },
         },
         {
-            title: "Ngày Approve",
+            title: "Ngày phê duyệt",
             dataIndex: "responseUpdateTime",
             key: "responseUpdateTime",
         },

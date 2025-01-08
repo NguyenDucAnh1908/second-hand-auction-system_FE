@@ -24,6 +24,7 @@ import Sidebar from "@/partials/Sidebar.jsx";
 import {UploadOutlined} from "@ant-design/icons";
 import useHookUploadImage from "@/hooks/useHookUploadImage.js";
 
+
 const {TextArea} = Input;
 const {Content, Sider} = Layout;
 const statusMapping = {
@@ -117,22 +118,37 @@ const ReportAdminPage = () => {
     };
     const columns = [
         {
-            title: "Type",
+            title: "Loại",
             dataIndex: "type",
             key: "type",
+            render: (type) => {
+                const typeMap = {
+                    DAMAGED_PRODUCT: { text: "Hàng lỗi", color: "volcano" },
+                    MISSING_BALANCE: { text: "Không nhận được tiền", color: "orange" },
+                    SERVICE_NOT_WORKING: { text: "Dịch vụ không hoạt động", color: "geekblue" },
+                    TRANSACTION_ERROR: { text: "Lỗi giao dịch", color: "purple" },
+                    ACCOUNT_LOCKED: { text: "Tài khoản bị khóa", color: "red" },
+                    DISPLAY_ERROR: { text: "Lỗi hiển thị", color: "cyan" },
+                    OTHER: { text: "Lỗi khác", color: "green" },
+                };
+
+                const typeInfo = typeMap[type] || { text: "Không xác định", color: "default" };
+
+                return <Tag color={typeInfo.color}>{typeInfo.text}</Tag>;
+            },
         },
         {
-            title: "Purpose",
+            title: "Lý do",
             dataIndex: "reason",
             key: "reason",
         },
         {
-            title: "Create Date",
+            title: "Ngày tạo",
             dataIndex: "responseCreateTime",
             key: "responseCreateTime",
         },
         {
-            title: "Process Note",
+            title: "Ghi chú quy trình",
             dataIndex: "responseMessage",
             key: "responseMessage",
         },
@@ -140,19 +156,26 @@ const ReportAdminPage = () => {
             title: "File",
             dataIndex: "evidence",
             key: "evidence",
-            render: (text) => (text ? <a href={text}>Download File</a> : "No File"),
+            render: (text) => (text ? <a target="_blank" href={text}>Download File</a> : "No File"),
         },
         {
-            title: "Status",
+            title: "Trạng thái",
             dataIndex: "status",
             key: "status",
             render: (status) => {
-                let color = status === "APPROVED" ? "green" : status === "REJECTED" ? "volcano" : "geekblue";
-                return <Tag color={color}>{status}</Tag>;
+                // Map trạng thái tiếng Việt và màu sắc
+                const statusMap = {
+                    PENDING: {text: "Đang chờ xử lý", color: "geekblue"},
+                    IN_PROGRESS: {text: "Đang trong quá trình xử lý", color: "orange"},
+                    RESOLVED: {text: "Đã giải quyết", color: "green"},
+                    REJECTED: {text: "Từ chối", color: "volcano"},
+                };
+                const statusInfo = statusMap[status] || {text: "Không xác định", color: "default"};
+                return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;
             },
         },
         {
-            title: "Ngày Approve",
+            title: "Ngày phê duyệt",
             dataIndex: "responseUpdateTime",
             key: "responseUpdateTime",
         },
@@ -197,95 +220,6 @@ const ReportAdminPage = () => {
 
     return (
         <>
-            {/*<Modal*/}
-            {/*    title="Chi tiết báo cáo"*/}
-            {/*    centered*/}
-            {/*    open={open}*/}
-            {/*    onCancel={() => setOpen(false)}*/}
-            {/*    width={1000}*/}
-            {/*    footer={[*/}
-            {/*        <button*/}
-            {/*            key="submit"*/}
-            {/*            style={{*/}
-            {/*                backgroundColor: "#52c41a",*/}
-            {/*                color: "white",*/}
-            {/*                border: "none",*/}
-            {/*                padding: "8px 16px",*/}
-            {/*                borderRadius: "4px",*/}
-            {/*                cursor: "pointer",*/}
-            {/*            }}*/}
-            {/*            onClick={handleSubmit}*/}
-            {/*        >*/}
-            {/*            Cập nhật báo cáo*/}
-            {/*        </button>,*/}
-            {/*    ]}*/}
-            {/*>*/}
-            {/*    {selectedReport ? (*/}
-            {/*        <div className="report-details">*/}
-            {/*            <Row gutter={[16, 16]}>*/}
-            {/*                <Col span={12}>*/}
-            {/*                    <p><strong>Loại:</strong> {selectedReport.type}</p>*/}
-            {/*                </Col>*/}
-            {/*                <Col span={12}>*/}
-            {/*                    <p><strong>Lý do:</strong> {selectedReport.reason}</p>*/}
-            {/*                </Col>*/}
-            {/*                <Col span={12}>*/}
-            {/*                    <p><strong>Người tạo:</strong> {selectedReport.createBy}</p>*/}
-            {/*                </Col>*/}
-            {/*                <Col span={12}>*/}
-            {/*                    <p><strong>Người xử lý:</strong> {selectedReport.processedBy || "Chưa xử lý"}</p>*/}
-            {/*                </Col>*/}
-            {/*                /!*<Col span={12}>*!/*/}
-            {/*                /!*    <p><strong>Ghi chú xử lý:</strong> {selectedReport.responseMessage || "Không có"}</p>*!/*/}
-            {/*                /!*</Col>*!/*/}
-            {/*                <Col span={12}>*/}
-            {/*                    <p><strong>Ngày tạo:</strong> {selectedReport.responseCreateTime}</p>*/}
-            {/*                </Col>*/}
-            {/*                <Col span={12}>*/}
-            {/*                    <p><strong>Ngày cập nhật:</strong> {selectedReport.responseUpdateTime}</p>*/}
-            {/*                </Col>*/}
-            {/*                <Col span={12}>*/}
-            {/*                    <p>*/}
-            {/*                        <strong>File:</strong>{" "}*/}
-            {/*                        <Upload*/}
-            {/*                            name="file"*/}
-            {/*                            onChange={(info) => {*/}
-            {/*                                if (info.file.status === "done") {*/}
-            {/*                                    message.success(`${info.file.name} đã tải lên thành công`);*/}
-            {/*                                } else if (info.file.status === "error") {*/}
-            {/*                                    message.error(`${info.file.name} tải lên thất bại`);*/}
-            {/*                                }*/}
-            {/*                            }}*/}
-            {/*                        >*/}
-            {/*                            <Button icon={<UploadOutlined/>}>Tải lên</Button>*/}
-            {/*                        </Upload>*/}
-            {/*                    </p>*/}
-            {/*                </Col>*/}
-
-            {/*                <Col span={24}>*/}
-            {/*                    <p>*/}
-            {/*                        <strong>Trạng thái:</strong>{" "}*/}
-            {/*                        <Tag*/}
-            {/*                            color={*/}
-            {/*                                selectedReport.status === "APPROVED" ? "green" :*/}
-            {/*                                    selectedReport.status === "REJECTED" ? "volcano" :*/}
-            {/*                                        "geekblue"*/}
-            {/*                            }*/}
-            {/*                        >*/}
-            {/*                            {selectedReport.status}*/}
-            {/*                        </Tag>*/}
-            {/*                    </p>*/}
-            {/*                </Col>*/}
-            {/*                <Col span={24}>*/}
-            {/*                    <strong>Ghi chú xử lý:</strong>{" "}*/}
-            {/*                    <TextArea rows={4} placeholder="maxLength is 6" style={{marginTop: "10px"}}/>*/}
-            {/*                </Col>*/}
-            {/*            </Row>*/}
-            {/*        </div>*/}
-            {/*    ) : (*/}
-            {/*        <p>Không có dữ liệu chi tiết</p>*/}
-            {/*    )}*/}
-            {/*</Modal>*/}
             <Modal
                 title="Chi tiết báo cáo"
                 centered
