@@ -155,66 +155,183 @@ export default function AuctionPage() {
 
 
     const accordionData = [
-    {
-        detailsTitle: "Thông tin sản phẩm",
-        content: (
-            <div className="accordion-content">
-                <div className="product-info mb-6">
-                    <p className="font-semibold text-lg mb-2"><strong>Tình Trạng Pin:</strong> {data?.batteryHealth} %</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Phiên bản hệ điều hành:</strong> {data?.osVersion}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Trạng thái iCloud:</strong> {data?.icloudStatus}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Tình trạng vỏ máy:</strong> {data?.bodyCondition}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Tình trạng màn hình:</strong> {data?.screenCondition}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Tình trạng camera:</strong> {data?.cameraCondition}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Tình trạng cổng:</strong> {data?.portCondition}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Tình trạng nút bấm:</strong> {data?.buttonCondition}</p>
+        {
+            detailsTitle: "Thông tin sản phẩm",
+            content: (
+                <div className="accordion-content">
+                    {/* Wrapper for two tables */}
+                    <div className="flex flex-wrap gap-4">
+                        {/* Thông tin sản phẩm */}
+                        <div className="w-full md:w-1/2">
+                            <h2 className="text-2xl font-bold mb-4">Thông tin sản phẩm</h2>
+                            <div className="overflow-x-auto shadow rounded-lg">
+                                <table className="min-w-full bg-white divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Thông số
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Chi tiết
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {data?.batteryHealth && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Tình trạng pin</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.batteryHealth} %</td>
+                                            </tr>
+                                        )}
+                                        {data?.itemSpecific?.os || data?.itemSpecific?.osFamily ? (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Phiên bản hệ điều hành</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">
+                                                    {data?.itemSpecific?.os || data?.itemSpecific?.osFamily}
+                                                </td>
+                                            </tr>
+                                        ) : null}
+                                        {data?.bodyCondition && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Tình trạng vỏ máy</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.bodyCondition}</td>
+                                            </tr>
+                                        )}
+                                        {data?.screenCondition && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Tình trạng màn hình</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.screenCondition}</td>
+                                            </tr>
+                                        )}
+                                        {data?.cameraCondition && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Tình trạng camera</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.cameraCondition}</td>
+                                            </tr>
+                                        )}
+                                        {data?.portCondition && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Tình trạng cổng</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.portCondition}</td>
+                                            </tr>
+                                        )}
+                                        {data?.buttonCondition && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Tình trạng nút bấm</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.buttonCondition}</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {/* Đặc điểm sản phẩm */}
+                        <div className="w-full md:w-1/2">
+                            <h2 className="text-2xl font-bold mb-4">Đặc điểm sản phẩm</h2>
+                            <div className="overflow-x-auto shadow rounded-lg">
+                                <table className="min-w-full bg-white divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Thông số
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Chi tiết
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {data?.itemSpecific?.cpu && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Chíp xử lý</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.itemSpecific?.cpu}</td>
+                                            </tr>
+                                        )}
+                                        {data?.itemSpecific?.ram && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">RAM</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.itemSpecific?.ram}</td>
+                                            </tr>
+                                        )}
+                                        {data?.itemSpecific?.screen_size && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Kích thước màn hình</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.itemSpecific?.screen_size}"</td>
+                                            </tr>
+                                        )}
+                                        {data?.itemSpecific?.camera_specs && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Camera</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.itemSpecific?.camera_specs}</td>
+                                            </tr>
+                                        )}
+                                        {data?.itemSpecific?.connectivity && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Kết nối</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.itemSpecific?.connectivity}</td>
+                                            </tr>
+                                        )}
+                                        {data?.itemSpecific?.sensors && (
+                                            <tr>
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-900">Cảm biến</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500">{data?.itemSpecific?.sensors}</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="item-specification mb-6">
-                    <p className="font-semibold text-lg mb-2"><strong>Chíp xử lý:</strong> {data?.itemSpecific?.cpu}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>RAM:</strong> {data?.itemSpecific?.ram}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Kích thước màn hình:</strong> {data?.itemSpecific?.screenSize}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Camera:</strong> {data?.itemSpecific?.cameraSpecs}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Kết nối:</strong> {data?.itemSpecific?.connectivity}</p>
-                    <p className="font-semibold text-lg mb-2"><strong>Cảm biến:</strong> {data?.itemSpecific?.sensors}</p>
+
+            ),
+        },
+        {
+            detailsTitle: "Hướng dẫn tham gia đấu giá",
+            content: (
+                <div className="text-base text-gray-800 leading-relaxed">
+                    <p className="mb-4 text-lg font-semibold">Để tham gia đấu giá sản phẩm, bạn cần thực hiện các bước sau:</p>
+                    <ul className="ml-5 mt-4 space-y-4 text-sm text-gray-700 list-inside">
+                        <li className="flex items-start">
+                            <span className="text-red-600 font-semibold mr-2">1. Đăng ký tài khoản:</span>
+                            Bạn cần có một tài khoản người dùng trên hệ thống đấu giá để có thể tham gia các phiên đấu giá. Nếu chưa có, bạn hãy đăng ký tài khoản mới.
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-red-600 font-semibold mr-2">2. Chọn sản phẩm đấu giá:</span>
+                            Sau khi đăng nhập vào hệ thống, bạn có thể chọn sản phẩm mà bạn muốn tham gia đấu giá. Đảm bảo rằng bạn đã đọc kỹ thông tin về sản phẩm trước khi tham gia.
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-red-600 font-semibold mr-2">3. Đặt giá đấu:</span>
+                            Trong phiên đấu giá, bạn có thể đặt giá đấu cao hơn mức giá hiện tại để tăng cơ hội sở hữu sản phẩm. Hãy tham gia đấu giá nhanh chóng trước khi phiên đấu giá kết thúc.
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-red-600 font-semibold mr-2">4. Theo dõi kết quả:</span>
+                            Theo dõi tiến trình đấu giá và số tiền đấu giá hiện tại. Phiên đấu giá sẽ kết thúc khi hết thời gian, và người có mức giá cao nhất sẽ thắng cuộc.
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-red-600 font-semibold mr-2">5. Thanh toán và nhận sản phẩm:</span>
+                            Sau khi thắng đấu giá, bạn cần thanh toán số tiền đã đấu giá. Sau khi thanh toán, sản phẩm sẽ được giao đến bạn theo thỏa thuận với người bán.
+                        </li>
+                    </ul>
+                    <p className="mt-4 text-gray-700">
+                        Tham gia đấu giá không chỉ mang lại cơ hội sở hữu sản phẩm với mức giá hấp dẫn mà còn giúp bạn trải nghiệm quy trình đấu giá chuyên nghiệp.
+                    </p>
                 </div>
-            </div>
-        ),
-    },
-    {
-        detailsTitle: "Hướng dẫn tham gia đấu giá",
-        content: (
-            <div className="text-base text-gray-800 leading-relaxed">
-                <p className="mb-4 text-lg font-semibold">Để tham gia đấu giá sản phẩm, bạn cần thực hiện các bước sau:</p>
-                <ul className="ml-5 mt-4 space-y-4 text-sm text-gray-700 list-inside">
-                    <li className="flex items-start">
-                        <span className="text-red-600 font-semibold mr-2">1. Đăng ký tài khoản:</span>
-                        Bạn cần có một tài khoản người dùng trên hệ thống đấu giá để có thể tham gia các phiên đấu giá. Nếu chưa có, bạn hãy đăng ký tài khoản mới.
-                    </li>
-                    <li className="flex items-start">
-                        <span className="text-red-600 font-semibold mr-2">2. Chọn sản phẩm đấu giá:</span>
-                        Sau khi đăng nhập vào hệ thống, bạn có thể chọn sản phẩm mà bạn muốn tham gia đấu giá. Đảm bảo rằng bạn đã đọc kỹ thông tin về sản phẩm trước khi tham gia.
-                    </li>
-                    <li className="flex items-start">
-                        <span className="text-red-600 font-semibold mr-2">3. Đặt giá đấu:</span>
-                        Trong phiên đấu giá, bạn có thể đặt giá đấu cao hơn mức giá hiện tại để tăng cơ hội sở hữu sản phẩm. Hãy tham gia đấu giá nhanh chóng trước khi phiên đấu giá kết thúc.
-                    </li>
-                    <li className="flex items-start">
-                        <span className="text-red-600 font-semibold mr-2">4. Theo dõi kết quả:</span>
-                        Theo dõi tiến trình đấu giá và số tiền đấu giá hiện tại. Phiên đấu giá sẽ kết thúc khi hết thời gian, và người có mức giá cao nhất sẽ thắng cuộc.
-                    </li>
-                    <li className="flex items-start">
-                        <span className="text-red-600 font-semibold mr-2">5. Thanh toán và nhận sản phẩm:</span>
-                        Sau khi thắng đấu giá, bạn cần thanh toán số tiền đã đấu giá. Sau khi thanh toán, sản phẩm sẽ được giao đến bạn theo thỏa thuận với người bán.
-                    </li>
-                </ul>
-                <p className="mt-4 text-gray-700">
-                    Tham gia đấu giá không chỉ mang lại cơ hội sở hữu sản phẩm với mức giá hấp dẫn mà còn giúp bạn trải nghiệm quy trình đấu giá chuyên nghiệp.
-                </p>
-            </div>
-        ),
-    },
-];
+            ),
+        },
+        {
+            detailsTitle: "Xem thêm",
+            content: (
+                <div
+                className="text-base text-gray-800 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: data?.itemDescription }}
+              />
+              
+            ),
+        },
+    ];
 
 
 

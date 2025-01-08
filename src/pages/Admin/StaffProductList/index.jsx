@@ -287,7 +287,6 @@ export default function StaffProductListPage() {
             ),
             span: 3,
         },
-
         {
             key: '6',
             label: 'Người Bán',
@@ -301,16 +300,20 @@ export default function StaffProductListPage() {
                 currency: 'VND'
             }).format((itemInfor?.auction?.buy_now_price) * (itemInfor?.auction?.percent_deposit) / 100)}`,
         },
-
         {
             key: '8',
             label: 'Tình trạng Pin',
             children: `${itemInfor?.batteryHealth} %`,
         },
         {
+            key: '22',
+            label: 'Hệ điều hành',
+            children: itemInfor?.itemSpecification?.osFamily,
+        },
+        {
             key: '9',
             label: 'Phiên bản hệ điều hành',
-            children: itemInfor?.osVersion,
+            children: itemInfor?.itemSpecification?.os,
         },
         {
             key: '10',
@@ -372,9 +375,60 @@ export default function StaffProductListPage() {
             key: '21',
             label: 'Cảm biến',
             children: itemInfor?.itemSpecification?.sensors,
-        }
+        },
+        // New fields added
 
-    ] : [];
+        {
+            key: '21',
+            label: 'Cảm biến',
+            children: itemInfor?.itemSpecification?.sensors,
+        },
+        {
+            key: '22',
+            label: 'SIM',
+            children: itemInfor?.itemSpecification?.sim,
+        },
+        {
+            key: '23',
+            label: 'Số khe SIM',
+            children: itemInfor?.itemSpecification?.simSlots,
+        },
+        {
+            key: '24',
+            label: 'Hệ điều hành',
+            children: itemInfor?.itemSpecification?.os,
+        },
+        {
+            key: '25',
+            label: 'Loại Bluetooth',
+            children: itemInfor?.itemSpecification?.bluetooth,
+        },
+        {
+            key: '26',
+            label: 'Cổng USB',
+            children: itemInfor?.itemSpecification?.usb,
+        },
+        {
+            key: '27',
+            label: 'Wi-Fi',
+            children: itemInfor?.itemSpecification?.wlan,
+        },
+        {
+            key: '28',
+            label: 'Tốc độ mạng',
+            children: itemInfor?.itemSpecification?.speed,
+        },
+        {
+            key: '29',
+            label: 'Công nghệ mạng',
+            children: itemInfor?.itemSpecification?.networkTechnology,
+        }
+    
+      
+   
+    ].filter(item => item.children !== null && item.children !== undefined) : [];
+    
+    
 
     return (
         <>

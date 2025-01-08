@@ -22,9 +22,12 @@ export default function DepositMoneyPage() {
     const [paymentMethod, setPaymentMethod] = useState("VN_PAYMENT");
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState("");
-    const [returnSuccess, setReturnSuccess] = useState(`${apiUrl}SuccessfullyPayment`);
-    const [returnError, setReturnError] = useState(`${apiUrl}FailPayment`);
+    // const [returnSuccess, setReturnSuccess] = useState(`${apiUrl}SuccessfullyPayment`);
+    // const [returnError, setReturnError] = useState(`${apiUrl}FailPayment`);
 
+
+    const [returnSuccess, setReturnSuccess] = useState("http://localhost:5173/SuccessfullyPayment");
+    const [returnError, setReturnError] = useState("http://localhost:5173/FailPayment");
 
     const userRef = useRef();
     const errRef = useRef();

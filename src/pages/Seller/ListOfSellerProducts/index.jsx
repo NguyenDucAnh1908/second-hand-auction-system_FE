@@ -406,7 +406,7 @@ export default function ListOfSellerProductPage() {
         return data?.items?.items.map(({ itemId, itemName, thumbnail,
             itemDescription, auction, itemStatus,
             batteryHealth, osVersion, icloudStatus, bodyCondition, screenCondition, cameraCondition,
-            portCondition, buttonCondition, itemSpecification
+            portCondition, buttonCondition, itemSpecification, 
         }, index) => (
             <tr key={itemId}>
                 <td className="p-4">

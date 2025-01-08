@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useGetOrderByMonthQuery } from '@/services/order.service.js';
 import { tailwindConfig } from '../../utils/Utils';
+import { useGetUserByIdQuery } from '../../services/user.service';
 
 function DashboardCard04() {
     // Function to format currency in VNĐ
@@ -16,6 +17,8 @@ function DashboardCard04() {
 
     const { data } = useGetOrderByMonthQuery();
 
+    const { data: dataUser } = useGetUserByIdQuery();
+
     useEffect(() => {
         if (data?.data) {
             // Chắc chắn rằng dữ liệu trả về là hợp lệ
@@ -23,8 +26,7 @@ function DashboardCard04() {
         }
     }, [data]);
 
-    // Kiểm tra dữ liệu trả về từ API
-    console.log('Data res', dataResults);
+
 
     // Tạo một danh sách tháng từ 1 đến 12
     const allMonths = Array.from({ length: 12 }, (_, index) => index + 1);
@@ -41,7 +43,18 @@ function DashboardCard04() {
     return (
         <div className="flex flex-col col-span-full sm:col-span-6 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
             <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
-                <h2 className="font-semibold text-gray-800 dark:text-gray-100">Số order</h2>
+                {/* Áp dụng CSS nội tuyến cho số dư tài khoản */}
+                <h2
+                    style={{
+                        fontWeight: '800',
+                        fontSize: '2rem',
+                        color: '#10b981', // màu xanh lá
+                        textAlign: 'center',
+                        fontFamily: 'Arial, sans-serif'
+                    }}
+                >
+                    Số dư tài khoản: {dataUser?.balance ? formatCurrency(dataUser.balance) : "Đang tải..."}
+                </h2>
             </header>
             {/* Recharts BarChart */}
             <ResponsiveContainer width="100%" height={400}>
@@ -60,6 +73,7 @@ function DashboardCard04() {
             </ResponsiveContainer>
         </div>
     );
+
 }
 
 export default DashboardCard04;

@@ -50,6 +50,12 @@ export default function SealedBidForm({
             isRefetchWinningBid();
             isRefetchHighestBid();
             cancelModel();
+
+
+             // Chờ 2 giây rồi load lại trang
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
         } catch (error) {
             console.error("Error response:", error);
             message.error("Đã xảy ra lỗi.");
