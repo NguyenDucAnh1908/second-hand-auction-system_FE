@@ -1,16 +1,16 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import FooterBK from '../../../components/FooterBK';
 import Sidebar from '../../../partials/Sidebar';
-import {Breadcrumb, Layout, theme} from 'antd';
+import { Breadcrumb, Layout, theme } from 'antd';
 import Header from "@/partials/Header.jsx";
-import {message} from "antd"; // Ant Design message for notifications
-import {useNavigate} from "react-router-dom";
-import {useCreateWithdrawMutation} from '../../../services/withdrawRequest.Service'; // Update this hook
-const {Content, Sider} = Layout;
+import { message } from "antd"; // Ant Design message for notifications
+import { useNavigate } from "react-router-dom";
+import { useCreateWithdrawMutation } from '../../../services/withdrawRequest.Service'; // Update this hook
+const { Content, Sider } = Layout;
 
 export default function WithdrawMoney() {
     const {
-        token: {colorBgContainer, borderRadiusLG},
+        token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -24,20 +24,20 @@ export default function WithdrawMoney() {
     });
 
     // Use a mutation hook for creating a withdrawal request (POST request)
-    const [createWithdraw, {data, error, isLoading}] = useCreateWithdrawMutation();
+    const [createWithdraw, { data, error, isLoading }] = useCreateWithdrawMutation();
     const navigate = useNavigate(); // Initialize navigate hook
 
     // Handle form input changes
     const handleChange = (e) => {
-        const {name, value} = e.target;
-
+        const { name, value } = e.target;
+    
         if (name === "requestAmount") {
-            // Chuyển đổi giá trị thành số nguyên
-            const formattedValue = value.replace(/\D/g, "");
-
+            // Chỉ giữ lại ký tự số
+            const formattedValue = value.replace(/\D/g, ""); // Loại bỏ ký tự không phải số
+    
             setWithdraws((prevState) => ({
                 ...prevState,
-                [name]: formattedValue ? Number(formattedValue).toLocaleString("vi-VN") : "",
+                [name]: formattedValue, // Lưu giá trị gốc (chưa định dạng)
             }));
         } else {
             setWithdraws((prevState) => ({
@@ -46,7 +46,6 @@ export default function WithdrawMoney() {
             }));
         }
     };
-
 
     // Handle form submission
     const handleSubmit = async (e) => {
@@ -67,8 +66,8 @@ export default function WithdrawMoney() {
     };
 
     return (
-        <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-            <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
+        <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
             <Content
                 style={{
                     padding: '0 48px',
@@ -77,10 +76,10 @@ export default function WithdrawMoney() {
                     flexDirection: 'column',
                 }}
             >
-                <Breadcrumb style={{margin: '16px 0'}}>
-                    <Breadcrumb.Item>Home</Breadcrumb.Item>
-                    <Breadcrumb.Item>List</Breadcrumb.Item>
-                    <Breadcrumb.Item>App</Breadcrumb.Item>
+                <Breadcrumb style={{ margin: '16px 0' }}>
+                    <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
+                    <Breadcrumb.Item>Giao dịch</Breadcrumb.Item>
+                    <Breadcrumb.Item>Tạo đơn rút tiền</Breadcrumb.Item>
                 </Breadcrumb>
                 <Layout
                     style={{
@@ -90,8 +89,8 @@ export default function WithdrawMoney() {
                         flex: 1,
                     }}
                 >
-                    <Sider style={{background: colorBgContainer}} width={300}>
-                        <Sidebar/>
+                    <Sider style={{ background: colorBgContainer }} width={300}>
+                        <Sidebar />
                     </Sider>
                     <Content
                         style={{
@@ -101,7 +100,8 @@ export default function WithdrawMoney() {
                         }}
                     >
                         <div className="flex-1 p-6 bg-gray-50">
-                            <h1 className="text-2xl font-bold mb-6">Yêu Cầu Rút Tiền</h1>
+                        <h1 className="text-2xl font-bold mb-6 text-center">Yêu Cầu Rút Tiền</h1>
+
 
                             {/* Withdrawal Form */}
                             <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto flex items-center">
@@ -110,8 +110,7 @@ export default function WithdrawMoney() {
                                     <form onSubmit={handleSubmit}>
                                         {/* Amount Input */}
                                         <div className="mb-6">
-                                            <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Số
-                                                Tiền</label>
+                                            <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Số Tiền</label>
                                             <input
                                                 type="text" // Sử dụng type="text" thay vì number
                                                 id="amount"
@@ -124,11 +123,10 @@ export default function WithdrawMoney() {
                                             />
                                         </div>
 
-
                                         {/* Payment Method Select */}
                                         <div className="mb-6">
                                             <label htmlFor="payment-method"
-                                                   className="block text-sm font-medium text-gray-700">Phương Thức Thanh
+                                                className="block text-sm font-medium text-gray-700">Phương Thức Thanh
                                                 Toán</label>
                                             <select
                                                 id="payment-method"
@@ -147,7 +145,7 @@ export default function WithdrawMoney() {
                                         {/* Account Number Input */}
                                         <div className="mb-6">
                                             <label htmlFor="bankNumber"
-                                                   className="block text-sm font-medium text-gray-700">Số Tài
+                                                className="block text-sm font-medium text-gray-700">Số Tài
                                                 Khoản</label>
                                             <input
                                                 type="text"
@@ -162,7 +160,7 @@ export default function WithdrawMoney() {
                                         </div>
                                         <div className="mb-6">
                                             <label htmlFor="bankName"
-                                                   className="block text-sm font-medium text-gray-700">Tên Ngân
+                                                className="block text-sm font-medium text-gray-700">Tên Ngân
                                                 Hàng</label>
                                             <input
                                                 type="text"
@@ -179,7 +177,7 @@ export default function WithdrawMoney() {
                                         {/* Account Account Input */}
                                         <div className="mb-6">
                                             <label htmlFor="account-number"
-                                                   className="block text-sm font-medium text-gray-700">Chủ Thẻ</label>
+                                                className="block text-sm font-medium text-gray-700">Chủ Thẻ</label>
                                             <input
                                                 type="text"
                                                 id="account-number"
@@ -240,7 +238,7 @@ export default function WithdrawMoney() {
                     </Content>
                 </Layout>
             </Content>
-            <FooterBK/>
+            <FooterBK />
         </Layout>
     );
 }
