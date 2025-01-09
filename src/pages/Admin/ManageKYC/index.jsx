@@ -109,10 +109,25 @@ const ManageKYC = () => {
         {
             title: 'Trạng thái',
             dataIndex: 'kycStatus',
-            render: (text) => (
-                <span className={`${getStatusStyle(text)}`}>{text}</span>
-            ),
+            render: (text) => {
+                let statusText;
+                switch (text) {
+                    case 'PENDING':
+                        statusText = 'Đang chờ';
+                        break;
+                    case 'APPROVED':
+                        statusText = 'Đã phê duyệt';
+                        break;
+                    case 'REJECTED':
+                        statusText = 'Đã từ chối';
+                        break;
+                    default:
+                        statusText = 'Không xác định';
+                }
+                return <span className={`${getStatusStyle(text)}`}>{statusText}</span>;
+            },
         },
+        
         {
             title: 'Khác',
             render: (record) => (

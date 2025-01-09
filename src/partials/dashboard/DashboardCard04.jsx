@@ -48,13 +48,49 @@ function DashboardCard04() {
                     style={{
                         fontWeight: '800',
                         fontSize: '2rem',
-                        color: '#10b981', // màu xanh lá
                         textAlign: 'center',
-                        fontFamily: 'Arial, sans-serif'
+                        fontFamily: 'Poppins, Arial, sans-serif',
+                        color: '#065f46', // Màu xanh lá đậm
+                        margin: '20px 0',
+                        padding: '10px 0',
                     }}
                 >
-                    Số dư tài khoản: {dataUser?.balance ? formatCurrency(dataUser.balance) : "Đang tải..."}
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                        <i
+                            className="fas fa-wallet"
+                            style={{
+                                fontSize: '2rem',
+                                color: '#10b981',
+                            }}
+                        ></i>
+                        <span
+                            style={{
+                                fontFamily: 'Roboto, Poppins, sans-serif',
+                                fontWeight: '600',
+                                fontSize: '1.8rem',
+                            }}
+                        >
+                            Số dư tài khoản:
+                        </span>
+                        <span
+                            style={{
+                                marginLeft: '8px',
+                                color: '#10b981',
+                                fontFamily: 'Courier New, monospace',
+                                fontSize: '1.8rem',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            {dataUser?.balance !== null && dataUser?.balance !== undefined
+                                ? `${formatCurrency(dataUser.balance)} `
+                                : "Đang tải..."}
+                        </span>
+                    </span>
                 </h2>
+
+
+
+
             </header>
             {/* Recharts BarChart */}
             <ResponsiveContainer width="100%" height={400}>

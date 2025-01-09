@@ -76,134 +76,124 @@ export default function ListTransaction() {
         <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
 
-<Modal
-    title="Chi tiết giao dịch"
-    open={isModalOpen}
-    onCancel={handleCloseModal}
-    footer={[
-        <Button key="close" onClick={handleCloseModal}>
-            Đóng
-        </Button>,
-    ]}
->
-    {selectedTransaction && (
-        <table style={{ width: '100%' }}>
-            <tbody>
-                <tr>
-                    <td><strong>Mã giao dịch:</strong></td>
-                    <td>{selectedTransaction.transactionWalletCode}</td>
-                </tr>
-                <tr>
-                    <td><strong>Loại giao dịch:</strong></td>
-                    <td>
-                        {selectedTransaction.transactionType === "TRANSFER"
-                            ? "Chuyển tiền"
-                            : selectedTransaction.transactionType === "REFUND"
-                                ? "Hoàn tiền"
-                                : "Không xác định"}
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Kết quả đấu giá:</strong></td>
-                    <td>
-                        <span className="total-amount">
-                            {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                            }).format(selectedTransaction.amount + selectedTransaction.commissionAmount)}
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Phí hoa hồng:</strong></td>
-                    <td>
-                        <span className="commission-amount">
-                            {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                            }).format(selectedTransaction.commissionAmount)}
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Tỷ lệ hoa hồng:</strong></td>
-                    <td>
-                        <Tag color="orange">{`${(selectedTransaction.commissionRate * 100).toFixed(2)}%`}</Tag>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Chi phí sàn:</strong></td>
-                    <td>
-                        <span className="total-amount">
-                            {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                            }).format(selectedTransaction.amount + selectedTransaction.commissionAmount)}
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Số tiền nhận thực tế:</strong></td>
-                    <td>
-                        <Tag color="success" style={{ marginLeft: 8 }}>
-                            +{" "}
-                            {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                            }).format(selectedTransaction.amount)}
-                        </Tag>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Số dư ví trước khi nhận:</strong></td>
-                    <td>
-                        {new Intl.NumberFormat("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                        }).format(selectedTransaction.oldAmount)}
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Số dư ví hiện tại:</strong></td>
-                    <td>
-                        {new Intl.NumberFormat("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                        }).format(selectedTransaction.netAmount)}
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Trạng thái:</strong></td>
-                    <td>
-                        <Tag color={selectedTransaction.transactionStatus === "COMPLETED" ? "green" : "red"}>
-                            {selectedTransaction.transactionStatus === "COMPLETED"
-                                ? "Hoàn thành"
-                                : selectedTransaction.transactionStatus === "PENDING"
-                                    ? "Đang chờ xử lý"
-                                    : "Thất bại"}
-                        </Tag>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Người nhận:</strong></td>
-                    <td>{selectedTransaction.recipientName}</td>
-                </tr>
-                <tr>
-                    <td><strong>Người chuyển:</strong></td>
-                    <td>{selectedTransaction.senderName}</td>
-                </tr>
-                <tr>
-                    <td><strong>Ngày giao dịch:</strong></td>
-                    <td>{new Date(selectedTransaction.transactionDate).toLocaleString()}</td>
-                </tr>
-                <tr>
-                    <td><strong>Mô tả:</strong></td>
-                    <td>{selectedTransaction.description || "Không có mô tả"}</td>
-                </tr>
-            </tbody>
-        </table>
-    )}
-</Modal>
+            <Modal
+                title="Chi tiết giao dịch"
+                open={isModalOpen}
+                onCancel={handleCloseModal}
+                footer={[
+                    <Button key="close" onClick={handleCloseModal}>
+                        Đóng
+                    </Button>,
+                ]}
+            >
+                {selectedTransaction && (
+                    <table style={{ width: '100%' }}>
+                        <tbody>
+                            <tr>
+                                <td><strong>Mã giao dịch:</strong></td>
+                                <td>{selectedTransaction.transactionWalletCode}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Loại giao dịch:</strong></td>
+                                <td>
+                                    {selectedTransaction.transactionType === "TRANSFER"
+                                        ? "Chuyển tiền"
+                                        : selectedTransaction.transactionType === "REFUND"
+                                            ? "Hoàn tiền"
+                                            : "Không xác định"}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kết quả đấu giá:</strong></td>
+                                <td>
+                                    <span className="total-amount">
+                                        {new Intl.NumberFormat("vi-VN", {
+                                            style: "currency",
+                                            currency: "VND",
+                                        }).format(selectedTransaction.amount)}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Chi phí sàn:</strong></td>
+                                <td>
+                                    <span className="commission-amount">
+                                        {new Intl.NumberFormat("vi-VN", {
+                                            style: "currency",
+                                            currency: "VND",
+                                        }).format(selectedTransaction.commissionAmount)}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tỷ lệ chi phí sàn:</strong></td>
+                                <td>
+                                    <Tag color="orange">{`${(selectedTransaction.commissionRate * 100).toFixed(2)}%`}</Tag>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Số tiền nhận thực tế:</strong></td>
+                                <td>
+                                    <Tag color="success" style={{ marginLeft: 8 }}>
+                                        +{" "}
+                                        {new Intl.NumberFormat("vi-VN", {
+                                            style: "currency",
+                                            currency: "VND",
+                                        }).format(selectedTransaction.netAmount)}
+                                    </Tag>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số dư ví trước khi nhận:</strong></td>
+                                <td>
+                                    {new Intl.NumberFormat("vi-VN", {
+                                        style: "currency",
+                                        currency: "VND",
+                                    }).format(selectedTransaction.oldAmount)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số dư ví hiện tại:</strong></td>
+                                <td>
+                                    {new Intl.NumberFormat("vi-VN", {
+                                        style: "currency",
+                                        currency: "VND",
+                                    }).format(selectedTransaction.netAmount)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Trạng thái:</strong></td>
+                                <td>
+                                    <Tag color={selectedTransaction.transactionStatus === "COMPLETED" ? "green" : "red"}>
+                                        {selectedTransaction.transactionStatus === "COMPLETED"
+                                            ? "Hoàn thành"
+                                            : selectedTransaction.transactionStatus === "PENDING"
+                                                ? "Đang chờ xử lý"
+                                                : "Thất bại"}
+                                    </Tag>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Người nhận:</strong></td>
+                                <td>{selectedTransaction.recipientName}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Người chuyển:</strong></td>
+                                <td>{selectedTransaction.senderName}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ngày giao dịch:</strong></td>
+                                <td>{new Date(selectedTransaction.transactionDate).toLocaleString()}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mô tả:</strong></td>
+                                <td>{selectedTransaction.description || "Không có mô tả"}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                )}
+            </Modal>
 
 
 
@@ -276,13 +266,24 @@ export default function ListTransaction() {
                                                             </Typography>
                                                         </td>
                                                         <td className={classes}>
-                                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                                {new Intl.NumberFormat('vi-VN', {
+                                                            <Typography
+                                                                variant="small"
+                                                                color="blue-gray"
+                                                                className="font-normal"
+                                                                style={{
+                                                                    backgroundColor: '#d1f7d6', // Màu xanh nhạt
+                                                                    padding: '4px 8px',       // Tạo khoảng cách cho văn bản
+                                                                    borderRadius: '4px',      // Bo góc
+                                                                    display: 'inline-block',  // Đảm bảo chỉ bọc quanh nội dung
+                                                                }}
+                                                            >
+                                                                + {new Intl.NumberFormat('vi-VN', {
                                                                     style: 'currency',
                                                                     currency: 'VND',
-                                                                }).format(transaction.amount)}
+                                                                }).format(transaction.netAmount)}
                                                             </Typography>
                                                         </td>
+
                                                         <td className={classes}>
                                                             <Typography variant="small" color="blue-gray" className="font-normal">
                                                                 {new Date(transaction.transactionDate).toLocaleDateString()}
