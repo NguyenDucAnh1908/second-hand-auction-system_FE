@@ -110,10 +110,11 @@ export default function ListTransaction() {
                                         {new Intl.NumberFormat("vi-VN", {
                                             style: "currency",
                                             currency: "VND",
-                                        }).format(selectedTransaction.amount)}
+                                        }).format(selectedTransaction.amount + selectedTransaction.commissionAmount)}
                                     </span>
                                 </td>
                             </tr>
+
                             <tr>
                                 <td><strong>Chi phí sàn:</strong></td>
                                 <td>
@@ -140,7 +141,7 @@ export default function ListTransaction() {
                                         {new Intl.NumberFormat("vi-VN", {
                                             style: "currency",
                                             currency: "VND",
-                                        }).format(selectedTransaction.netAmount)}
+                                        }).format(selectedTransaction.amount)}
                                     </Tag>
                                 </td>
                             </tr>
@@ -280,15 +281,16 @@ export default function ListTransaction() {
                                                                 + {new Intl.NumberFormat('vi-VN', {
                                                                     style: 'currency',
                                                                     currency: 'VND',
-                                                                }).format(transaction.netAmount)}
+                                                                }).format(transaction.amount)}
                                                             </Typography>
                                                         </td>
 
                                                         <td className={classes}>
                                                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                                                {new Date(transaction.transactionDate).toLocaleDateString()}
+                                                                {new Date(transaction.transactionDate).toLocaleString()}
                                                             </Typography>
                                                         </td>
+
                                                         <td className={classes} style={{ textAlign: 'center' }}>
                                                             <Chip
                                                                 size="sm"
