@@ -7,10 +7,24 @@ import {Empty, Skeleton} from "antd";
 import './index.css'
 export default function TrendingProductsSection() {
     const sliderRef = React.useRef(null);
+
+    const {
+        data: categories = [],
+        error: categoriesError,
+        isLoading: categoriesLoading,
+        isFetching,
+        isSuccess,
+    } = useGetCategoriesQuery();
+
+    const uniqueCategories = categories?.filter(
+        (value, index, self) =>
+            index === self.findIndex((c) => c.categoryId === value.categoryId)
+    ) || [];
+
     const sliderSettings = {
         className: "center",
         centerMode: true,
-        infinite: true,
+        infinite: categories?.length > 1,
         centerPadding: "10px",
         slidesToShow: 4,
         speed: 500,
@@ -31,23 +45,22 @@ export default function TrendingProductsSection() {
             },
         ],
     };
-    const {
-        data: categories,
-        error: categoriesError,
-        isLoading: categoriesLoading,
-        isFetching,
-        isSuccess,
-    } = useGetCategoriesQuery();
+
+
+    console.log("Categories data:", categories);
+
+
 
     return (
         <>
+
             {categoriesError ? (
                 <Empty/>
             ) : (
                 <div className="w-full">
                     <Skeleton loading={categoriesLoading} active>
                         <Slider {...sliderSettings} ref={sliderRef}>
-                            {categories?.map((category) => (
+                            {uniqueCategories?.map((category) => (
                                 <div key={category.categoryId}>
                                     <ProductProfile category={category}/>
                                 </div>

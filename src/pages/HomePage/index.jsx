@@ -268,12 +268,12 @@ export default function HomePagePage() {
             </div>
           </div>
 
-          {/* featured products section */}
-          <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
-            <div className="mr-3.5 md:mr-0">
-              <FeaturedProductsSection />
-            </div>
-          </div>
+          {/*/!* featured products section *!/*/}
+          {/*<div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">*/}
+          {/*  <div className="mr-3.5 md:mr-0">*/}
+          {/*    <FeaturedProductsSection />*/}
+          {/*  </div>*/}
+          {/*</div>*/}
           {/*<div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">*/}
 
           {/*    <div className="mr-3.5 md:mr-0">*/}
@@ -438,31 +438,31 @@ export default function HomePagePage() {
             </div>
           </div> */}
 
-          {/* trusted brands section */}
-          <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
-            <Heading
-              size="text7xl"
-              as="h2"
-              className="self-center text-[28px] mb-5 font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
-            >
-              Các phiên đấu giá
-            </Heading>
-            <div className="mr-3.5 md:mr-0">
-              <RecentProductsSection
-                itemData={itemData}
-                itemLoading={itemLoading}
-                itemError={itemError}
-              />
-              {/*<TrustedBrandsSection />*/}
-            </div>
-          </div>
+          {/*/!* trusted brands section *!/*/}
+          {/*<div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">*/}
+          {/*  <Heading*/}
+          {/*    size="text7xl"*/}
+          {/*    as="h2"*/}
+          {/*    className="self-center text-[28px] mb-5 font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"*/}
+          {/*  >*/}
+          {/*    Các phiên đấu giá*/}
+          {/*  </Heading>*/}
+          {/*  <div className="mr-3.5 md:mr-0">*/}
+          {/*    <RecentProductsSection*/}
+          {/*      itemData={itemData}*/}
+          {/*      itemLoading={itemLoading}*/}
+          {/*      itemError={itemError}*/}
+          {/*    />*/}
+          {/*    /!*<TrustedBrandsSection />*!/*/}
+          {/*  </div>*/}
+          {/*</div>*/}
 
-          {/* fashion promotion section */}
-          <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
-            <div className="mr-3.5 md:mr-0">
-              <FeaturedProductsSection />
-            </div>
-          </div>
+          {/*/!* fashion promotion section *!/*/}
+          {/*<div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">*/}
+          {/*  <div className="mr-3.5 md:mr-0">*/}
+          {/*    <FeaturedProductsSection />*/}
+          {/*  </div>*/}
+          {/*</div>*/}
           {/*<FashionPromotionSection />*/}
           <div className="mt-[19px] self-stretch">
             <FooterBK />
