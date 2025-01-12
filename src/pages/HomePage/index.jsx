@@ -12,6 +12,7 @@ import {
   useGetMostParticipatingItemsQuery,
 } from "@/services/item.service.js";
 import "./index.css";
+import TopAuctionsSection from "pages/HomePage/TopAuctionsSection.jsx";
 
 export default function HomePagePage() {
   const [sliderState, setSliderState] = React.useState(0);
@@ -31,7 +32,9 @@ export default function HomePagePage() {
     isError,
     error,
   } = useGetFeatureItemsQuery();
-  //console.log("itemData: ", itemData)
+  console.log("DataItem: ", itemData)
+
+
 
   const sliderSettings = {
     className: "center",
@@ -57,6 +60,7 @@ export default function HomePagePage() {
       },
     ],
   };
+
   return (
     <>
       <Helmet>
@@ -65,9 +69,10 @@ export default function HomePagePage() {
       <div className="w-full bg-bg-white">
         <div className="flex flex-col items-center">
           <div className="flex flex-col items-center self-stretch ">
-            <Header2 />
+            <Header2/>
             <div className="container-xs relative mt-3 md:px-5">
-              <div className="relative mr-2.5 h-[450px] content-end rounded-md border-spacing-3 bg-gradient-to-b from-blue-gray-100 to-blue-gray-600 border-gray-600 bg-gray-200 md:mr-0 md:h-auto">
+              <div
+                  className="relative mr-2.5 h-[450px] content-end rounded-md border-spacing-3 bg-gradient-to-b from-blue-gray-100 to-blue-gray-600 border-gray-600 bg-gray-200 md:mr-0 md:h-auto">
                 <div className="mx-auto flex w-full px-1">
                   <Slider {...sliderSettings} ref={sliderRef}>
                     {/* Slide 1 */}
@@ -76,17 +81,17 @@ export default function HomePagePage() {
                       {/* Phần nội dung bên trái */}
                       <div className="mt-[62px] flex w-[46%] flex-col items-start gap-6 md:w-full ml-auto">
                         <Heading
-                          size="heading5xl"
-                          as="h1"
-                          className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
+                            size="heading5xl"
+                            as="h1"
+                            className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
                         >
                           <span className="inline-block animate-fade-up">
                             ĐẤU GIÁ ĐIỆN THOẠI CŨ
                           </span>
                         </Heading>
                         <Heading
-                          as="h2"
-                          className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
+                            as="h2"
+                            className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
                         >
                           Săn lùng smartphone chất lượng với mức giá “không
                           tưởng”
@@ -107,26 +112,27 @@ export default function HomePagePage() {
 
                         {/* Nút kêu gọi hành động */}
                         <Button
-                          color="green_A700"
-                          size="xl"
-                          shape="round"
-                          className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
-                          onClick={() => e.target}
+                            color="green_A700"
+                            size="xl"
+                            shape="round"
+                            className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
+                            onClick={() => e.target}
                         >
                           Tham gia ngay
                         </Button>
                       </div>
 
                       {/* Phần hình ảnh bên phải */}
-                      <div className="relative h-[446px] w-[50%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
+                      <div
+                          className="relative h-[446px] w-[50%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="h-[360px] w-[360px] rounded-full bg-green-500 opacity-20" />
+                          <div className="h-[360px] w-[360px] rounded-full bg-green-500 opacity-20"/>
                         </div>
                         <div className="relative w-full max-w-[80%]">
                           <Img
-                            src="https://firebasestorage.googleapis.com/v0/b/asfsg-538c3.appspot.com/o/banner1.jpg?alt=media&token=04c60fb5-896d-45d3-b43a-a77e4ba8ce63"
-                            alt="Used Smartphone Auction"
-                            className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
+                              src="https://firebasestorage.googleapis.com/v0/b/asfsg-538c3.appspot.com/o/banner1.jpg?alt=media&token=04c60fb5-896d-45d3-b43a-a77e4ba8ce63"
+                              alt="Used Smartphone Auction"
+                              className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
                           />
                         </div>
                       </div>
@@ -137,17 +143,17 @@ export default function HomePagePage() {
                       {/* Phần nội dung bên trái */}
                       <div className="mt-[62px] flex w-[46%] flex-col items-start gap-6 md:w-full ml-auto">
                         <Heading
-                          size="heading5xl"
-                          as="h1"
-                          className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
+                            size="heading5xl"
+                            as="h1"
+                            className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
                         >
                           <span className="inline-block animate-fade-up">
                             ĐẤU GIÁ SECONDHAND
                           </span>
                         </Heading>
                         <Heading
-                          as="h2"
-                          className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
+                            as="h2"
+                            className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
                         >
                           Sưu tầm và tái sử dụng những món đồ “có một không hai”
                         </Heading>
@@ -167,26 +173,27 @@ export default function HomePagePage() {
 
                         {/* Nút kêu gọi hành động */}
                         <Button
-                          color="green_A700"
-                          size="xl"
-                          shape="round"
-                          className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
-                          onClick={() => e.target}
+                            color="green_A700"
+                            size="xl"
+                            shape="round"
+                            className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
+                            onClick={() => e.target}
                         >
                           Khám phá ngay
                         </Button>
                       </div>
 
                       {/* Phần hình ảnh bên phải */}
-                      <div className="relative h-[446px] w-[50%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
+                      <div
+                          className="relative h-[446px] w-[50%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="h-[360px] w-[360px] rounded-full bg-green-500 opacity-20" />
+                          <div className="h-[360px] w-[360px] rounded-full bg-green-500 opacity-20"/>
                         </div>
                         <div className="relative w-full max-w-[80%]">
                           <Img
-                            src="https://firebasestorage.googleapis.com/v0/b/asfsg-538c3.appspot.com/o/banner2.jpg?alt=media&token=ea18305c-e4f3-4399-a24a-01d56892819e"
-                            alt="Secondhand Auction"
-                            className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
+                              src="https://firebasestorage.googleapis.com/v0/b/asfsg-538c3.appspot.com/o/banner2.jpg?alt=media&token=ea18305c-e4f3-4399-a24a-01d56892819e"
+                              alt="Secondhand Auction"
+                              className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
                           />
                         </div>
                       </div>
@@ -197,9 +204,9 @@ export default function HomePagePage() {
                       {/* Phần nội dung bên trái */}
                       <div className="mt-[40px] flex w-[50%] flex-col items-start gap-6 md:w-full ml-auto">
                         <Heading
-                          size="heading5xl"
-                          as="h1"
-                          className="text-[45px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
+                            size="heading5xl"
+                            as="h1"
+                            className="text-[45px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
                         >
                           <span className="inline-block animate-fade-up">
                             CHUNG TAY BẢO VỆ MÔI TRƯỜNG
@@ -207,8 +214,8 @@ export default function HomePagePage() {
                         </Heading>
 
                         <Heading
-                          as="h2"
-                          className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
+                            as="h2"
+                            className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
                         >
                           Sử dụng lại, tiếp nối vòng đời cho món đồ secondhand
                         </Heading>
@@ -228,26 +235,27 @@ export default function HomePagePage() {
 
                         {/* Nút kêu gọi hành động */}
                         <Button
-                          color="green_A700"
-                          size="xl"
-                          shape="round"
-                          className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
-                          onClick={() => e.target}
+                            color="green_A700"
+                            size="xl"
+                            shape="round"
+                            className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
+                            onClick={() => e.target}
                         >
                           Đấu giá ngay
                         </Button>
                       </div>
 
                       {/* Phần hình ảnh bên phải */}
-                      <div className="relative h-[446px] w-[45%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
+                      <div
+                          className="relative h-[446px] w-[45%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="h-[360px] w-[360px] rounded-full bg-green-500 opacity-20" />
+                          <div className="h-[360px] w-[360px] rounded-full bg-green-500 opacity-20"/>
                         </div>
                         <div className="relative w-full max-w-[80%]">
                           <Img
-                            src="https://firebasestorage.googleapis.com/v0/b/asfsg-538c3.appspot.com/o/banner3.jpg?alt=media&token=4275a56e-feb4-4f03-ad2a-0bf0f689fb26"
-                            alt="Secondhand Green Auction"
-                            className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
+                              src="https://firebasestorage.googleapis.com/v0/b/asfsg-538c3.appspot.com/o/banner3.jpg?alt=media&token=4275a56e-feb4-4f03-ad2a-0bf0f689fb26"
+                              alt="Secondhand Green Auction"
+                              className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
                           />
                         </div>
                       </div>
@@ -264,7 +272,7 @@ export default function HomePagePage() {
           {/* trending products section */}
           <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
             <div className="mr-3.5 md:mr-0">
-              <TrendingProductsSection />
+              <TrendingProductsSection/>
             </div>
           </div>
 
@@ -402,20 +410,26 @@ export default function HomePagePage() {
           {/*        </div>*/}
           {/*    </div>*/}
           {/*</div>*/}
+          <div className="container-xs mt-[50px] flex flex-col gap-[30px] md:px-5">
+            <div className="mr-3.5 md:mr-0">
+              <TopAuctionsSection/>
+            </div>
+          </div>
+
           <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
             <Heading
-              size="text7xl"
-              as="h2"
-              className="self-center text-[28px] mb-5 font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
+                size="text7xl"
+                as="h2"
+                className="self-center text-[28px] mb-5 font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
             >
               Sản phẩm được đăng ký tham gia nhiều
             </Heading>
             <div className="mr-3.5 md:mr-0">
               {/*<FeaturedProducts/>*/}
               <RecentProductsSection
-                itemData={dataFT}
-                itemLoading={loadingFT}
-                itemError={isError}
+                  itemData={dataFT}
+                  itemLoading={loadingFT}
+                  itemError={isError}
               />
             </div>
           </div>
@@ -437,35 +451,37 @@ export default function HomePagePage() {
               />
             </div>
           </div> */}
+          {/* fashion promotion section */}
+          <div className="container-xs mt-[50px] flex flex-col gap-[30px] md:px-5">
+            <div className="mr-3.5 md:mr-0">
+              <FeaturedProductsSection/>
+            </div>
+          </div>
 
-          {/*/!* trusted brands section *!/*/}
-          {/*<div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">*/}
-          {/*  <Heading*/}
-          {/*    size="text7xl"*/}
-          {/*    as="h2"*/}
-          {/*    className="self-center text-[28px] mb-5 font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"*/}
-          {/*  >*/}
-          {/*    Các phiên đấu giá*/}
-          {/*  </Heading>*/}
-          {/*  <div className="mr-3.5 md:mr-0">*/}
-          {/*    <RecentProductsSection*/}
-          {/*      itemData={itemData}*/}
-          {/*      itemLoading={itemLoading}*/}
-          {/*      itemError={itemError}*/}
-          {/*    />*/}
-          {/*    /!*<TrustedBrandsSection />*!/*/}
-          {/*  </div>*/}
-          {/*</div>*/}
 
-          {/*/!* fashion promotion section *!/*/}
-          {/*<div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">*/}
-          {/*  <div className="mr-3.5 md:mr-0">*/}
-          {/*    <FeaturedProductsSection />*/}
-          {/*  </div>*/}
-          {/*</div>*/}
+          {/* trusted brands section */}
+          <div className="container-xs mt-[92px] flex flex-col gap-[30px] md:px-5">
+            <Heading
+                size="text7xl"
+                as="h2"
+                className="self-center text-[28px] mb-5 font-medium text-blue_gray-900_01 md:text-[26px] sm:text-[24px]"
+            >
+              Các phiên đấu giá
+            </Heading>
+            <div className="mr-3.5 md:mr-0">
+              <RecentProductsSection
+                  itemData={dataFT}
+                  itemLoading={loadingFT}
+                  itemError={isError}
+              />
+              {/*<TrustedBrandsSection />*/}
+            </div>
+          </div>
+
+
           {/*<FashionPromotionSection />*/}
           <div className="mt-[19px] self-stretch">
-            <FooterBK />
+            <FooterBK/>
           </div>
         </div>
       </div>
