@@ -81,6 +81,7 @@ const ManageKYC = () => {
 
 
     const columns = [
+        
         {
             title: 'ID',
             dataIndex: 'kycId',
