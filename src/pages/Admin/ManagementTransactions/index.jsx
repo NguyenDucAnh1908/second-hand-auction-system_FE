@@ -121,26 +121,26 @@ export default function QuanLyGiaoDich() {
                         <div className="space-y-3">
                             <p><strong className="text-gray-700">Mã giao dịch:</strong> <span
                                 className="text-gray-600">{giaoDichDuocChon.transactionWalletCode}</span></p>
-                                
-                                <p>
-    <strong className="text-gray-700">Số tiền:</strong>
-    <span className={
-        giaoDichDuocChon.description === 'Thanh toán tiền cho seller'
-            ? "text-red-600"  // Đổi màu đỏ cho "Thanh toán tiền cho seller"
-            : giaoDichDuocChon.amount < 0 
-                ? "text-red-600"  // Âm là đỏ
-                : "text-green-600"  // Dương là xanh
-    }>
-        {giaoDichDuocChon.description === 'Thanh toán tiền cho seller'
-            ? `-${Math.abs(giaoDichDuocChon.amount).toLocaleString('vi-VN')}`  // Đảo dấu cho "Thanh toán tiền cho seller"
-            : `${giaoDichDuocChon.amount < 0 
-                ? `-${Math.abs(giaoDichDuocChon.amount).toLocaleString('vi-VN')}` 
-                : `+${giaoDichDuocChon.amount.toLocaleString('vi-VN')}`
-            }`
-        }
-        VND
-    </span>
-</p>
+
+                            <p>
+                                <strong className="text-gray-700">Số tiền:</strong>
+                                <span className={
+                                    giaoDichDuocChon.description === 'Thanh toán tiền cho seller'
+                                        ? "text-red-600"  // Đổi màu đỏ cho "Thanh toán tiền cho seller"
+                                        : giaoDichDuocChon.amount < 0
+                                            ? "text-red-600"  // Âm là đỏ
+                                            : "text-green-600"  // Dương là xanh
+                                }>
+                                    {giaoDichDuocChon.description === 'Thanh toán tiền cho seller'
+                                        ? `-${Math.abs(giaoDichDuocChon.amount).toLocaleString('vi-VN')}`  // Đảo dấu cho "Thanh toán tiền cho seller"
+                                        : `${giaoDichDuocChon.amount < 0
+                                            ? `-${Math.abs(giaoDichDuocChon.amount).toLocaleString('vi-VN')}`
+                                            : `+${giaoDichDuocChon.amount.toLocaleString('vi-VN')}`
+                                        }`
+                                    }
+                                    VND
+                                </span>
+                            </p>
 
 
 
@@ -290,27 +290,30 @@ export default function QuanLyGiaoDich() {
                                     danhSachGiaoDich.map((giaoDich) => (
                                         (giaoDich.description === 'Transaction đặt cọc ví Auction' ||
                                             giaoDich.description === 'Transaction hoàn cọc ví Auction' ||
-                                            giaoDich.description === 'Thanh toán tiền cho seller') && (
+                                            giaoDich.description === 'Thanh toán tiền cho seller' ||
+                                            giaoDich.description === 'Hoàn cọc cho người thắng cuộc ') && (
                                             <tr key={giaoDich.transactionWalletCode}>
                                                 <td className="p-2">{giaoDich.transactionWalletCode}</td>
 
                                                 <td className="p-2">
                                                     <div
-                                                        style={{
-                                                            backgroundColor: (giaoDich.description === 'Thanh toán tiền cho seller' && giaoDich.amount > 0) || giaoDich.amount < 0 ? '#f8d7da' : '#d4edda', // Đổi màu nền nếu số tiền là âm
-                                                            color: (giaoDich.description === 'Thanh toán tiền cho seller' && giaoDich.amount > 0) || giaoDich.amount < 0 ? '#721c24' : '#155724', // Đổi màu chữ nếu số tiền là âm
+                                                        style={{ 
+                                                            backgroundColor: (giaoDich.description === 'Thanh toán tiền cho seller' || giaoDich.description === 'Hoàn cọc cho người thắng cuộc ' ? giaoDich.amount > 0 : giaoDich.amount < 0) ? '#f8d7da' : '#d4edda', // Đổi màu nền nếu số tiền là âm
+                                                            color: (giaoDich.description === 'Thanh toán tiền cho seller' || giaoDich.description === 'Hoàn cọc cho người thắng cuộc ' ? giaoDich.amount > 0 : giaoDich.amount < 0) ? '#721c24' : '#155724', // Đổi màu chữ nếu số tiền là âm
                                                             padding: '4px 8px',
                                                             borderRadius: '4px'
                                                         }}
                                                     >
-                                                        {giaoDich.description === 'Thanh toán tiền cho seller'
-                                                            ? `-${Math.abs(giaoDich.amount).toLocaleString('vi-VN')}` // Đảo ngược dấu cho "Thanh toán tiền cho seller"
-                                                            : giaoDich.amount < 0
+                                                        {(giaoDich.description === 'Thanh toán tiền cho seller' || giaoDich.description === 'Hoàn cọc cho người thắng cuộc ')
+                                                            ? `-${Math.abs(giaoDich.amount).toLocaleString('vi-VN')}` // Đảo dấu luôn cho các giao dịch này
+                                                            : (giaoDich.amount < 0
                                                                 ? `-${Math.abs(giaoDich.amount).toLocaleString('vi-VN')}`
-                                                                : `+${giaoDich.amount.toLocaleString('vi-VN')}`
+                                                                : `+${giaoDich.amount.toLocaleString('vi-VN')}`)
                                                         } VND
                                                     </div>
                                                 </td>
+
+
 
 
                                                 <td className="p-4 w-[50px]">
