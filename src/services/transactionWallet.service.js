@@ -24,7 +24,7 @@ export const transactionWalletApiSlice = apiSlice.injectEndpoints({
                 url: "transactionWallet/get-transaction-admin",
                 params: {
                     page: paging.page || 0,
-                    limit: paging.limit || 10,
+                    limit: paging.limit || 50,
                     role: paging.role || "",
                     transactionType: paging.transactionType || ""
                 },
