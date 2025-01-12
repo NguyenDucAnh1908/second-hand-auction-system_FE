@@ -103,6 +103,23 @@ export default function KiemduyetStaffPage() {
             children: kyc?.permanentAddress || 'Chưa có',
             span: 2, // Gộp hàng
         },
+
+        {
+            key: '9',
+            label: 'Ảnh CCCD (Mặt trước)',
+            children: kyc?.imageUrl ? (
+                <Image
+                    src={kyc.imageUrl}
+                    alt="Ảnh CCCD mặt trước"
+                    width={200}
+                    height={150}
+                    style={{ borderRadius: '8px' }}
+                />
+            ) : (
+                'Chưa có'
+            ),
+            span: 2,
+        },
         // {
         //     key: '9',
         //     label: 'Địa chỉ thường trú',
