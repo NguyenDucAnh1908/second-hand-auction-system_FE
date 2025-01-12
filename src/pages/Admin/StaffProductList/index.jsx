@@ -19,6 +19,7 @@ import AuctionFormModal from "../../../components/AuctionFormModal/AuctionFormMo
 import { useForm } from 'antd/es/form/Form';
 import { useGetListRegisterUserQuery } from "../../../services/auctionRegistrations.service.js";
 import { useGetAllBidsQuery } from "@/services/bid.service.js";
+import { useGetTransactionWalletAuctionQuery } from "../../../services/transactionWallet.service.js";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 
@@ -111,6 +112,9 @@ export default function StaffProductListPage() {
         setItemInfor(itemInfor);
     };
 
+    const auctionId = selectedAuction?.auction_id;
+    const { data: transactionAuction, } = useGetTransactionWalletAuctionQuery(auctionId);
+    console.log("id", transactionAuction);
 
 
     const navigate = useNavigate();
@@ -163,6 +167,37 @@ export default function StaffProductListPage() {
     const validRegisteredUsers = Array.isArray(registeredUsers?.list) ? registeredUsers.list : [];
 
     const totalPages = registeredUsers?.totalPages || 0;
+    const getTransactionStatusInVietnamese = (status) => {
+        switch (status) {
+            case 'COMPLETED':
+                return 'Hoàn thành';
+            case 'PENDING':
+                return 'Đang chờ xử lý';
+            case 'FAILED':
+                return 'Thất bại';
+            case 'CANCELLED':
+                return 'Đã hủy';
+            default:
+                return 'Không xác định';
+        }
+    };
+
+    const getTransactionTypeInVietnamese = (transactionType) => {
+        switch (transactionType) {
+            case 'DEPOSIT':
+                return 'Nạp tiền';
+            case 'WITHDRAWAL':
+                return 'Rút tiền';
+            case 'TRANSFER':
+                return 'Chuyển tiền';
+            case 'REFUND':
+                return 'Hoàn tiền';
+            case 'DEPOSIT_AUCTION':
+                return 'Nạp tiền cọc đấu giá';
+            default:
+                return 'Loại giao dịch không xác định';
+        }
+    };
 
     const [isRegisteredUsersModalOpen, setIsRegisteredUsersModalOpen] = useState(false); // Sử dụng biến riêng cho modal này
     const showRegisteredUsersModal = () => {
@@ -423,12 +458,12 @@ export default function StaffProductListPage() {
             label: 'Công nghệ mạng',
             children: itemInfor?.itemSpecification?.networkTechnology,
         }
-    
-      
-   
+
+
+
     ].filter(item => item.children !== null && item.children !== undefined) : [];
-    
-    
+
+
 
     return (
         <>
@@ -448,12 +483,12 @@ export default function StaffProductListPage() {
                     left: 0,
                     margin: 0,
                 }}
-             
+
             >
                 <Tabs defaultActiveKey="1">
                     {/* Thông tin chi tiết của phiên đấu giá */}
 
-                   
+
 
                     <Tabs.TabPane tab="Thông tin chi tiết" key="1">
                         {items.length > 0 ? (
@@ -709,6 +744,117 @@ export default function StaffProductListPage() {
                             onPageChange={handlePageChange}
                         />
                     </Tabs.TabPane>
+
+                    {/*Ví của phiên đấu giá*/}
+                    <Tabs.TabPane tab="Ví đấu giá" key="4">
+                        <Spin spinning={isLoading}>
+                            {/* Kiểm tra data và data.data */}
+                            {transactionAuction?.data?.length > 0 ? (
+                                <div className="space-y-6">
+                                    {/* Hiển thị số dư ví */}
+                                    <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-100">
+    <div className="flex justify-between items-center">
+        <span className="text-lg font-semibold text-gray-600 tracking-wide">Số dư ví</span>
+        <span className="text-2xl font-semibold text-green-500">
+            {formatCurrency(transactionAuction.balance)} VND
+        </span>
+    </div>
+    {/* Thêm một đường viền nhẹ dưới phần số dư */}
+    <div className="mt-4 h-1 bg-gradient-to-r from-green-300 to-blue-200 rounded-full"></div>
+</div>
+
+
+
+                                    {/* Hiển thị danh sách giao dịch */}
+                                    {transactionAuction.data.map((transaction, index) => (
+                                        <div
+                                            key={transaction.transactionId}
+                                            className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg border border-gray-200 transition-shadow duration-200"
+                                        >
+                                            {/* Header */}
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div className="flex items-center space-x-3">
+                                                    <span className="text-blue-600 font-semibold text-lg">
+                                                        #{index + 1}
+                                                    </span>
+                                                    <span className="text-gray-800 font-medium text-sm">
+                                                        {transaction.senderName}
+                                                    </span>
+                                                </div>
+                                                <span className="text-gray-500 text-xs italic">
+                                                    Mã GD: {transaction.transactionWalletCode}
+                                                </span>
+                                            </div>
+
+                                            {/* Transaction Details */}
+                                            <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+                                                <p>
+                                                    <span className="font-medium">Loại giao dịch:</span>{' '}
+                                                    {getTransactionTypeInVietnamese(transaction.transactionType)}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">Số tiền:</span>{' '}
+                                                    <span
+                                                        className={`font-semibold ${transaction.amount >= 0
+                                                            ? 'text-green-600'
+                                                            : 'text-red-600'
+                                                            }`}
+                                                    >
+                                                        {transaction.amount >= 0
+                                                            ? `+ ${formatCurrency(transaction.amount)}`
+                                                            : `- ${formatCurrency(transaction.amount)}`}
+                                                    </span>
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">Trạng thái:</span>{' '}
+                                                    <span
+                                                        className={`${transaction.transactionStatus === 'COMPLETED'
+                                                            ? 'text-green-500'
+                                                            : transaction.transactionStatus === 'FAILED'
+                                                                ? 'text-red-500'
+                                                                : 'text-yellow-500'
+                                                            } font-bold`}
+                                                    >
+                                                        {getTransactionStatusInVietnamese(transaction.transactionStatus)}
+                                                    </span>
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">Ngày Giao dịch:</span>{' '}
+                                                    {new Date(transaction.transactionDate).toLocaleString('vi-VN')}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">Số dư trước:</span>{' '}
+                                                    {formatCurrency(transaction.oldAmount)}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">Số dư sau:</span>{' '}
+                                                    {formatCurrency(transaction.netAmount)}
+                                                </p>
+                                            </div>
+
+                                            {/* Optional Image */}
+                                            {transaction.image && (
+                                                <div className="mt-4">
+                                                    <p className="font-medium text-sm text-gray-800">Hình ảnh:</p>
+                                                    <img
+                                                        src={transaction.image}
+                                                        alt="Transaction"
+                                                        className="w-full max-w-sm rounded-lg mt-2 border"
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-center text-gray-500">Không có giao dịch nào trong ví đấu giá.</p>
+                            )}
+                        </Spin>
+                        {isError && (
+                            <p className="text-red-500 text-center mt-4">Có lỗi xảy ra khi tải dữ liệu ví đấu giá!</p>
+                        )}
+                    </Tabs.TabPane>
+
                 </Tabs>
             </Modal>
 

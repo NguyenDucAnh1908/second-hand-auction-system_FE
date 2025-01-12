@@ -152,6 +152,7 @@ export const routesAdmin = [
                 path: "/managementTransactions",
                 element: <ManagementTransactions/>,
                 allowedRoles: ["ADMIN", "STAFF"],
+                title:"aaa",
             },
             {
                 icon: <CreditCardOutlined {...icon} />,

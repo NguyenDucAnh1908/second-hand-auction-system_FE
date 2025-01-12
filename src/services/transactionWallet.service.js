@@ -31,6 +31,7 @@ export const transactionWalletApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+
         uploadImageTransaction: builder.mutation({
             query: ({ id, credentials }) => ({
                 url: `transactionWallet/upload-evidence/${id}`,
@@ -39,10 +40,17 @@ export const transactionWalletApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+        getTransactionWalletAuction: builder.query({
+            query: (auctionId) => ({
+                url: `transactionWallet/check-balance/${auctionId}`,
+            }),
+            transformResponse: (response) => response.data, // Lấy `data` từ response trả về
+        }),
+
     })
 })
 
 
 
 
-export const { useGetTransactionWalletQuery, useGetTransactionWalletAdminQuery, useUploadImageTransactionMutation } = transactionWalletApiSlice;
+export const { useGetTransactionWalletQuery, useGetTransactionWalletAdminQuery, useUploadImageTransactionMutation, useGetTransactionWalletAuctionQuery} = transactionWalletApiSlice;
