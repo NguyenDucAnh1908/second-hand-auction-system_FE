@@ -752,16 +752,19 @@ export default function StaffProductListPage() {
                             {transactionAuction?.data?.length > 0 ? (
                                 <div className="space-y-6">
                                     {/* Hiển thị số dư ví */}
-                                    <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-100">
-    <div className="flex justify-between items-center">
-        <span className="text-lg font-semibold text-gray-600 tracking-wide">Số dư ví</span>
-        <span className="text-2xl font-semibold text-green-500">
-            {formatCurrency(transactionAuction.balance)} VND
-        </span>
-    </div>
-    {/* Thêm một đường viền nhẹ dưới phần số dư */}
-    <div className="mt-4 h-1 bg-gradient-to-r from-green-300 to-blue-200 rounded-full"></div>
-</div>
+                                    <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-lg font-semibold text-gray-700 tracking-wide">Số dư ví</span>
+                                            <span className="text-3xl font-semibold text-green-600">
+                                                {transactionAuction.balance > 0
+                                                    ? formatCurrency(transactionAuction.balance)
+                                                    : "0đ"}
+                                            </span>
+                                        </div>
+                                        {/* Thêm một đường viền nhẹ dưới phần số dư */}
+                                        <div className="mt-6 h-1 bg-gradient-to-r from-green-400 to-blue-300 rounded-full"></div>
+                                    </div>
+
 
 
 
