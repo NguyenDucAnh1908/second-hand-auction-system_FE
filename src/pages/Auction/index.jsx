@@ -128,7 +128,7 @@ export default function AuctionPage() {
     useEffect(() => {
         // const eventSource = new EventSource("https://auction-system-fpt-2024-production.azurewebsites.net/api/v1/bids/stream-bids");
 
-        const eventSource = new EventSource("http://localhost:8080/api/v1/bids/stream-bids");
+        const eventSource = new EventSource("https://teracandle.id.vn/api/v1/bids/stream-bids");
 
         eventSource.addEventListener("bidUpdate", (event) => {
             const bid = JSON.parse(event.data);
