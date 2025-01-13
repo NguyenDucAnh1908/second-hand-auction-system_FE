@@ -291,7 +291,8 @@ export default function QuanLyGiaoDich() {
                                         (giaoDich.description === 'Transaction đặt cọc ví Auction' ||
                                             giaoDich.description === 'Transaction hoàn cọc ví Auction' ||
                                             giaoDich.description === 'Thanh toán tiền cho seller' ||
-                                            giaoDich.description === 'Hoàn cọc cho người thắng cuộc ') && (
+                                            giaoDich.description === 'Hoàn cọc cho người thắng cuộc ' ||
+                                        giaoDich.description === 'Người dùng thanh toán đơn hàng') && (
                                             <tr key={giaoDich.transactionWalletCode}>
                                                 <td className="p-2">{giaoDich.transactionWalletCode}</td>
 
