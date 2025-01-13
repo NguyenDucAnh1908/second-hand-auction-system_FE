@@ -138,66 +138,7 @@ export default function HomePagePage() {
                       </div>
                     </div>
 
-                    {/* Slide 2 - Đồ Secondhand */}
-                    <div className="flex items-start md:flex-col mt-2 rounded-full object-fill">
-                      {/* Phần nội dung bên trái */}
-                      <div className="mt-[62px] flex w-[46%] flex-col items-start gap-6 md:w-full ml-auto">
-                        <Heading
-                            size="heading5xl"
-                            as="h1"
-                            className="text-[48px] font-semibold uppercase leading-[60px] bg-gradient-to-tl from-gray-500 to-gray-900 text-transparent bg-clip-text md:text-[44px] sm:text-[38px]"
-                        >
-                          <span className="inline-block animate-fade-up">
-                            ĐẤU GIÁ SECONDHAND
-                          </span>
-                        </Heading>
-                        <Heading
-                            as="h2"
-                            className="w-[86%] text-[16px] font-normal leading-[150%] text-blue-gray-600 md:w-full"
-                        >
-                          Sưu tầm và tái sử dụng những món đồ “có một không hai”
-                        </Heading>
-
-                        {/* Mô tả chi tiết */}
-                        <p className="text-blue-gray-700 text-[14px] leading-[22px] mt-2">
-                          Đối với những tín đồ mê “đồ đã qua sử dụng”, mỗi món
-                          secondhand đều ẩn chứa một câu chuyện riêng. Tại Đấu
-                          Giá Việt, chúng tôi chỉ tập trung vào những sản phẩm
-                          secondhand chất lượng – từ điện thoại, quần áo, phụ
-                          kiện thời trang, đồ gia dụng cho đến đồ cổ có giá trị
-                          sưu tầm. Hãy tham gia phiên đấu giá để sở hữu những
-                          món đồ độc đáo, góp phần bảo vệ môi trường và tối ưu
-                          chi phí. Tất cả sản phẩm đều được kiểm định kỹ lưỡng,
-                          giúp bạn hoàn toàn yên tâm khi đặt giá.
-                        </p>
-
-                        {/* Nút kêu gọi hành động */}
-                        <Button
-                            color="green_A700"
-                            size="xl"
-                            shape="round"
-                            className="min-w-[176px] rounded-md px-[34px] sm:px-5 mt-4 bg-teal-500 text-white transition-transform duration-300 hover:scale-105 hover:bg-teal-600 shadow-lg hover:shadow-xl"
-                            onClick={() => e.target}
-                        >
-                          Khám phá ngay
-                        </Button>
-                      </div>
-
-                      {/* Phần hình ảnh bên phải */}
-                      <div
-                          className="relative h-[446px] w-[50%] flex items-center justify-center px-8 md:h-auto md:w-full sm:px-5">
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="h-[360px] w-[360px] rounded-full bg-green-500 opacity-20"/>
-                        </div>
-                        <div className="relative w-full max-w-[80%]">
-                          <Img
-                              src="https://firebasestorage.googleapis.com/v0/b/asfsg-538c3.appspot.com/o/banner2.jpg?alt=media&token=ea18305c-e4f3-4399-a24a-01d56892819e"
-                              alt="Secondhand Auction"
-                              className="w-full h-[300px] rounded-xl object-cover shadow-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-2xl"
-                          />
-                        </div>
-                      </div>
-                    </div>
+         
 
                     {/* Slide 3 - Secondhand & Bảo vệ môi trường */}
                     <div className="flex items-start md:flex-col mt-2 rounded-full object-fill">
