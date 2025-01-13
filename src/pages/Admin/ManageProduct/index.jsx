@@ -76,22 +76,29 @@ export default function ProductPending() {
             key: "itemStatus",
             render: (status) => {
                 let color;
+                let statusText;
+        
                 switch (status) {
                     case "PENDING":
                         color = "orange";
+                        statusText = "Đang chờ";
                         break;
                     case "APPROVED":
                         color = "green";
+                        statusText = "Đã phê duyệt";
                         break;
                     case "REJECTED":
                         color = "red";
+                        statusText = "Đã từ chối";
                         break;
                     default:
                         color = "gray";
+                        statusText = "Không xác định";
                 }
-                return <Tag color={color}>{status}</Tag>;
+        
+                return <Tag color={color}>{statusText}</Tag>;
             },
-        },
+        },        
         {
             title: "Hình ảnh",
             dataIndex: "thumbnail",

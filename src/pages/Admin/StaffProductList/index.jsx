@@ -7,7 +7,7 @@ import { Button, Card, IconButton, Typography } from "@material-tailwind/react";
 import {
     Empty, Skeleton, Tag, Drawer, Space,
     Modal, Descriptions, Divider,
-    DatePicker, Input, Form, TimePicker, message, Tabs, Spin, Badge, Table
+    DatePicker, Input, Form, TimePicker, message, Tabs, Spin, Badge, Table, InputNumber
 } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
@@ -682,14 +682,23 @@ export default function StaffProductListPage() {
                                             <TimePicker format="HH:mm" placeholder="Chọn giờ kết thúc" />
                                         </Form.Item>
                                     </Descriptions.Item>
+
                                     <Descriptions.Item label="Giá mua ngay (VNĐ)">
                                         <Form.Item name="buy_now_price" noStyle>
-                                            <Input />
+                                            <InputNumber
+                                                style={{ width: '100%' }}
+                                                formatter={(value) => `₫ ${value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}  // Định dạng số với dấu phẩy
+                                                parser={(value) => value.replace(/₫\s?|(,*)/g, '')}  // Loại bỏ dấu phẩy và ký tự '₫' khi lấy giá trị
+                                            />
                                         </Form.Item>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Tiền cọc (%)">
                                         <Form.Item name="percent_deposit" noStyle>
-                                            <Input />
+                                            <InputNumber
+                                                style={{ width: '100%' }}
+                                                formatter={(value) => `${value}%`}  // Hiển thị phần trăm trong UI
+                                                parser={(value) => value.replace('%', '')}  // Loại bỏ ký tự '%' khi lấy giá trị
+                                            />
                                         </Form.Item>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Trạng thái">
@@ -949,30 +958,27 @@ export default function StaffProductListPage() {
                                                     </td>
                                                     <td className="p-4">
                                                         {status === "ACCEPTED" && (
-                                                            <Tag icon={<CheckCircleOutlined />}
-                                                                color="success">
-                                                                {status}
+                                                            <Tag icon={<CheckCircleOutlined />} color="success">
+                                                                Đã chấp nhận
                                                             </Tag>
                                                         )}
                                                         {status === "pending" && (
-                                                            <Tag icon={<SyncOutlined spin />}
-                                                                color="processing">
-                                                                Pending
+                                                            <Tag icon={<SyncOutlined spin />} color="processing">
+                                                                Đang chờ
                                                             </Tag>
                                                         )}
                                                         {status === "UnAvailable" && (
-                                                            <Tag icon={<CloseCircleOutlined />}
-                                                                color="error">
-                                                                UnAvailable
+                                                            <Tag icon={<CloseCircleOutlined />} color="error">
+                                                                Không có sẵn
                                                             </Tag>
                                                         )}
                                                         {status === "Fail" && (
-                                                            <Tag icon={<ExclamationCircleOutlined />}
-                                                                color="warning">
-                                                                Fail
+                                                            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                                                                Thất bại
                                                             </Tag>
                                                         )}
                                                     </td>
+
                                                     <td className="p-4">
                                                         <Typography
                                                             variant="small"

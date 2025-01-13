@@ -89,39 +89,14 @@ export default function AuctionCreationSection({ itemDetail }) {
             children: <span className="text-base text-gray-600">{formatCurrency(itemDetail?.priceStepItem) || 'N/A'}</span>,
             span: 1
         },
-        {
-            key: '4',
-            label: <span className="font-semibold text-lg text-gray-800">Trạng thái sản phẩm</span>,
-            children: (
-                <span
-                    className={`text-xs ${getItemStatusClass(itemDetail?.itemStatus)} text-gray-600 font-medium inline-block px-3 py-1 rounded-full 
-                                   ${itemDetail?.itemStatus ? 'bg-green-100' : 'bg-red-100'} 
-                                   transition-all duration-300 ease-in-out shadow-sm hover:shadow-md`}
-                >
-                    {itemDetail?.itemStatus ? formatItemStatus(itemDetail?.itemStatus) : 'N/A'}
-                </span>
-            ),
-            span: 1
-        },
+       
         {
             key: '5',
             label: <span className="font-semibold text-xl text-gray-800">Mức giá mong muốn</span>,
             children: <span className="text-base text-gray-600">{formatCurrency(itemDetail?.priceBuyNow) || 'N/A'}</span>,
             span: 1
         },
-        {
-            key: '6',
-            label: <span className="font-semibold text-xl text-gray-800">Mô tả sản phẩm</span>,
-            children: (
-                <Button
-                    onClick={() => handleOpenDescriptionModal(itemDetail?.itemDescription)}
-                    className="bg-blue-500 text-white hover:bg-yellow-600 px-4 py-2 rounded"
-                >
-                    Xem mô tả
-                </Button>
-            ),
-            span: 1
-        },
+      
         {
             key: '7',
             label: <span className="font-semibold text-xl text-gray-800">Màu sắc</span>,
@@ -143,15 +118,10 @@ export default function AuctionCreationSection({ itemDetail }) {
         {
             key: '10',
             label: <span className="font-semibold text-xl text-gray-800">Hệ điều hành</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.osVersion || 'N/A'}</span>,
+            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.osFamily || 'N/A'}</span>,
             span: 1
         },
-        {
-            key: '11',
-            label: <span className="font-semibold text-xl text-gray-800">Đám mây</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.icloudStatus || 'N/A'}</span>,
-            span: 1
-        },
+      
         {
             key: '12',
             label: <span className="font-semibold text-xl text-gray-800">Tình trạng cổng kết nối</span>,
@@ -189,18 +159,8 @@ export default function AuctionCreationSection({ itemDetail }) {
             span: 1
         },
 
-        {
-            key: '18',
-            label: <span className="font-semibold text-xl text-gray-800">Tình trạng khoá iCloud</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.icloudStatus || 'N/A'}</span>,
-            span: 1
-        },
-        {
-            key: '19',
-            label: <span className="font-semibold text-xl text-gray-800">CPU</span>,
-            children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.cpu || 'N/A'}</span>,
-            span: 1
-        },
+        
+   
         {
             key: '20',
             label: <span className="font-semibold text-xl text-gray-800">RAM</span>,
@@ -224,6 +184,33 @@ export default function AuctionCreationSection({ itemDetail }) {
             label: <span className="font-semibold text-xl text-gray-800">Cảm biến</span>,
             children: <span className="text-base text-gray-600">{itemDetail?.itemSpecific?.sensors || 'N/A'}</span>,
             span: 2
+        },
+        {
+            key: '6',
+            label: <span className="font-semibold text-xl text-gray-800">Mô tả sản phẩm</span>,
+            children: (
+                <Button
+                    onClick={() => handleOpenDescriptionModal(itemDetail?.itemDescription)}
+                    className="bg-blue-500 text-white hover:bg-yellow-600 px-4 py-2 rounded"
+                >
+                    Xem mô tả
+                </Button>
+            ),
+            span: 1
+        },
+        {
+            key: '4',
+            label: <span className="font-semibold text-lg text-gray-800">Trạng thái sản phẩm</span>,
+            children: (
+                <span
+                    className={`text-xs ${getItemStatusClass(itemDetail?.itemStatus)} text-gray-600 font-medium inline-block px-3 py-1 rounded-full 
+                                   ${itemDetail?.itemStatus ? 'bg-green-100' : 'bg-red-100'} 
+                                   transition-all duration-300 ease-in-out shadow-sm hover:shadow-md`}
+                >
+                    {itemDetail?.itemStatus ? formatItemStatus(itemDetail?.itemStatus) : 'N/A'}
+                </span>
+            ),
+            span: 1
         },
     ];
 

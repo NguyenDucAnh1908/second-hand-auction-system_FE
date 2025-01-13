@@ -76,22 +76,29 @@ export default function ManageListCreateAuctionProduct() {
             key: 'itemStatus',
             render: (status) => {
                 let color;
+                let statusText;
+        
                 switch (status) {
-                    case 'PENDING':
+                    case 'PENDING_AUCTION':
                         color = 'orange';
+                        statusText = 'Đang chờ';
                         break;
                     case 'APPROVED':
                         color = 'green';
+                        statusText = 'Đã phê duyệt';
                         break;
                     case 'REJECTED':
                         color = 'red';
+                        statusText = 'Đã từ chối';
                         break;
                     default:
                         color = 'gray';
+                        statusText = 'Không xác định';
                 }
-                return <Tag color={color}>{status}</Tag>;
+        
+                return <Tag color={color}>{statusText}</Tag>;
             },
-        },
+        },        
         {
             title: 'Ảnh thu nhỏ',
             dataIndex: 'thumbnail',

@@ -172,15 +172,22 @@ export default function AuctionCreationSection1({ itemId }) {
                                                                     label: 'Error loading types',
                                                                     disabled: true
                                                                 }]
-                                                                : auctionTypes?.map((type) => ({
-                                                                    value: type?.act_id,
-                                                                    label: type?.auction_typeName,
-                                                                }))
+                                                                : auctionTypes
+                                                                    ?.map((type) => {
+                                                                        if (type?.auction_typeName === "BUY_NOW") return null; // Ẩn loại "BUY_NOW"
+                                                                        return {
+                                                                            value: type?.act_id,
+                                                                            label: type?.auction_typeName === "TRADITIONAL" ? "Đấu giá truyền thống" :
+                                                                                type?.auction_typeName === "SEALED_BID" ? "Đấu giá kín" : type?.auction_typeName
+                                                                        };
+                                                                    })
+                                                                    .filter(type => type !== null) // Loại bỏ giá trị null
                                                     }
                                                     size="large"
                                                     className="border rounded-md mt-2"
                                                 />
                                             </div>
+
 
                                             <div className="flex flex-col">
                                                 <label className="text-[15px] font-medium text-black">Số lượng người tham gia :</label>
