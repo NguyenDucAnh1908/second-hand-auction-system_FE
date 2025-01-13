@@ -7,7 +7,7 @@ import { Button, Card, IconButton, Typography } from "@material-tailwind/react";
 import {
     Empty, Skeleton, Tag, Drawer, Space,
     Modal, Descriptions, Divider,
-    DatePicker, Input, Form, TimePicker, message, Tabs, Spin, Badge, Table
+    DatePicker, Input, Form, TimePicker, message, Tabs, Spin, Badge, Table, InputNumber
 } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import Pagination from "@/components/Pagination/index.jsx";
@@ -19,6 +19,7 @@ import AuctionFormModal from "../../../components/AuctionFormModal/AuctionFormMo
 import { useForm } from 'antd/es/form/Form';
 import { useGetListRegisterUserQuery } from "../../../services/auctionRegistrations.service.js";
 import { useGetAllBidsQuery } from "@/services/bid.service.js";
+import { useGetTransactionWalletAuctionQuery } from "../../../services/transactionWallet.service.js";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 
@@ -111,6 +112,9 @@ export default function StaffProductListPage() {
         setItemInfor(itemInfor);
     };
 
+    const auctionId = selectedAuction?.auction_id;
+    const { data: transactionAuction, } = useGetTransactionWalletAuctionQuery(auctionId);
+    console.log("id", transactionAuction);
 
 
     const navigate = useNavigate();
@@ -163,6 +167,37 @@ export default function StaffProductListPage() {
     const validRegisteredUsers = Array.isArray(registeredUsers?.list) ? registeredUsers.list : [];
 
     const totalPages = registeredUsers?.totalPages || 0;
+    const getTransactionStatusInVietnamese = (status) => {
+        switch (status) {
+            case 'COMPLETED':
+                return 'Hoàn thành';
+            case 'PENDING':
+                return 'Đang chờ xử lý';
+            case 'FAILED':
+                return 'Thất bại';
+            case 'CANCELLED':
+                return 'Đã hủy';
+            default:
+                return 'Không xác định';
+        }
+    };
+
+    const getTransactionTypeInVietnamese = (transactionType) => {
+        switch (transactionType) {
+            case 'DEPOSIT':
+                return 'Nạp tiền';
+            case 'WITHDRAWAL':
+                return 'Rút tiền';
+            case 'TRANSFER':
+                return 'Chuyển tiền';
+            case 'REFUND':
+                return 'Hoàn tiền';
+            case 'DEPOSIT_AUCTION':
+                return 'Nạp tiền cọc đấu giá';
+            default:
+                return 'Loại giao dịch không xác định';
+        }
+    };
 
     const [isRegisteredUsersModalOpen, setIsRegisteredUsersModalOpen] = useState(false); // Sử dụng biến riêng cho modal này
     const showRegisteredUsersModal = () => {
@@ -287,7 +322,6 @@ export default function StaffProductListPage() {
             ),
             span: 3,
         },
-
         {
             key: '6',
             label: 'Người Bán',
@@ -301,16 +335,20 @@ export default function StaffProductListPage() {
                 currency: 'VND'
             }).format((itemInfor?.auction?.buy_now_price) * (itemInfor?.auction?.percent_deposit) / 100)}`,
         },
-
         {
             key: '8',
             label: 'Tình trạng Pin',
             children: `${itemInfor?.batteryHealth} %`,
         },
         {
+            key: '22',
+            label: 'Hệ điều hành',
+            children: itemInfor?.itemSpecification?.osFamily,
+        },
+        {
             key: '9',
             label: 'Phiên bản hệ điều hành',
-            children: itemInfor?.osVersion,
+            children: itemInfor?.itemSpecification?.os,
         },
         {
             key: '10',
@@ -372,9 +410,60 @@ export default function StaffProductListPage() {
             key: '21',
             label: 'Cảm biến',
             children: itemInfor?.itemSpecification?.sensors,
+        },
+        // New fields added
+
+        {
+            key: '21',
+            label: 'Cảm biến',
+            children: itemInfor?.itemSpecification?.sensors,
+        },
+        {
+            key: '22',
+            label: 'SIM',
+            children: itemInfor?.itemSpecification?.sim,
+        },
+        {
+            key: '23',
+            label: 'Số khe SIM',
+            children: itemInfor?.itemSpecification?.simSlots,
+        },
+        {
+            key: '24',
+            label: 'Hệ điều hành',
+            children: itemInfor?.itemSpecification?.os,
+        },
+        {
+            key: '25',
+            label: 'Loại Bluetooth',
+            children: itemInfor?.itemSpecification?.bluetooth,
+        },
+        {
+            key: '26',
+            label: 'Cổng USB',
+            children: itemInfor?.itemSpecification?.usb,
+        },
+        {
+            key: '27',
+            label: 'Wi-Fi',
+            children: itemInfor?.itemSpecification?.wlan,
+        },
+        {
+            key: '28',
+            label: 'Tốc độ mạng',
+            children: itemInfor?.itemSpecification?.speed,
+        },
+        {
+            key: '29',
+            label: 'Công nghệ mạng',
+            children: itemInfor?.itemSpecification?.networkTechnology,
         }
 
-    ] : [];
+
+
+    ].filter(item => item.children !== null && item.children !== undefined) : [];
+
+
 
     return (
         <>
@@ -394,12 +483,12 @@ export default function StaffProductListPage() {
                     left: 0,
                     margin: 0,
                 }}
-             
+
             >
                 <Tabs defaultActiveKey="1">
                     {/* Thông tin chi tiết của phiên đấu giá */}
 
-                   
+
 
                     <Tabs.TabPane tab="Thông tin chi tiết" key="1">
                         {items.length > 0 ? (
@@ -593,14 +682,23 @@ export default function StaffProductListPage() {
                                             <TimePicker format="HH:mm" placeholder="Chọn giờ kết thúc" />
                                         </Form.Item>
                                     </Descriptions.Item>
+
                                     <Descriptions.Item label="Giá mua ngay (VNĐ)">
                                         <Form.Item name="buy_now_price" noStyle>
-                                            <Input />
+                                            <InputNumber
+                                                style={{ width: '100%' }}
+                                                formatter={(value) => `₫ ${value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}  // Định dạng số với dấu phẩy
+                                                parser={(value) => value.replace(/₫\s?|(,*)/g, '')}  // Loại bỏ dấu phẩy và ký tự '₫' khi lấy giá trị
+                                            />
                                         </Form.Item>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Tiền cọc (%)">
                                         <Form.Item name="percent_deposit" noStyle>
-                                            <Input />
+                                            <InputNumber
+                                                style={{ width: '100%' }}
+                                                formatter={(value) => `${value}%`}  // Hiển thị phần trăm trong UI
+                                                parser={(value) => value.replace('%', '')}  // Loại bỏ ký tự '%' khi lấy giá trị
+                                            />
                                         </Form.Item>
                                     </Descriptions.Item>
                                     <Descriptions.Item label="Trạng thái">
@@ -655,6 +753,120 @@ export default function StaffProductListPage() {
                             onPageChange={handlePageChange}
                         />
                     </Tabs.TabPane>
+
+                    {/*Ví của phiên đấu giá*/}
+                    <Tabs.TabPane tab="Ví đấu giá" key="4">
+                        <Spin spinning={isLoading}>
+                            {/* Kiểm tra data và data.data */}
+                            {transactionAuction?.data?.length > 0 ? (
+                                <div className="space-y-6">
+                                    {/* Hiển thị số dư ví */}
+                                    <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-lg font-semibold text-gray-700 tracking-wide">Số dư ví</span>
+                                            <span className="text-3xl font-semibold text-green-600">
+                                                {transactionAuction.balance > 0
+                                                    ? formatCurrency(transactionAuction.balance)
+                                                    : "0đ"}
+                                            </span>
+                                        </div>
+                                        {/* Thêm một đường viền nhẹ dưới phần số dư */}
+                                        <div className="mt-6 h-1 bg-gradient-to-r from-green-400 to-blue-300 rounded-full"></div>
+                                    </div>
+
+
+
+
+                                    {/* Hiển thị danh sách giao dịch */}
+                                    {transactionAuction.data.map((transaction, index) => (
+                                        <div
+                                            key={transaction.transactionId}
+                                            className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg border border-gray-200 transition-shadow duration-200"
+                                        >
+                                            {/* Header */}
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div className="flex items-center space-x-3">
+                                                    <span className="text-blue-600 font-semibold text-lg">
+                                                        #{index + 1}
+                                                    </span>
+                                                    <span className="text-gray-800 font-medium text-sm">
+                                                        {transaction.senderName}
+                                                    </span>
+                                                </div>
+                                                <span className="text-gray-500 text-xs italic">
+                                                    Mã GD: {transaction.transactionWalletCode}
+                                                </span>
+                                            </div>
+
+                                            {/* Transaction Details */}
+                                            <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+                                                <p>
+                                                    <span className="font-medium">Loại giao dịch:</span>{' '}
+                                                    {getTransactionTypeInVietnamese(transaction.transactionType)}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">Số tiền:</span>{' '}
+                                                    <span
+                                                        className={`font-semibold ${transaction.amount >= 0
+                                                            ? 'text-green-600'
+                                                            : 'text-red-600'
+                                                            }`}
+                                                    >
+                                                        {transaction.amount >= 0
+                                                            ? `+ ${formatCurrency(transaction.amount)}`
+                                                            : `- ${formatCurrency(transaction.amount)}`}
+                                                    </span>
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">Trạng thái:</span>{' '}
+                                                    <span
+                                                        className={`${transaction.transactionStatus === 'COMPLETED'
+                                                            ? 'text-green-500'
+                                                            : transaction.transactionStatus === 'FAILED'
+                                                                ? 'text-red-500'
+                                                                : 'text-yellow-500'
+                                                            } font-bold`}
+                                                    >
+                                                        {getTransactionStatusInVietnamese(transaction.transactionStatus)}
+                                                    </span>
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">Ngày Giao dịch:</span>{' '}
+                                                    {new Date(transaction.transactionDate).toLocaleString('vi-VN')}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">Số dư trước:</span>{' '}
+                                                    {formatCurrency(transaction.oldAmount)}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">Số dư sau:</span>{' '}
+                                                    {formatCurrency(transaction.netAmount)}
+                                                </p>
+                                            </div>
+
+                                            {/* Optional Image */}
+                                            {transaction.image && (
+                                                <div className="mt-4">
+                                                    <p className="font-medium text-sm text-gray-800">Hình ảnh:</p>
+                                                    <img
+                                                        src={transaction.image}
+                                                        alt="Transaction"
+                                                        className="w-full max-w-sm rounded-lg mt-2 border"
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-center text-gray-500">Không có giao dịch nào trong ví đấu giá.</p>
+                            )}
+                        </Spin>
+                        {isError && (
+                            <p className="text-red-500 text-center mt-4">Có lỗi xảy ra khi tải dữ liệu ví đấu giá!</p>
+                        )}
+                    </Tabs.TabPane>
+
                 </Tabs>
             </Modal>
 
@@ -746,30 +958,27 @@ export default function StaffProductListPage() {
                                                     </td>
                                                     <td className="p-4">
                                                         {status === "ACCEPTED" && (
-                                                            <Tag icon={<CheckCircleOutlined />}
-                                                                color="success">
-                                                                {status}
+                                                            <Tag icon={<CheckCircleOutlined />} color="success">
+                                                                Đã chấp nhận
                                                             </Tag>
                                                         )}
                                                         {status === "pending" && (
-                                                            <Tag icon={<SyncOutlined spin />}
-                                                                color="processing">
-                                                                Pending
+                                                            <Tag icon={<SyncOutlined spin />} color="processing">
+                                                                Đang chờ
                                                             </Tag>
                                                         )}
                                                         {status === "UnAvailable" && (
-                                                            <Tag icon={<CloseCircleOutlined />}
-                                                                color="error">
-                                                                UnAvailable
+                                                            <Tag icon={<CloseCircleOutlined />} color="error">
+                                                                Không có sẵn
                                                             </Tag>
                                                         )}
                                                         {status === "Fail" && (
-                                                            <Tag icon={<ExclamationCircleOutlined />}
-                                                                color="warning">
-                                                                Fail
+                                                            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                                                                Thất bại
                                                             </Tag>
                                                         )}
                                                     </td>
+
                                                     <td className="p-4">
                                                         <Typography
                                                             variant="small"

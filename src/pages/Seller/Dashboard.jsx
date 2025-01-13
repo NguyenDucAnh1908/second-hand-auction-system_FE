@@ -52,7 +52,7 @@ function DashboardSeller() {
             {/* Main Content */}
             <div className="flex-1 p-6 bg-gray-50">
               <h1 className="text-2xl font-bold mb-6">Thống kê</h1>
-
+             
               {/* Dashboard Cards */}
               <div className="grid grid-cols-12 gap-6">
                 <DashboardCard04 />

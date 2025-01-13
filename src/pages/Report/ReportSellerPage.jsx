@@ -4,6 +4,8 @@ import {Breadcrumb, Button, Layout, theme, Space, Table, Tag, Modal, Select, Inp
 import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
 import FooterBK from "@/components/FooterBK/index.jsx";
 import {useCreateReportMutation, useGetReportQuery} from "@/services/report.service.js";
+import Header from "@/partials/Header.jsx";
+import Sidebar from "@/partials/Sidebar.jsx";
 
 const {TextArea} = Input;
 const {Content, Sider} = Layout;
@@ -16,7 +18,7 @@ const statusMapping = {
     DISPLAY_ERROR: {label: "Lỗi hiển thị", color: "geekblue"},
     OTHER: {label: "Lỗi khác", color: "gray"},
 };
-const ReportPage = () => {
+const ReportSellerPage = () => {
     const {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
@@ -24,7 +26,14 @@ const ReportPage = () => {
     const [pageSize, setPageSize] = useState(10); // Số item trên mỗi trang
     const [reportType, setReportType] = useState("DAMAGED_PRODUCT"); // Loại report
     const [reason, setReason] = useState(""); // Lý do
-    const {data: dataReport, isLoading: loadingReport, isError: isErrorReport, error: errorReport, refetch: refetchReport,} = useGetReportQuery({
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const {
+        data: dataReport,
+        isLoading: loadingReport,
+        isError: isErrorReport,
+        error: errorReport,
+        refetch: refetchReport,
+    } = useGetReportQuery({
         page: page - 1, // API thường dùng chỉ số 0-based
         limit: 10
     });
@@ -106,14 +115,7 @@ const ReportPage = () => {
             title: "File",
             dataIndex: "evidence",
             key: "evidence",
-            render: (text) =>
-                text ? (
-                    <a href={text} target="_blank" rel="noopener noreferrer">
-                        Xem file
-                    </a>
-                ) : (
-                    "No File"
-                ),
+            render: (text) => (text ? <a target="_blank" href={text}>Download File</a> : "No File"),
         },
         {
             title: "Trạng thái",
@@ -207,7 +209,7 @@ const ReportPage = () => {
                     }} rows={4}/>
             </Modal>
             <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
-                <Header2/>
+                <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
                 <Content
                     style={{
                         padding: '0 48px',
@@ -216,11 +218,11 @@ const ReportPage = () => {
                         flexDirection: 'column',
                     }}
                 >
-                    <Breadcrumb style={{margin: '16px 0'}}>
-                        <Breadcrumb.Item>Trang chủ</Breadcrumb.Item>
-                        <Breadcrumb.Item>Hồ sơ</Breadcrumb.Item>
-                        <Breadcrumb.Item>Thông tin</Breadcrumb.Item>
-                    </Breadcrumb>
+                    {/* Breadcrumb Section */}
+                    <div style={{margin: '16px 0'}}>
+                        {/* You can add breadcrumb here if needed */}
+                    </div>
+
                     <Layout
                         style={{
                             padding: '24px 0',
@@ -230,7 +232,7 @@ const ReportPage = () => {
                         }}
                     >
                         <Sider style={{background: colorBgContainer}} width={300}>
-                            <SiderUserBK/>
+                            <Sidebar/>
                         </Sider>
                         <Content
                             style={{
@@ -281,6 +283,7 @@ const ReportPage = () => {
                         </Content>
                     </Layout>
                 </Content>
+
                 <FooterBK/>
             </Layout>
         </>
@@ -288,4 +291,4 @@ const ReportPage = () => {
         ;
 };
 
-export default ReportPage;
+export default ReportSellerPage;

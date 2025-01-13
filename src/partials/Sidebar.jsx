@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import SidebarLinkGroup from "./SidebarLinkGroup";
+import {useGetUserByIdQuery} from "@/services/user.service.js";
+
 
 function Sidebar({
   sidebarOpen,
@@ -46,6 +48,11 @@ function Sidebar({
     }
   }, [sidebarExpanded]);
 
+
+  // const {data: userHeader, error, isLoading: isUserLoading, refetch} = useGetUserByIdQuery();
+
+  // console.log('check cahngh', userHeader);
+  
   return (
     <div className="min-w-fit">
       {/* Sidebar backdrop (mobile only) */}
@@ -80,8 +87,9 @@ function Sidebar({
           <NavLink end to="/Dashboard-Seller" className="block">
             <img src="https://firebasestorage.googleapis.com/v0/b/android-decd6.appspot.com/o/z5930476766777_d10afe7424fe97f8b6e85bb89543c90e.jpg?alt=media&token=e5396d64-690e-4ef1-924d-1fd162eab863" alt="Firebase Image" className="w-[100%] "/>
           </NavLink>
+       
         </div>
-
+        {/* <div>Số dư ví:</div> */}
         {/* Links */}
         <div className="space-y-8">
           {/* Pages group */}

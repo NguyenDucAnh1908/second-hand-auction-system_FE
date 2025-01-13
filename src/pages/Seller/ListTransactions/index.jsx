@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import FooterBK from '../../../components/FooterBK';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Layout, Menu, theme, Modal, Tag } from 'antd';
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { ArrowDownTrayIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import {
@@ -41,7 +41,7 @@ export default function ListTransaction() {
     });
 
     const transactions = data?.items || [];
-    const TABLE_HEAD = ["Mã giao dịch", "Số tiền", "Ngày", "Trạng thái", "Người chuyển", "Người nhận", "Loại giao dịch", "Khác"];
+    const TABLE_HEAD = ["Mã giao dịch", "Số tiền", "Ngày", "Trạng thái", "Người nhận", "Người chuyển", "Loại giao dịch", "Khác"];
 
     const handleClickOpen = (transaction) => {
         setSelectedTransaction(transaction); // Set the selected transaction data
@@ -52,8 +52,154 @@ export default function ListTransaction() {
         setOpen(false); // Close dialog
     };
 
+
+    //modal chanh
+
+    const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái modal
+
+    const handleOpenModal = (transaction) => {
+        setSelectedTransaction(transaction);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedTransaction(null);
+    };
+
     return (
+
+
+
+
+
         <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+
+
+            <Modal
+                title="Chi tiết giao dịch"
+                open={isModalOpen}
+                onCancel={handleCloseModal}
+                footer={[
+                    <Button key="close" onClick={handleCloseModal}>
+                        Đóng
+                    </Button>,
+                ]}
+            >
+                {selectedTransaction && (
+                    <table style={{ width: '100%' }}>
+                        <tbody>
+                            <tr>
+                                <td><strong>Mã giao dịch:</strong></td>
+                                <td>{selectedTransaction.transactionWalletCode}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Loại giao dịch:</strong></td>
+                                <td>
+                                    {selectedTransaction.transactionType === "TRANSFER"
+                                        ? "Chuyển tiền"
+                                        : selectedTransaction.transactionType === "REFUND"
+                                            ? "Hoàn tiền"
+                                            : "Không xác định"}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kết quả đấu giá:</strong></td>
+                                <td>
+                                    <span className="total-amount">
+                                        {new Intl.NumberFormat("vi-VN", {
+                                            style: "currency",
+                                            currency: "VND",
+                                        }).format(selectedTransaction.amount + selectedTransaction.commissionAmount)}
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Chi phí sàn:</strong></td>
+                                <td>
+                                    <span className="commission-amount">
+                                        {new Intl.NumberFormat("vi-VN", {
+                                            style: "currency",
+                                            currency: "VND",
+                                        }).format(selectedTransaction.commissionAmount)}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tỷ lệ chi phí sàn:</strong></td>
+                                <td>
+                                    <Tag color="orange">{`${(selectedTransaction.commissionRate * 100).toFixed(2)}%`}</Tag>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><strong>Số tiền nhận thực tế:</strong></td>
+                                <td>
+                                    <Tag color="success" style={{ marginLeft: 8 }}>
+                                        +{" "}
+                                        {new Intl.NumberFormat("vi-VN", {
+                                            style: "currency",
+                                            currency: "VND",
+                                        }).format(selectedTransaction.amount)}
+                                    </Tag>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số dư ví trước khi nhận:</strong></td>
+                                <td>
+                                    {new Intl.NumberFormat("vi-VN", {
+                                        style: "currency",
+                                        currency: "VND",
+                                    }).format(selectedTransaction.oldAmount)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số dư ví hiện tại:</strong></td>
+                                <td>
+                                    {new Intl.NumberFormat("vi-VN", {
+                                        style: "currency",
+                                        currency: "VND",
+                                    }).format(selectedTransaction.netAmount)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Trạng thái:</strong></td>
+                                <td>
+                                    <Tag color={selectedTransaction.transactionStatus === "COMPLETED" ? "green" : "red"}>
+                                        {selectedTransaction.transactionStatus === "COMPLETED"
+                                            ? "Hoàn thành"
+                                            : selectedTransaction.transactionStatus === "PENDING"
+                                                ? "Đang chờ xử lý"
+                                                : "Thất bại"}
+                                    </Tag>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Người nhận:</strong></td>
+                                <td>{selectedTransaction.recipientName}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Người chuyển:</strong></td>
+                                <td>{selectedTransaction.senderName}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ngày giao dịch:</strong></td>
+                                <td>{new Date(selectedTransaction.transactionDate).toLocaleString()}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mô tả:</strong></td>
+                                <td>{selectedTransaction.description || "Không có mô tả"}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                )}
+            </Modal>
+
+
+
+
+
             {/* Header */}
             <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
             {/* Main content */}
@@ -121,23 +267,41 @@ export default function ListTransaction() {
                                                             </Typography>
                                                         </td>
                                                         <td className={classes}>
-                                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                                {new Intl.NumberFormat('vi-VN', {
+                                                            <Typography
+                                                                variant="small"
+                                                                color="blue-gray"
+                                                                className="font-normal"
+                                                                style={{
+                                                                    backgroundColor: '#d1f7d6', // Màu xanh nhạt
+                                                                    padding: '4px 8px',       // Tạo khoảng cách cho văn bản
+                                                                    borderRadius: '4px',      // Bo góc
+                                                                    display: 'inline-block',  // Đảm bảo chỉ bọc quanh nội dung
+                                                                }}
+                                                            >
+                                                                + {new Intl.NumberFormat('vi-VN', {
                                                                     style: 'currency',
                                                                     currency: 'VND',
                                                                 }).format(transaction.amount)}
                                                             </Typography>
                                                         </td>
+
                                                         <td className={classes}>
                                                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                                                {new Date(transaction.transactionDate).toLocaleDateString()}
+                                                                {new Date(transaction.transactionDate).toLocaleString()}
                                                             </Typography>
                                                         </td>
+
                                                         <td className={classes} style={{ textAlign: 'center' }}>
                                                             <Chip
                                                                 size="sm"
                                                                 variant="ghost"
-                                                                value={transaction.transactionStatus}
+                                                                value={
+                                                                    transaction.transactionStatus === "COMPLETED"
+                                                                        ? "Hoàn thành"
+                                                                        : transaction.transactionStatus === "PENDING"
+                                                                            ? "Đang chờ xử lý"
+                                                                            : "Thất bại"
+                                                                }
                                                                 color={
                                                                     transaction.transactionStatus === "COMPLETED"
                                                                         ? "green"
@@ -148,6 +312,7 @@ export default function ListTransaction() {
                                                                 className="transition-all duration-200 ease-in-out mx-auto"
                                                             />
                                                         </td>
+
                                                         <td className={classes}>
                                                             <div className="flex items-center gap-3">
                                                                 <Avatar
@@ -173,27 +338,41 @@ export default function ListTransaction() {
                                                             </Typography>
                                                         </td>
                                                         <td className={classes}>
-                                                            <Typography variant="small" color="blue-gray" className="font-medium text-lg text-gray-800 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-500 hover:shadow-lg">
-                                                                {transaction.transactionType}
+                                                            <Typography
+                                                                variant="small"
+                                                                color="blue-gray"
+                                                                className="font-medium text-lg text-gray-800 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-500 hover:shadow-lg">
+                                                                {
+                                                                    transaction.transactionType === "DEPOSIT" ? "Nạp tiền" :
+                                                                        transaction.transactionType === "WITHDRAWAL" ? "Rút tiền" :
+                                                                            transaction.transactionType === "TRANSFER" ? "Thanh toán" :
+                                                                                transaction.transactionType === "REFUND" ? "Hoàn tiền" :
+                                                                                    transaction.transactionType === "DEPOSIT_AUCTION" ? "Nạp tiền đấu giá" :
+                                                                                        "Không xác định"
+                                                                }
                                                             </Typography>
                                                         </td>
+
                                                         <td className={classes}>
-                                                            <Button
-                                                                size="sm"
-                                                                color="green"
-                                                                onClick={() => handleClickOpen(transaction)} // Pass the transaction data to the dialog
-                                                            >
+                                                            <Button size="sm" color="green" onClick={() => handleOpenModal(transaction)}>
+
                                                                 Xem chi tiết
                                                             </Button>
                                                         </td>
+
                                                     </tr>
                                                 );
                                             })}
                                         </tbody>
                                     </table>
                                 )}
+
+
+
                             </CardBody>
                         </Card>
+
+
 
                         {/* Pagination */}
                         <Pagination
@@ -205,6 +384,8 @@ export default function ListTransaction() {
                     </Content>
                 </Layout>
             </Content>
+
+
 
             {/* Footer */}
             <FooterBK />

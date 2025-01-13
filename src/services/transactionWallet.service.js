@@ -24,12 +24,13 @@ export const transactionWalletApiSlice = apiSlice.injectEndpoints({
                 url: "transactionWallet/get-transaction-admin",
                 params: {
                     page: paging.page || 0,
-                    limit: paging.limit || 10,
+                    limit: paging.limit || 50,
                     role: paging.role || "",
                     transactionType: paging.transactionType || ""
                 },
             }),
         }),
+
 
         uploadImageTransaction: builder.mutation({
             query: ({ id, credentials }) => ({
@@ -39,10 +40,17 @@ export const transactionWalletApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+        getTransactionWalletAuction: builder.query({
+            query: (auctionId) => ({
+                url: `transactionWallet/check-balance/${auctionId}`,
+            }),
+            transformResponse: (response) => response.data, // Lấy `data` từ response trả về
+        }),
+
     })
 })
 
 
 
 
-export const { useGetTransactionWalletQuery, useGetTransactionWalletAdminQuery, useUploadImageTransactionMutation } = transactionWalletApiSlice;
+export const { useGetTransactionWalletQuery, useGetTransactionWalletAdminQuery, useUploadImageTransactionMutation, useGetTransactionWalletAuctionQuery} = transactionWalletApiSlice;

@@ -97,12 +97,12 @@ export default function ProfileDetailPage() {
             dispatch(setUser(response.data));
 
             // Hiển thị thông báo thành công
-            message.success(response.message || "User updated successfully!");
+            message.success(response.message || "Cập nhật tài khoản thành công!");
             setModal2Open(false);
             refetch();
         } catch (error) {
             dispatch(setError(error));
-            message.error("Failed to update user.");
+            message.error("Cập nhật tài khoản thất bại.");
         } finally {
             dispatch(setLoading(false));
         }
@@ -128,7 +128,7 @@ export default function ProfileDetailPage() {
     const handleUpdatePassword = async (values) => {
         const { password, newPassword, confirmPassword } = values;
         if (newPassword !== confirmPassword) {
-            message.error("New passwords do not match!");
+            message.error("Mật khẩu mới không khớp!");
             return;
         }
 
@@ -141,13 +141,13 @@ export default function ProfileDetailPage() {
             }).unwrap();
 
             // Hiển thị thông báo thành công
-            message.success(response.message || "Password changed successfully!");
+            message.success(response.message || "Mật khẩu mới đã được cập nhật!");
             setModalPasswordOpen(false);
             passwordForm.resetFields();
         } catch (err) {
-            console.error("Change password error:", err);
+            console.error("Lỗi khi đổi mật khẩu:", err);
 
-            const errorMessage = err?.data?.message || "Failed to change password";
+            const errorMessage = err?.data?.message || "Đổi mật khẩu thất bại.";
             message.error(errorMessage);
             errRef.current?.focus();
         }
@@ -163,17 +163,17 @@ export default function ProfileDetailPage() {
     return (
         <>
             <Modal
-                title="Update Profile"
+                title="Cập nhật tài khoản"
                 centered
                 open={modal2Open}
                 onOk={() => {
                     form.submit();
                 }}
-                okText="Update"
+                okText="Cập nhật"
                 onCancel={() => setModal2Open(false)}
             >
                 {/* Sử dụng Spin để hiển thị loading cho toàn bộ form */}
-                <Spin spinning={isLoadingupdateUser} tip="Updating...">
+                <Spin spinning={isLoadingupdateUser} tip="Đang cập nhật ...">
                     <Form
                         form={form}
                         layout="vertical"
@@ -184,27 +184,27 @@ export default function ProfileDetailPage() {
                         }}
                     >
                         <Form.Item
-                            label="Full Name"
+                            label="Họ và tên"
                             name="fullName"
-                            rules={[{ required: true, message: 'Please input your full name!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập họ và tên của bạn!' }]}
                         >
                             <Input />
                         </Form.Item>
 
                         <Form.Item
-                            label="Phone Number"
+                            label="Số điện thoại"
                             name="phoneNumber"
-                            rules={[{ required: true, message: 'Please input your Phone Number!' }]}
+                            rules={[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]}
                         >
                             <Input />
                         </Form.Item>
 
                         <Form.Item
-                            label="Avatar"
+                            label="Ảnh đại diện"
                             name="avatar"
                             valuePropName="fileList"
                             getValueFromEvent={normFile}
-                            extra="Select an image file to upload."
+                            extra="Chọn ảnh từ thiết bị để tải lên."
                         >
                             <Upload
                                 name="avatar"
@@ -217,7 +217,7 @@ export default function ProfileDetailPage() {
                                     return isImage;
                                 }}
                             >
-                                <Button icon={<UploadOutlined />}>Upload Avatar</Button>
+                                <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
                             </Upload>
                         </Form.Item>
                     </Form>
@@ -225,7 +225,7 @@ export default function ProfileDetailPage() {
             </Modal>
 
             <Modal
-                title="Update Password"
+                title="Đổi mật khẩu"
                 centered
                 open={modalPasswordOpen}
                 onOk={() => passwordForm.submit()} // Kích hoạt submit form
@@ -238,31 +238,31 @@ export default function ProfileDetailPage() {
                     onFinish={handleUpdatePassword} // Gọi API khi form submit thành công
                 >
                     <Form.Item
-                        label="Password"
+                        label="Mật khẩu cũ"
                         name="password"
-                        rules={[{ required: true, message: 'Please input your current password!' }]}
+                        rules={[{ required: true, message: 'Vui lòng nhập mật khẩu hiện tại của tài khoản!' }]}
                     >
                         <Input.Password prefix={<LockOutlined />} />
                     </Form.Item>
                     <Form.Item
-                        label="New Password"
+                        label="Mật khẩu mới"
                         name="newPassword"
-                        rules={[{ required: true, message: 'Please input your new password!' }]}
+                        rules={[{ required: true, message: 'Vui lòng nhập mật khẩu mới cho tài khoản!' }]}
                     >
                         <Input.Password prefix={<LockOutlined />} />
                     </Form.Item>
                     <Form.Item
-                        label="Confirm New Password"
+                        label="Nhập lại mật khẩu mới"
                         name="confirmPassword"
                         dependencies={['newPassword']}
                         rules={[
-                            { required: true, message: 'Please confirm your new password!' },
+                            { required: true, message: 'Vui lòng nhập lại mật khẩu mới!' },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
                                     if (!value || getFieldValue('newPassword') === value) {
                                         return Promise.resolve();
                                     }
-                                    return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                                    return Promise.reject(new Error('Mật khẩu mới không khớp!'));
                                 },
                             }),
                         ]}
@@ -314,14 +314,14 @@ export default function ProfileDetailPage() {
                                 </Heading>
                                 <div>
                                     <div className="bg-white overflow-hidden shadow rounded-lg border">
-                                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                        <div style={{ display: "flex", justifyContent: "flex-end",gap: "16px", marginTop: "10px" }}>
                                             <Button
-                                                icon={<EditOutlined />}
+                                                icon={<EditOutlined style={{ fontSize: "30px" }}/>}
                                                 type="text"
                                                 onClick={() => setModal2Open(true)}
                                             ></Button>
                                             <Button
-                                                icon={<LockOutlined />}
+                                                icon={<LockOutlined style={{ fontSize: "30px", marginRight: "10px" }}/>}
                                                 type="text"
                                                 onClick={() => setModalPasswordOpen(true)}
                                             ></Button>
@@ -345,26 +345,26 @@ export default function ProfileDetailPage() {
                                             <dl className="sm:divide-y sm:divide-gray-200">
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                     <dt className="text-sm font-medium text-gray-500">
-                                                        Full name
+                                                        Họ và tên:
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                                         {user1?.fullName}
                                                     </dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="text-sm font-medium text-gray-500">Email</dt>
+                                                    <dt className="text-sm font-medium text-gray-500">Email:</dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                                         {user1?.email}
                                                     </dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="text-sm font-medium text-gray-500">Role</dt>
+                                                    <dt className="text-sm font-medium text-gray-500">Loại tài khoản:</dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                                         {user1?.role}
                                                     </dd>
                                                 </div>
                                                 <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                                    <dt className="text-sm font-medium text-gray-500">Phone number</dt>
+                                                    <dt className="text-sm font-medium text-gray-500">Số điện thoại:</dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                                         {user1?.phoneNumber}
                                                     </dd>

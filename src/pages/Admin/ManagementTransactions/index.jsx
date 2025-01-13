@@ -18,7 +18,7 @@ const TABLE_HEAD = [
     "Số tiền",
     "Loại giao dịch",
     "Lời nhắn",
-    "Ngày giao dịch",
+    "Thời gian",
     "Trạng thái",
     "Thao tác",
 ];
@@ -38,7 +38,7 @@ export default function QuanLyGiaoDich() {
     const [transactionTypeFilter, setTransactionTypeFilter] = useState(""); // State for transactionType filter
     const [uploadImageTransaction] = useUploadImageTransactionMutation();
     const { data, error, isLoading, isError } = useGetTransactionWalletAdminQuery({
-        page: trang - 1, limit: 10, role: roleFilter, transactionType: transactionTypeFilter
+        page: trang - 1, limit: 30, role: roleFilter, transactionType: transactionTypeFilter
     });
     const { UploadImage } = useHookUploadImage();
 
@@ -121,31 +121,66 @@ export default function QuanLyGiaoDich() {
                         <div className="space-y-3">
                             <p><strong className="text-gray-700">Mã giao dịch:</strong> <span
                                 className="text-gray-600">{giaoDichDuocChon.transactionWalletCode}</span></p>
-                            <p><strong className="text-gray-700">Số tiền:</strong> <span
-                                className="text-green-600">{giaoDichDuocChon.amount.toLocaleString('vi-VN')} VND</span>
+
+                            <p>
+                                <strong className="text-gray-700">Số tiền:</strong>
+                                <span className={
+                                    giaoDichDuocChon.description === 'Thanh toán tiền cho seller'
+                                        ? "text-red-600"  // Đổi màu đỏ cho "Thanh toán tiền cho seller"
+                                        : giaoDichDuocChon.amount < 0
+                                            ? "text-red-600"  // Âm là đỏ
+                                            : "text-green-600"  // Dương là xanh
+                                }>
+                                    {giaoDichDuocChon.description === 'Thanh toán tiền cho seller'
+                                        ? `-${Math.abs(giaoDichDuocChon.amount).toLocaleString('vi-VN')}`  // Đảo dấu cho "Thanh toán tiền cho seller"
+                                        : `${giaoDichDuocChon.amount < 0
+                                            ? `-${Math.abs(giaoDichDuocChon.amount).toLocaleString('vi-VN')}`
+                                            : `+${giaoDichDuocChon.amount.toLocaleString('vi-VN')}`
+                                        }`
+                                    }
+                                    VND
+                                </span>
                             </p>
-                            <p><strong className="text-gray-700">Loại giao dịch:</strong> <span
-                                className="text-blue-600">{giaoDichDuocChon.transactionType}</span></p>
+
+
+
+                            <p><strong className="text-gray-700">Loại giao dịch:</strong> <span className="text-blue-600">
+                                {giaoDichDuocChon.transactionType === 'DEPOSIT' ? 'Nạp tiền' :
+                                    giaoDichDuocChon.transactionType === 'WITHDRAWAL' ? 'Rút tiền' :
+                                        giaoDichDuocChon.transactionType === 'TRANSFER' ? 'Chuyển khoản' :
+                                            giaoDichDuocChon.transactionType === 'REFUND' ? 'Hoàn tiền' :
+                                                giaoDichDuocChon.transactionType === 'DEPOSIT_AUCTION' ? 'Nạp tiền cọc tham gia đấu giá' : ''}
+                            </span></p>
+
                             <p><strong className="text-gray-700">Người gửi:</strong> <span
                                 className="text-gray-600">{giaoDichDuocChon.senderName}</span></p>
-                            <p><strong className="text-gray-700">Người nhận:</strong> <span
+                            <p><strong className="text-gray-700">Người thụ hưởng:</strong> <span
                                 className="text-gray-600">{giaoDichDuocChon.recipientName}</span></p>
-                            <p><strong className="text-gray-700">Lời nhắn:</strong> <span
+                            {/* <p><strong className="text-gray-700">Lời nhắn:</strong> <span
                                 className="text-gray-600">{giaoDichDuocChon.description || "Không có nội dung"}</span>
+                            </p> */}
+                            <p><strong className="text-gray-700">Thời gian: </strong>
+                                <span className="text-gray-600">
+                                    {new Date(giaoDichDuocChon.transactionDate).toLocaleString('vi-VN')}
+                                </span>
                             </p>
-                            <p><strong className="text-gray-700">Ngày giao dịch:</strong> <span
-                                className="text-gray-600">{dinhDangNgay(giaoDichDuocChon.transactionDate)}</span></p>
+
                             <p><strong className="text-gray-700">Số tiền ban đầu:</strong> <span
                                 className="text-gray-600">{(giaoDichDuocChon.netAmount)}</span></p>
                             <p><strong className="text-gray-700">Số tiền thực:</strong> <span
                                 className="text-gray-600">{(giaoDichDuocChon.oldAmount)}</span></p>
-                            <p><strong className="text-gray-700">Trạng thái:</strong> <span
-                                className="text-green-600">{giaoDichDuocChon.transactionStatus}</span></p>
+                            <p><strong className="text-gray-700">Trạng thái:</strong> <span className="text-green-600">
+                                {giaoDichDuocChon.transactionStatus === 'PENDING' ? 'Đang chờ xử lý' :
+                                    giaoDichDuocChon.transactionStatus === 'COMPLETED' ? 'Đã hoàn thành' :
+                                        giaoDichDuocChon.transactionStatus === 'CANCELLED' ? 'Đã hủy' :
+                                            giaoDichDuocChon.transactionStatus === 'FAILED' ? 'Thất bại' : ''}
+                            </span></p>
+
                             {/* Hình ảnh giao dịch */}
-                            <p><strong className="text-gray-700">Hình ảnh:</strong></p>
-                            <div className="mt-4">
-                                {/* Hiển thị ảnh giao dịch (nếu có) */}
-                                {giaoDichDuocChon.imageUrl ? (
+                            {/* <p><strong className="text-gray-700">Hình ảnh:</strong></p> */}
+                            {/* <div className="mt-4"> */}
+                            {/* Hiển thị ảnh giao dịch (nếu có) */}
+                            {/* {giaoDichDuocChon.imageUrl ? (
                                     <img
                                         src={giaoDichDuocChon.image}
                                         alt="Hình ảnh giao dịch"
@@ -153,10 +188,10 @@ export default function QuanLyGiaoDich() {
                                     />
                                 ) : (
                                     <p className="text-gray-500">Không có hình ảnh.</p>
-                                )}
+                                )} */}
 
-                                {/* Phần thêm ảnh */}
-                                <div className="relative mt-4">
+                            {/* Phần thêm ảnh */}
+                            {/* <div className="relative mt-4">
                                     <input
                                         type="file"
                                         accept="image/*"
@@ -166,10 +201,10 @@ export default function QuanLyGiaoDich() {
                                     <p className="mt-2 text-sm text-gray-500">
                                         Chọn một hình ảnh để tải lên
                                     </p>
-                                </div>
+                                </div> */}
 
-                                {/* Hiển thị preview ảnh */}
-                                {image && (
+                            {/* Hiển thị preview ảnh */}
+                            {/* {image && (
                                     <div className="mt-4 flex items-center space-x-4">
                                         <div
                                             className="relative w-32 h-32 bg-gray-200 border-2 border-dashed border-gray-300 rounded-md overflow-hidden">
@@ -178,9 +213,9 @@ export default function QuanLyGiaoDich() {
                                                 alt="Ảnh tải lên"
                                                 className="w-full h-full object-cover object-center"
                                             />
-                                        </div>
-                                        {/* Nút xóa ảnh */}
-                                        <button
+                                        </div> */}
+                            {/* Nút xóa ảnh */}
+                            {/* <button
                                             onClick={() => {
                                                 setImage(null);
                                                 setFile(null);
@@ -190,10 +225,10 @@ export default function QuanLyGiaoDich() {
                                             Xóa ảnh
                                         </button>
                                     </div>
-                                )}
+                                )} */}
 
-                                {/* Nút xác nhận tải ảnh */}
-                                {file && (
+                            {/* Nút xác nhận tải ảnh */}
+                            {/* {file && (
                                     <button
                                         onClick={handleConfirmUpload}
                                         className="mt-4 px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-400"
@@ -201,7 +236,7 @@ export default function QuanLyGiaoDich() {
                                         Xác nhận tải ảnh lên
                                     </button>
                                 )}
-                            </div>
+                            </div> */}
                         </div>
                     )}
                 </DialogBody>
@@ -253,57 +288,86 @@ export default function QuanLyGiaoDich() {
                             <tbody>
                                 {danhSachGiaoDich.length > 0 ? (
                                     danhSachGiaoDich.map((giaoDich) => (
-                                        <tr key={giaoDich.transactionWalletCode}>
-                                            <td className="p-2">{giaoDich.transactionWalletCode}</td>
-                                            <td className="p-2">{giaoDich.amount.toLocaleString('vi-VN')} VND</td>
-                                            <td className="p-4 w-[50px]">
-                                                {giaoDich.transactionType === "DEPOSIT" && (
-                                                    <Tag color="green"
-                                                        className="font-semibold w-[120px] h-[20px] text-center">Nạp
-                                                        tiền</Tag>
-                                                )}
-                                                {giaoDich.transactionType === "WITHDRAWAL" && (
-                                                    <Tag color="red"
-                                                        className="font-semibold w-[120px] h-[20px] text-center">Rút
-                                                        tiền</Tag>
-                                                )}
-                                                {giaoDich.transactionType === "REFUND" && (
-                                                    <Tag color="geekblue-inverse"
-                                                        className="font-semibold w-[120px] h-[20px] text-center">Hoàn
-                                                        cọc</Tag>
-                                                )}
-                                                {giaoDich.transactionType === "TRANSFER" && (
-                                                    <Tag color="green-inverse"
-                                                        className="font-semibold w-[120px] h-[20px] text-center">Chuyển
-                                                        khoản</Tag>
-                                                )}
-                                                {giaoDich.transactionType === "DEPOSIT_AUCTION" && (
-                                                    <Tag color="blue"
-                                                        className="font-semibold w-[120px] h-[20px] text-center">Tiền
-                                                        cọc</Tag>
-                                                )}
-                                            </td>
+                                        (giaoDich.description === 'Transaction đặt cọc ví Auction' ||
+                                            giaoDich.description === 'Transaction hoàn cọc ví Auction' ||
+                                            giaoDich.description === 'Thanh toán tiền cho seller' ||
+                                            giaoDich.description === 'Hoàn cọc cho người thắng cuộc ' ||
+                                        giaoDich.description === 'Người dùng thanh toán đơn hàng') && (
+                                            <tr key={giaoDich.transactionWalletCode}>
+                                                <td className="p-2">{giaoDich.transactionWalletCode}</td>
 
-                                            <td className="p-2">{giaoDich.description || "Không có"}</td>
-                                            <td className="p-2">{dinhDangNgay(giaoDich.transactionDate)}</td>
-                                            <td className="p-4">
-                                                {giaoDich.transactionStatus === "COMPLETED" &&
-                                                    <Tag icon={<CheckCircleOutlined />} color="success">Available</Tag>}
-                                                {giaoDich.transactionStatus === "PENDING" &&
-                                                    <Tag icon={<SyncOutlined spin />} color="processing">Pending</Tag>}
-                                                {giaoDich.transactionStatus === "CANCELLED" &&
-                                                    <Tag icon={<ExclamationCircleOutlined />}
-                                                        color="error">Unavailable</Tag>}
-                                                {giaoDich.transactionStatus === "FAILED" &&
-                                                    <Tag icon={<ExclamationCircleOutlined />} color="warning">Failed</Tag>}
-                                            </td>
+                                                <td className="p-2">
+                                                    <div
+                                                        style={{ 
+                                                            backgroundColor: (giaoDich.description === 'Thanh toán tiền cho seller' || giaoDich.description === 'Hoàn cọc cho người thắng cuộc ' ? giaoDich.amount > 0 : giaoDich.amount < 0) ? '#f8d7da' : '#d4edda', // Đổi màu nền nếu số tiền là âm
+                                                            color: (giaoDich.description === 'Thanh toán tiền cho seller' || giaoDich.description === 'Hoàn cọc cho người thắng cuộc ' ? giaoDich.amount > 0 : giaoDich.amount < 0) ? '#721c24' : '#155724', // Đổi màu chữ nếu số tiền là âm
+                                                            padding: '4px 8px',
+                                                            borderRadius: '4px'
+                                                        }}
+                                                    >
+                                                        {(giaoDich.description === 'Thanh toán tiền cho seller' || giaoDich.description === 'Hoàn cọc cho người thắng cuộc ')
+                                                            ? `-${Math.abs(giaoDich.amount).toLocaleString('vi-VN')}` // Đảo dấu luôn cho các giao dịch này
+                                                            : (giaoDich.amount < 0
+                                                                ? `-${Math.abs(giaoDich.amount).toLocaleString('vi-VN')}`
+                                                                : `+${giaoDich.amount.toLocaleString('vi-VN')}`)
+                                                        } VND
+                                                    </div>
+                                                </td>
 
-                                            <td className="p-2">
-                                                <Button onClick={() => moChiTiet(giaoDich)}
-                                                    className="bg-blue-500 text-white">Xem chi tiết</Button>
-                                            </td>
-                                        </tr>
-                                    ))
+
+
+
+                                                <td className="p-4 w-[50px]">
+                                                    {giaoDich.transactionType === "DEPOSIT" && (
+                                                        <Tag color="green"
+                                                            className="font-semibold w-[120px] h-[20px] text-center">Nạp
+                                                            tiền</Tag>
+                                                    )}
+                                                    {giaoDich.transactionType === "WITHDRAWAL" && (
+                                                        <Tag color="red"
+                                                            className="font-semibold w-[120px] h-[20px] text-center">Rút
+                                                            tiền</Tag>
+                                                    )}
+                                                    {giaoDich.transactionType === "REFUND" && (
+                                                        <Tag color="geekblue-inverse"
+                                                            className="font-semibold w-[120px] h-[20px] text-center">Hoàn
+                                                            cọc</Tag>
+                                                    )}
+                                                    {giaoDich.transactionType === "TRANSFER" && (
+                                                        <Tag color="green-inverse"
+                                                            className="font-semibold w-[120px] h-[20px] text-center">Chuyển
+                                                            khoản</Tag>
+                                                    )}
+                                                    {giaoDich.transactionType === "DEPOSIT_AUCTION" && (
+                                                        <Tag color="blue"
+                                                            className="font-semibold w-[120px] h-[20px] text-center">Tiền
+                                                            cọc</Tag>
+                                                    )}
+                                                </td>
+
+                                                <td className="p-2">{giaoDich.description || "Không có"}</td>
+                                                <td className="p-2">
+                                                    {new Date(giaoDich.transactionDate).toLocaleString('vi-VN')}
+                                                </td>
+
+                                                <td className="p-4">
+                                                    {giaoDich.transactionStatus === "COMPLETED" &&
+                                                        <Tag icon={<CheckCircleOutlined />} color="success">Hoàn Thành</Tag>}
+                                                    {giaoDich.transactionStatus === "PENDING" &&
+                                                        <Tag icon={<SyncOutlined spin />} color="processing">Đang chờ</Tag>}
+                                                    {giaoDich.transactionStatus === "CANCELLED" &&
+                                                        <Tag icon={<ExclamationCircleOutlined />}
+                                                            color="error">Unavailable</Tag>}
+                                                    {giaoDich.transactionStatus === "FAILED" &&
+                                                        <Tag icon={<ExclamationCircleOutlined />} color="warning">Thất bại</Tag>}
+                                                </td>
+
+                                                <td className="p-2">
+                                                    <Button onClick={() => moChiTiet(giaoDich)}
+                                                        className="bg-blue-500 text-white">Xem chi tiết</Button>
+                                                </td>
+                                            </tr>
+                                        )))
                                 ) : (
                                     <tr>
                                         <td colSpan={7} className="text-center p-4">Không có dữ liệu</td>

@@ -64,14 +64,14 @@ export default function RecommendedProductsSection() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
                     </svg>
                 </IconButton>
-              {/*<ButtonDH*/}
+              {/* <ButtonDH*/}
               {/*  onClick={() => {*/}
               {/*    sliderRef?.current?.slideNext();*/}
               {/*  }}*/}
               {/*  className="mr-1.5 w-[44px] rounded-[22px] border border-solid border-blue_gray-900 px-3.5"*/}
               {/*>*/}
               {/*  <Img src="images/img_arrow_right_blue_gray_900_1.svg" />*/}
-              {/*</ButtonDH>*/}
+              {/*</ButtonDH> */}
                 <IconButton variant="outlined" className="rounded-full"
                             onClick={() => {
                                 sliderRef?.current?.slideNext();

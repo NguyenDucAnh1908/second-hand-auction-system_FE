@@ -161,9 +161,9 @@ export default function Header2({ ...props }) {
                     <div className="ml-[74px] mr-6 flex items-center justify-between gap-5 md:mx-0 md:flex-col">
                         <a href="/">
                             <Img
-                                src="https://firebasestorage.googleapis.com/v0/b/android-decd6.appspot.com/o/z5930476766777_d10afe7424fe97f8b6e85bb89543c90e.jpg?alt=media&token=e5396d64-690e-4ef1-924d-1fd162eab863"
+                                src="images/logo.jpg"
                                 alt="Header Logo"
-                                className="h-[60px] w-[60px] rounded-full object-cover self-end  md:self-auto"
+                                className="h-[120px] w-[120px] rounded-full object-cover self-end  md:self-auto"
                             />
                         </a>
                         <div className="flex w-[86%] items-center justify-between gap-5 md:w-full md:flex-col">
@@ -171,11 +171,11 @@ export default function Header2({ ...props }) {
                                 <div className="relative w-full gap-2 md:w-max" ref={searchRef}>
                                     <Input
                                         type="search"
-                                        placeholder="Search"
+                                        placeholder="Tìm sản phẩm"
                                         containerProps={{
                                             className: "min-w-[600px]",
                                         }}
-                                        className="!border-t-blue-gray-300 pl-9 placeholder:text-blue-gray-300 focus:!border-blue-gray-300"
+                                        className="!border-black pl-9 placeholder:text-black focus:!border-black"
                                         labelProps={{
                                             className: "before:content-none after:content-none",
                                         }}
@@ -195,7 +195,7 @@ export default function Header2({ ...props }) {
                                         >
                                             {isFetchingItem && <p>Loading...</p>}
                                             {!isFetchingItem && dataItems?.item.length === 0 && (
-                                                <p className="text-center text-gray-500">No item found.</p>
+                                                <p className="text-center text-black">No item found.</p>
                                             )}
                                             {!isFetchingItem && dataItems?.item.length > 0 && (
                                                 <div className="grid grid-cols-1 gap-2">
@@ -240,7 +240,7 @@ export default function Header2({ ...props }) {
                                             />
                                             <path
                                                 d="M13 13.5L9 9.5M10.3333 6.16667C10.3333 6.7795 10.2126 7.38634 9.97811 7.95252C9.74358 8.51871 9.39984 9.03316 8.9665 9.4665C8.53316 9.89984 8.01871 10.2436 7.45252 10.4781C6.88634 10.7126 6.2795 10.8333 5.66667 10.8333C5.05383 10.8333 4.447 10.7126 3.88081 10.4781C3.31462 10.2436 2.80018 9.89984 2.36683 9.4665C1.93349 9.03316 1.58975 8.51871 1.35523 7.95252C1.12071 7.38634 1 6.7795 1 6.16667C1 4.92899 1.49167 3.742 2.36683 2.86683C3.242 1.99167 4.42899 1.5 5.66667 1.5C6.90434 1.5 8.09133 1.99167 8.9665 2.86683C9.84167 3.742 10.3333 4.92899 10.3333 6.16667Z"
-                                                stroke="#CFD8DC"
+                                                stroke="#000000"
                                                 stroke-width="2"
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
@@ -308,7 +308,7 @@ export default function Header2({ ...props }) {
                                                         </svg>
                                                         <a href="/ProfileDetail">
                                                             <Typography variant="small" className="font-medium">
-                                                                Tài khooản
+                                                                Tài khoản
                                                             </Typography>
                                                         </a>
                                                     </MenuItem>

@@ -50,18 +50,18 @@ export default function AuctionSection(
     const auctionStartDate = dataItem.auction?.startDate || null;
     const auctionStartTime = dataItem.auction?.start_time || null;
     const startDateTime = new Date(`${auctionStartDate}T${auctionStartTime}`).getTime();
-const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
+    const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
 
 
-
+    
 
 
 
     const auctionTypeName = dataItem.auctionType?.auction_typeName;
     const nowVN = new Date().getTime();
-    const now = new Date(nowVN + (7 * 60 * 60 * 1000)); // Cộng 7 giờ
-    // console.log("Bây giờ (giờ Việt Nam):", vietnamTime.toLocaleString('vi-VN'));
+    const now = new Date(); // Cộng 7 giờ
     
+
     const [isAuctionStarted, setIsAuctionStarted] = useState(false);
     useEffect(() => {
         setIsAuctionStarted(now >= startDateTime);
@@ -69,6 +69,7 @@ const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
     const idAuction = dataItem?.auction.auction_id;
 
     const isAuctionEnded = endDateTime < now; // Kiểm tra nếu thời gian kết thúc đã qua
+
 
     const [auctionStatus, setAuctionStatus] = useState("");
 
@@ -321,7 +322,7 @@ const endDateTime = new Date(`${auctionEndDate}T${auctionEndTime}`).getTime();
 
             // Call API tính phí
             calculateShippingFee(districtCode, wardCode);
-            
+
         }
     }, [addresses]);
 

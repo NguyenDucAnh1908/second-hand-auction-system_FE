@@ -17,7 +17,8 @@ import {
     Spin,
     theme,
     Typography,
-    Upload
+    Upload,
+    Modal
 } from 'antd';
 import FooterBK from "@/components/FooterBK/index.jsx";
 import { useRegisterItemMutation } from "@/services/item.service.js";
@@ -26,7 +27,7 @@ import { useGetAuctionTypeQuery } from "@/services/auctionType.service.js";
 import { useGetCategoriesQuery } from "@/services/category.service.js";
 import TextEditor from "@/components/TextEditor/index.jsx";
 import { useNavigate } from "react-router-dom";
-
+import { InfoCircleOutlined } from '@ant-design/icons';
 
 const { Text, Link } = Typography;
 const { Content, Sider } = Layout;
@@ -69,6 +70,8 @@ function RegisterProductPage() {
     const [connectivity, setConnectivity] = useState("");
     const [sensors, setSensors] = useState("");
     const [serial, setSerial] = useState("");
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const [imgItem, setImgItem] = useState([]);
     const [file, setFile] = useState(null);
@@ -278,7 +281,7 @@ function RegisterProductPage() {
             price_step_item: priceStepItem,
             img_item: uploadedImages,
             item_document: fileUrl,
-            sc_id: 1,
+            sc_id: os_family === "Android" ? 1 : os_family === "iOS" ? 2 : null,
             auction_type: auctionType,
             imei: imei, // Thêm trường IMEI
             storage: storage, // Thêm dung lượng
@@ -337,7 +340,7 @@ function RegisterProductPage() {
 
     useEffect(() => {
         if (selectedCategory) {
-            setSelectedSubCategory(null); // Reset subcategory khi thay đổi category
+            setSelectedSubCategory(1); // Reset subcategory khi thay đổi category
             setScId(1); // Reset scId khi thay đổi category
         }
     }, [selectedCategory]);
@@ -383,7 +386,13 @@ function RegisterProductPage() {
 
 
 
+    const handleModalOpen = () => {
+        setIsModalVisible(true);
+    };
 
+    const handleModalClose = () => {
+        setIsModalVisible(false);
+    };
 
 
 
@@ -441,7 +450,16 @@ function RegisterProductPage() {
     const imeiCheck = [
         {
             key: '1',
-            label: <label className="font-bold">Mã IMEI</label>,
+            label: (
+                <div className="flex items-center space-x-2">
+                    <label className="font-bold">Mã IMEI</label>
+                    <InfoCircleOutlined
+                        onClick={handleModalOpen}
+                        className="text-blue-500 cursor-pointer"
+                        style={{ fontSize: '16px' }}
+                    />
+                </div>
+            ),
             children: (
                 <div className="w-full space-y-4">
                     <div className="flex items-center space-x-4">
@@ -468,21 +486,21 @@ function RegisterProductPage() {
                     </div>
                 </div>
             ),
-        }, 
-        
+        },
+
         {
             key: '2',
             label: <label className="font-bold"></label>,
             children: (
                 <div className="w-[30%] space-y-4">
                     <Img
-                        src={device_image || '/images/Mobile-Smartphone-icon.png'} 
+                        src={device_image || '/images/Mobile-Smartphone-icon.png'}
                         className="w-full h-auto rounded-md shadow-md"
                     />
                 </div>
             ),
         }
-        
+
 
     ];
 
@@ -493,7 +511,7 @@ function RegisterProductPage() {
             label: <label className="font-bold">Tên Sản Phẩm</label>,
             children: (
                 <div className="rounded-md border p-3 w-full bg-gray-100">
-                   {itemName}
+                    {itemName}
                 </div>
             ),
         },
@@ -623,12 +641,12 @@ function RegisterProductPage() {
             label: <label className="font-bold">Mã model</label>,
             children: (
                 <ul className="list-disc list-inside space-y-2 bg-gray-100 p-3 rounded-md border">
-                  {model}
+                    {model}
                 </ul>
             ),
         },
-        
-        
+
+
     ];
 
 
@@ -638,9 +656,9 @@ function RegisterProductPage() {
 
 
     const items = [
-      
-       
-      
+
+
+
         {
             key: '4',
             label: <label className="font-bold">Giá mong muốn</label>,
@@ -649,8 +667,16 @@ function RegisterProductPage() {
                     <Input
                         type="text"
                         placeholder="Nhập giá mua ngay"
-                        value={priceBuyNow}
-                        onChange={handlePriceChange}
+                        value={priceBuyNow ? priceBuyNow.toLocaleString('vi-VN') : ''} // Hiển thị dấu phẩy
+                        onChange={(e) => {
+                            const input = e.target.value.replace(/\./g, ''); // Loại bỏ dấu "."
+                            if (/^\d*$/.test(input)) {
+                                setPriceBuyNow(Number(input)); // Lưu giá trị số nguyên
+                                setPriceError('');
+                            } else {
+                                setPriceError('Giá trị không hợp lệ, vui lòng nhập số.');
+                            }
+                        }}
                         status={priceError ? 'error' : ''}
                         className={`rounded-md border p-3 w-full ${priceError ? 'border-red-500' : 'border-gray-300'}`}
                         suffix="VND"
@@ -660,7 +686,8 @@ function RegisterProductPage() {
                     )}
                 </div>
             ),
-        },
+        }
+        ,
         {
             key: '5',
             label: <label className="font-bold">Bước giá mong muốn</label>,
@@ -669,8 +696,16 @@ function RegisterProductPage() {
                     <Input
                         type="text"
                         placeholder="Nhập bước giá mong muốn"
-                        value={priceStepItem}
-                        onChange={handlePriceStep}
+                        value={priceStepItem ? priceStepItem.toLocaleString('vi-VN') : ''} // Hiển thị dấu phẩy
+                        onChange={(e) => {
+                            const input = e.target.value.replace(/\./g, ''); // Loại bỏ dấu chấm
+                            if (/^\d*$/.test(input)) {
+                                setPriceStepItem(Number(input)); // Lưu giá trị thô (không dấu phẩy)
+                                setPriceStepError(''); // Xóa lỗi nếu hợp lệ
+                            } else {
+                                setPriceStepError('Bước giá không hợp lệ, vui lòng nhập số.');
+                            }
+                        }}
                         status={priceStepError ? 'error' : ''}
                         className={`rounded-md border p-3 w-full ${priceStepError ? 'border-red-500' : 'border-gray-300'}`}
                         suffix="VND"
@@ -680,29 +715,116 @@ function RegisterProductPage() {
                     )}
                 </div>
             ),
+        }
+        ,
+        {
+            key: '16',
+            label: <label className="font-bold">RAM</label>,
+            children: (
+                <div className="w-full space-y-4">
+                    <Input
+                        type="text"
+                        value={ram} // Giá trị của RAM
+                        onChange={(e) => setRam(e.target.value)}  // Cập nhật giá trị nhập vào state
+                        placeholder="Nhập RAM"  // Placeholder hiển thị khi chưa nhập
+                        className="rounded-md border p-3 w-full" // Cách kiểu cho input
+                        suffix="GB"  // Thêm 'GB' vào cuối input
+                    />
+                </div>
+            ),
         },
-      
 
         {
             key: '7',
             label: <label className="font-bold">Dung lượng</label>,
             children: (
                 <div className="w-full space-y-4">
-                    <Select
+                    <Input
+                        type="text"
                         value={storage}
-                        onChange={(value) => setStorage(value)} // Cập nhật dung lượng trong state
-                        className="w-full"
-                    >
-                        <Option value="8GB">8GB</Option>
-                        <Option value="16GB">16GB</Option>
-                        <Option value="32GB">32GB</Option>
-                        <Option value="64GB">64GB</Option>
-                        <Option value="128GB">128GB</Option>
-                        <Option value="256GB">256GB</Option>
-                        <Option value="512GB">512GB</Option>
-                        <Option value="1TB">1TB</Option>
-                        {/* Thêm các giá trị dung lượng tùy chỉnh nếu cần */}
-                    </Select>
+                        onChange={(e) => setStorage(e.target.value)}  // Cập nhật giá trị nhập vào state
+                        placeholder="Nhập dung lượng"  // Placeholder hiển thị khi chưa nhập
+                        className={`rounded-md border p-3 w-full`} // Cách kiểu cho input
+                        suffix="GB"  // Thêm 'GB' vào cuối input
+                    />
+                </div>
+            ),
+        },
+
+
+
+
+        {
+            key: '21',
+            label: <label className="font-bold">Kích thước màn hình</label>,
+            children: (
+                <div className="w-full space-y-4">
+                    <Input
+                        type="text"
+                        value={screenSize} // Giá trị của kích thước màn hình
+                        onChange={(e) => setScreenSize(e.target.value)}  // Cập nhật giá trị nhập vào state
+                        placeholder="Nhập kích thước màn hình"  // Placeholder hiển thị khi chưa nhập
+                        className="rounded-md border p-3 w-full" // Cách kiểu cho input
+                        suffix="inch"  // Thêm "inch" vào cuối input
+                    />
+                </div>
+            ),
+        },
+
+        
+        {
+            key: '19',
+            label: <label className="font-bold">Thông số camera</label>,
+            children: (
+                <div className="w-full space-y-4">
+                    <Input
+                        type="text"
+                        value={cameraSpecs} // Giá trị của thông số camera
+                        onChange={(e) => setCameraSpecs(e.target.value)}  // Cập nhật giá trị nhập vào state
+                        placeholder="Nhập thông số camera"  // Placeholder hiển thị khi chưa nhập
+                        className="rounded-md border p-3 w-full" // Cách kiểu cho input
+                        suffix="MP"  // Thêm "MP" vào cuối input
+                    />
+                </div>
+            ),
+        },
+        
+        {
+            key: '20',
+            label: <label className="font-bold">Cảm biến</label>,
+            children: (
+                <div className="w-full space-y-4">
+                    <Input
+                        type="text"
+                        value={sensors} // Giá trị của cảm biến
+                        onChange={(e) => setSensors(e.target.value)}  // Cập nhật giá trị nhập vào state
+                        placeholder="Nhập cảm biến"  // Placeholder hiển thị khi chưa nhập
+                        className="rounded-md border p-3 w-full" // Cách kiểu cho input
+                        suffix="MP"  // Thêm "MP" vào cuối input
+                    />
+                </div>
+            ),
+        },
+
+
+        {
+            key: '9',
+            label: <label className="font-bold">Tình trạng pin</label>,
+            children: (
+                <div className="w-full space-y-4">
+                    <Input
+                        type="number"
+                        value={batteryHealth}  // Giá trị của tình trạng pin
+                        onChange={(e) => {
+                            const value = parseFloat(e.target.value);  // Chuyển đổi giá trị sang số
+                            if (!isNaN(value) && value >= 0 && value <= 100) {
+                                setBatteryHealth(value);  // Cập nhật giá trị tình trạng pin
+                            }
+                        }}
+                        placeholder="Nhập tình trạng pin (%)"  // Placeholder hiển thị khi chưa nhập
+                        className="rounded-md border p-3 w-full"
+                        suffix="%"
+                    />
 
                 </div>
             ),
@@ -712,51 +834,22 @@ function RegisterProductPage() {
             key: '8',
             label: <label className="font-bold">Màu sắc</label>,
             children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={color}
-                        onChange={(value) => setColor(value)}
-                        className="w-full"
-                    >
-                        <Option value="BLACK">Đen</Option>
-                        <Option value="WHITE">Trắng</Option>
-                        <Option value="SILVER">Bạc</Option>
-                        <Option value="GOLD">Vàng</Option>
-                        <Option value="BLUE">Xanh dương</Option>
-                        <Option value="RED">Đỏ</Option>
-                        <Option value="GREEN">Xanh lá</Option>
-                        <Option value="OTHER">Màu khác</Option>
-                    </Select>
-                </div>
-            ),
-        },
-
-        {
-            key: '9',
-            label: <label className="font-bold">Tình trạng pin</label>,
-            children: (
                 <div className="w-full space-y-4">
-                    <Select
-                        value={batteryHealth}
-                        onChange={(value) => setBatteryHealth(parseFloat(value))} // Chuyển đổi giá trị sang Double
-                        className="w-full"
-                    >
-                        <Option value={100.0}>Mới 100%</Option>
-                        <Option value={80.0}>Tốt 80%</Option>
-                        <Option value={60.0}>Khá 60%</Option>
-                        <Option value={40.0}>Kém 40%</Option>
-                        <Option value={0.0}>Không hoạt động</Option>
-                    </Select>
+                    <Input
+                        type="text"
+                        value={color}
+                        onChange={(e) => setColor(e.target.value)}  // Cập nhật giá trị nhập vào state
+                        placeholder="Nhập màu sắc"  // Placeholder hiển thị khi chưa nhập
+                        className="rounded-md border p-3 w-full"
+                    />
                 </div>
             ),
         },
 
-
-       
         {
-            key: '11',
+            key: os_family === 'iOS' ? '11' : '', // Nếu không phải iOS, key sẽ bị bỏ qua
             label: <label className="font-bold">Tình trạng đám mây</label>,
-            children: (
+            children: os_family === 'iOS' ? (
                 <div className="w-72 mt-4">
                     <Select
                         value={icloudStatus}
@@ -768,9 +861,12 @@ function RegisterProductPage() {
                         <Option value="LOCKED">Bị khóa</Option>
                     </Select>
                 </div>
+            ) : (
+                <p className="text-gray-500">Không áp dụng cho thiết bị Android</p>
             ),
         },
 
+        
         {
             key: '12',
             label: <label className="font-bold">Tình trạng thân điện thoại</label>,
@@ -845,42 +941,8 @@ function RegisterProductPage() {
         },
 
 
-        {
-            key: '16',
-            label: <label className="font-bold">Tình trạng RAM</label>,
-            children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={ram}
-                        onChange={(value) => setRam(value)}
-                        className="w-full"
-                    >
-                        <Option value="4GB">4GB</Option>
-                        <Option value="8GB">8GB</Option>
-                        <Option value="16GB">16GB</Option>
-                        <Option value="32GB">32GB</Option>
-                    </Select>
-                </div>
-            ),
-        },
-        {
-            key: '17',
-            label: <label className="font-bold">Tình trạng bộ nhớ trong (Storage)</label>,
-            children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={storage}
-                        onChange={(value) => setStorage(value)}
-                        className="w-full"
-                    >
-                        <Option value="64GB">64GB</Option>
-                        <Option value="128GB">128GB</Option>
-                        <Option value="256GB">256GB</Option>
-                        <Option value="512GB">512GB</Option>
-                    </Select>
-                </div>
-            ),
-        },
+
+      
         {
             key: '18',
             label: <label className="font-bold">Tình trạng cổng kết nối</label>,
@@ -898,75 +960,10 @@ function RegisterProductPage() {
                 </div>
             ),
         },
-        {
-            key: '19',
-            label: <label className="font-bold">Thông số camera</label>,
-            children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={cameraSpecs}
-                        onChange={(value) => setCameraSpecs(value)}
-                        className="w-full"
-                    >
-                        <Option value="12MP">12MP</Option>
-                        <Option value="8MP">8MP</Option>
-                        <Option value="16MP">16MP</Option>
-                    </Select>
-                </div>
-            ),
-        },
-        {
-            key: '20',
-            label: <label className="font-bold">Cảm biến</label>,
-            children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={sensors}
-                        onChange={(value) => setSensors(value)}
-                        className="w-full"
-                    >
-                        <Option value="12MP">12MP</Option>
-                        <Option value="64MP">64MP</Option>
-                        <Option value="48MP">48MP</Option>
-                    </Select>
-                </div>
-            ),
-        },
-        {
-            key: '21',
-            label: <label className="font-bold">Kích thước màn hình</label>,
-            children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={screenSize}
-                        onChange={(value) => setScreenSize(value)}
-                        className="w-full"
-                    >
-                        <Option value="5.5">5.5 inch</Option>
-                        <Option value="6.1">6.1 inch</Option>
-                        <Option value="6.5">6.5 inch</Option>
-                        <Option value="7.0">7.0 inch</Option>
-                    </Select>
-                </div>
-            ),
-        },
-        {
-            key: '22',
-            label: <label className="font-bold">Khả năng kết nối</label>,
-            children: (
-                <div className="w-72 mt-4">
-                    <Select
-                        value={connectivity}
-                        onChange={(value) => setConnectivity(value)}
-                        className="w-full"
-                    >
-                     
-                        <Option value="4G">4G</Option>
-                        <Option value="5G">5G</Option>
-                    </Select>
-                </div>
-            ),
-        },
+        
+     
+
+     
 
         {
             key: '24',
@@ -989,12 +986,15 @@ function RegisterProductPage() {
                                 <Option key={type.act_id} value={type.act_id}>
                                     {type.auction_typeName === "TRADITIONAL"
                                         ? "Đấu giá truyền thống"
-                                        : type.auction_typeName === "ANONYMOUS"
+                                        : type.auction_typeName === "SEALED_BID"
                                             ? "Đấu giá kín"
-                                            : type.auction_typeName}
+                                            : type.auction_typeName === "BUY_NOW"
+                                                ? null
+                                                : "Loại đấu giá khác"
+                                    }
                                 </Option>
-
                             ))
+
                         )}
                     </Select>
                 </div>
@@ -1153,6 +1153,7 @@ function RegisterProductPage() {
                                             Đăng kí sản phẩm
                                         </Heading>
 
+
                                         <Descriptions layout="vertical" bordered
                                             items={imeiCheck} />
 
@@ -1239,6 +1240,34 @@ function RegisterProductPage() {
                     </Layout>
                 </Content>
                 <FooterBK />
+                <Modal
+                    title="Thông tin về IMEI"
+                    visible={isModalVisible}
+                    onOk={handleModalClose}
+                    onCancel={handleModalClose}
+                >
+                    <h3 className="text-lg font-bold mb-2">IMEI là gì?</h3>
+                    <p>
+                        IMEI (International Mobile Equipment Identity) là một mã số nhận dạng duy nhất được gán cho mỗi điện thoại di động hoặc thiết bị hỗ trợ SIM.
+                        Mã này giúp xác định chính xác thiết bị của bạn trên mạng di động.
+                    </p>
+
+                    <h3 className="text-lg font-bold mt-4 mb-2">Cách lấy IMEI từ điện thoại:</h3>
+                    <ul className="list-disc ml-5">
+                        <li>Nhấn <strong>*#06#</strong> trên bàn phím cuộc gọi và mã IMEI sẽ hiển thị trên màn hình.</li>
+                        <li>Vào <strong>Cài đặt</strong> (Settings) &rarr; <strong>Giới thiệu về điện thoại</strong> (About phone) &rarr; <strong>Trạng thái</strong> (Status) để tìm mã IMEI.</li>
+                        <li>Mã IMEI cũng thường được in trên hộp đựng sản phẩm hoặc mặt sau của điện thoại (nếu có thể tháo rời pin).</li>
+                    </ul>
+
+                    <h3 className="text-lg font-bold mt-4 mb-2">Lưu ý:</h3>
+                    <p>
+                        - IMEI chỉ chứa các ký tự số (15 chữ số). <br />
+                        - Không chia sẻ IMEI công khai để tránh bị lạm dụng.
+                    </p>
+
+
+                </Modal>
+
             </Layout>
         </>
     );

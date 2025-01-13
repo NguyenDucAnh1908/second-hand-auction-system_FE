@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
     Card,
     CardHeader,
@@ -13,11 +13,11 @@ import {
     IconButton,
     Tooltip,
 } from "@material-tailwind/react";
-import {PencilIcon} from "@heroicons/react/24/solid";
-import {useNavigate} from "react-router-dom";
-import {useGetOrderAdminQuery} from "../../../services/order.service.js";
+import { PencilIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
+import { useGetOrderAdminQuery } from "../../../services/order.service.js";
 import Pagination from "@/components/Pagination/index.jsx";
-import {Drawer, Empty, message, Skeleton, Space} from "antd";
+import { Drawer, Empty, message, Skeleton, Space } from "antd";
 import DrawerDetailOrder from "@/components/DrawerDetailItem/DrawerDetailOrder.jsx";
 import apiGhn from "@/services/apiGhn.service.js";
 
@@ -65,7 +65,7 @@ export default function StoreOrders() {
     const [status, setStatus] = useState(""); // Default status
 
     // Pass the `status` to your API query
-    const {data: orderResponse, error, isLoading: orderLoading, isError: orderError} = useGetOrderAdminQuery({
+    const { data: orderResponse, error, isLoading: orderLoading, isError: orderError } = useGetOrderAdminQuery({
         page: trang - 1,
         limit: 10,
         status
@@ -94,6 +94,31 @@ export default function StoreOrders() {
 
     console.log("selectedOrderId dataa", selectedOrderId?.data);
 
+    const statusMapping = {
+        ready_to_pick: { text: 'Mới tạo đơn hàng', color: 'blue' },
+        picking: { text: 'Nhân viên đang lấy hàng', color: 'cyan' },
+        cancel: { text: 'Hủy đơn hàng', color: 'red' },
+        money_collect_picking: { text: 'Đang thu tiền người gửi', color: 'yellow' },
+        picked: { text: 'Nhân viên đã lấy hàng', color: 'green' },
+        storing: { text: 'Hàng đang nằm ở kho', color: 'purple' },
+        transporting: { text: 'Đang luân chuyển hàng', color: 'geekblue' },
+        sorting: { text: 'Đang phân loại hàng hóa', color: 'lime' },
+        delivering: { text: 'Nhân viên đang giao cho người nhận', color: 'orange' },
+        money_collect_delivering: { text: 'Nhân viên đang thu tiền người nhận', color: 'gold' },
+        delivered: { text: 'Nhân viên đã giao hàng thành công', color: 'green' },
+        delivery_fail: { text: 'Nhân viên giao hàng thất bại', color: 'volcano' },
+        waiting_to_return: { text: 'Đang đợi trả hàng về cho người gửi', color: 'grey' },
+        return: { text: 'Trả hàng', color: 'purple' },
+        return_transporting: { text: 'Đang luân chuyển hàng trả', color: 'blue' },
+        return_sorting: { text: 'Đang phân loại hàng trả', color: 'cyan' },
+        returning: { text: 'Nhân viên đang đi trả hàng', color: 'orange' },
+        return_fail: { text: 'Nhân viên trả hàng thất bại', color: 'volcano' },
+        returned: { text: 'Nhân viên trả hàng thành công', color: 'green' },
+        exception: { text: 'Đơn hàng ngoại lệ không nằm trong quy trình', color: 'magenta' },
+        damage: { text: 'Hàng bị hư hỏng', color: 'red' },
+        lost: { text: 'Hàng bị mất', color: 'black' },
+    };
+
     return (
         <>
             <Drawer
@@ -112,12 +137,12 @@ export default function StoreOrders() {
                     </Space>
                 }
             >
-                <DrawerDetailOrder orderId={selectedOrderId} orderCode={selectedOrderCode}/>
+                <DrawerDetailOrder orderId={selectedOrderId} orderCode={selectedOrderCode} />
                 {/*itemIds={selectedItemId}*/}
             </Drawer>
             <div className="w-full">
                 {orderError ? (
-                    <Empty/>
+                    <Empty />
                 ) : (
                     <>
                         <Skeleton loading={orderLoading} active>
@@ -143,124 +168,133 @@ export default function StoreOrders() {
                                 <CardBody className="overflow-scroll px-0">
                                     <table className="mt-4 w-full min-w-max table-auto text-left">
                                         <thead>
-                                        <tr>
-                                            {TABLE_HEAD.map((head) => (
-                                                <th key={head}
-                                                    className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                                                    <Typography variant="small" color="blue-gray"
-                                                                className="font-normal leading-none opacity-70">
-                                                        {head}
-                                                    </Typography>
-                                                </th>
-                                            ))}
-                                        </tr>
+                                            <tr>
+                                                {TABLE_HEAD.map((head) => (
+                                                    <th key={head}
+                                                        className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                                                        <Typography variant="small" color="blue-gray"
+                                                            className="font-normal leading-none opacity-70">
+                                                            {head}
+                                                        </Typography>
+                                                    </th>
+                                                ))}
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        {orders.length > 0 ? (
-                                            orders.map(
-                                                ({
-                                                     orderId,
-                                                     orderStatus,
-                                                     paymentMethod,
-                                                     email,
-                                                     phoneNumber,
-                                                     quantity,
-                                                     note,
-                                                     item,
-                                                     auctionOrder,
-                                                     totalPrice,
-                                                     shippingType,
-                                                     createBy,
-                                                     orderCode,
-                                                 }, index) => {
-                                                    const isLast = index === orders.length - 1;
-                                                    const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+                                            {orders.length > 0 ? (
+                                                orders.map(
+                                                    ({
+                                                        orderId,
+                                                        orderStatus,
+                                                        paymentMethod,
+                                                        email,
+                                                        phoneNumber,
+                                                        quantity,
+                                                        note,
+                                                        item,
+                                                        auctionOrder,
+                                                        totalPrice,
+                                                        shippingType,
+                                                        createBy,
+                                                        orderCode,
+                                                    }, index) => {
+                                                        const isLast = index === orders.length - 1;
+                                                        const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
-                                                    return (
-                                                        <tr key={orderId}>
-                                                            <td className={classes}>
-                                                                <Typography variant="small" color="blue-gray"
-                                                                            className="font-normal">
-                                                                    {orderId}
-                                                                </Typography>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <div className="flex items-center gap-3">
-                                                                    <Avatar src={item.thumbnail} alt={item.itemName}
-                                                                            size="sm"/>
-                                                                    <div className="flex flex-col">
-                                                                        <Typography variant="small" color="blue-gray"
-                                                                                    className="font-normal">
-                                                                            {item.itemName}
-                                                                        </Typography>
-                                                                        <Typography variant="small" color="blue-gray"
-                                                                                    className="font-normal opacity-70">
-                                                                            {item.sellerName}
-                                                                        </Typography>
+                                                        return (
+                                                            <tr key={orderId}>
+                                                                <td className={classes}>
+                                                                    <Typography variant="small" color="blue-gray"
+                                                                        className="font-normal">
+                                                                        {orderId}
+                                                                    </Typography>
+                                                                </td>
+                                                                <td className={classes}>
+                                                                    <div className="flex items-center gap-3">
+                                                                        <Avatar src={item.thumbnail} alt={item.itemName}
+                                                                            size="sm" />
+                                                                        <div className="flex flex-col">
+                                                                            <Typography variant="small" color="blue-gray"
+                                                                                className="font-normal">
+                                                                                {item.itemName}
+                                                                            </Typography>
+                                                                            <Typography variant="small" color="blue-gray"
+                                                                                className="font-normal opacity-70">
+                                                                                {item.sellerName}
+                                                                            </Typography>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <Chip
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    value={orderStatus}
-                                                                    color={orderStatus === "PENDING" ? "yellow" : "green"}
-                                                                />
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <Typography variant="small" color="blue-gray"
-                                                                            className="font-normal">
-                                                                    {paymentMethod}
-                                                                </Typography>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <Typography variant="small" color="blue-gray"
-                                                                            className="font-normal">
-                                                                    {totalPrice.toLocaleString('vi-VN', {
-                                                                        style: 'currency',
-                                                                        currency: 'VND'
-                                                                    })}
-                                                                </Typography>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <Typography variant="small" color="blue-gray"
-                                                                            className="font-normal">
-                                                                    {shippingType}
-                                                                </Typography>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <Typography variant="small" color="blue-gray"
-                                                                            className="font-normal">
-                                                                    {createBy}
-                                                                </Typography>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <Typography variant="small" color="blue-gray"
-                                                                            className="font-normal">
-                                                                    {note}
-                                                                </Typography>
-                                                            </td>
-                                                            <td className={classes}>
-                                                                <Tooltip content="Detail">
-                                                                    <IconButton variant="text"
-                                                                                // onClick={handleDetailClick}
-                                                                                onClick={() => showDefaultDrawer(orderId, orderCode)}
+                                                                </td>
+                                                                <td className={classes}>
+                                                                    <Chip
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        value={statusMapping[orderStatus]?.text || 'Trạng thái không xác định'}
+                                                                        color={orderStatus in statusMapping ? statusMapping[orderStatus].color : 'gray'}
+                                                                    />
+                                                                </td>
+
+                                                                <td className={classes}>
+                                                                    <Typography
+                                                                        variant="small"
+                                                                        color="blue-gray"
+                                                                        className="font-normal"
                                                                     >
-                                                                        <PencilIcon className="h-4 w-4"/>
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                }
-                                            )
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={TABLE_HEAD.length} className="text-center py-4"><Empty/>
-                                                </td>
-                                            </tr>
-                                        )}
+                                                                        {{
+                                                                            VN_PAYMENT: 'Thanh toán qua VN',
+                                                                            WALLET_PAYMENT: 'Bằng ví tiền',
+                                                                            BANK_TRANSFER: 'Chuyển khoản ngân hàng',
+                                                                        }[paymentMethod] || 'Phương thức không xác định'}
+                                                                    </Typography>
+                                                                </td>
+
+                                                                <td className={classes}>
+                                                                    <Typography variant="small" color="blue-gray"
+                                                                        className="font-normal">
+                                                                        {totalPrice.toLocaleString('vi-VN', {
+                                                                            style: 'currency',
+                                                                            currency: 'VND'
+                                                                        })}
+                                                                    </Typography>
+                                                                </td>
+                                                                <td className={classes}>
+                                                                    <Typography variant="small" color="blue-gray"
+                                                                        className="font-normal">
+                                                                        {shippingType}
+                                                                    </Typography>
+                                                                </td>
+                                                                <td className={classes}>
+                                                                    <Typography variant="small" color="blue-gray"
+                                                                        className="font-normal">
+                                                                        {createBy}
+                                                                    </Typography>
+                                                                </td>
+                                                                <td className={classes}>
+                                                                    <Typography variant="small" color="blue-gray"
+                                                                        className="font-normal">
+                                                                        {note}
+                                                                    </Typography>
+                                                                </td>
+                                                                <td className={classes}>
+                                                                    <Tooltip content="Detail">
+                                                                        <IconButton variant="text"
+                                                                            // onClick={handleDetailClick}
+                                                                            onClick={() => showDefaultDrawer(orderId, orderCode)}
+                                                                        >
+                                                                            <PencilIcon className="h-4 w-4" />
+                                                                        </IconButton>
+                                                                    </Tooltip>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    }
+                                                )
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={TABLE_HEAD.length} className="text-center py-4"><Empty />
+                                                    </td>
+                                                </tr>
+                                            )}
                                         </tbody>
                                     </table>
                                 </CardBody>

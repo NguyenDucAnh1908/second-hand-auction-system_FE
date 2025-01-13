@@ -105,15 +105,18 @@ function DrawerDetailOrder({orderId, orderCode}) {
         {
             key: '4',
             label: 'Phương thức thanh toán',
-            children: orderData?.paymentMethod,
+            children: "Ví nền tảng",
             span: 1,
         },
         {
             key: '5',
             label: 'Tổng số tiền',
-            children: orderData?.totalAmount,
+            children: new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(orderData?.totalAmount),
             span: 1,
-        },
+        },        
         {
             key: '6',
             label: 'Trạng thái',
@@ -137,7 +140,7 @@ function DrawerDetailOrder({orderId, orderCode}) {
         {
             key: '7',
             label: 'Phương thức vận chuyển',
-            children: orderData?.shippingMethod,
+            children: "Giao hàng nhanh",
             span: 1,
         },
         {
@@ -229,36 +232,8 @@ function DrawerDetailOrder({orderId, orderCode}) {
             children: orderDetail?.data.item.auction.auction_id,
             span: 1,
         },
-        {
-            key: '13',
-            label: 'Kiểu dấu giá',
-            children: "bo xung sau",
-            span: 1,
-        },
-        {
-            key: '13',
-            label: 'Điều khoản',
-            children: "bo xung sau",
-            span: 1,
-        },
-        {
-            key: '13',
-            label: 'Bước giá',
-            children: "bo xung sau",
-            span: 1,
-        },
-        {
-            key: '13',
-            label: 'Bước giá',
-            children: <p>
-                {orderDetails?.data?.payment_type_id === 1
-                    ? "Người Gửi trả phí"
-                    : orderDetails?.data?.payment_type_id === 2
-                        ? "Người nhận trả phí"
-                        : "Không xác định"}
-            </p>,
-            span: 1,
-        },
+    
+  
     ];
 
     const items = [
