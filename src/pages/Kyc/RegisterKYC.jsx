@@ -76,7 +76,7 @@ export default function KNCPage() {
             // Cập nhật fileList và preview ảnh
             setFileList([{ ...newFileList[0], url: imageUrl }]);
             setPreviewImage(imageUrl);
-            setPreviewOpen(true);
+            setPreviewOpen(false);
 
             // Gửi ảnh đến FPT API để xử lý
             const formDataApi = new FormData();
@@ -183,6 +183,7 @@ export default function KNCPage() {
                                 className="flex flex-col gap-4 items-center justify-center p-6 bg-white rounded-xl shadow-md">
                                 <h3 className="text-xl font-semibold text-gray-800 mb-4">Hình ảnh CCCD</h3>
                                 <Upload
+
                                     listType="picture-card"
                                     onPreview={handlePreview}
                                     onChange={handleChangeImage}
@@ -199,12 +200,14 @@ export default function KNCPage() {
 
                                 {previewImage && (
                                     <Image
+                                        src={previewImage}
+                                        style={{ display: 'none' }}
                                         preview={{
                                             visible: previewOpen,
                                             onVisibleChange: (visible) => setPreviewOpen(visible),
                                         }}
-                                        src={previewImage}
                                     />
+
                                 )}
 
                                 {fileList.length === 0 && (
@@ -358,4 +361,5 @@ export default function KNCPage() {
             </Layout>
         </>
     );
+
 }

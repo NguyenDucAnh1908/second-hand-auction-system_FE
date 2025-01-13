@@ -42,13 +42,16 @@ export default function Policy() {
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-4">
               Để bảo vệ quyền lợi người mua, Đấu Giá Việt cho phép đổi trả trong những trường hợp
-              đặc biệt. Nếu sản phẩm bị lỗi hoặc không đúng mô tả, bạn có thể yêu cầu đổi trả với bằng chứng đi kèm (
+              đặc biệt. Người bán có phải cho phép người mua được kiểm tra hàng trước khi nhận hàng. Người mua có trách nhiệm quay chụp lại hình ảnh đơn hàng, khi bên vận chuyển
+              đã giao tới tay. Nếu sản phẩm bị lỗi hoặc không đúng mô tả, bạn có thể yêu cầu đổi trả với bằng chứng đi kèm đó (
                 hình ảnh hoặc video
-              )
-              khi nhận được hàng.
+              ).
+            </p>
+            <p className="text-gray-600 text-lg leading-relaxed mb-4">
+
             </p>
             <ul className="list-disc pl-5 text-gray-600 text-lg mb-4 space-y-2">
-              <li>Đảm bảo sản phẩm còn nguyên vẹn, chưa qua sử dụng quá mức.</li>
+              <li>Đảm bảo sản phẩm còn nguyên vẹn, như lúc kiểm tra hàng.</li>
               <li>
                 Nếu có vấn đề nghiêm trọng (ví dụ hư hỏng do vận chuyển), người mua cần
                 cung cấp bằng chứng (hình ảnh, video).

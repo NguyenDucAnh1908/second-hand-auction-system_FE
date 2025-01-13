@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { TextArea, Heading, InputDH } from "../../components";
 import FooterBK from "../../components/FooterBK/index.jsx";
+import { useDispatch } from "react-redux";
 import { ButtonDH } from "../../components/index.jsx";
 import { useGetKYCByIdQuery, useGetKYCItemsQuery, useUpdateKycMutation } from "../../services/kyc.service.js";
 import { useParams } from 'react-router-dom';
 import { Input, message, Spin, Descriptions, Image, Skeleton, } from 'antd';
 import { format } from 'date-fns';  // Cài đặt date-fns nếu chưa có
 import { useNavigate } from 'react-router-dom';
+import { setUserKycStatus } from "../../redux/user/userSlice";
 
 export default function KiemduyetStaffPage() {
     const { id } = useParams();
+    const dispatch = useDispatch();
     const { data: kycData, error, isLoading } = useGetKYCByIdQuery(id);
     console.log(kycData);
     const [updateKyc, { isLoading: isLoadingKyc }] = useUpdateKycMutation();
@@ -21,6 +24,15 @@ export default function KiemduyetStaffPage() {
         return date ? format(new Date(date), 'dd/MM/yyyy') : "Chưa có";
     };
     const kyc = kycData?.data;
+
+
+
+    useEffect(() => {
+        if (kycData?.data) {
+            // Ví dụ: status nằm trong kycData.data.status
+            dispatch(setUserKycStatus(kycData.data.status));
+        }
+    }, [kycData, dispatch]);
     //if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading KYC details: {error.message}</div>;
 

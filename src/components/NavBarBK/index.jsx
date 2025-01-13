@@ -21,7 +21,7 @@ import {
     InformationCircleIcon,
     ShoppingCartIcon,
     DocumentIcon,
-    PhoneIcon,
+    PhoneIcon, ScaleIcon, EnvelopeIcon, DocumentCheckIcon,
 } from "@heroicons/react/24/outline";
 import { useGetCategoriesQuery } from "@/services/category.service.js";
 
@@ -45,10 +45,11 @@ function NavListMenu() {
         <Menu key={category.categoryId} placement="right-start" allowHover offset={15}>
             <MenuHandler className="flex items-center justify-between">
                 <MenuItem>
+
                     {category.categoryName}
                     <ChevronUpIcon
                         strokeWidth={2.5}
-                        className="h-3.5 w-3.5 transition-transform"
+                        className="h-3.5 w-3.5 transition-transform rotate-90"
                     />
                 </MenuItem>
             </MenuHandler>
@@ -74,19 +75,19 @@ function NavListMenu() {
                         className="mr-4 cursor-pointer py-1.5 lg:ml-2 font-bold"
                     >
                         <ListItem
-                            className="flex items-center gap-2 py-2 pr-4 font-semibold text-gray-900 cursor-pointer"
+                            className="flex items-center gap-2 py-2 pr-4 font-semibold text-gray-900 cursor-pointer "
                             selected={isMenuOpen || isMobileMenuOpen}
                             onClick={() => setIsMobileMenuOpen((cur) => !cur)}
                         >
                             <span className="text-xl font-bold text-gray-800 hover:text-green-600">Danh Mục</span>
                             <ChevronDownIcon
                                 strokeWidth={2.5}
-                                className={`hidden h-3 w-3 transition-transform lg:block ${isMenuOpen ? "rotate-180" : ""
+                                className={`hidden h-3 w-3 transition-transform lg:block ${!isMenuOpen ? "-rotate-90" : ""
                                     }`}
                             />
                             <ChevronDownIcon
                                 strokeWidth={2.5}
-                                className={`block h-3 w-3 transition-transform lg:hidden ${isMobileMenuOpen ? "rotate-180" : ""
+                                className={`block h-3 w-3 transition-transform lg:hidden ${isMobileMenuOpen ? "-rotate-90" : ""
                                     }`}
                             />
                         </ListItem>
@@ -97,7 +98,7 @@ function NavListMenu() {
                 </MenuHandler>
 
                 {/* Hiển thị danh mục từ API */}
-                <MenuList className="hidden rounded-xl lg:block">
+                <MenuList className="hidden rounded-xl lg:block ">
                     {renderCategories}
                 </MenuList>
             </Menu>
@@ -110,10 +111,10 @@ function NavList() {
         <List className="mb-6 mt-4 p-0 lg:mb-0 lg:mt-0 lg:flex-row lg:p-1">
             {[
                 { title: "Trang chủ", icon: <HomeIcon className="nav-icon" />, href: "/" },
-                { title: "Sản phẩm", icon: <ShoppingCartIcon className="nav-icon" />, href: "/product" },
-                { title: "Liên hệ", icon: <PhoneIcon className="nav-icon" />, href: "/contact" },
-                { title: "Bài viết", icon: <DocumentIcon className="nav-icon" />, href: "/articles" },
-                { title: "Chính sách", icon: <InformationCircleIcon className="nav-icon" />, href: "/policy" },
+                { title: "Phiên đấu", icon: <ScaleIcon className="nav-icon" />, href: "/product" },
+                { title: "Liên hệ", icon: <EnvelopeIcon className="nav-icon" />, href: "/contact" },
+                { title: "Giới thiệu", icon: <InformationCircleIcon className="nav-icon" />, href: "/articles" },
+                { title: "Chính sách", icon: <DocumentCheckIcon className="nav-icon" />, href: "/policy" },
             ].map((item, index) => (
                 <Typography
                     as="a"

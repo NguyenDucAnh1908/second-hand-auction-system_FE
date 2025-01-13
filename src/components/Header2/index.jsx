@@ -308,7 +308,7 @@ export default function Header2({ ...props }) {
                                                         </svg>
                                                         <a href="/ProfileDetail">
                                                             <Typography variant="small" className="font-medium">
-                                                                Tài khooản
+                                                                Tài khoản
                                                             </Typography>
                                                         </a>
                                                     </MenuItem>

@@ -4,6 +4,7 @@ const initialState = {
     user: null,
     loading: false,
     error: null,
+    kycStatus: 'none',
 };
 
 const userSlice = createSlice({
@@ -19,9 +20,12 @@ const userSlice = createSlice({
         setError(state, action) {
             state.error = action.payload;
         },
+        setUserKycStatus: (state, action) => {
+            state.kycStatus = action.payload;
+        },
     },
 });
-
+export const { setUserKycStatus } = userSlice.actions;
 export const { setUser,
     setLoading,
     setError } = userSlice.actions;
