@@ -4,7 +4,7 @@ import Header2 from "../../components/Header2";
 import FooterBK from "../../components/FooterBK";
 import {
     Breadcrumb, Layout, theme, Table, Spin, Alert, Button, Modal, Skeleton, Empty,
-    Tag, Statistic, Drawer, Space, Image
+    Tag, Statistic, Drawer, Space, Image, message, Select, Upload, Input
 } from "antd";
 import { SiderUserBK } from "@/components/SiderUser/SiderUserBK.jsx";
 import { useGetOrderQuery } from "../../services/order.service";
@@ -17,11 +17,13 @@ import {
     CloseCircleOutlined,
     ExclamationCircleOutlined,
     MinusCircleOutlined,
-    SyncOutlined,
+    SyncOutlined, UploadOutlined,
 } from '@ant-design/icons';
 import OnlineGatewayService from "@/services/apiGhn.service.js";
 import { useGetImageItemsQuery } from "@/services/item.service.js";
 import OrderDetailCompoment from "@/components/OrderDetailCompoment/index.jsx";
+import useHookUploadImage from "@/hooks/useHookUploadImage.js";
+import {useCreateReportMutation} from "@/services/report.service.js";
 
 const statusMapping = {
     ready_to_pick: { text: 'Mới tạo đơn hàng', color: 'text-gray-500' },
@@ -47,7 +49,7 @@ const statusMapping = {
     damage: { text: 'Hàng bị hư hỏng', color: 'text-red-700' },
     lost: { text: 'Hàng bị mất', color: 'text-black' },
 };
-
+const {TextArea} = Input;
 const { Content, Sider } = Layout;
 export default function OrderManagementBuyer() {
     const {
@@ -62,6 +64,12 @@ export default function OrderManagementBuyer() {
     const [loading, setLoading] = React.useState(true);
     const [orderDetails, setOrderDetails] = useState(null);
     const [error1, setError] = useState(null);
+    const [reportType, setReportType] = useState("DAMAGED_PRODUCT");
+    const [reason, setReason] = useState("");
+    const [uploadFileList, setUploadFileList] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { UploadImage } = useHookUploadImage();
+    const [openReport, setOpenReport] = useState(false);
 
     const { data, error, isLoading } = useGetOrderQuery({ page: 0, limit: 10 });
 
@@ -74,6 +82,67 @@ export default function OrderManagementBuyer() {
         isSuccess: isSuccessImage,
         refetch: refetchImage
     } = useGetImageItemsQuery({ id });
+
+    const [createReport, {
+        isLoading: loadingCreateReport,
+        isSuccess: isSuccessCreateReport,
+        isError: isErrorCreateReport,
+        error: errorCreateReport,
+    }] = useCreateReportMutation();
+
+
+    const handleSubmit = async () => {
+        if (!reason.trim()) {
+            message.error("Vui lòng nhập lý do!");
+            return;
+        }
+
+        setIsSubmitting(true); // Bắt đầu loading
+
+        try {
+            let evidenceUrl = null;
+
+            if (uploadFileList?.[0]?.originFileObj) {
+                const file = uploadFileList[0].originFileObj;
+                evidenceUrl = await UploadImage(file); // Upload hình lên Firebase
+            }
+
+            await createReport({
+                type: reportType,
+                reason: reason.trim(),
+                evidence: evidenceUrl, // URL ảnh đã upload
+                orderId: 1,
+            }).unwrap();
+
+            message.success("Gửi báo cáo thành công!");
+            setOpen(false); // Đóng Modal
+            setReason(""); // Reset trạng thái
+            setReportType("DAMAGED_PRODUCT");
+            //refetchReport();
+        } catch (error) {
+            console.error("Error:", error);
+            message.error("Gửi báo cáo thất bại! Vui lòng thử lại.");
+        } finally {
+            setIsSubmitting(false); // Tắt loading
+        }
+    };
+
+    const handleChange = (value) => {
+        console.log(`selected ${value}`);
+        setReportType(value);
+    };
+
+    const uploadProps = {
+        multiple: false, // Chỉ cho phép tải lên một file
+        beforeUpload: () => false, // Chặn tự động upload (sẽ upload thủ công bằng Firebase)
+        onChange(info) {
+            setUploadFileList(info.fileList); // Lưu danh sách file vào state
+            if (info.file.status === 'removed') {
+                setUploadFileList([]); // Xóa file nếu người dùng xóa
+            }
+        },
+    };
+
 
     const handleDetailClick = (order) => {
         setSelectedOrder(order);
@@ -230,14 +299,14 @@ export default function OrderManagementBuyer() {
                     >
                         Chi tiết
                     </Button>
-                    {/* <Button
+                     <Button
                         type="primary"
                         className="bg-blue-500 hover:bg-blue-600 text-white font-bold mr-2"
                         // onClick={() => handleDetailClick(record)}
                         onClick={() => showLoading(record)}
                     >
                         Chi tiết BK
-                    </Button> */}
+                    </Button>
                     {record.feedback ? (
                         <Button
                             type="default"
@@ -257,6 +326,14 @@ export default function OrderManagementBuyer() {
                             </Button>
                         )
                     )}
+                    {/*<Button*/}
+                    {/*    type="primary"*/}
+                    {/*    className="bg-blue-500 hover:bg-blue-600 text-white font-bold mr-2"*/}
+                    {/*    //onClick={() => handleDetailClick(record)}*/}
+                    {/*    onClick={() => setOpenReport(true)}*/}
+                    {/*>*/}
+                    {/*    Báo cáo*/}
+                    {/*</Button>*/}
                 </>
             ),
         },
@@ -296,7 +373,7 @@ export default function OrderManagementBuyer() {
     ];
 
 
-    const dataSourceDelivery = orderDetails?.log.map(statusDelivery => ({
+    const dataSourceDelivery = orderDetails?.log?.map(statusDelivery => ({
         key: statusDelivery.trip_code,
         status: statusDelivery.status,
         statusText: statusMapping[statusDelivery.status]?.text || 'Không xác định',
@@ -306,10 +383,48 @@ export default function OrderManagementBuyer() {
         updated_date: statusDelivery.updated_date
     })) || [];
 
+    console.log("orderDetails", orderDetails)
     // if (loading) return <p>Loading...</p>;
     // if (error1) return <p>Error: {error1}</p>;
     return (
         <>
+
+            <Modal
+                title="Gửi báo cáo"
+                centered
+                open={openReport}
+                onOk={handleSubmit}
+                confirmLoading={isSubmitting} // Loading trong toàn bộ quá trình
+                onCancel={() => setOpenReport(false)}
+                width={1000}
+                okText="Gửi"
+                cancelText="Hủy"
+            >
+                <Select
+                    defaultValue="DAMAGED_PRODUCT"
+                    style={{ width: 240 }}
+                    onChange={handleChange}
+                    options={[
+                        { value: 'DAMAGED_PRODUCT', label: 'Hàng lỗi' },
+                        { value: 'MISSING_BALANCE', label: 'Không nhận được tiền' },
+                        { value: 'SERVICE_NOT_WORKING', label: 'Dịch vụ không hoạt động' },
+                        { value: 'TRANSACTION_ERROR', label: 'Lỗi giao dịch' },
+                        { value: 'ACCOUNT_LOCKED', label: 'Tài khoản bị khóa' },
+                        { value: 'DISPLAY_ERROR', label: 'Lỗi hiển thị' },
+                        { value: 'OTHER', label: 'Lỗi khác' },
+                    ]}
+                />
+                <TextArea
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    style={{ marginTop: '16px' }}
+                    rows={4}
+                />
+                <Upload {...uploadProps} fileList={uploadFileList}>
+                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                </Upload>
+            </Modal>
+
             <Helmet>
                 <title>Order Management</title>
             </Helmet>

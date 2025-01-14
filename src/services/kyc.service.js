@@ -12,6 +12,7 @@ export const kycApiSlice = apiSlice.injectEndpoints({
                     limit: paging.limit || 10,
                 },
             }),
+            providesTags: ['Orders'],
             transformResponse: (response) => {
                 console.log(response.data);
 
@@ -24,11 +25,9 @@ export const kycApiSlice = apiSlice.injectEndpoints({
         }),
 
         getKYCById: builder.query({
-            query: (id) => `kyc/${id}`
-
+            query: (id) => `kyc/${id}`,
+            providesTags: ['Orders'],
         }),
-
-
 
         updateKyc: builder.mutation({
             query: ({ kycId, kycData }) => ({
@@ -36,6 +35,7 @@ export const kycApiSlice = apiSlice.injectEndpoints({
                 method: "PUT",
                 body: kycData,
             }),
+            invalidatesTags: ['kyc'],
         }),
 
         createKyc: builder.mutation({
@@ -44,10 +44,12 @@ export const kycApiSlice = apiSlice.injectEndpoints({
                 method: "POST",
                 body: kycData,
             }),
+            invalidatesTags: ['kyc'],
         }),
 
         getKYCByUser: builder.query({
-            query: () => `/kyc/user`, 
+            query: () => `/kyc/user`,
+            providesTags: ['Orders'],
         }),
 
         updateKYCByUser: builder.mutation({
@@ -56,6 +58,7 @@ export const kycApiSlice = apiSlice.injectEndpoints({
                 method: "PUT",
                 body: kycData,
             }),
+            invalidatesTags: ['kyc'],
         }),
     }),
 })

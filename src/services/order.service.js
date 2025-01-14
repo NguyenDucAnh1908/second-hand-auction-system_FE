@@ -11,7 +11,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
                     limit: paging.limit || 10, // Default to 10 if not provided
                 },
             }),
-
+            providesTags: ['Orders'],
         }),
 
         createOrder: builder.mutation({
@@ -20,6 +20,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
                 method: "POST",
                 body: {...credentials},
             }),
+            invalidatesTags: ['Orders'],
         }),
 
         getOrderAdmin: builder.query({
@@ -31,6 +32,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
                     status: paging.status,
                 },
             }),
+            providesTags: ['Orders'],
         }),
 
         getOrderRevenue: builder.query({

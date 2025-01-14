@@ -10,6 +10,7 @@ export const reportApiSlice = apiSlice.injectEndpoints({
                     limit: paging.limit || 10,
                 },
             }),
+            providesTags: ['Report'],
             transformResponse: (response) => {
                 return {
                     items: response.data.data || [],
@@ -42,6 +43,7 @@ export const reportApiSlice = apiSlice.injectEndpoints({
                 method: "POST",
                 body: {...credentials},
             }),
+            invalidatesTags: ['Report'],
         }),
 
         updateReport: builder.mutation({

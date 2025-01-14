@@ -36,7 +36,7 @@ export default function OrderForm() {
     const auctionAmount = auctionData?.data?.amount || 0; // Nếu không có amount, đặt giá trị mặc định là 0
     // const commission = auctionAmount * 0.05; // Hoa hồng là 5% của giá đấu
     const totalAmount = auctionAmount ;
-    const {refetch} = useGetOrderQuery({page: 0, limit: 10});
+    const {refetch: orderRefetch} = useGetOrderQuery({page: 0, limit: 10});
     const navigate = useNavigate();
     //console.log("auctionData", auctionData)
     const {isLoading: isLoadingBalance} = useGetBalanceQuery();
@@ -137,12 +137,12 @@ export default function OrderForm() {
             //console.log("orderCode ", orderCode)
             const result = await createOrder(updatedOrderDetails).unwrap();
             message.success('Đơn hàng đã được tạo thành công!');
-            message.success(result.message);
+            //message.success(result.message);
             navigate('/OrderManagementBuyer');
             isLoadingBalance();
-            refetch();
+            orderRefetch();
         } catch (error) {
-            console.error("Create order error:", error);
+            //console.error("Create order error:", error);
             const errorMessage = error?.data?.message + " Vui lòng kiểm tra lại thông tin ở danh sách đơn hàng" || "An error occurred while creating the order";
             message.error(errorMessage);
         } finally {
