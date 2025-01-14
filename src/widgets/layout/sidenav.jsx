@@ -21,6 +21,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
 
   // State to track expanded category sections
   const [expandedSections, setExpandedSections] = useState({});
+  const isDynamicPath = (path) => path.includes("/:");
 
   // Toggle function for expanding/collapsing a section
   const toggleSection = (key) => {
@@ -78,34 +79,64 @@ export function Sidenav({ brandImg, brandName, routes }) {
                       )}
                     </li>
                 )}
-                {expandedSections[key] && pages.map(({ icon, name, path }) => (
-                    <li key={name}>
-                      <NavLink to={`/${layout}${path}`}>
-                        {({ isActive }) => (
-                            <Button
-                                variant={isActive ? "gradient" : "text"}
-                                color={
-                                  isActive
-                                      ? sidenavColor
-                                      : sidenavType === "dark"
-                                          ? "white"
-                                          : "blue-gray"
-                                }
-                                className="flex items-center gap-4 px-4 capitalize"
-                                fullWidth
-                            >
-                              {icon}
-                              <Typography
-                                  color="inherit"
-                                  className="font-medium capitalize"
-                              >
-                                {name}
-                              </Typography>
-                            </Button>
-                        )}
-                      </NavLink>
-                    </li>
-                ))}
+                {/*{expandedSections[key] && pages.map(({ icon, name, path }) => (*/}
+                {/*    <li key={name}>*/}
+                {/*      <NavLink to={`/${layout}${path}`}>*/}
+                {/*        {({ isActive }) => (*/}
+                {/*            <Button*/}
+                {/*                variant={isActive ? "gradient" : "text"}*/}
+                {/*                color={*/}
+                {/*                  isActive*/}
+                {/*                      ? sidenavColor*/}
+                {/*                      : sidenavType === "dark"*/}
+                {/*                          ? "white"*/}
+                {/*                          : "blue-gray"*/}
+                {/*                }*/}
+                {/*                className="flex items-center gap-4 px-4 capitalize"*/}
+                {/*                fullWidth*/}
+                {/*            >*/}
+                {/*              {icon}*/}
+                {/*              <Typography*/}
+                {/*                  color="inherit"*/}
+                {/*                  className="font-medium capitalize"*/}
+                {/*              >*/}
+                {/*                {name}*/}
+                {/*              </Typography>*/}
+                {/*            </Button>*/}
+                {/*        )}*/}
+                {/*      </NavLink>*/}
+                {/*    </li>*/}
+                {/*))}*/}
+                {expandedSections[key] &&
+                    pages.filter(({ path }) => !isDynamicPath(path)).map(({ icon, name, path }) => (
+                        <li key={name}>
+                          <NavLink to={`/${layout}${path}`}>
+                            {({ isActive }) => (
+                                <Button
+                                    variant={isActive ? "gradient" : "text"}
+                                    color={
+                                      isActive
+                                          ? sidenavColor
+                                          : sidenavType === "dark"
+                                              ? "white"
+                                              : "blue-gray"
+                                    }
+                                    className="flex items-center gap-4 px-4 capitalize"
+                                    fullWidth
+                                >
+                                  {icon}
+                                  <Typography
+                                      color="inherit"
+                                      className="font-medium capitalize"
+                                  >
+                                    {name}
+                                  </Typography>
+                                </Button>
+                            )}
+                          </NavLink>
+                        </li>
+                    ))}
+
               </ul>
           ))}
         </div>
