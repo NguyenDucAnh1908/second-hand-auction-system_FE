@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import Header2 from "@/components/Header2/index.jsx";
-import {Breadcrumb, Button, Layout, theme, Space, Table, Tag, Modal, Select, Input, message} from "antd";
+import {Breadcrumb, Button, Layout, theme, Space, Table, Tag, Modal, Select, Input, message, Upload} from "antd";
 import {SiderUserBK} from "@/components/SiderUser/SiderUserBK.jsx";
 import FooterBK from "@/components/FooterBK/index.jsx";
 import {useCreateReportMutation, useGetReportQuery} from "@/services/report.service.js";
+import {UploadOutlined} from "@ant-design/icons";
+import useHookUploadImage from "@/hooks/useHookUploadImage.js";
 
 const {TextArea} = Input;
 const {Content, Sider} = Layout;
@@ -23,7 +25,12 @@ const ReportPage = () => {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10); // Số item trên mỗi trang
     const [reportType, setReportType] = useState("DAMAGED_PRODUCT"); // Loại report
-    const [reason, setReason] = useState(""); // Lý do
+    const [reason, setReason] = useState("");
+    const [uploadFileList, setUploadFileList] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [open, setOpen] = useState(false);
+    const { UploadImage } = useHookUploadImage();
+
     const {data: dataReport, isLoading: loadingReport, isError: isErrorReport, error: errorReport, refetch: refetchReport,} = useGetReportQuery({
         page: page - 1, // API thường dùng chỉ số 0-based
         limit: 10
@@ -36,7 +43,32 @@ const ReportPage = () => {
         error: errorCreateReport,
     }] = useCreateReportMutation();
 
-    const [open, setOpen] = useState(false);
+
+
+    // const handleSubmit = async () => {
+    //     if (!reason.trim()) {
+    //         message.error("Vui lòng nhập lý do!");
+    //         return;
+    //     }
+    //
+    //     try {
+    //         const response = await createReport({
+    //             type: reportType,
+    //             reason: reason.trim(),
+    //             orderId: 1
+    //         }).unwrap();
+    //
+    //         message.success("Gửi báo cáo thành công!");
+    //         //console.log("Response:", response);
+    //         setOpen(false);
+    //         setReason("");
+    //         setReportType("DAMAGED_PRODUCT");
+    //         refetchReport();
+    //     } catch (error) {
+    //         console.error("Error:", error);
+    //         message.error("Gửi báo cáo thất bại! Vui lòng thử lại.");
+    //     }
+    // };
 
     const handleSubmit = async () => {
         if (!reason.trim()) {
@@ -44,28 +76,55 @@ const ReportPage = () => {
             return;
         }
 
+        setIsSubmitting(true); // Bắt đầu loading
+
         try {
-            const response = await createReport({
+            let evidenceUrl = null;
+
+            if (uploadFileList?.[0]?.originFileObj) {
+                const file = uploadFileList[0].originFileObj;
+                evidenceUrl = await UploadImage(file); // Upload hình lên Firebase
+            }
+
+            await createReport({
                 type: reportType,
                 reason: reason.trim(),
+                evidence: evidenceUrl, // URL ảnh đã upload
+                orderId: 1,
             }).unwrap();
 
             message.success("Gửi báo cáo thành công!");
-            //console.log("Response:", response);
-            setOpen(false);
-            setReason("");
+            setOpen(false); // Đóng Modal
+            setReason(""); // Reset trạng thái
             setReportType("DAMAGED_PRODUCT");
-            refetchReport();
+            // refetchReport();
         } catch (error) {
             console.error("Error:", error);
             message.error("Gửi báo cáo thất bại! Vui lòng thử lại.");
+        } finally {
+            setIsSubmitting(false); // Tắt loading
         }
     };
+
+
+
 
     const handleChange = (value) => {
         console.log(`selected ${value}`);
         setReportType(value);
     };
+
+    const uploadProps = {
+        multiple: false, // Chỉ cho phép tải lên một file
+        beforeUpload: () => false, // Chặn tự động upload (sẽ upload thủ công bằng Firebase)
+        onChange(info) {
+            setUploadFileList(info.fileList); // Lưu danh sách file vào state
+            if (info.file.status === 'removed') {
+                setUploadFileList([]); // Xóa file nếu người dùng xóa
+            }
+        },
+    };
+
     const columns = [
         {
             title: "Loại",
@@ -151,12 +210,73 @@ const ReportPage = () => {
 
     return (
         <>
+            {/*<Modal*/}
+            {/*    title="Gửi báo cáo"*/}
+            {/*    centered*/}
+            {/*    open={open}*/}
+            {/*    onOk={handleSubmit}*/}
+            {/*    confirmLoading={loadingCreateReport}*/}
+            {/*    onCancel={() => setOpen(false)}*/}
+            {/*    width={1000}*/}
+            {/*    okText="Gửi"*/}
+            {/*    cancelText="Hủy"*/}
+            {/*>*/}
+            {/*    <Select*/}
+            {/*        defaultValue="DAMAGED_PRODUCT"*/}
+            {/*        style={{*/}
+            {/*            width: 240, // Tăng chiều rộng để hiển thị rõ hơn*/}
+            {/*        }}*/}
+            {/*        onChange={handleChange}*/}
+            {/*        options={[*/}
+            {/*            {*/}
+            {/*                value: 'DAMAGED_PRODUCT',*/}
+            {/*                label: 'Hàng lỗi',*/}
+            {/*            },*/}
+            {/*            {*/}
+            {/*                value: 'MISSING_BALANCE',*/}
+            {/*                label: 'Không nhận được tiền',*/}
+            {/*            },*/}
+            {/*            {*/}
+            {/*                value: 'SERVICE_NOT_WORKING',*/}
+            {/*                label: 'Dịch vụ không hoạt động',*/}
+            {/*            },*/}
+            {/*            {*/}
+            {/*                value: 'TRANSACTION_ERROR',*/}
+            {/*                label: 'Lỗi giao dịch',*/}
+            {/*            },*/}
+            {/*            {*/}
+            {/*                value: 'ACCOUNT_LOCKED',*/}
+            {/*                label: 'Tài khoản bị khóa',*/}
+            {/*            },*/}
+            {/*            {*/}
+            {/*                value: 'DISPLAY_ERROR',*/}
+            {/*                label: 'Lỗi hiển thị',*/}
+            {/*            },*/}
+            {/*            {*/}
+            {/*                value: 'OTHER',*/}
+            {/*                label: 'Lỗi khác',*/}
+            {/*            },*/}
+            {/*        ]}*/}
+            {/*    />*/}
+            {/*    <TextArea*/}
+            {/*        value={reason}*/}
+            {/*        onChange={(e) => setReason(e.target.value)}*/}
+            {/*        style={{*/}
+            {/*            marginTop: '16px'*/}
+            {/*        }} rows={4}/>*/}
+            {/*    /!*<Upload {...props}>*!/*/}
+            {/*    /!*    <Button icon={<UploadOutlined />}>Click to Upload</Button>*!/*/}
+            {/*    /!*</Upload>*!/*/}
+            {/*    <Upload {...uploadProps} fileList={uploadFileList}>*/}
+            {/*        <Button icon={<UploadOutlined />}>Click to Upload</Button>*/}
+            {/*    </Upload>*/}
+            {/*</Modal>*/}
             <Modal
                 title="Gửi báo cáo"
                 centered
                 open={open}
                 onOk={handleSubmit}
-                confirmLoading={loadingCreateReport}
+                confirmLoading={isSubmitting} // Loading trong toàn bộ quá trình
                 onCancel={() => setOpen(false)}
                 width={1000}
                 okText="Gửi"
@@ -164,48 +284,29 @@ const ReportPage = () => {
             >
                 <Select
                     defaultValue="DAMAGED_PRODUCT"
-                    style={{
-                        width: 240, // Tăng chiều rộng để hiển thị rõ hơn
-                    }}
+                    style={{ width: 240 }}
                     onChange={handleChange}
                     options={[
-                        {
-                            value: 'DAMAGED_PRODUCT',
-                            label: 'Hàng lỗi',
-                        },
-                        {
-                            value: 'MISSING_BALANCE',
-                            label: 'Không nhận được tiền',
-                        },
-                        {
-                            value: 'SERVICE_NOT_WORKING',
-                            label: 'Dịch vụ không hoạt động',
-                        },
-                        {
-                            value: 'TRANSACTION_ERROR',
-                            label: 'Lỗi giao dịch',
-                        },
-                        {
-                            value: 'ACCOUNT_LOCKED',
-                            label: 'Tài khoản bị khóa',
-                        },
-                        {
-                            value: 'DISPLAY_ERROR',
-                            label: 'Lỗi hiển thị',
-                        },
-                        {
-                            value: 'OTHER',
-                            label: 'Lỗi khác',
-                        },
+                        { value: 'DAMAGED_PRODUCT', label: 'Hàng lỗi' },
+                        { value: 'MISSING_BALANCE', label: 'Không nhận được tiền' },
+                        { value: 'SERVICE_NOT_WORKING', label: 'Dịch vụ không hoạt động' },
+                        { value: 'TRANSACTION_ERROR', label: 'Lỗi giao dịch' },
+                        { value: 'ACCOUNT_LOCKED', label: 'Tài khoản bị khóa' },
+                        { value: 'DISPLAY_ERROR', label: 'Lỗi hiển thị' },
+                        { value: 'OTHER', label: 'Lỗi khác' },
                     ]}
                 />
                 <TextArea
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
-                    style={{
-                        marginTop: '16px'
-                    }} rows={4}/>
+                    style={{ marginTop: '16px' }}
+                    rows={4}
+                />
+                    <Upload {...uploadProps} fileList={uploadFileList}>
+                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                    </Upload>
             </Modal>
+
             <Layout style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
                 <Header2/>
                 <Content
@@ -250,19 +351,19 @@ const ReportPage = () => {
                                         justifyContent: 'flex-end',
                                         marginBottom: '16px'
                                     }}>
-                                        <button
-                                            style={{
-                                                backgroundColor: '#1890ff',
-                                                color: 'white',
-                                                border: 'none',
-                                                padding: '8px 16px',
-                                                borderRadius: '4px',
-                                                cursor: 'pointer',
-                                            }}
-                                            onClick={() => setOpen(true)}
-                                        >
-                                            Tạo báo cáo
-                                        </button>
+                                        {/*<button*/}
+                                        {/*    style={{*/}
+                                        {/*        backgroundColor: '#1890ff',*/}
+                                        {/*        color: 'white',*/}
+                                        {/*        border: 'none',*/}
+                                        {/*        padding: '8px 16px',*/}
+                                        {/*        borderRadius: '4px',*/}
+                                        {/*        cursor: 'pointer',*/}
+                                        {/*    }}*/}
+                                        {/*    onClick={() => setOpen(true)}*/}
+                                        {/*>*/}
+                                        {/*    Tạo báo cáo*/}
+                                        {/*</button>*/}
                                     </div>
                                     <Table columns={columns} dataSource={dataSource}
                                            pagination={{

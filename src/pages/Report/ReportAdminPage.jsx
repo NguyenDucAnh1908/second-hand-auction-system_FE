@@ -23,6 +23,7 @@ import Header from "@/partials/Header.jsx";
 import Sidebar from "@/partials/Sidebar.jsx";
 import {UploadOutlined} from "@ant-design/icons";
 import useHookUploadImage from "@/hooks/useHookUploadImage.js";
+import apiGhn from "@/services/apiGhn.service.js";
 
 
 const {TextArea} = Input;
@@ -48,8 +49,12 @@ const ReportAdminPage = () => {
     const [selectedReport, setSelectedReport] = useState(null);
     const [processNote, setProcessNote] = useState("");
     const [uploadedFile, setUploadedFile] = useState("");
-    const [fileInfo, setFileInfo] = useState({ name: "", status: "" });
+    const [fileInfo, setFileInfo] = useState({name: "", status: ""});
     const [isUploading, setIsUploading] = useState(false);
+    const [reportTypeGhn, setReportTypeGhn] = useState("");
+    const [description, setDescription] = useState("");
+    const [ticketDetail, setTicketDetail] = useState(null);
+
     const {
         data: dataReport,
         isLoading: loadingReport,
@@ -60,6 +65,10 @@ const ReportAdminPage = () => {
         page: page - 1, // API thường dùng chỉ số 0-based
         limit: 10
     });
+
+    console.log("selectedReport", selectedReport)
+    console.log("dataReport", dataReport)
+
     const [updateReport, {
         isLoading: loadingUpdateReport,
         isSuccess: isSuccessUpdateReport,
@@ -69,33 +78,99 @@ const ReportAdminPage = () => {
 
     const [open, setOpen] = useState(false);
 
+    // const handleSubmit = async (status) => {
+    //     if (!selectedReport) {
+    //         message.error("Không có báo cáo nào được chọn!");
+    //         return;
+    //     }
+    //
+    //     const { reportId } = selectedReport; // Lấy ID của báo cáo được chọn
+    //     if (!reportId) {
+    //         message.error("Không tìm thấy ID của báo cáo!");
+    //         return;
+    //     }
+    //
+    //     try {
+    //         const response = await updateReport({
+    //             id: reportId, // Truyền ID vào payload
+    //             responseMessage: processNote, // Thay bằng nội dung TextArea
+    //             status: status, // Truyền trạng thái (RESOLVED hoặc REJECTED)
+    //             ticketId: 28122040,
+    //         }).unwrap();
+    //
+    //         message.success("Cập nhật báo cáo thành công!");
+    //         setOpen(false); // Đóng modal
+    //         refetchReport(); // Reload lại danh sách báo cáo
+    //     } catch (error) {
+    //         console.error("Error:", error);
+    //         message.error("Cập nhật báo cáo thất bại! Vui lòng thử lại.");
+    //     }
+    // };
+
     const handleSubmit = async (status) => {
         if (!selectedReport) {
             message.error("Không có báo cáo nào được chọn!");
             return;
         }
 
-        const { reportId } = selectedReport; // Lấy ID của báo cáo được chọn
+        const {reportId} = selectedReport; // Lấy ID của báo cáo được chọn
         if (!reportId) {
             message.error("Không tìm thấy ID của báo cáo!");
             return;
         }
 
         try {
-            const response = await updateReport({
-                id: reportId, // Truyền ID vào payload
-                responseMessage: processNote, // Thay bằng nội dung TextArea
-                status: status, // Truyền trạng thái (RESOLVED hoặc REJECTED)
-                evidence: uploadedFile, // Thay bằng link thực tế từ Upload component
-            }).unwrap();
+            // Tạo dữ liệu form-data
+            const ticketData = {
+                c_email: "cskh@ghn.vn",
+                order_code: selectedReport?.orderCode,
+                attachments: null,
+                category: "Hối Giao/Lấy/Trả hàng",
+                description: processNote,
+            };
 
-            message.success("Cập nhật báo cáo thành công!");
-            setOpen(false); // Đóng modal
-            refetchReport(); // Reload lại danh sách báo cáo
+            const ticketResponse = await apiGhn.create_ticket_service(ticketData);
+
+            if (ticketResponse.status === 200 && ticketResponse.data.code === 200) {
+                const ticketId = ticketResponse.data.data.id; // Lấy ticketId từ response
+
+                // Call API updateReport với ticketId
+                const response = await updateReport({
+                    id: reportId, // Truyền ID của báo cáo
+                    responseMessage: processNote, // Nội dung TextArea
+                    status: status, // Trạng thái (RESOLVED hoặc REJECTED)
+                    ticketId: ticketId, // Truyền ticketId vào đây
+                }).unwrap();
+
+                message.success("Cập nhật báo cáo thành công!");
+                setOpen(false); // Đóng modal
+                refetchReport(); // Reload lại danh sách báo cáo
+            } else {
+                message.error("Tạo ticket thất bại! Vui lòng thử lại.");
+            }
         } catch (error) {
             console.error("Error:", error);
             message.error("Cập nhật báo cáo thất bại! Vui lòng thử lại.");
         }
+    };
+
+    const handleViewDetail = async (record) => {
+        setSelectedReport(record); // Lưu dữ liệu báo cáo được chọn
+        console.log("record.ticketId", record.ticketId)
+        try {
+            const response = await apiGhn.detail_ticket_service({
+                ticket_id: Number(record.ticketId), // Chuyển string sang number
+            });
+            if (response.status === 200 && response.data.code === 200) {
+                setTicketDetail(response.data.data); // Lưu chi tiết ticket vào state
+            } else {
+                message.error("Không thể lấy thông tin chi tiết ticket!");
+            }
+        } catch (error) {
+            console.error("Error fetching ticket details:", error);
+            message.warning("Lỗi khi lấy thông tin chi tiết ticket!");
+        }
+        setOpen(true); // Mở modal
     };
 
     useEffect(() => {
@@ -106,11 +181,10 @@ const ReportAdminPage = () => {
 
     useEffect(() => {
         if (selectedReport && selectedReport.evidence) {
-            setFileInfo({ name: "File hiện tại", status: "Uploaded successfully" });
-            setUploadedFile(selectedReport.evidence); // URL file hiện tại
+            setFileInfo({name: "File hiện tại", status: "Uploaded successfully"});
+            setUploadedFile(selectedReport.evidence);
         }
     }, [selectedReport]);
-
 
     const handleChange = (value) => {
         console.log(`selected ${value}`);
@@ -123,16 +197,16 @@ const ReportAdminPage = () => {
             key: "type",
             render: (type) => {
                 const typeMap = {
-                    DAMAGED_PRODUCT: { text: "Hàng lỗi", color: "volcano" },
-                    MISSING_BALANCE: { text: "Không nhận được tiền", color: "orange" },
-                    SERVICE_NOT_WORKING: { text: "Dịch vụ không hoạt động", color: "geekblue" },
-                    TRANSACTION_ERROR: { text: "Lỗi giao dịch", color: "purple" },
-                    ACCOUNT_LOCKED: { text: "Tài khoản bị khóa", color: "red" },
-                    DISPLAY_ERROR: { text: "Lỗi hiển thị", color: "cyan" },
-                    OTHER: { text: "Lỗi khác", color: "green" },
+                    DAMAGED_PRODUCT: {text: "Hàng lỗi", color: "volcano"},
+                    MISSING_BALANCE: {text: "Không nhận được tiền", color: "orange"},
+                    SERVICE_NOT_WORKING: {text: "Dịch vụ không hoạt động", color: "geekblue"},
+                    TRANSACTION_ERROR: {text: "Lỗi giao dịch", color: "purple"},
+                    ACCOUNT_LOCKED: {text: "Tài khoản bị khóa", color: "red"},
+                    DISPLAY_ERROR: {text: "Lỗi hiển thị", color: "cyan"},
+                    OTHER: {text: "Lỗi khác", color: "green"},
                 };
 
-                const typeInfo = typeMap[type] || { text: "Không xác định", color: "default" };
+                const typeInfo = typeMap[type] || {text: "Không xác định", color: "default"};
 
                 return <Tag color={typeInfo.color}>{typeInfo.text}</Tag>;
             },
@@ -193,8 +267,8 @@ const ReportAdminPage = () => {
                         cursor: "pointer",
                     }}
                     onClick={() => {
-                        setSelectedReport(record); // Lưu dữ liệu báo cáo được chọn
-                        setOpen(true); // Mở modal
+                        handleViewDetail(record)
+                        setOpen(true);
                     }}
                 >
                     Xem chi tiết
@@ -202,7 +276,7 @@ const ReportAdminPage = () => {
             ),
         },
     ];
-
+console.log("ticketDetail", ticketDetail)
     const dataSource = dataReport?.items.map((report, index) => ({
         key: index,
         reportId: report.reportId,
@@ -215,11 +289,113 @@ const ReportAdminPage = () => {
         evidence: report.evidence,
         status: report.status,
         responseUpdateTime: report.responseUpdateTime,
+        ticketId: report.ticketId,
+        orderCode: report.orderCode,
     }));
 
 
     return (
         <>
+            {/*<Modal*/}
+            {/*    title="Chi tiết báo cáo"*/}
+            {/*    centered*/}
+            {/*    open={open}*/}
+            {/*    onCancel={() => setOpen(false)}*/}
+            {/*    width={1000}*/}
+            {/*    footer={[*/}
+            {/*        <button*/}
+            {/*            key="resolved"*/}
+            {/*            style={{*/}
+            {/*                backgroundColor: "#52c41a",*/}
+            {/*                color: "white",*/}
+            {/*                border: "none",*/}
+            {/*                padding: "8px 16px",*/}
+            {/*                borderRadius: "4px",*/}
+            {/*                cursor: "pointer",*/}
+            {/*            }}*/}
+            {/*            onClick={() => handleSubmit("RESOLVED")} // Gửi status là RESOLVED*/}
+            {/*        >*/}
+            {/*            RESOLVED*/}
+            {/*        </button>,*/}
+            {/*        <button*/}
+            {/*            key="rejected"*/}
+            {/*            style={{*/}
+            {/*                backgroundColor: "#ff4d4f",*/}
+            {/*                color: "white",*/}
+            {/*                border: "none",*/}
+            {/*                padding: "8px 16px",*/}
+            {/*                borderRadius: "4px",*/}
+            {/*                cursor: "pointer",*/}
+            {/*            }}*/}
+            {/*            onClick={() => handleSubmit("REJECTED")} // Gửi status là REJECTED*/}
+            {/*        >*/}
+            {/*            REJECTED*/}
+            {/*        </button>,*/}
+            {/*    ]}*/}
+            {/*>*/}
+            {/*    {selectedReport ? (*/}
+            {/*        <div className="report-details">*/}
+            {/*            <Row gutter={[16, 16]}>*/}
+            {/*                <Col span={12}>*/}
+            {/*                    <p><strong>Loại:</strong> {selectedReport.type}</p>*/}
+            {/*                </Col>*/}
+            {/*                <Col span={12}>*/}
+            {/*                    <p><strong>Lý do:</strong> {selectedReport.reason}</p>*/}
+            {/*                </Col>*/}
+            {/*                <Col span={12}>*/}
+            {/*                    <p><strong>Người tạo:</strong> {selectedReport.createBy}</p>*/}
+            {/*                </Col>*/}
+            {/*                <Col span={12}>*/}
+            {/*                    <p><strong>Người xử lý:</strong> {selectedReport.processedBy || "Chưa xử lý"}</p>*/}
+            {/*                </Col>*/}
+            {/*                <Col span={12}>*/}
+            {/*                    <p><strong>Ngày tạo:</strong> {selectedReport.responseCreateTime}</p>*/}
+            {/*                </Col>*/}
+            {/*                <Col span={12}>*/}
+            {/*                    <p><strong>Ngày cập nhật:</strong> {selectedReport.responseUpdateTime}</p>*/}
+            {/*                </Col>*/}
+            {/*                <Col span={12}>*/}
+            {/*                    /!* Hiển thị file URL nếu có *!/*/}
+            {/*                    {uploadedFile && (*/}
+            {/*                        <p>*/}
+            {/*                            <strong>Link file:</strong>{" "}*/}
+            {/*                            <a href={uploadedFile} target="_blank" rel="noopener noreferrer">*/}
+            {/*                                {uploadedFile}*/}
+            {/*                            </a>*/}
+            {/*                        </p>*/}
+            {/*                    )}*/}
+            {/*                </Col>*/}
+            {/*                <Col span={24}>*/}
+            {/*                    <strong>Ghi chú xử lý:</strong>{" "}*/}
+            {/*                    <TextArea*/}
+            {/*                        rows={4}*/}
+            {/*                        placeholder="Nhập ghi chú xử lý"*/}
+            {/*                        style={{ marginTop: "10px" }}*/}
+            {/*                        value={processNote}*/}
+            {/*                        //onChange={(e) => setProcessNote(e.target.value)} // Lưu ghi chú xử lý*/}
+            {/*                        onChange={(e) => setProcessNote(e.target.value)}*/}
+            {/*                    />*/}
+            {/*                </Col>*/}
+            {/*                <Col span={24}>*/}
+            {/*                    <p>*/}
+            {/*                        <strong>Trạng thái:</strong>{" "}*/}
+            {/*                        <Tag*/}
+            {/*                            color={*/}
+            {/*                                selectedReport.status === "APPROVED" ? "green" :*/}
+            {/*                                    selectedReport.status === "REJECTED" ? "volcano" :*/}
+            {/*                                        "geekblue"*/}
+            {/*                            }*/}
+            {/*                        >*/}
+            {/*                            {selectedReport.status}*/}
+            {/*                        </Tag>*/}
+            {/*                    </p>*/}
+            {/*                </Col>*/}
+            {/*            </Row>*/}
+            {/*        </div>*/}
+            {/*    ) : (*/}
+            {/*        <p>Không có dữ liệu chi tiết</p>*/}
+            {/*    )}*/}
+            {/*</Modal>*/}
             <Modal
                 title="Chi tiết báo cáo"
                 centered
@@ -261,9 +437,6 @@ const ReportAdminPage = () => {
                     <div className="report-details">
                         <Row gutter={[16, 16]}>
                             <Col span={12}>
-                                <p><strong>Loại:</strong> {selectedReport.type}</p>
-                            </Col>
-                            <Col span={12}>
                                 <p><strong>Lý do:</strong> {selectedReport.reason}</p>
                             </Col>
                             <Col span={12}>
@@ -278,81 +451,12 @@ const ReportAdminPage = () => {
                             <Col span={12}>
                                 <p><strong>Ngày cập nhật:</strong> {selectedReport.responseUpdateTime}</p>
                             </Col>
-                            {/*<Col span={12}>*/}
-                            {/*    <p>*/}
-                            {/*        <strong>File:</strong>{" "}*/}
-                            {/*        <Upload*/}
-                            {/*            name="file"*/}
-                            {/*            beforeUpload={async (file) => {*/}
-                            {/*                const { UploadImage } = useHookUploadImage();*/}
-                            {/*                try {*/}
-                            {/*                    const url = await UploadImage(file); // Gọi hàm upload từ custom hook*/}
-                            {/*                    message.success(`${file.name} đã tải lên thành công`);*/}
-                            {/*                    setUploadedFile(url); // Lưu URL file vào state*/}
-                            {/*                    return false; // Ngăn Ant Design tự xử lý upload*/}
-                            {/*                } catch (error) {*/}
-                            {/*                    console.error("Lỗi khi upload file:", error);*/}
-                            {/*                    message.error(`${file.name} tải lên thất bại`);*/}
-                            {/*                    return false;*/}
-                            {/*                }*/}
-                            {/*            }}*/}
-                            {/*            showUploadList={false} // Ẩn danh sách file*/}
-                            {/*        >*/}
-                            {/*            <Button icon={<UploadOutlined />}>Tải lên</Button>*/}
-                            {/*        </Upload>*/}
-                            {/*    </p>*/}
-                            {/*</Col>*/}
                             <Col span={12}>
-                                <p>
-                                    <strong>File:</strong>{" "}
-                                    <Upload
-                                        name="file"
-                                        beforeUpload={async (file) => {
-                                            const { UploadImage } = useHookUploadImage();
-                                            setFileInfo({ name: file.name, status: "Uploading..." }); // Hiển thị trạng thái upload
-                                            setIsUploading(true); // Đang upload
-
-                                            try {
-                                                const url = await UploadImage(file); // Gọi hàm upload từ custom hook
-                                                message.success(`${file.name} đã tải lên thành công`);
-                                                setUploadedFile(url); // Lưu URL file vào state
-                                                setFileInfo({ name: file.name, status: "Uploaded successfully" }); // Cập nhật trạng thái
-                                                setIsUploading(false); // Hoàn thành upload
-                                                return false; // Ngăn Ant Design tự xử lý upload
-                                            } catch (error) {
-                                                console.error("Lỗi khi upload file:", error);
-                                                message.error(`${file.name} tải lên thất bại`);
-                                                setFileInfo({ name: file.name, status: "Upload failed" }); // Cập nhật trạng thái lỗi
-                                                setIsUploading(false);
-                                                return false;
-                                            }
-                                        }}
-                                        showUploadList={false} // Ẩn danh sách file của Ant Design
-                                    >
-                                        <Button icon={<UploadOutlined />}>Tải lên</Button>
-                                    </Upload>
-                                </p>
-
-                                {/* Hiển thị thông tin file */}
-                                {fileInfo.name && (
-                                    <p>
-                                        <strong>Tên file:</strong> {fileInfo.name}
-                                        <br />
-                                        <strong>Trạng thái:</strong>{" "}
-                                        {isUploading ? (
-                                            <Spin size="small" /> // Hiển thị spinner khi đang upload
-                                        ) : (
-                                            fileInfo.status
-                                        )}
-                                    </p>
-                                )}
-
-                                {/* Hiển thị file URL nếu có */}
                                 {uploadedFile && (
                                     <p>
-                                        <strong>Link file:</strong>{" "}
+                                        <strong>File đính kèm:</strong>{" "}
                                         <a href={uploadedFile} target="_blank" rel="noopener noreferrer">
-                                            {uploadedFile}
+                                            Xem file
                                         </a>
                                     </p>
                                 )}
@@ -362,10 +466,9 @@ const ReportAdminPage = () => {
                                 <TextArea
                                     rows={4}
                                     placeholder="Nhập ghi chú xử lý"
-                                    style={{ marginTop: "10px" }}
+                                    style={{marginTop: "10px"}}
                                     value={processNote}
-                                    //onChange={(e) => setProcessNote(e.target.value)} // Lưu ghi chú xử lý
-                                    onChange={(e) => setProcessNote(e.target.value)}
+                                    onChange={(e) => setProcessNote(e.target.value)} // Lưu ghi chú xử lý
                                 />
                             </Col>
                             <Col span={24}>
@@ -373,9 +476,11 @@ const ReportAdminPage = () => {
                                     <strong>Trạng thái:</strong>{" "}
                                     <Tag
                                         color={
-                                            selectedReport.status === "APPROVED" ? "green" :
-                                                selectedReport.status === "REJECTED" ? "volcano" :
-                                                    "geekblue"
+                                            selectedReport.status === "APPROVED"
+                                                ? "green"
+                                                : selectedReport.status === "REJECTED"
+                                                    ? "volcano"
+                                                    : "geekblue"
                                         }
                                     >
                                         {selectedReport.status}
@@ -383,6 +488,89 @@ const ReportAdminPage = () => {
                                 </p>
                             </Col>
                         </Row>
+
+
+                        <Row style={{ marginTop: 14 }} gutter={[16, 16]}>
+                            <Col span={12}>
+                                <p><strong>Mã đơn hàng:</strong> {ticketDetail?.order_code}</p>
+                            </Col>
+                            <Col span={12}>
+                                <p><strong>Email khách hàng:</strong> {ticketDetail?.c_email}</p>
+                            </Col>
+                            <Col span={12}>
+                                <p><strong>Tên khách hàng:</strong> {ticketDetail?.c_name}</p>
+                            </Col>
+                            <Col span={12}>
+                                <p><strong>Số điện thoại khách hàng:</strong> {ticketDetail?.c_phone}</p>
+                            </Col>
+                            <Col span={12}>
+                                <p><strong>Loại khiếu nại:</strong> {ticketDetail?.type}</p>
+                            </Col>
+                            <Col span={12}>
+                                <p><strong>Trạng thái:</strong> {ticketDetail?.status}</p>
+                            </Col>
+                            <Col span={12}>
+                                <p><strong>Ngày tạo:</strong> {new Date(ticketDetail?.created_at).toLocaleString()}</p>
+                            </Col>
+                            <Col span={12}>
+                                <p><strong>Ngày cập nhật:</strong> {new Date(ticketDetail?.updated_at).toLocaleString()}</p>
+                            </Col>
+                            <Col span={24}>
+                                <p><strong>Mô tả:</strong> {ticketDetail?.description}</p>
+                            </Col>
+                            {/*<Col span={24}>*/}
+                            {/*    <p><strong>File đính kèm:</strong>*/}
+                            {/*        {ticketDetail?.attachments?.length > 0 ? (*/}
+                            {/*            ticketDetail.attachments.map((file) => (*/}
+                            {/*                <a*/}
+                            {/*                    key={file.id}*/}
+                            {/*                    href={file.attachment_url}*/}
+                            {/*                    target="_blank"*/}
+                            {/*                    rel="noopener noreferrer"*/}
+                            {/*                    style={{ marginLeft: 8 }}*/}
+                            {/*                >*/}
+                            {/*                    {file.name}*/}
+                            {/*                </a>*/}
+                            {/*            ))*/}
+                            {/*        ) : (*/}
+                            {/*            "Không có file đính kèm"*/}
+                            {/*        )}*/}
+                            {/*    </p>*/}
+                            {/*</Col>*/}
+                        </Row>
+                        <Col style={{
+                            marginTop: 14
+                        }} span={12}>
+                            <p>
+                                <strong>Loại:</strong>
+                                <Select
+                                    style={{ width: "100%", marginTop: "10px" }}
+                                    placeholder="Chọn loại báo cáo"
+                                    value={reportTypeGhn || ticketDetail?.type} // Sử dụng giá trị từ API nếu có
+                                    onChange={(value) => setReportTypeGhn(value)} // Cập nhật giá trị khi thay đổi
+                                    options={[
+                                        { value: "Tư vấn", label: "Tư vấn" },
+                                        { value: "Hối Giao/Lấy/Trả hàng", label: "Hối Giao/Lấy/Trả hàng" },
+                                        { value: "Thay đổi thông tin", label: "Thay đổi thông tin" },
+                                        { value: "Khiếu nại", label: "Khiếu nại" },
+                                    ]}
+                                />
+                            </p>
+                        </Col>
+                        <Col style={{
+                            marginTop: 14
+                        }} span={24}>
+                            <p>
+                                <strong>Mô tả:</strong>
+                                <TextArea
+                                    rows={4}
+                                    placeholder="Nhập mô tả chi tiết"
+                                    style={{ marginTop: "10px" }}
+                                    value={description || ticketDetail?.description} // Sử dụng giá trị từ API nếu có
+                                    onChange={(e) => setDescription(e.target.value)} // Lưu giá trị mô tả
+                                />
+                            </p>
+                        </Col>
                     </div>
                 ) : (
                     <p>Không có dữ liệu chi tiết</p>
@@ -401,19 +589,19 @@ const ReportAdminPage = () => {
                             justifyContent: 'flex-end',
                             marginBottom: '16px'
                         }}>
-                            <button
-                                style={{
-                                    backgroundColor: '#1890ff',
-                                    color: 'white',
-                                    border: 'none',
-                                    padding: '8px 16px',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                }}
-                                onClick={() => setOpen(true)}
-                            >
-                                Tạo báo cáo
-                            </button>
+                            {/*<button*/}
+                            {/*    style={{*/}
+                            {/*        backgroundColor: '#1890ff',*/}
+                            {/*        color: 'white',*/}
+                            {/*        border: 'none',*/}
+                            {/*        padding: '8px 16px',*/}
+                            {/*        borderRadius: '4px',*/}
+                            {/*        cursor: 'pointer',*/}
+                            {/*    }}*/}
+                            {/*    onClick={() => setOpen(true)}*/}
+                            {/*>*/}
+                            {/*    Tạo báo cáo*/}
+                            {/*</button>*/}
                         </div>
                         <Table columns={columns} dataSource={dataSource}
                                pagination={{

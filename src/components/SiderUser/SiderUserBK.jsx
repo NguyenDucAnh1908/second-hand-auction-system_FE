@@ -24,6 +24,7 @@ import {
 import {
     ChevronRightIcon,
     ChevronDownIcon,
+    StarIcon,
 } from "@heroicons/react/24/outline";
 import { useGetBalanceQuery } from "../../services/walletCustomerService";
 import { useNavigate } from "react-router-dom";
@@ -36,11 +37,11 @@ export function SiderUserBK() {
     };
 
     const navigate = useNavigate();
-    const { data: balance, isLoading, isError } = useGetBalanceQuery();    
+    const { data: balance, isLoading, isError } = useGetBalanceQuery();
     const handleNavigate = (path) => {
         navigate(path);
     };
-    const { data:user } = useGetUserByIdQuery();    
+    const { data:user } = useGetUserByIdQuery();
     const formattedBalance = balance ? new Intl.NumberFormat('vi-VN').format(balance) : 0;
 
     return (
@@ -90,7 +91,7 @@ export function SiderUserBK() {
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
-                                Xác minh danh tính                           
+                                Xác minh danh tính
                                 </ListItem>
                             <ListItem onClick={() => handleNavigate('/Address')}>
                                 <ListItemPrefix>
@@ -127,13 +128,13 @@ export function SiderUserBK() {
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
-                                Tất cả 
+                                Tất cả
                             </ListItem>
                             <ListItem onClick={() => handleNavigate('/AuctionListProcess')}>
                                 <ListItemPrefix>
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
-                               Chờ thanh toán 
+                               Chờ thanh toán
                             </ListItem>
                             {/* <ListItem onClick={() => handleNavigate('/AuctionListCompleted')}>
                                 <ListItemPrefix>
@@ -213,6 +214,36 @@ export function SiderUserBK() {
                                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                                 </ListItemPrefix>
                                 Lịch sử giao dịch
+                            </ListItem>
+                        </List>
+                    </AccordionBody>
+                </Accordion>
+                <Accordion
+                    open={open === 5}
+                    icon={
+                        <ChevronDownIcon
+                            strokeWidth={2.5}
+                            className={`mx-auto h-4 w-4 transition-transform ${open === 5 ? "rotate-180" : ""}`}
+                        />
+                    }
+                >
+                    <ListItem className="p-0" selected={open === 5}>
+                        <AccordionHeader onClick={() => handleOpen(5)} className="border-b-0 p-3">
+                            <ListItemPrefix>
+                                <StarIcon  className="h-5 w-5" />
+                            </ListItemPrefix>
+                            <Typography color="blue-gray" className="mr-auto font-normal">
+                                Hệ thống
+                            </Typography>
+                        </AccordionHeader>
+                    </ListItem>
+                    <AccordionBody className="py-1">
+                        <List className="p-0">
+                            <ListItem onClick={() => handleNavigate('/report')}>
+                                <ListItemPrefix>
+                                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                                </ListItemPrefix>
+                                Báo cáo
                             </ListItem>
                         </List>
                     </AccordionBody>

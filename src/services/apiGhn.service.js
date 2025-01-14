@@ -58,5 +58,42 @@ class OnlineGatewayService {
         );
         return response;
     }
+
+    static async detail_ticket_service(data) {
+        const response = await axios.post(
+            `${api}/ticket/detail`,
+            data,
+            { headers: headers }
+        );
+        return response;
+    }
+
+    // static async create_ticket_service(data) {
+    //     const response = await axios.post(
+    //         `${api}/ticket/create`,
+    //         data,
+    //         { headers: headers }
+    //     );
+    //     return response;
+    // }
+    static async create_ticket_service(data) {
+        const formData = new FormData();
+        Object.keys(data).forEach((key) => {
+            formData.append(key, data[key]);
+        });
+
+        const response = await axios.post(
+            `${api}/ticket/create`,
+            formData,
+            {
+                headers: {
+                    ...headers,
+                    "Content-Type": "multipart/form-data", // Đảm bảo header đúng kiểu form-data
+                },
+            }
+        );
+        return response;
+    }
+
 }
 export default OnlineGatewayService;
