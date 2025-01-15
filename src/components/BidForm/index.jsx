@@ -1,8 +1,8 @@
-import {Helmet} from "react-helmet";
-import React, {useState} from "react";
-import {useCreateBidMutation} from "@/services/bid.service.js";
-import {message, Spin, theme} from "antd";
-import {Button} from "@material-tailwind/react";
+import { Helmet } from "react-helmet";
+import React, { useState } from "react";
+import { useCreateBidMutation } from "@/services/bid.service.js";
+import { message, Spin, theme } from "antd";
+import { Button } from "@material-tailwind/react";
 
 
 export default function BidForm(
@@ -43,7 +43,7 @@ export default function BidForm(
     //     } catch (error) {
     //         // Log chi tiết lỗi
     //         console.error("Error response:", error);
-        
+
     //         // Xử lý lỗi chi tiết
     //         if (error.data?.status === 'BAD_REQUEST') {
     //             if (error.data?.message.includes('insufficient')) {
@@ -57,9 +57,9 @@ export default function BidForm(
     //             message.warning('Đã xảy ra lỗi không xác định. Vui lòng thử lại!');
     //         }
     //     }
-        
+
     // };
-    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -68,16 +68,16 @@ export default function BidForm(
                 bidAmount: Number(maxBid),
                 auctionId: selectedAuctionId
             }).unwrap();
-            
+
             console.log('Response từ backend:', createAuctionBidResponse); // Debug dữ liệu từ backend
-    
+
             if (createAuctionBidResponse?.message) {
                 message.success(createAuctionBidResponse.message);
             } else {
                 console.error('Backend không trả về message hoặc message không hợp lệ.');
                 message.error('Không thể xử lý thông tin trả về.');
             }
-    
+
             setMaxBid("");
             isRefetchWinningBid();
             isRefetchHighestBid();
@@ -85,7 +85,7 @@ export default function BidForm(
             cancelModel();
         } catch (error) {
             console.error("Error response:", error);
-    
+
             // Log lỗi đầy đủ nếu backend trả về lỗi
             if (error?.data) {
                 console.error('Error data từ backend:', error.data);
@@ -103,11 +103,11 @@ export default function BidForm(
             }
         }
     };
-    
-    
+
+
 
     const handleBidChange = (event) => {
-        const value = event.target.value;
+        const value = event.target.value.replace(/[^\d]/g, ''); // Loại bỏ ký tự không phải số
         setMaxBid(value);
         setIsBidValid(parseFloat(value) >= bidIf?.data?.priceStep);
     };
@@ -136,19 +136,19 @@ export default function BidForm(
                         onClick={() => handleQuickBid(bidIf?.data?.minimumBidPrice1)}
                         className="bg-green-500 text-white rounded-full px-4 py-2"
                     >
-                        {formatCurrency(bidIf?.data?.minimumBidPrice1)} 
+                        {formatCurrency(bidIf?.data?.minimumBidPrice1)}
                     </Button>
                     <Button
                         onClick={() => handleQuickBid(bidIf?.data?.minimumBidPrice2)}
                         className="bg-green-500 text-white rounded-full px-4 py-2"
                     >
-                        {formatCurrency(bidIf?.data?.minimumBidPrice2)} 
+                        {formatCurrency(bidIf?.data?.minimumBidPrice2)}
                     </Button>
                     <Button
                         onClick={() => handleQuickBid(bidIf?.data?.minimumBidPrice3)}
                         className="bg-green-500 text-white rounded-full px-4 py-2"
                     >
-                        {formatCurrency(bidIf?.data?.minimumBidPrice3)} 
+                        {formatCurrency(bidIf?.data?.minimumBidPrice3)}
                     </Button>
                 </div>
 
@@ -159,29 +159,36 @@ export default function BidForm(
                 </div>
 
                 <div className="mt-4">
-                    <label className="block font-medium text-gray-700">Giá thầu tối đa của bạn</label>
-                    <div className="flex mt-2">
+                    <label className="block font-medium text-gray-700 text-center"> {/* Căn giữa label */}
+                        Giá thầu tối đa của bạn
+                    </label>
+                    <div className="flex mt-2 space-x-2 items-center justify-center">
                         <input
-                            type="number"
+                            type="text"
                             placeholder="Nhập giá thầu"
-                            value={maxBid}
+                            value={maxBid ? formatCurrency(maxBid) : ''}
                             onChange={handleBidChange}
-                            className="border border-gray-300 rounded-l px-4 py-2 w-full"
+                            className="border border-gray-300 rounded-l px-4 py-2 w-full sm:w-2/3 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out"
                         />
                         <Button
-                            className={`px-4 py-2 rounded-r ${
-                                isBidValid ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            }`}
+                            className={`px-6 py-2 rounded-r transition-all duration-300 ease-in-out transform ${isBidValid
+                                ? 'bg-gradient-to-b from-[#45ADA8] to-[#9DE0AD] active:bg-green-600'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                }`}
                             disabled={!isBidValid || isLoading}
                             onClick={handleSubmit}
                         >
-                            {isLoading ? <Spin size="small" /> : 'Đặt giá'}
+                            {isLoading ? <Spin size="large" /> : 'Đặt giá'}
                         </Button>
                     </div>
-                    <p className="mt-2 text-gray-500">
+
+                    <p className="mt-2 text-gray-500 text-sm">
                         Bước giá phải lớn hơn hoặc bằng {formatCurrency(bidIf?.data?.priceStep)}.
                     </p>
                 </div>
+
+
+
 
                 <p className="mt-6 text-sm text-gray-500">
                     Hãy cân nhắc đặt giá cao nhất mà bạn sẵn sàng trả. Chúng tôi sẽ đảm bảo giữ bạn ở vị trí dẫn đầu với
