@@ -15,9 +15,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-const api = "https://teracandle.id.vn/api/v1/";
+// const api = "https://teracandle.id.vn/api/v1/";
 
-//  const api = "http://localhost:8080/api/v1/";
+ const api = "http://localhost:8080/api/v1/";
 
 
 

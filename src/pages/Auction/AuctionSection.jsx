@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuctionRegisterMutation, useGetCheckAuctionRegisterQuery } from "@/services/auctionRegistrations.service.js";
 import { Button } from "@material-tailwind/react";
 import { useCreateBidMutation, useGetBidInfoQuery } from "@/services/bid.service.js";
-import { useUpdateStatusAuctionMutation } from "@/services/auction.service.js";
+import { useUpdateStatusAuctionMutation ,useUpdateStatusAuction2Mutation } from "@/services/auction.service.js";
 import { useGetListRegisterUserQuery } from "../../services/auctionRegistrations.service";
 import Pagination from "../../components/PaginationChanh";
 import { useFetchUserAddresses } from "../Address/hook/useFetchUserAddresses";
@@ -86,7 +86,7 @@ export default function AuctionSection(
     //createBid theo gia mua ngay
     const [createBid] = useCreateBidMutation();
     const [updateTime] = useUpdateStatusAuctionMutation();
-
+    const [updateTime2] = useUpdateStatusAuction2Mutation();
 
     const {
         data: checkRegister,
@@ -219,6 +219,16 @@ export default function AuctionSection(
     const handleAuctionEnd = async () => {
         try {
             const response = await updateTime({
+                auctionId: dataItem.auction?.auction_id,
+            }).unwrap();
+        } catch (error) {
+            message.error(error.data.message(), "Lỗi");
+        }
+    };
+
+    const handleAuctionClose = async () => {
+        try {
+            const response = await updateTime2({
                 auctionId: dataItem.auction?.auction_id,
             }).unwrap();
         } catch (error) {
@@ -645,7 +655,7 @@ export default function AuctionSection(
                                             color: "green",
                                             textTransform: "uppercase",
                                         }}
-                                        onFinish={handleAuctionEnd}
+                                        onFinish={handleAuctionClose}
                                     />
 
                                 </div>
