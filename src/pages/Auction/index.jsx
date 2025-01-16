@@ -126,7 +126,6 @@ export default function AuctionPage() {
     }, [highestBid, winningBid]);
     //console.log("user", userAPI?.id)
     useEffect(() => {
-        // const eventSource = new EventSource("https://auction-system-fpt-2024-production.azurewebsites.net/api/v1/bids/stream-bids");
 
         const eventSource = new EventSource("https://teracandle.id.vn/api/v1/bids/stream-bids");
 
@@ -410,26 +409,6 @@ export default function AuctionPage() {
                                                 </span>
                                     </div>
                                 ))}
-
-
-                            {/*{isLoggedIn && initialized && (*/}
-                            {/*    <div*/}
-                            {/*        className={`w-full p-1 flex items-center rounded-lg ${data.auctionType?.act_id === 3*/}
-                            {/*            ? 'bg-gradient-to-r from-blue-500 to-blue-700' // Nền xanh dương cho đấu giá kín*/}
-                            {/*            : isHighBidder === true*/}
-                            {/*                ? 'bg-gradient-to-r from-white to-green-500'*/}
-                            {/*                : 'bg-gradient-to-r from-white to-red-500'*/}
-                            {/*            }`}*/}
-                            {/*    >*/}
-                            {/*        <span className="text-sm font-semibold">*/}
-                            {/*            {data.auctionType?.act_id === 3*/}
-                            {/*                ? "Đấu Giá Kín" // Thay thế thông báo cho đấu giá kín*/}
-                            {/*                : isHighBidder === true*/}
-                            {/*                    ? "Bạn đã trả mức giá cao nhất"*/}
-                            {/*                    : "Mức giá bạn đã ra đã bị vượt"}*/}
-                            {/*        </span>*/}
-                            {/*    </div>*/}
-                            {/*)}*/}
                             <Skeleton loading={isLoading} active>
                                 {isSuccess && data && (
                                     <AuctionSection dataItem={data}
