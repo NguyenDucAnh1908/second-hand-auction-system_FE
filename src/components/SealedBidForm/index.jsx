@@ -26,24 +26,24 @@ export default function SealedBidForm({
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (hasBid) {
             message.error('Bạn đã đặt giá thầu rồi và không thể thay đổi.');
             return;
         }
-    
+
         const numericBid = parseFloat(maxBid.replace(/[^\d]/g, '')); // Chỉ gửi số hợp lệ
         if (isNaN(numericBid)) {
             message.error('Vui lòng nhập giá hợp lệ.');
             return;
         }
-    
+
         try {
             const createAuctionBid = await createBid({
                 bidAmount: numericBid,
                 auctionId: selectedAuctionId,
             }).unwrap();
-    
+
             message.success(createAuctionBid?.message);
             setHasBid(true);
             setMaxBid("");
@@ -52,10 +52,10 @@ export default function SealedBidForm({
             cancelModel();
 
 
-             // Chờ 2 giây rồi load lại trang
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
+            // Chờ 2 giây rồi load lại trang
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
         } catch (error) {
             console.error("Error response:", error);
             message.error("Đã xảy ra lỗi.");
@@ -93,7 +93,7 @@ export default function SealedBidForm({
 
                 <div className="mt-6">
                     <label className="block font-medium text-gray-700">Đặt giá thầu</label>
-                    <div className="flex mt-2">
+                    {/* <div className="flex mt-2">
                         <input
                             type="text"
                             placeholder="Nhập giá thầu"
@@ -112,7 +112,36 @@ export default function SealedBidForm({
                         >
                             {isLoading ? <Spin size="small" /> : 'Đặt giá'}
                         </Button>
+                    </div> */}
+
+                    <div className="flex mt-2">
+                        <input
+                            type="text"
+                            placeholder="Nhập giá thầu"
+                            value={
+                                maxBid
+                                    ? new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" })
+                                        .format(maxBid)
+                                        .replace("₫", "")
+                                        .trim() // Chỉ hiển thị dạng số với đơn vị VND
+                                    : ""
+                            }
+                            onChange={handleBidChange} // Gọi hàm lọc tại đây
+                            disabled={hasBid}
+                            className="border border-gray-300 rounded-l px-4 py-2 w-full"
+                        />
+                        <Button
+                            className={`px-4 py-2 rounded-r ${hasBid || isLoading
+                                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                                : "bg-blue-500 text-white"
+                                }`}
+                            disabled={hasBid || isLoading}
+                            onClick={handleSubmit}
+                        >
+                            {isLoading ? <Spin size="small" /> : "Đặt giá"}
+                        </Button>
                     </div>
+
                 </div>
 
                 {/* Giá gợi ý hiển thị trực tiếp */}
@@ -120,7 +149,7 @@ export default function SealedBidForm({
                     <p className="text-sm text-gray-700 mb-2">Giá gợi ý:</p>
                     <div className="flex space-x-2">
                         <button
-                            onClick={() => handleClickSuggestion(1.10)} 
+                            onClick={() => handleClickSuggestion(1.10)}
                             className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
                         >
                             {formatCurrency(Math.floor(dataItem.auction.buy_now_price * 1.10))}
