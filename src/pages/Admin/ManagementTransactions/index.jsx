@@ -38,7 +38,7 @@ export default function QuanLyGiaoDich() {
     const [transactionTypeFilter, setTransactionTypeFilter] = useState(""); // State for transactionType filter
     const [uploadImageTransaction] = useUploadImageTransactionMutation();
     const { data, error, isLoading, isError } = useGetTransactionWalletAdminQuery({
-        page: trang - 1, limit: 30, role: roleFilter, transactionType: transactionTypeFilter
+        page: trang - 1, limit: 38, role: roleFilter, transactionType: transactionTypeFilter
     });
     const { UploadImage } = useHookUploadImage();
 
