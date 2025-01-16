@@ -310,10 +310,10 @@ function DrawerDetailOrder({orderId, orderCode}) {
                                 <Descriptions
                                     title={<div className="w-full text-center text-xl font-semibold">Thông tin sản
                                         phẩm</div>} layout="vertical" items={items}/>
-                                <Descriptions
+                                {/* <Descriptions
                                     title={<div className="w-full text-center text-xl font-semibold">Mô tả sản
                                         phẩm</div>}
-                                    items={itemDescription} className="mt-4"/>
+                                    items={itemDescription} className="mt-4"/> */}
                             </div>
 
                             <div className=" mx-auto bg-green-50 rounded-2xl p-6 ">
