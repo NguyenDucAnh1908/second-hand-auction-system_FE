@@ -66,8 +66,8 @@ const ReportAdminPage = () => {
         limit: 10
     });
 
-    console.log("selectedReport", selectedReport)
-    console.log("dataReport", dataReport)
+    // console.log("selectedReport", selectedReport)
+    // console.log("dataReport", dataReport)
 
     const [updateReport, {
         isLoading: loadingUpdateReport,
@@ -77,35 +77,6 @@ const ReportAdminPage = () => {
     }] = useUpdateReportMutation();
 
     const [open, setOpen] = useState(false);
-
-    // const handleSubmit = async (status) => {
-    //     if (!selectedReport) {
-    //         message.error("Không có báo cáo nào được chọn!");
-    //         return;
-    //     }
-    //
-    //     const { reportId } = selectedReport; // Lấy ID của báo cáo được chọn
-    //     if (!reportId) {
-    //         message.error("Không tìm thấy ID của báo cáo!");
-    //         return;
-    //     }
-    //
-    //     try {
-    //         const response = await updateReport({
-    //             id: reportId, // Truyền ID vào payload
-    //             responseMessage: processNote, // Thay bằng nội dung TextArea
-    //             status: status, // Truyền trạng thái (RESOLVED hoặc REJECTED)
-    //             ticketId: 28122040,
-    //         }).unwrap();
-    //
-    //         message.success("Cập nhật báo cáo thành công!");
-    //         setOpen(false); // Đóng modal
-    //         refetchReport(); // Reload lại danh sách báo cáo
-    //     } catch (error) {
-    //         console.error("Error:", error);
-    //         message.error("Cập nhật báo cáo thất bại! Vui lòng thử lại.");
-    //     }
-    // };
 
     const handleSubmit = async (status) => {
         if (!selectedReport) {
@@ -125,8 +96,8 @@ const ReportAdminPage = () => {
                 c_email: "cskh@ghn.vn",
                 order_code: selectedReport?.orderCode,
                 attachments: null,
-                category: "Hối Giao/Lấy/Trả hàng",
-                description: processNote,
+                category: reportTypeGhn,
+                description: description,
             };
 
             const ticketResponse = await apiGhn.create_ticket_service(ticketData);
@@ -156,7 +127,7 @@ const ReportAdminPage = () => {
 
     const handleViewDetail = async (record) => {
         setSelectedReport(record); // Lưu dữ liệu báo cáo được chọn
-        console.log("record.ticketId", record.ticketId)
+        //console.log("record.ticketId", record.ticketId)
         try {
             const response = await apiGhn.detail_ticket_service({
                 ticket_id: Number(record.ticketId), // Chuyển string sang number
