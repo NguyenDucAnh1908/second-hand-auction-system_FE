@@ -67,14 +67,14 @@ function DrawerDetailItem({itemIds}) {
     ];
 
     const itemDescription = [
-        {key: '4', label: 'Phần trăm', children: itemDetail?.itemSpecific?.percent || 'N/A', span: 2},
-        {key: '5', label: 'Loại', children: itemDetail?.itemSpecific?.type || 'N/A', span: 2},
-        {key: '6', label: 'Màu sắc', children: itemDetail?.itemSpecific?.color || 'N/A', span: 2},
-        {key: '7', label: 'Trọng lượng', children: itemDetail?.itemSpecific?.weight || 'N/A', span: 2},
-        {key: '8', label: 'Kích thước', children: itemDetail?.itemSpecific?.dimension || 'N/A', span: 2},
-        {key: '9', label: 'Xuất xứ', children: itemDetail?.itemSpecific?.original || 'N/A', span: 2},
-        {key: '10', label: 'Ngày sản xuất', children: itemDetail?.itemSpecific?.manufactureDate || 'N/A', span: 2},
-        {key: '11', label: 'Chất liệu', children: itemDetail?.itemSpecific?.material || 'N/A', span: 2}
+        {key: '4', label: 'Hệ điều hành', children: itemDetail?.itemSpecific?.os || 'N/A', span: 2},
+        {key: '5', label: 'Màu sắc', children: itemDetail?.color || 'N/A', span: 2},
+        {key: '6', label: 'Bộ nhớ', children: itemDetail?.itemSpecific?.ram || 'N/A', span: 2},
+        {key: '7', label: 'Kích cỡ màn hình', children: itemDetail?.itemSpecific?.screen_size || 'N/A', span: 2},
+        {key: '8', label: 'Độ phân giải camera', children: itemDetail?.itemSpecific?.camera_specs || 'N/A', span: 2},
+        {key: '9', label: 'Khả năng kết nối', children: itemDetail?.itemSpecific?.connectivity || 'N/A', span: 2},
+        {key: '10', label: 'Độ phân dải màn hình', children: itemDetail?.itemSpecific?.sensors || 'N/A', span: 2},
+        {key: '11', label: 'Cổng kết nôi', children: itemDetail?.itemSpecific?.usb || 'N/A', span: 2}
     ];
 
 
