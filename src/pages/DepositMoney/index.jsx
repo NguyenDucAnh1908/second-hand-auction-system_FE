@@ -45,25 +45,32 @@ export default function DepositMoneyPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!amount || amount <= 0) {
-            toast.error("Please enter a valid amount.");
+    
+        // Kiểm tra số tiền hợp lệ
+        const numericAmount = Number(amount);
+        if (!amount || numericAmount < 5000 || numericAmount > 24000000) {
+            toast.error("Số tiền giao dịch quá lớn phải nằm trong khoảng từ 5,000đ đến 24,000,000đ.");
             return;
         }
-
+    
         try {
             const depositData = await depositUser({
-                paymentMethod, description, amount, returnSuccess, returnError,
+                paymentMethod,
+                description,
+                amount: numericAmount, // Đảm bảo gửi số tiền dưới dạng số
+                returnSuccess,
+                returnError,
             }).unwrap();
-
+    
             console.log("Deposit data:", depositData);
-
+    
             if (depositData.data.paymentUrl) {
                 toast.success(depositData.message);
                 window.location.href = depositData.data.paymentUrl;
             } else {
                 toast.error("Checkout URL not available.");
             }
-
+    
             // Lưu transactionId vào localStorage
             const transactionId = depositData.data.transactionId;
             if (transactionId) {
@@ -72,9 +79,10 @@ export default function DepositMoneyPage() {
         } catch (err) {
             const errorMessage = err?.data?.message || "An error occurred";
             toast.error(errorMessage);
-            errRef.current.focus();
+            errRef.current?.focus();
         }
     };
+    
 
     const handleChange = (value) => {
         console.log(`Selected ${value}`);
@@ -185,8 +193,6 @@ export default function DepositMoneyPage() {
                                                         onChange={(value) => setAmount(value)}
                                                         className="w-[200%] rounded-md border border-gray-300 text-lg"
                                                     />
-
-
                                                 </div>
                                                 <div className="mt-8 flex flex-col items-start justify-center gap-2 w-[200%px]">
                                                     <Heading
