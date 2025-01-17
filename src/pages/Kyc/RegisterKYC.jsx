@@ -81,10 +81,10 @@ export default function KNCPage() {
             // Gửi ảnh đến FPT API để xử lý
             const formDataApi = new FormData();
             formDataApi.append('image', fileToUpload);
-
+            
             const response = await axios.post('https://api.fpt.ai/vision/idr/vnm', formDataApi, {
                 headers: {
-                    'api-key': '6Nlbth5fE4pbNCUOtAbe5E3RSEinn4xC',
+                    'api-key': 'bWUz2MvQwPStKkAHwZMxJz7AiNFRg7yz',
                     'Content-Type': 'multipart/form-data',
                 },
             });
