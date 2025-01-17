@@ -113,20 +113,20 @@ const OrderDetailCompoment = ({
                 cancelText="Hủy"
             >
                 {/* Dropdown chọn loại báo cáo */}
-                <Select
-                    defaultValue="DAMAGED_PRODUCT"
-                    style={{ width: 240, marginBottom: '16px' }}
-                    onChange={handleChange}
-                    options={[
-                        { value: 'DAMAGED_PRODUCT', label: 'Hàng lỗi' },
-                        { value: 'MISSING_BALANCE', label: 'Không nhận được tiền' },
-                        { value: 'SERVICE_NOT_WORKING', label: 'Dịch vụ không hoạt động' },
-                        { value: 'TRANSACTION_ERROR', label: 'Lỗi giao dịch' },
-                        { value: 'ACCOUNT_LOCKED', label: 'Tài khoản bị khóa' },
-                        { value: 'DISPLAY_ERROR', label: 'Lỗi hiển thị' },
-                        { value: 'OTHER', label: 'Lỗi khác' },
-                    ]}
-                />
+                {/*<Select*/}
+                {/*    defaultValue="DAMAGED_PRODUCT"*/}
+                {/*    style={{ width: 240, marginBottom: '16px' }}*/}
+                {/*    onChange={handleChange}*/}
+                {/*    options={[*/}
+                {/*        { value: 'DAMAGED_PRODUCT', label: 'Hàng lỗi' },*/}
+                {/*        { value: 'MISSING_BALANCE', label: 'Không nhận được tiền' },*/}
+                {/*        { value: 'SERVICE_NOT_WORKING', label: 'Dịch vụ không hoạt động' },*/}
+                {/*        { value: 'TRANSACTION_ERROR', label: 'Lỗi giao dịch' },*/}
+                {/*        { value: 'ACCOUNT_LOCKED', label: 'Tài khoản bị khóa' },*/}
+                {/*        { value: 'DISPLAY_ERROR', label: 'Lỗi hiển thị' },*/}
+                {/*        { value: 'OTHER', label: 'Lỗi khác' },*/}
+                {/*    ]}*/}
+                {/*/>*/}
 
                 {/* Nhập lý do */}
                 <div style={{ marginBottom: '16px' }}>
@@ -289,7 +289,7 @@ const OrderDetailCompoment = ({
                         {/* Thêm nội dung nếu cần */}
                     </div>
                 </div>
-                {orderDetails?.status === 'delivered' && (
+                {orderDetails?.status === 'delivery_fail' && (
                     <div style={{
                         display: 'flex',
                         justifyContent: 'flex-end', // Đẩy nội dung sang bên phải

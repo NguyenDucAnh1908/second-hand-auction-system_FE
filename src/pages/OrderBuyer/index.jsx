@@ -383,7 +383,7 @@ export default function OrderManagementBuyer() {
         updated_date: statusDelivery.updated_date
     })) || [];
 
-    console.log("orderDetails", orderDetails)
+    //console.log("orderDetails", orderDetails)
     // if (loading) return <p>Loading...</p>;
     // if (error1) return <p>Error: {error1}</p>;
     return (

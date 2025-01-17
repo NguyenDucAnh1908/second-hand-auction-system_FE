@@ -292,11 +292,12 @@ export default function QuanLyGiaoDich() {
                                             giaoDich.description === 'Transaction hoàn cọc ví Auction' ||
                                             giaoDich.description === 'Thanh toán tiền cho seller' ||
                                             giaoDich.description === 'Transaction hoàn cọc người thắng ví Auction' ||
-                                        giaoDich.description === 'Người dùng thanh toán đơn hàng') && (
+                                            giaoDich.description === 'Người dùng thanh toán đơn hàng' ||
+                                            giaoDich.description === 'Hoàn tiền cho đơn hàng thất bại') && (
                                             <tr key={giaoDich.transactionWalletCode}>
                                                 <td className="p-2">{giaoDich.transactionWalletCode}</td>
 
-                                                <td className="p-2">
+                                                {/* <td className="p-2">
                                                     <div
                                                         style={{ 
                                                             backgroundColor: (giaoDich.description === 'Thanh toán tiền cho seller' || giaoDich.description === 'Hoàn cọc cho người thắng cuộc ' ? giaoDich.amount > 0 : giaoDich.amount < 0) ? '#f8d7da' : '#d4edda', // Đổi màu nền nếu số tiền là âm
@@ -313,8 +314,44 @@ export default function QuanLyGiaoDich() {
                                                         } VND
                                                     </div>
                                                 </td>
+                                                */}
 
 
+                                                <td className="p-2">
+                                                    <div
+                                                        style={{
+                                                            backgroundColor:
+                                                                (giaoDich.description === 'Thanh toán tiền cho seller' ||
+                                                                    giaoDich.description === 'Hoàn tiền cho đơn hàng thất bại' ||
+                                                                    giaoDich.description === 'Hoàn cọc cho người thắng cuộc') &&
+                                                                    giaoDich.amount > 0
+                                                                    ? '#f8d7da'
+                                                                    : giaoDich.amount < 0
+                                                                        ? '#f8d7da'
+                                                                        : '#d4edda', // Đổi màu nền
+                                                            color:
+                                                                (giaoDich.description === 'Thanh toán tiền cho seller' ||
+                                                                    giaoDich.description === 'Hoàn tiền cho đơn hàng thất bại' ||
+                                                                    giaoDich.description === 'Hoàn cọc cho người thắng cuộc') &&
+                                                                    giaoDich.amount > 0
+                                                                    ? '#721c24'
+                                                                    : giaoDich.amount < 0
+                                                                        ? '#721c24'
+                                                                        : '#155724', // Đổi màu chữ
+                                                            padding: '4px 8px',
+                                                            borderRadius: '4px',
+                                                        }}
+                                                    >
+                                                        {(giaoDich.description === 'Thanh toán tiền cho seller' ||
+                                                            giaoDich.description === 'Hoàn tiền cho đơn hàng thất bại' ||
+                                                            giaoDich.description === 'Hoàn cọc cho người thắng cuộc')
+                                                            ? `-${Math.abs(giaoDich.amount).toLocaleString('vi-VN')}` // Đảo dấu
+                                                            : giaoDich.amount < 0
+                                                                ? `-${Math.abs(giaoDich.amount).toLocaleString('vi-VN')}`
+                                                                : `+${giaoDich.amount.toLocaleString('vi-VN')}`}
+                                                        VND
+                                                    </div>
+                                                </td>
 
 
                                                 <td className="p-4 w-[50px]">

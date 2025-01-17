@@ -137,7 +137,7 @@ export default function WithdrawMoney() {
                                                 required
                                             >
                                                 <option value="">Chọn phương thức</option>
-                                                <option value="BANK_TRANSFER">Chuyển khoản</option>
+                                                <option value="BANK_TRANSFER">VN PAY</option>
                                             </select>
 
                                         </div>
