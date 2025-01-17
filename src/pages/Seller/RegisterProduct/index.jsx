@@ -257,8 +257,26 @@ function RegisterProductPage() {
 
     const [registerItem, { isLoading, isSuccess, isError, error }] = useRegisterItemMutation();
 
+
+
+    //mới
+    const [isAuctionTypeReady, setAuctionTypeReady] = useState(false);
+
+    useEffect(() => {
+        if (auctionType) {
+            setAuctionTypeReady(true);
+        }
+    }, [auctionType]);
+
+
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
+
+        // Kiểm tra nếu `auctionType` chưa được cập nhật
+        if (!auctionType) {
+            message.loading("Đang cập nhật loại đấu giá, vui lòng chờ...");
+            await new Promise((resolve) => setTimeout(resolve, 100)); // Đợi state cập nhật
+        }
 
         // Bật loader ngay từ đầu
         showLoader();
@@ -771,7 +789,7 @@ function RegisterProductPage() {
             ),
         },
 
-        
+
         {
             key: '19',
             label: <label className="font-bold">Thông số camera</label>,
@@ -788,7 +806,7 @@ function RegisterProductPage() {
                 </div>
             ),
         },
-        
+
         {
             key: '20',
             label: <label className="font-bold">Cảm biến</label>,
@@ -866,7 +884,7 @@ function RegisterProductPage() {
             ),
         },
 
-        
+
         {
             key: '12',
             label: <label className="font-bold">Tình trạng thân điện thoại</label>,
@@ -942,7 +960,7 @@ function RegisterProductPage() {
 
 
 
-      
+
         {
             key: '18',
             label: <label className="font-bold">Tình trạng cổng kết nối</label>,
@@ -960,10 +978,10 @@ function RegisterProductPage() {
                 </div>
             ),
         },
-        
-     
 
-     
+
+
+
 
         {
             key: '24',
