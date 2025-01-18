@@ -44,13 +44,13 @@ export default function OrderForm() {
         const data = {
             payment_type_id: 2,
             note: orderDetails.note,
-            required_note: "KHONGCHOXEMHANG",
+            required_note: "Kiểm tra hàng trước khi nhận hàng",
             return_district_id: null,
             return_ward_code: "",
             client_order_code: "",
             to_name: orderDetails?.fullName,
             to_phone: orderDetails?.phoneNumber,
-            to_address: orderDetails?.address,
+            to_address: `${orderDetails?.address}, ${addressData?.ward_name}, ${addressData?.district_name}, ${addressData?.province_name}`,
             to_ward_name: addressData?.ward_name,
             to_district_name: addressData?.district_name,
             to_province_name: addressData?.province_name,
@@ -144,7 +144,8 @@ export default function OrderForm() {
         } catch (error) {
             //console.error("Create order error:", error);
             const errorMessage = error?.data?.message + " Vui lòng kiểm tra lại thông tin ở danh sách đơn hàng" || "An error occurred while creating the order";
-            message.error(errorMessage);
+            console.log("errorMessage", errorMessage)
+            //message.error(errorMessage);
         } finally {
             setSpinning(false);
         }
