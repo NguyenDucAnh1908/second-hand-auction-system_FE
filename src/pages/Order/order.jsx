@@ -50,7 +50,7 @@ export default function OrderForm() {
             client_order_code: "",
             to_name: orderDetails?.fullName,
             to_phone: orderDetails?.phoneNumber,
-            to_address: `${orderDetails?.address}, ${addressData?.ward_name}, ${addressData?.district_name}, ${addressData?.province_name}`,
+            to_address: `${addressData?.address_name}, ${addressData?.ward_name}, ${addressData?.district_name}, ${addressData?.province_name}`,
             to_ward_name: addressData?.ward_name,
             to_district_name: addressData?.district_name,
             to_province_name: addressData?.province_name,
@@ -144,7 +144,7 @@ export default function OrderForm() {
         } catch (error) {
             //console.error("Create order error:", error);
             const errorMessage = error?.data?.message + " Vui lòng kiểm tra lại thông tin ở danh sách đơn hàng" || "An error occurred while creating the order";
-            // message.error(errorMessage);
+            message.error(errorMessage);
         } finally {
             setSpinning(false);
         }
