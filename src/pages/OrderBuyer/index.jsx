@@ -298,13 +298,13 @@ export default function OrderManagementBuyer() {
             key: 'action',
             render: (text, record) => (
                 <>
-                    <Button
+                    {/* <Button
                         type="primary"
                         className="bg-blue-500 hover:bg-blue-600 text-white font-bold mr-2"
                         onClick={() => handleDetailClick(record)}
                     >
                         Chi tiết
-                    </Button>
+                    </Button> */}
                      <Button
                         type="primary"
                         className="bg-blue-500 hover:bg-blue-600 text-white font-bold mr-2"
