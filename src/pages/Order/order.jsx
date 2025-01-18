@@ -44,7 +44,7 @@ export default function OrderForm() {
         const data = {
             payment_type_id: 2,
             note: orderDetails.note,
-            required_note: "Kiểm tra hàng trước khi nhận hàng",
+            required_note: "CHOTHUHANG",
             return_district_id: null,
             return_ward_code: "",
             client_order_code: "",
