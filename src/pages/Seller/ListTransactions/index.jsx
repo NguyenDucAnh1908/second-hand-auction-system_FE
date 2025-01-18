@@ -136,8 +136,18 @@ export default function ListTransaction() {
                             <tr>
                                 <td><strong>Số tiền nhận thực tế:</strong></td>
                                 <td>
-                                    <Tag color="success" style={{ marginLeft: 8 }}>
-                                        +{" "}
+                                    <Tag
+                                        color={selectedTransaction.amount < 0 ? "error" : "success"} // Màu đỏ cho số âm, xanh cho số dương
+                                        style={{
+                                            marginLeft: 8,                               // Khoảng cách trái
+                                            padding: "4px 8px",                         // Tạo khoảng cách bên trong
+                                            borderRadius: "4px",                        // Bo góc cho Tag
+                                            fontWeight: "bold",                         // Chữ in đậm
+                                            fontSize: "14px",                           // Kích thước chữ
+                                            display: "inline-block",                    // Đảm bảo khối vừa với nội dung
+                                        }}
+                                    >
+                                        {selectedTransaction.amount < 0 ? "" : "+"} {/* Hiển thị dấu + cho số dương */}
                                         {new Intl.NumberFormat("vi-VN", {
                                             style: "currency",
                                             currency: "VND",
@@ -145,6 +155,7 @@ export default function ListTransaction() {
                                     </Tag>
                                 </td>
                             </tr>
+
                             <tr>
                                 <td><strong>Số dư ví trước khi nhận:</strong></td>
                                 <td>
