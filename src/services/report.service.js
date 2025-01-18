@@ -45,7 +45,7 @@ export const reportApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Report'],
         }),
-
+        
         updateReport: builder.mutation({
             query: ({ id, ...credentials }) => ({
                 url: `/report/${id}`, // Lấy id từ payload để xây dựng URL
