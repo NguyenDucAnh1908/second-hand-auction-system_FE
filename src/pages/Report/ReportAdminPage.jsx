@@ -489,25 +489,6 @@ console.log("ticketDetail", ticketDetail)
                             <Col span={24}>
                                 <p><strong>Mô tả:</strong> {ticketDetail?.description}</p>
                             </Col>
-                            {/*<Col span={24}>*/}
-                            {/*    <p><strong>File đính kèm:</strong>*/}
-                            {/*        {ticketDetail?.attachments?.length > 0 ? (*/}
-                            {/*            ticketDetail.attachments.map((file) => (*/}
-                            {/*                <a*/}
-                            {/*                    key={file.id}*/}
-                            {/*                    href={file.attachment_url}*/}
-                            {/*                    target="_blank"*/}
-                            {/*                    rel="noopener noreferrer"*/}
-                            {/*                    style={{ marginLeft: 8 }}*/}
-                            {/*                >*/}
-                            {/*                    {file.name}*/}
-                            {/*                </a>*/}
-                            {/*            ))*/}
-                            {/*        ) : (*/}
-                            {/*            "Không có file đính kèm"*/}
-                            {/*        )}*/}
-                            {/*    </p>*/}
-                            {/*</Col>*/}
                         </Row>
                         <Col style={{
                             marginTop: 14
