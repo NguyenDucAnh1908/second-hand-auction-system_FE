@@ -81,7 +81,7 @@ export default function OrderForm() {
             //console.log("Response from GHN:", res);
             return res?.data?.data;
         } catch (error) {
-            message.error(error.message_display || "Failed to fetch shipping fee.");
+            // message.error(error.message_display || "Failed to fetch shipping fee.");
             throw error;
         }
     };
@@ -144,7 +144,7 @@ export default function OrderForm() {
         } catch (error) {
             //console.error("Create order error:", error);
             const errorMessage = error?.data?.message + " Vui lòng kiểm tra lại thông tin ở danh sách đơn hàng" || "An error occurred while creating the order";
-            message.error(errorMessage);
+            // message.error(errorMessage);
         } finally {
             setSpinning(false);
         }
