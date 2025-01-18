@@ -144,8 +144,7 @@ export default function OrderForm() {
         } catch (error) {
             //console.error("Create order error:", error);
             const errorMessage = error?.data?.message + " Vui lòng kiểm tra lại thông tin ở danh sách đơn hàng" || "An error occurred while creating the order";
-            console.log("errorMessage", errorMessage)
-            //message.error(errorMessage);
+            // message.error(errorMessage);
         } finally {
             setSpinning(false);
         }
