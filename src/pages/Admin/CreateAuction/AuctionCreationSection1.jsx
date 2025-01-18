@@ -157,36 +157,6 @@ export default function AuctionCreationSection1({ itemId }) {
                                                 />
                                             </div>
 
-                                            <div className="flex flex-col">
-                                                <label className="text-[15px] font-medium text-black">Loại đấu giá:</label>
-                                                <Select
-                                                    defaultValue="Chọn loại đấu giá"
-                                                    style={{ width: '100%' }}
-                                                    onChange={handleChange}
-                                                    options={
-                                                        isloadingAuctionType
-                                                            ? [{ value: '', label: <Spin /> }]
-                                                            : errorAuctionType
-                                                                ? [{
-                                                                    value: '',
-                                                                    label: 'Error loading types',
-                                                                    disabled: true
-                                                                }]
-                                                                : auctionTypes
-                                                                    ?.map((type) => {
-                                                                        if (type?.auction_typeName === "BUY_NOW") return null; // Ẩn loại "BUY_NOW"
-                                                                        return {
-                                                                            value: type?.act_id,
-                                                                            label: type?.auction_typeName === "TRADITIONAL" ? "Đấu giá truyền thống" :
-                                                                                type?.auction_typeName === "SEALED_BID" ? "Đấu giá kín" : type?.auction_typeName
-                                                                        };
-                                                                    })
-                                                                    .filter(type => type !== null) // Loại bỏ giá trị null
-                                                    }
-                                                    size="large"
-                                                    className="border rounded-md mt-2"
-                                                />
-                                            </div>
 
 
                                             <div className="flex flex-col">
@@ -214,6 +184,39 @@ export default function AuctionCreationSection1({ itemId }) {
                                                         value: index + 2,  // Tạo các giá trị từ 2 đến 100
                                                         label: `${index + 2}%`, // Hiển thị giá trị phần trăm
                                                     }))}
+                                                    size="large"
+                                                    className="border rounded-md mt-2"
+                                                />
+                                            </div>
+
+
+                                            
+                                            <div className="flex flex-col">
+                                                <label className="text-[15px] font-medium text-black">Loại đấu giá:</label>
+                                                <Select
+                                                    defaultValue="Chọn loại đấu giá"
+                                                    style={{ width: '100%' }}
+                                                    onChange={handleChange}
+                                                    options={
+                                                        isloadingAuctionType
+                                                            ? [{ value: '', label: <Spin /> }]
+                                                            : errorAuctionType
+                                                                ? [{
+                                                                    value: '',
+                                                                    label: 'Error loading types',
+                                                                    disabled: true
+                                                                }]
+                                                                : auctionTypes
+                                                                    ?.map((type) => {
+                                                                        if (type?.auction_typeName === "BUY_NOW") return null; // Ẩn loại "BUY_NOW"
+                                                                        return {
+                                                                            value: type?.act_id,
+                                                                            label: type?.auction_typeName === "TRADITIONAL" ? "Đấu giá truyền thống" :
+                                                                                type?.auction_typeName === "SEALED_BID" ? "Đấu giá kín" : type?.auction_typeName
+                                                                        };
+                                                                    })
+                                                                    .filter(type => type !== null) // Loại bỏ giá trị null
+                                                    }
                                                     size="large"
                                                     className="border rounded-md mt-2"
                                                 />
