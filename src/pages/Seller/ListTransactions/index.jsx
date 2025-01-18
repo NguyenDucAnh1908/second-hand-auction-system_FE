@@ -272,17 +272,19 @@ export default function ListTransaction() {
                                                                 color="blue-gray"
                                                                 className="font-normal"
                                                                 style={{
-                                                                    backgroundColor: '#d1f7d6', // Màu xanh nhạt
-                                                                    padding: '4px 8px',       // Tạo khoảng cách cho văn bản
-                                                                    borderRadius: '4px',      // Bo góc
-                                                                    display: 'inline-block',  // Đảm bảo chỉ bọc quanh nội dung
+                                                                    backgroundColor: transaction.amount < 0 ? '#ffd6d6' : '#d1f7d6', // Màu đỏ nhạt cho số âm, xanh nhạt cho số dương
+                                                                    color: transaction.amount < 0 ? '#ff0000' : '#008000',           // Đỏ cho số âm, xanh cho số dương
+                                                                    padding: '4px 8px',                                              // Tạo khoảng cách cho văn bản
+                                                                    borderRadius: '4px',                                             // Bo góc
+                                                                    display: 'inline-block',                                         // Đảm bảo chỉ bọc quanh nội dung
                                                                 }}
                                                             >
-                                                                + {new Intl.NumberFormat('vi-VN', {
+                                                                {transaction.amount < 0 ? '' : '+'}{new Intl.NumberFormat('vi-VN', {
                                                                     style: 'currency',
                                                                     currency: 'VND',
                                                                 }).format(transaction.amount)}
                                                             </Typography>
+
                                                         </td>
 
                                                         <td className={classes}>
