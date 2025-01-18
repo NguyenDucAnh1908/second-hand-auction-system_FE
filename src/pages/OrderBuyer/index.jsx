@@ -106,13 +106,19 @@ export default function OrderManagementBuyer() {
                 const file = uploadFileList[0].originFileObj;
                 evidenceUrl = await UploadImage(file); // Upload hình lên Firebase
             }
-
-            await createReport({
+           
+            
+            const reportData = {
                 type: reportType,
                 reason: reason.trim(),
                 evidence: evidenceUrl, // URL ảnh đã upload
-                orderId: 1,
-            }).unwrap();
+                orderId: orderId,
+            };
+    
+            console.log("Dữ liệu trước khi gửi:", reportData);
+            await createReport(reportData).unwrap();
+
+          
 
             message.success("Gửi báo cáo thành công!");
             setOpen(false); // Đóng Modal

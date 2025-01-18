@@ -50,7 +50,7 @@ export default function OrderForm() {
             client_order_code: "",
             to_name: orderDetails?.fullName,
             to_phone: orderDetails?.phoneNumber,
-            to_address: "DIA O DAU TU TIM",
+            to_address: orderDetails?.address,
             to_ward_name: addressData?.ward_name,
             to_district_name: addressData?.district_name,
             to_province_name: addressData?.province_name,

@@ -50,7 +50,7 @@ const OrderDetailCompoment = ({
         isError: isErrorCreateReport,
         error: errorCreateReport,
     }] = useCreateReportMutation();
-
+console.log("selectedOrder", selectedOrder)
     const handleSubmit = async () => {
         if (!reason.trim()) {
             message.error("Vui lòng nhập lý do!");
@@ -71,12 +71,12 @@ const OrderDetailCompoment = ({
                 type: reportType,
                 reason: reason.trim(),
                 evidence: evidenceUrl, // URL ảnh đã upload
-                orderId: selectedOrder?.itemId,
+                orderId: selectedOrder?.id,
             }).unwrap();
 
             message.success("Gửi báo cáo thành công!");
-            setOpen(false); // Đóng Modal
-            setReason(""); // Reset trạng thái
+            setOpen(false);
+            setReason("");
             setReportType("DAMAGED_PRODUCT");
         } catch (error) {
             console.error("Error:", error);
